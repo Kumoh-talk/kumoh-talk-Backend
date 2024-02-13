@@ -1,0 +1,9 @@
+server:
+  shutdown: graceful # ?? ?? ? ?? ??
+  port: 8080 # ?? ??
+
+# profiles setting
+spring:
+  profiles:
+    include:
+      - db
