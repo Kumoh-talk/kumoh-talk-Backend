@@ -1,0 +1,21 @@
+spring:
+  # database 설정
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  # JPA 설정
+  jpa:
+    database: mysql
+    generate-ddl: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
+        jdbc:
+          time-zone: Asia/Seoul
