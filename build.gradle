@@ -84,6 +84,12 @@ task copyDocument(type: Copy) {
     into file("src/main/resources/static/docs")
 }
 
+// -plain.jar 제거
+jar {
+    enabled = false
+}
+
+
 build {
     dependsOn copyDocument
 }
