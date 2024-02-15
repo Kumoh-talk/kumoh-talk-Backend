@@ -5,8 +5,8 @@ DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
 DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
 DEPLOY_ERR_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy_err.log"
 APPLICATION_LOG_PATH="/home/ubuntu/$PROJECT_NAME/application.log"
-BUILD_JAR=${ls $JAR_PATH}
-JAR_NAME=${basename $BUILD_JAR}
+BUILD_JAR=$(ls $JAR_PATH)
+JAR_NAME=$(basename $BUILD_JAR)
 
 echo "==== 배포 시작 : $(date +%c) ====}" >> $DEPLOY_LOG_PATH
 
