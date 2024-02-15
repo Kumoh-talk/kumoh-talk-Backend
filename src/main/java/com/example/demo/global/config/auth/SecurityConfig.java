@@ -20,7 +20,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                        .requestMatchers(new MvcRequestMatcher(introspector, "**")).permitAll());
+                        .requestMatchers(new MvcRequestMatcher(introspector, "**")).permitAll()
+                        .requestMatchers("/demo").permitAll());
 
         return http.build();
     }
