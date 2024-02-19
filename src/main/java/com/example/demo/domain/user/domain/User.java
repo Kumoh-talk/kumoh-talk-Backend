@@ -59,4 +59,13 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Calendar> calendars;
+
+    public User(String name, String email, String password,Track track, String major) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = Role.ROLE_USER;
+        this.track = track;
+        this.major = major;
+    }
 }
