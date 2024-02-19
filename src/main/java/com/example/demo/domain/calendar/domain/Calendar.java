@@ -1,5 +1,6 @@
 package com.example.demo.domain.calendar.domain;
 
+import com.example.demo.domain.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -25,4 +26,8 @@ public class Calendar {
     private String contents;
 
     private Date date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
