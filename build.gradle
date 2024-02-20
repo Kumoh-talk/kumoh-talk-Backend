@@ -62,15 +62,27 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
+bootJar {
+    dependsOn asciidoctor
+    copy {
+        from "${asciidoctor.outputDir}"
+        into 'static/docs'
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
     outputs.dir snippetsDir
 }
 
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
 asciidoctor {
     configurations 'asciidoctorExt'
     baseDirFollowsSourceFile()
-    inputs.dir snippetsDir
     dependsOn test
 }
 
@@ -84,6 +96,15 @@ task copyDocument(type: Copy) {
     into file("src/main/resources/static/docs")
 }
 
+// -plain.jar 제거
+jar {
+    enabled = false
+}
+
+
+build {
+    dependsOn copyDocument
+}
 // -plain.jar 제거
 jar {
     enabled = false
