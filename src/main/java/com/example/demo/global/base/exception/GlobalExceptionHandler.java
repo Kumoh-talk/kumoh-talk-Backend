@@ -37,9 +37,7 @@ public class GlobalExceptionHandler {
         String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.debug("[EXCEPTION] FIELD_ERROR       -----> [{}]", e.getFieldError());
 
-        return ResponseEntity.
-                status(BAD_REQUEST)
-                .body(new ErrorResponse(errorMessage));
+        return ErrorResponse.of(BAD_REQUEST, errorMessage);
     }
 
     @ResponseStatus(BAD_REQUEST)
