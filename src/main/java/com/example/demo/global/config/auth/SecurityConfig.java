@@ -21,7 +21,9 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                         .requestMatchers(new MvcRequestMatcher(introspector, "**")).permitAll()
-                        .requestMatchers("/demo").permitAll());
+                        .requestMatchers("/demo").permitAll()
+                        .requestMatchers("/sign-up", "/login").permitAll());
+
 
         return http.build();
     }
