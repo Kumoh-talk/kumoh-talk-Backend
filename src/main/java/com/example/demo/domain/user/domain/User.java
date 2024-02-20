@@ -19,12 +19,12 @@ import static com.example.demo.global.regex.UserRegex.NAME_REGEXP;
 @Table(name = "users")
 public class User extends BaseEntity {
     public enum Role {
-        ROLE_USER,
-        ROLE_ADMIN
+        USER,
+        ADMIN
     }
     public enum Track {
-        TRACK_BACK,
-        TRACK_FRONT
+        BACK,
+        FRONT
     }
 
     @Id
@@ -64,7 +64,7 @@ public class User extends BaseEntity {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = Role.ROLE_USER;
+        this.role = Role.USER;
         this.track = track;
         this.major = major;
     }
