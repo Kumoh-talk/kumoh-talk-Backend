@@ -35,11 +35,11 @@ public class AuthService {
         return (userRepository.save(newUser).getId()) > 0;
     }
 
-    private boolean isNotExistName(String name) {
+    public boolean isNotExistName(String name) {
         return !userRepository.existsByName(name);
     }
 
-    private boolean isNotExistEmail(String email) {
+    public boolean isNotExistEmail(String email) {
         return !userRepository.existsByEmail(email);
     }
 }
