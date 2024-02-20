@@ -3,7 +3,6 @@ package com.example.demo.domain.auth.api;
 import com.example.demo.domain.auth.application.AuthService;
 import com.example.demo.domain.auth.dto.request.JoinRequest;
 import com.example.demo.domain.auth.dto.request.ValidateEmailRequest;
-import com.example.demo.domain.auth.dto.request.ValidateNameRequest;
 import com.example.demo.global.base.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +21,6 @@ public class AuthController {
         Boolean joinSuccess = authService.join(request);
 
         return ApiResponse.ok(joinSuccess);
-    }
-
-    @PostMapping("/users/check-name")
-    public ApiResponse<Void> checkname(@RequestBody @Valid ValidateNameRequest request) {
-        boolean notExistName = authService.isNotExistName(request.getName());
-
-        return ApiResponse.ok(notExistName);
     }
 
     @PostMapping("/users/check-email")

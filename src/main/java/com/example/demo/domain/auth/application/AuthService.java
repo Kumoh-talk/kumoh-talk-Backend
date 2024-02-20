@@ -28,15 +28,7 @@ public class AuthService {
             throw new ServiceException(EXIST_SAME_EMAIL);
         }
 
-        if (!isNotExistName(request.getName())) {
-            throw new ServiceException(EXIST_SAME_NAME);
-        }
-
         return (userRepository.save(newUser).getId()) > 0;
-    }
-
-    public boolean isNotExistName(String name) {
-        return !userRepository.existsByName(name);
     }
 
     public boolean isNotExistEmail(String email) {
