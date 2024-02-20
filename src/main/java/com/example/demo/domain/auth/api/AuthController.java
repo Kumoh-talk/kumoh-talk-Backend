@@ -9,10 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
 
@@ -23,7 +25,7 @@ public class AuthController {
         return ApiResponse.ok(joinSuccess);
     }
 
-    @PostMapping("/users/check-email")
+    @PostMapping("/duplicate")
     public ApiResponse<Void> checkEmail(@RequestBody @Valid ValidateEmailRequest request) {
         boolean notExistEmail = authService.isNotExistEmail(request.getEmail());
 
