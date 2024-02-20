@@ -4,7 +4,6 @@ import com.example.demo.global.base.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestValueException;
@@ -28,23 +27,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ServiceException.class) // custom 에러
     public ResponseEntity<ErrorResponse> handleServiceException(HttpServletRequest request, ServiceException e) {
         ErrorCode errorCode = e.getErrorCode();
+        log.info("에러코드 테스트: " + String.valueOf(errorCode));
         logService(request, e, errorCode);
-        return ResponseEntity
-                .status(errorCode.getStatus())
-                .body(ErrorResponse.of(errorCode));
+        return ErrorResponse.of(errorCode);
     }
 
-    @ResponseStatus(BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class) // Bean Validation(@Valid)
-    public ErrorResponse handleMethodArgumentNotValidException(HttpServletRequest request, BindException e) {
-        logDebug(request, e);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.debug("[EXCEPTION] FIELD_ERROR       -----> [{}]", e.getFieldError());
-        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
+
+        return ResponseEntity.
+                status(BAD_REQUEST)
+                .body(new ErrorResponse(errorMessage));
     }
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(MissingRequestValueException.class) // 요청 데이터로 들어와야할 인자 부족
-    public ErrorResponse handleMissingRequestValueException(HttpServletRequest request,
+    public ResponseEntity<ErrorResponse> handleMissingRequestValueException(HttpServletRequest request,
                                                             MissingRequestValueException e) {
         logDebug(request, e);
         return ErrorResponse.of(ErrorCode.MISSING_INPUT_VALUE);
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class) // 해당 uri에 잘못된 HttpMethod
-    public ErrorResponse handleHttpRequestMethodNotSupportedException(HttpServletRequest request,
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpServletRequest request,
                                                                       HttpRequestMethodNotSupportedException e) {
         logDebug(request, e);
         return ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
@@ -60,21 +60,21 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(NoHandlerFoundException.class) // 없는 api(uri)
-    public ErrorResponse handleNoHandlerFoundException(HttpServletRequest request, NoHandlerFoundException e) {
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(HttpServletRequest request, NoHandlerFoundException e) {
         logDebug(request, e);
         return ErrorResponse.of(ErrorCode.NOT_EXIST_API);
     }
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class) // 메소드 validation 예외 상황
-    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e) {
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         logWarn(e);
         return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
     }
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ErrorResponse handleException(HttpServletRequest request, Exception e) {
+    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request, Exception e) {
         logError(e);
         return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
     }
@@ -83,7 +83,6 @@ public class GlobalExceptionHandler {
         log.debug(EXCEPTION_REQUEST_URI, request.getRequestURI());
         log.debug(EXCEPTION_HTTP_METHOD_TYPE, request.getMethod());
 //        log.debug(MessageUtil.getMessage(e.getMessageKey()));
-        log.info(errorCode.getCode());
         log.warn(EXCEPTION_TYPE_FORMAT, e.getClass().getSimpleName());
         log.warn(EXCEPTION_MESSAGE_FORMAT, e.getMessage());
     }
