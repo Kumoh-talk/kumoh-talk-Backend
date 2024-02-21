@@ -3,7 +3,9 @@ package com.example.demo.global.base.exception;
 import com.example.demo.global.base.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestValueException;
@@ -37,9 +39,7 @@ public class GlobalExceptionHandler {
         String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.debug("[EXCEPTION] FIELD_ERROR       -----> [{}]", e.getFieldError());
 
-        return ResponseEntity.
-                status(BAD_REQUEST)
-                .body(new ErrorResponse(errorMessage));
+        return ErrorResponse.of(BAD_REQUEST, errorMessage);
     }
 
     @ResponseStatus(BAD_REQUEST)
@@ -70,6 +70,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         logWarn(e);
         return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class) // JSON 파싱 예외
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        logError(e);
+        return ErrorResponse.of(ErrorCode.INVALID_JSON);
     }
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)
