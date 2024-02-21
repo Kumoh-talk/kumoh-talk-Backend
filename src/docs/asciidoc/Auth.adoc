@@ -47,3 +47,94 @@ include::{snippets}/auth/auth-duplicate-email-check-fail-not-valid-form/http-res
 include::{snippets}/auth/auth-duplicate-email-check-fail-not-valid-form/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-duplicate-email-check-fail-not-valid-form/response-body.adoc[]
+
+== POST: 회원가입
+=== 성공
+
+.Request
+include::{snippets}/auth/auth-signup-success/http-request.adoc[]
+.Request Fields
+include::{snippets}/auth/auth-signup-success/request-fields.adoc[]
+.Request Body
+include::{snippets}/auth/auth-signup-success/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-signup-success/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-signup-success/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-signup-success/response-body.adoc[]
+---
+
+=== 실패: 빈 값이 존재하는 경우
+
+.Request
+include::{snippets}/auth/auth-signup-fail-not-exist/http-request.adoc[]
+.Request Fields
+include::{snippets}/auth/auth-signup-fail-not-exist/request-fields.adoc[]
+.Request Body
+include::{snippets}/auth/auth-signup-fail-not-exist/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-signup-fail-not-exist/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-signup-fail-not-exist/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-signup-fail-not-exist/response-body.adoc[]
+---
+
+=== 실패: 이미 가입된 경우
+
+.Request
+include::{snippets}/auth/auth-signup-fail-already-exist/http-request.adoc[]
+.Request Fields
+include::{snippets}/auth/auth-signup-fail-already-exist/request-fields.adoc[]
+.Request Body
+include::{snippets}/auth/auth-signup-fail-already-exist/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-signup-fail-already-exist/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-signup-fail-already-exist/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-signup-fail-already-exist/response-body.adoc[]
+---
+
+
+=== 실패: 비밀번호 패턴에 부적합한 경우
+패턴식 : "^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$"
+
+-> 최소 8, 최대 25자 이내. 적어도 하나의 영문자와 하나의 숫자를 포함해야 한다.
+
+.Request
+include::{snippets}/auth/auth-signup-fail-not-regex/http-request.adoc[]
+.Request Fields
+include::{snippets}/auth/auth-signup-fail-not-regex/request-fields.adoc[]
+.Request Body
+include::{snippets}/auth/auth-signup-fail-not-regex/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-signup-fail-not-regex/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-signup-fail-not-regex/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-signup-fail-not-regex/response-body.adoc[]
+---
+
+=== 실패: 올바르지 않은 Track 명을 입력했을 경우
+==== track에는 "BACK", "FRONT" 가 존재
+
+.Request
+include::{snippets}/auth/auth-signup-fail-track-not-found/http-request.adoc[]
+.Request Fields
+include::{snippets}/auth/auth-signup-fail-track-not-found/request-fields.adoc[]
+.Request Body
+include::{snippets}/auth/auth-signup-fail-track-not-found/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-signup-fail-track-not-found/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-signup-fail-track-not-found/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-signup-fail-track-not-found/response-body.adoc[]
+---
