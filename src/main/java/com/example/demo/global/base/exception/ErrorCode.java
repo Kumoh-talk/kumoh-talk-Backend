@@ -18,6 +18,9 @@ public enum ErrorCode {
     HANDLE_ACCESS_DENIED(HttpStatus.FORBIDDEN,  "접근 권한이 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러입니다."),
 
+    // 400 error
+    INVALID_JSON(HttpStatus.BAD_REQUEST, "JSON 파싱 오류입니다."),
+
     // 409 error
     EXIST_SAME_NAME(HttpStatus.CONFLICT, "이미 사용중인 이름 입니다."),
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일 입니다."),

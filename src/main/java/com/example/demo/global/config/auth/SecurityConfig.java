@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                         .requestMatchers(new MvcRequestMatcher(introspector, "**")).permitAll()
                         .requestMatchers("/demo").permitAll()
-                        .requestMatchers("/sign-up", "/login").permitAll());
+                        .requestMatchers("/api/auth/**").permitAll());
 
 
         return http.build();

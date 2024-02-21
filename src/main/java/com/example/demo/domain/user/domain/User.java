@@ -1,6 +1,7 @@
 package com.example.demo.domain.user.domain;
 
 import com.example.demo.domain.calendar.domain.Calendar;
+import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,13 +20,10 @@ import static com.example.demo.global.regex.UserRegex.NAME_REGEXP;
 @Table(name = "users")
 public class User extends BaseEntity {
     public enum Role {
-        ROLE_USER,
-        ROLE_ADMIN
+        USER,
+        ADMIN
     }
-    public enum Track {
-        TRACK_BACK,
-        TRACK_FRONT
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +62,7 @@ public class User extends BaseEntity {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = Role.ROLE_USER;
+        this.role = Role.USER;
         this.track = track;
         this.major = major;
     }

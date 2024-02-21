@@ -1,6 +1,7 @@
 package com.example.demo.domain.auth.dto.request;
 
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.vo.Track;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
@@ -29,7 +30,7 @@ public class JoinRequest {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private User.Track track;
+    private Track track;
 
     @NotBlank(message = "전공은 빈값 일 수 없습니다.")
     private String major;
