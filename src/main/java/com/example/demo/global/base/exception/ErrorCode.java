@@ -25,6 +25,9 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
 
+    // 404 error
+    FAIL_USER_LOGIN(HttpStatus.NOT_FOUND, "존재하지 않는 계정입니다."),
+
     // 409 error
     EXIST_SAME_NAME(HttpStatus.CONFLICT, "이미 사용중인 이름 입니다."),
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일 입니다."),
