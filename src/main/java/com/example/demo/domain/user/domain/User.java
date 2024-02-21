@@ -1,6 +1,7 @@
 package com.example.demo.domain.user.domain;
 
 import com.example.demo.domain.calendar.domain.Calendar;
+import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -22,10 +23,7 @@ public class User extends BaseEntity {
         USER,
         ADMIN
     }
-    public enum Track {
-        BACK,
-        FRONT
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
