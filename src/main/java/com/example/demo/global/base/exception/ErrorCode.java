@@ -21,9 +21,14 @@ public enum ErrorCode {
     // 400 error
     INVALID_JSON(HttpStatus.BAD_REQUEST, "JSON 파싱 오류입니다."),
 
+    // 401 error
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+
     // 409 error
     EXIST_SAME_NAME(HttpStatus.CONFLICT, "이미 사용중인 이름 입니다."),
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일 입니다."),
+
 
 
 
