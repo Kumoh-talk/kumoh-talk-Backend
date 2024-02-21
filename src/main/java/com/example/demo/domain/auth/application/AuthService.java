@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.demo.global.base.exception.ErrorCode.EXIST_SAME_EMAIL;
-import static com.example.demo.global.base.exception.ErrorCode.EXIST_SAME_NAME;
 
 @RequiredArgsConstructor
 @Service
@@ -20,15 +19,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Boolean join(JoinRequest request) {
+    public void join(JoinRequest request) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User newUser = request.toEntity(encodedPassword);
 
         if (!isNotExistEmail(request.getEmail())) {
             throw new ServiceException(EXIST_SAME_EMAIL);
         }
-
-        return (userRepository.save(newUser).getId()) > 0;
+        userRepository.save(newUser);
     }
 
     public boolean isNotExistEmail(String email) {
