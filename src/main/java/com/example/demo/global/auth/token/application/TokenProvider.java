@@ -58,6 +58,8 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
+        validateToken(accessToken);
+
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
@@ -75,7 +77,7 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(user, "", authorities);
     }
 
-    public boolean isValidateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
@@ -88,7 +90,6 @@ public class TokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidTokenException();
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {
