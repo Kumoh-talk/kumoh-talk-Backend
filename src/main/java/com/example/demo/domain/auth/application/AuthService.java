@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.demo.global.base.exception.ErrorCode.EXIST_SAME_EMAIL;
+import static com.example.demo.global.base.exception.ErrorCode.MISMATCH_EMAIL_OR_PASSWORD;
 
 @RequiredArgsConstructor
 @Service
@@ -44,10 +45,16 @@ public class AuthService {
     public LoginResponse login(LoginRequest request) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        try {
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        String accessToken = tokenProvider.createAccessToken(authentication);
+            String accessToken = tokenProvider.createAccessToken(authentication);
 
-        return new LoginResponse(accessToken, "Bearer");
+            return new LoginResponse(accessToken, "Bearer");
+        } catch (Exception e) {
+            // 이메일 & 비밀번호를 따로 예외처리를 하면 이메일을 유추할 수 있게되기에 공통 처리
+            throw new ServiceException(MISMATCH_EMAIL_OR_PASSWORD);
+        }
+
     }
 }
