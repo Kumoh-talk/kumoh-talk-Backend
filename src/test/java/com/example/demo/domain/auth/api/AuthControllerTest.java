@@ -2,7 +2,9 @@ package com.example.demo.domain.auth.api;
 
 import com.example.demo.base.ControllerTest;
 import com.example.demo.domain.auth.dto.request.JoinRequest;
+import com.example.demo.domain.auth.dto.request.LoginRequest;
 import com.example.demo.domain.auth.dto.request.ValidateEmailRequest;
+import com.example.demo.domain.auth.dto.response.LoginResponse;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -14,6 +16,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +33,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AuthControllerTest extends ControllerTest {
 
@@ -333,4 +336,80 @@ public class AuthControllerTest extends ControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("<로그인>")
+    class loginTest {
+
+        String loginApiPath = "/api/auth/login";
+
+        @DisplayName("등록된 회원이라면 로그인 성공")
+        @Test
+        void loginSuccessIfAlreadyExistUser() throws Exception {
+            // given
+            LoginRequest requiredLoginRequest = new LoginRequest("test@kumoh.ac.kr", "test12345");
+            LoginResponse loginResponse = new LoginResponse("MOCK_ACCESS_TOKEN", "Bearer");
+
+            when(authService.login(any(LoginRequest.class))).thenReturn(loginResponse);
+
+            // when -> then
+            mockMvc.perform(MockMvcRequestBuilders.post(loginApiPath)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requiredLoginRequest))
+            )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.accessToken").value(loginResponse.getAccessToken()))
+                    .andExpect(jsonPath("$.tokenType").value(loginResponse.getTokenType()))
+                    .andDo(print())
+                    .andDo(document(
+                            "auth/auth-login-success",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            requestFields(
+                                    fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                    fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                            ),
+                            responseFields(
+                                    fieldWithPath("accessToken").type(JsonFieldType.STRING)
+                                            .description("AccessToken"),
+                                    fieldWithPath("tokenType").type(JsonFieldType.STRING)
+                                            .description("토큰 타입 (헤더)")
+                            )
+                    ));
+        }
+
+        @DisplayName("이메일이나 비밀번호 다를 시 로그인 실패")
+        @Test
+        void loginFailWrongEmailOrPassword() throws Exception {
+            // given
+            LoginRequest requiredLoginRequest = new LoginRequest("test@kumoh.ac.kr", "12345678");
+
+            when(authService.login(any(LoginRequest.class))).thenThrow(new ServiceException(ErrorCode.MISMATCH_EMAIL_OR_PASSWORD));
+
+            // when -> then
+            mockMvc.perform(MockMvcRequestBuilders.post(loginApiPath)
+                            .with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(requiredLoginRequest))
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value("이메일 혹은 비밀번호가 틀렸습니다."))
+                    .andDo(print())
+                    .andDo(document(
+                            "auth/auth-login-fail-wrong-email-or-password",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            requestFields(
+                                    fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                    fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                            ),
+                            responseFields(
+                                    fieldWithPath("timestamp").type(JsonFieldType.STRING)
+                                            .description("응답 시간"),
+                                    fieldWithPath("message").type(JsonFieldType.STRING)
+                                            .description("응답 메시지")
+                            )
+                    ));
+        }
+    }
 }
