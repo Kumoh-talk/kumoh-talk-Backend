@@ -2,7 +2,9 @@ package com.example.demo.domain.auth.api;
 
 import com.example.demo.domain.auth.application.AuthService;
 import com.example.demo.domain.auth.dto.request.JoinRequest;
+import com.example.demo.domain.auth.dto.request.LoginRequest;
 import com.example.demo.domain.auth.dto.request.ValidateEmailRequest;
+import com.example.demo.domain.auth.dto.response.LoginResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,5 +37,12 @@ public class AuthController {
         return ResponseEntity.
                 noContent()
                 .build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        LoginResponse loginResponse = authService.login(request);
+
+        return ResponseEntity.ok(loginResponse);
     }
 }

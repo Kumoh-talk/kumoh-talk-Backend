@@ -137,4 +137,44 @@ include::{snippets}/auth/auth-signup-fail-track-not-found/http-response.adoc[]
 include::{snippets}/auth/auth-signup-fail-track-not-found/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-fail-track-not-found/response-body.adoc[]
+
+
+== POST: 로그인
+=== 성공
+
+.Request
+include::{snippets}/auth/auth-login-success/http-request.adoc[]
+.Request Fields
+include::{snippets}/auth/auth-login-success/request-fields.adoc[]
+.Request Body
+include::{snippets}/auth/auth-login-success/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-login-success/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-login-success/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-login-success/response-body.adoc[]
 ---
+
+=== 실패: 필드값이 부적합 할 경우
+이 경우는 회원가입과 같음.
+
+---
+
+=== 실패: 이메일이 존재하지 않거나, 비밀번호가 틀린 경우
+이메일 존재 여/부 따로, 비밀번호 틀린 경우 따로하면 이메일을 유추가능하기에 예외처리를 같이 함.
+
+.Request
+include::{snippets}/auth/auth-login-fail-wrong-email-or-password/http-request.adoc[]
+.Request Body
+include::{snippets}/auth/auth-login-fail-wrong-email-or-password/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-login-fail-wrong-email-or-password/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-login-fail-wrong-email-or-password/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-login-fail-wrong-email-or-password/response-body.adoc[]
+---
+
