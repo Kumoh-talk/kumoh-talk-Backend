@@ -20,10 +20,21 @@ public enum ErrorCode {
 
     // 400 error
     INVALID_JSON(HttpStatus.BAD_REQUEST, "JSON 파싱 오류입니다."),
+    MISMATCH_EMAIL_OR_PASSWORD(HttpStatus.BAD_REQUEST, "이메일 혹은 비밀번호가 틀렸습니다."),
+
+    // 401 error
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+    NOT_SUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "지원하지 않는 토큰입니다."),
+    NOT_AUTHORIZED_TOKEN(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 토큰입니다."),
+
+    // 404 error
+    FAIL_USER_LOGIN(HttpStatus.NOT_FOUND, "존재하지 않는 계정입니다."),
 
     // 409 error
     EXIST_SAME_NAME(HttpStatus.CONFLICT, "이미 사용중인 이름 입니다."),
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일 입니다."),
+
 
 
 
