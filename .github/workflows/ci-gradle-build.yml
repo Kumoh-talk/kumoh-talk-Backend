@@ -14,6 +14,8 @@ permissions:
 env:
   S3_BUCKET_NAME: s3-myest
   RESOURCE_PATH: ./src/main/resources/application.yml
+  RESOURCE_PATH_DB: ./src/main/resources/application-db.yml
+  RESOURCE_PATH_SECURITY: ./src/main/resources/application-security.yml
   CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-TEST
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
 
@@ -33,7 +35,7 @@ jobs:
       - name: Set yml file
         uses: microsoft/variable-substitution@v1
         with:
-          files: ${{ env.RESOURCE_PATH }}
+          files: ${{ env.RESOURCE_PATH }}, ${{ env.RESOURCE_PATH_DB }}, ${{ env.RESOURCE_PATH_SECURITY }}
         env:
           spring.datasource.url: ${{ secrets.SPRING_DATASOURCE_URL }}
           spring.datasource.username: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
