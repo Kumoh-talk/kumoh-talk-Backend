@@ -35,8 +35,9 @@ public enum ErrorCode {
     EXIST_SAME_NAME(HttpStatus.CONFLICT, "이미 사용중인 이름 입니다."),
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일 입니다."),
 
-
-
+    // 500 error
+    UNABLE_TO_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "이메일을 전송할 수 없습니다."),
+    NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "해당 알고리즘을 찾을 수 없습니다."),
 
     ;
 
