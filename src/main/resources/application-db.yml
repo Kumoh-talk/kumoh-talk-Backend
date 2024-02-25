@@ -22,5 +22,8 @@ spring:
         jdbc:
           time-zone: Asia/Seoul
         format_sql: true
-
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 

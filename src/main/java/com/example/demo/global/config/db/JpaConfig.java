@@ -1,4 +1,4 @@
-package com.example.demo.global.config.jpa;
+package com.example.demo.global.config.db;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
