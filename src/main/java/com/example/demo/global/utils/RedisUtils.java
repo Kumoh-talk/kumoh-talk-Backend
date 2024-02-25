@@ -30,4 +30,8 @@ public class RedisUtils {
     public void deleteData(String key) {
         redisTemplate.delete(key);
     }
+
+    public boolean checkExistsValue(String value) {
+        return !value.equals("false");
+    }
 }

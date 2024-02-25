@@ -27,8 +27,7 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Random;
 
-import static com.example.demo.global.base.exception.ErrorCode.EXIST_SAME_EMAIL;
-import static com.example.demo.global.base.exception.ErrorCode.MISMATCH_EMAIL_OR_PASSWORD;
+import static com.example.demo.global.base.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -57,12 +56,20 @@ public class AuthService {
 
     @Transactional
     public void join(JoinRequest request) {
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        User newUser = request.toEntity(encodedPassword);
-
         if (!isNotExistEmail(request.getEmail())) {
             throw new ServiceException(EXIST_SAME_EMAIL);
         }
+
+        String redisAuthCode = redisUtils.getValues(request.getEmail());
+        boolean authResult = redisUtils.checkExistsValue(redisAuthCode) && redisAuthCode.equals(request.getAuthCode());
+
+        if(!authResult) {
+            throw new ServiceException(MISMATCH_EMAIL_AUTH_CODE);
+        }
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        User newUser = request.toEntity(encodedPassword);
+
         userRepository.save(newUser);
     }
 

@@ -21,6 +21,7 @@ public enum ErrorCode {
     // 400 error
     INVALID_JSON(HttpStatus.BAD_REQUEST, "JSON 파싱 오류입니다."),
     MISMATCH_EMAIL_OR_PASSWORD(HttpStatus.BAD_REQUEST, "이메일 혹은 비밀번호가 틀렸습니다."),
+    MISMATCH_EMAIL_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증 코드가 틀렸습니다."),
 
     // 401 error
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
