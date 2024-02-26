@@ -6,7 +6,7 @@
 :toclevels: 2
 
 [[User-API]]
-== POST: 닉네임 중복 검사
+== POST: 이메일 인증 코드 보내기
 === 성공
 
 .Request
@@ -19,7 +19,7 @@ include::{snippets}/auth/auth-duplicate-email-check-success/request-body.adoc[]
 .Response
 include::{snippets}/auth/auth-duplicate-email-check-success/http-response.adoc[]
 ---
-=== 실패: 이미 존재하는 닉네임
+=== 실패: 이미 존재하는 이메일
 
 .Request
 include::{snippets}/auth/auth-duplicate-email-check-fail-already-exist/http-request.adoc[]
@@ -34,7 +34,7 @@ include::{snippets}/auth/auth-duplicate-email-check-fail-already-exist/response-
 include::{snippets}/auth/auth-duplicate-email-check-fail-already-exist/response-body.adoc[]
 ---
 
-=== 실패: 조건에 맞지 않는 닉네임
+=== 실패: 조건에 맞지 않는 이메일
 
 .Request
 include::{snippets}/auth/auth-duplicate-email-check-fail-not-valid-form/http-request.adoc[]
@@ -137,6 +137,23 @@ include::{snippets}/auth/auth-signup-fail-track-not-found/http-response.adoc[]
 include::{snippets}/auth/auth-signup-fail-track-not-found/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-fail-track-not-found/response-body.adoc[]
+---
+
+=== 실패: 올바르지 않은 인증코드를 입력한 경우
+
+.Request
+include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/http-request.adoc[]
+.Request Fields
+include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/request-fields.adoc[]
+.Request Body
+include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/request-body.adoc[]
+
+.Response
+include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/http-response.adoc[]
+.Response Fields
+include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/response-fields.adoc[]
+.Response Body
+include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/response-body.adoc[]
 
 
 == POST: 로그인

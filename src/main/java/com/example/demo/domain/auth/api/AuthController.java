@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,21 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping(value = "/sign-up", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> join(@RequestBody @Valid JoinRequest request) {
-        authService.join(request);
+    @PostMapping("/emails/verification-requests")
+    public ResponseEntity<Void> sendMessage(@RequestBody @Valid ValidateEmailRequest request) {
+        authService.sendCodeToEmail(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .build();
     }
 
-    @PostMapping("/duplicate")
-    public ResponseEntity<Void> checkEmail(@RequestBody @Valid ValidateEmailRequest request) {
-        boolean notExistEmail = authService.isNotExistEmail(request.getEmail());
+    @PostMapping(value = "/sign-up", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> join(@RequestBody @Valid JoinRequest request) {
+        authService.join(request);
 
-        return ResponseEntity.
-                noContent()
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .build();
     }
 
