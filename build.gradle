@@ -64,18 +64,14 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
     outputs.dir snippetsDir
 }
 
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
 asciidoctor {
     configurations 'asciidoctorExt'
+    inputs.dir snippetsDir
     baseDirFollowsSourceFile()
     dependsOn test
 }
