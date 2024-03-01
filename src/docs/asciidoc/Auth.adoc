@@ -60,8 +60,6 @@ include::{snippets}/auth/auth-signup-success/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-success/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-signup-success/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-success/response-body.adoc[]
 ---
