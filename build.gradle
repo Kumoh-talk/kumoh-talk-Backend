@@ -80,18 +80,19 @@ asciidoctor.doFirst {
     delete file('src/main/resources/static/docs')
 }
 
+tasks.resolveMainClassName {
+    dependsOn 'copyDocument'
+}
+
 tasks.register('copyDocument', Copy) {
     dependsOn asciidoctor
 
     from file("build/docs/asciidoc/")
-    into file("src/main/resources/static/docs")
+    into file("build/resources/main/static/docs")
+    //into file("src/main/resources/static/docs")
 }
-
 bootJar {
-    dependsOn 'asciidoctor'
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
+    dependsOn copyDocument
 }
 
 // -plain.jar 제거
