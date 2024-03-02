@@ -1,12 +1,9 @@
 package com.example.demo.global.auth.token.application;
 
-import com.example.demo.global.auth.token.exception.NotSupportedTokenException;
 import com.example.demo.global.base.exception.ServiceException;
 import io.jsonwebtoken.*;
 
 import com.example.demo.domain.auth.application.CustomUserDetailsService;
-import com.example.demo.global.auth.token.exception.ExpiredTokenException;
-import com.example.demo.global.auth.token.exception.InvalidTokenException;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,8 +55,6 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
-        validateToken(accessToken);
-
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null) {
@@ -78,18 +73,10 @@ public class TokenProvider {
     }
 
     public void validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
-                    .build()
-                    .parseClaimsJws(token);
-        } catch (ExpiredJwtException e) {
-            throw new ExpiredTokenException();
-        } catch (UnsupportedJwtException e) {
-            throw new NotSupportedTokenException();
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidTokenException();
-        }
+        Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token);
     }
 
     private Claims parseClaims(String accessToken) {

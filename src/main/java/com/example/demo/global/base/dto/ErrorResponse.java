@@ -22,6 +22,17 @@ public class ErrorResponse{
     private LocalDateTime timestamp;
 
     private String message;
+
+    public ErrorResponse(String message) {
+        this.timestamp = LocalDateTime.now();
+        this.message = message;
+    }
+
+    public ErrorResponse(ErrorCode code) {
+        this.timestamp = LocalDateTime.now();
+        this.message = code.getMessage();
+    }
+
     public static ResponseEntity<ErrorResponse> of(ErrorCode code) {
         return ResponseEntity
                 .status(code.getStatus())
