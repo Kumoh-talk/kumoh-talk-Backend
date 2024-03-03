@@ -3,6 +3,7 @@ package com.example.demo.domain.user.dto.response;
 
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,9 @@ public class UserInfoResponse {
     private String email;
     private Track track;
     private String major;
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime updatedAt;
 
     public UserInfoResponse(User user) {
