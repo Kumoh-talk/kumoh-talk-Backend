@@ -24,6 +24,7 @@ import static com.example.demo.global.regex.UserRegex.NAME_REGEXP;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
+
     public enum Role {
         USER,
         ADMIN
@@ -80,5 +81,9 @@ public class User extends BaseEntity {
         this.name = user.getName();
         this.track = user.getTrack();
         this.major = user.getMajor();
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }
