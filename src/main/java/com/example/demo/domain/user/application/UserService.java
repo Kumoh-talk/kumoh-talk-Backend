@@ -2,7 +2,7 @@ package com.example.demo.domain.user.application;
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.dto.request.UserUpdateReqest;
+import com.example.demo.domain.user.dto.request.UserUpdateRequest;
 import com.example.demo.domain.user.dto.response.UserInfoResponse;
 import com.example.demo.domain.user.dto.response.UserUpdateResponse;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -26,10 +26,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserUpdateResponse updateUserProfile(UserPrincipal user, UserUpdateReqest request) {
+    public UserUpdateResponse updateUserProfile(UserPrincipal user, UserUpdateRequest request) {
         User savedUser =  getUserOrThrow(user.getId());
 
-        User userToUpdate = UserUpdateReqest.toUser(request);
+        User userToUpdate = UserUpdateRequest.toUser(request);
         savedUser.updateInfo(userToUpdate);
 
         return UserUpdateResponse.from(savedUser);
