@@ -44,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserUpdateResponse updateUserPassword(UserPrincipal user, UserPasswordUpdateRequest request) {
+    public void updateUserPassword(UserPrincipal user, UserPasswordUpdateRequest request) {
         User savedUser = getUserOrThrow(user.getId());
 
         if(!encoder.matches(request.getOldPassword(), savedUser.getPassword()))
@@ -52,7 +52,5 @@ public class UserService {
 
         String encodedNewPassword = encoder.encode(request.getNewPassword());
         savedUser.updatePassword(encodedNewPassword);
-
-        return UserUpdateResponse.from(savedUser);
     }
 }
