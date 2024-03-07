@@ -15,8 +15,6 @@ public class UserUpdateResponse {
     private Track track;
     private String major;
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
-    private LocalDateTime createdAt;
-    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime updatedAt;
 
     public static UserUpdateResponse from(User user) {
@@ -24,7 +22,6 @@ public class UserUpdateResponse {
                 user.getName(),
                 user.getTrack(),
                 user.getMajor(),
-                user.getCreatedAt(),
                 user.getUpdatedAt()
         );
     }
