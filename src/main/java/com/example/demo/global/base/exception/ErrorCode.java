@@ -24,21 +24,22 @@ public enum ErrorCode {
     MISMATCH_EMAIL_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증 코드가 틀렸습니다."),
 
     // 401 error
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED,"인증이 필요합니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰의 유효성 혹은 형식이 올바르지 않습니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
-    NOT_SUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "지원하지 않는 토큰입니다."),
     NOT_AUTHORIZED_TOKEN(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 토큰입니다."),
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
 
     // 404 error
     FAIL_USER_LOGIN(HttpStatus.NOT_FOUND, "존재하지 않는 계정입니다."),
 
     // 409 error
-    EXIST_SAME_NAME(HttpStatus.CONFLICT, "이미 사용중인 이름 입니다."),
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일 입니다."),
 
     // 500 error
     UNABLE_TO_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "이메일을 전송할 수 없습니다."),
     NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "해당 알고리즘을 찾을 수 없습니다."),
+    UNABLE_TO_CREATE_AUTHENTICATION(HttpStatus.INTERNAL_SERVER_ERROR, "토큰에 정보가 부족하여 인증생성에 실패했습니다."),
 
     ;
 

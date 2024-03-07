@@ -1,11 +1,11 @@
-= REST Docs Auth API
+= Auth API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
 :toclevels: 2
 
-[[User-API]]
+[[Auth-API]]
 == POST: 이메일 인증 코드 보내기
 === 성공
 
@@ -60,8 +60,6 @@ include::{snippets}/auth/auth-signup-success/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-success/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-signup-success/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-success/response-body.adoc[]
 ---
