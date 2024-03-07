@@ -24,6 +24,7 @@ public enum ErrorCode {
     MISMATCH_EMAIL_AUTH_CODE(HttpStatus.BAD_REQUEST, "인증 코드가 틀렸습니다."),
 
     // 401 error
+    NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED,"인증이 필요합니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰의 유효성 혹은 형식이 올바르지 않습니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     NOT_AUTHORIZED_TOKEN(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 토큰입니다."),

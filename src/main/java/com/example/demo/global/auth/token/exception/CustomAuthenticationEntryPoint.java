@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static com.example.demo.global.base.exception.ErrorCode.NEED_AUTHORIZED;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -28,7 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
         String accessDenialResponse = objectMapper.writeValueAsString(
-                new ErrorResponse("인증이 필요합니다."));
+                new ErrorResponse(NEED_AUTHORIZED));
         response.getWriter().write(accessDenialResponse);
         response.getWriter().flush();
         response.getWriter().close();
