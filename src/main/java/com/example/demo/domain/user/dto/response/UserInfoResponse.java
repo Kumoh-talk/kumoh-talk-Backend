@@ -13,6 +13,7 @@ public class UserInfoResponse {
     private Long id;
     private String name;
     private String email;
+    private User.Role role;
     private Track track;
     private String major;
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
@@ -24,6 +25,7 @@ public class UserInfoResponse {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.role = user.getRole();
         this.track = user.getTrack();
         this.major = user.getMajor();
         this.createdAt = user.getCreatedAt();
