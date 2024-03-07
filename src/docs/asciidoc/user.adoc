@@ -110,4 +110,8 @@ include::{snippets}/user/user-update-password-fail/request-body.adoc[]
 include::{snippets}/user/user-update-password-fail/http-response.adoc[]
 .Response Body
 include::{snippets}/user/user-update-password-fail/response-body.adoc[]
+
+=== 나머지 오류 처리
+토큰 관련, dto 관련 오류처리는 같음.
+
 ---
