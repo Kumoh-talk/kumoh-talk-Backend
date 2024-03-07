@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.demo.global.regex.UserRegex.EMAIL_REGEXP;
@@ -64,13 +65,16 @@ public class User extends BaseEntity {
     private List<Calendar> calendars;
 
     @Builder
-    public User(String name, String email, String password,Track track, String major) {
+    public User(Long id, String name, String email, String password, Track track, String major, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = Role.USER;
         this.track = track;
         this.major = major;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public void updateInfo(User user) {

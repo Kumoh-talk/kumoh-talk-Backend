@@ -6,3 +6,4 @@
 :toclevels: 3
 
 include::auth.adoc[]
+include::user.adoc[]
