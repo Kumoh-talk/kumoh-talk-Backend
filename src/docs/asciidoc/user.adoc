@@ -1,0 +1,117 @@
+= User API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+[[User-API]]
+== GET: 내 프로필 정보 확인하기
+=== 인증된 유저인 경우 프로필 조회성공
+
+.Request
+include::{snippets}/user/user-get-profile-success/http-request.adoc[]
+.Request Header
+include::{snippets}/user/user-get-profile-success/request-headers.adoc[]
+
+.Response
+include::{snippets}/user/user-get-profile-success/http-response.adoc[]
+---
+
+=== 등록되지 않은 유저라면 프로필 조회 실패
+.Request
+include::{snippets}/user/user-not-found-fail/http-request.adoc[]
+.Request Header
+include::{snippets}/user/user-not-found-fail/request-headers.adoc[]
+
+.Response
+include::{snippets}/user/user-not-found-fail/http-response.adoc[]
+---
+
+=== 토큰이 없다면 프로필 조회 실패
+.Request
+include::{snippets}/user/token-not-found-fail/http-request.adoc[]
+.Request Header
+include::{snippets}/user/token-not-found-fail/request-headers.adoc[]
+
+.Response
+include::{snippets}/user/token-not-found-fail/http-response.adoc[]
+---
+
+=== 토큰이 유효하지 않다면 프로필 조회 실패
+.Request
+include::{snippets}/user/invalid-token-fail/http-request.adoc[]
+.Request Header
+include::{snippets}/user/invalid-token-fail/request-headers.adoc[]
+
+.Response
+include::{snippets}/user/invalid-token-fail/http-response.adoc[]
+---
+
+=== 토큰이 만료되었다면 프로필 조회 실패
+.Request
+include::{snippets}/user/expired-token-fail/http-request.adoc[]
+.Request Header
+include::{snippets}/user/expired-token-fail/request-headers.adoc[]
+
+.Response
+include::{snippets}/user/expired-token-fail/http-response.adoc[]
+---
+
+=== 나머지 오류 처리
+빈값, 형식 틀렸을 경우, 등등 dto 관련 오류는 동일함.
+
+== PATCH: 내 프로필 정보 수정하기
+=== 인증된 유저인 경우 프로필 수정 성공
+
+.Request
+include::{snippets}/user/user-update-profile-success/http-request.adoc[]
+.Request Header
+include::{snippets}/user/user-update-profile-success/request-headers.adoc[]
+.Request Body
+include::{snippets}/user/user-update-profile-success/request-body.adoc[]
+
+
+.Response
+include::{snippets}/user/user-update-profile-success/http-response.adoc[]
+.Response Body
+include::{snippets}/user/user-update-profile-success/response-body.adoc[]
+---
+
+=== 나머지 오류 처리
+토큰 관련, dto 관련 오류처리는 같음.
+
+== PATCH: 내 비밀번호 수정하기
+=== 기존 비밀번호가 정확한 경우, 비밀번호 변경 성공
+
+.Request
+include::{snippets}/user/user-update-password-success/http-request.adoc[]
+.Request Header
+include::{snippets}/user/user-update-password-success/request-headers.adoc[]
+.Request Body
+include::{snippets}/user/user-update-password-success/request-body.adoc[]
+
+
+.Response
+include::{snippets}/user/user-update-password-success/http-response.adoc[]
+---
+
+=== 기존 비밀번호와 다른 경우, 비밀번호 변경 실패
+
+.Request
+include::{snippets}/user/user-update-password-fail/http-request.adoc[]
+.Request Header
+include::{snippets}/user/user-update-password-fail/request-headers.adoc[]
+.Request Body
+include::{snippets}/user/user-update-password-fail/request-body.adoc[]
+
+
+.Response
+include::{snippets}/user/user-update-password-fail/http-response.adoc[]
+.Response Body
+include::{snippets}/user/user-update-password-fail/response-body.adoc[]
+
+=== 나머지 오류 처리
+토큰 관련, dto 관련 오류처리는 같음.
+
+---

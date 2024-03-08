@@ -41,6 +41,12 @@ public class JoinRequest {
     private String major;
 
     public User toEntity(String password) {
-        return new User(this.name, this.email, password, this.track,this.major);
+        return User.builder()
+                .name(this.name)
+                .email(this.email)
+                .password(password)
+                .track(this.track)
+                .major(this.major)
+                .build();
     }
 }
