@@ -29,7 +29,9 @@ public class CookieUtil {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        // cookie.setSecure(true);
+        // TODO : https 설정하면 바꿔야 할듯
+        cookie.setSecure(true);
+        cookie.setAttribute("SameSite", "None");
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }
