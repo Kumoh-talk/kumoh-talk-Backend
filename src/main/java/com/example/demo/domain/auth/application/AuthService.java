@@ -7,11 +7,16 @@ import com.example.demo.domain.auth.dto.response.LoginResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.auth.token.application.TokenProvider;
+import com.example.demo.global.auth.token.domain.RefreshToken;
+import com.example.demo.global.auth.token.repository.RefreshTokenRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.utils.HttpServletUtil;
 import com.example.demo.global.utils.RedisUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,9 +31,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Random;
+import java.util.UUID;
 
 import static com.example.demo.global.base.exception.ErrorCode.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -77,15 +84,13 @@ public class AuthService {
         return !userRepository.existsByEmail(email);
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(HttpServletRequest httpServletRequest, LoginRequest request) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
         try {
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-            String accessToken = tokenProvider.createAccessToken(authentication);
-
-            return new LoginResponse(accessToken, "Bearer");
+            return tokenProvider.generateToken(authentication, httpServletRequest);
         } catch (Exception e) {
             // 이메일 & 비밀번호를 따로 예외처리를 하면 이메일을 유추할 수 있게되기에 공통 처리
             throw new ServiceException(MISMATCH_EMAIL_OR_PASSWORD);

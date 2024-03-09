@@ -5,6 +5,7 @@ import com.example.demo.domain.auth.dto.request.JoinRequest;
 import com.example.demo.domain.auth.dto.request.LoginRequest;
 import com.example.demo.domain.auth.dto.request.ValidateEmailRequest;
 import com.example.demo.domain.auth.dto.response.LoginResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,8 +38,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
-        LoginResponse loginResponse = authService.login(request);
+    public ResponseEntity<LoginResponse> login(HttpServletRequest httpServletRequest,
+                                               @RequestBody @Valid LoginRequest request) {
+        LoginResponse loginResponse = authService.login(httpServletRequest, request);
 
         return ResponseEntity.ok(loginResponse);
     }
