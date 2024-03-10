@@ -29,9 +29,12 @@ public enum ErrorCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     NOT_AUTHORIZED_TOKEN(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 토큰입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    IP_MISMATCH(HttpStatus.UNAUTHORIZED, "IP 주소가 기존과 일치하지 않습니다. 재로그인이 필요합니다."),
 
     // 404 error
     FAIL_USER_LOGIN(HttpStatus.NOT_FOUND, "존재하지 않는 계정입니다."),
+    COOKIE_REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "쿠키에 refresh 토큰 정보가 존재하지 않습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "refresh 토큰이 존재하지 않습니다. 재로그인이 필요합니다."),
 
     // 409 error
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일 입니다."),

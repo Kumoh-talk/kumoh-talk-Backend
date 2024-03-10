@@ -391,9 +391,9 @@ public class AuthControllerTest extends ControllerTest {
         void loginSuccessIfAlreadyExistUser() throws Exception {
             // given
             LoginRequest requiredLoginRequest = new LoginRequest("test@kumoh.ac.kr", "test12345");
-            LoginResponse loginResponse = new LoginResponse("MOCK_ACCESS_TOKEN", "Bearer");
+            LoginResponse loginResponse = new LoginResponse("ACCESS_TOKEN", "Bearer", "REFRESH_TOKEN_ID");
 
-            when(authService.login(any(LoginRequest.class))).thenReturn(loginResponse);
+            when(authService.login(any(), any(LoginRequest.class))).thenReturn(loginResponse);
 
             // when -> then
             mockMvc.perform(MockMvcRequestBuilders.post(loginApiPath)
@@ -402,8 +402,11 @@ public class AuthControllerTest extends ControllerTest {
                     .content(objectMapper.writeValueAsString(requiredLoginRequest))
             )
                     .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.accessTokenType").value(loginResponse.getAccessTokenType()))
                     .andExpect(jsonPath("$.accessToken").value(loginResponse.getAccessToken()))
-                    .andExpect(jsonPath("$.tokenType").value(loginResponse.getTokenType()))
+                    .andExpect(jsonPath("$.accessTokenExpirationTime").value(1800))
+                    .andExpect(jsonPath("$.refreshTokenId").value(loginResponse.getRefreshTokenId()))
+                    .andExpect(jsonPath("$.refreshTokenExpirationTime").value(1209600))
                     .andDo(print())
                     .andDo(document(
                             "auth/auth-login-success",
@@ -414,10 +417,16 @@ public class AuthControllerTest extends ControllerTest {
                                     fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
                             ),
                             responseFields(
+                                    fieldWithPath("accessTokenType").type(JsonFieldType.STRING)
+                                            .description("Access 토큰 타입 (헤더)"),
                                     fieldWithPath("accessToken").type(JsonFieldType.STRING)
                                             .description("AccessToken"),
-                                    fieldWithPath("tokenType").type(JsonFieldType.STRING)
-                                            .description("토큰 타입 (헤더)")
+                                    fieldWithPath("accessTokenExpirationTime").type(JsonFieldType.NUMBER)
+                                            .description("accessToken 유효시간"),
+                                    fieldWithPath("refreshTokenId").type(JsonFieldType.STRING)
+                                            .description("Refresh Token"),
+                                    fieldWithPath("refreshTokenExpirationTime").type(JsonFieldType.NUMBER)
+                                            .description("refreshToken 유효시간")
                             )
                     ));
         }
@@ -428,7 +437,7 @@ public class AuthControllerTest extends ControllerTest {
             // given
             LoginRequest requiredLoginRequest = new LoginRequest("test@kumoh.ac.kr", "12345678");
 
-            when(authService.login(any(LoginRequest.class))).thenThrow(new ServiceException(ErrorCode.MISMATCH_EMAIL_OR_PASSWORD));
+            when(authService.login(any(),any(LoginRequest.class))).thenThrow(new ServiceException(ErrorCode.MISMATCH_EMAIL_OR_PASSWORD));
 
             // when -> then
             mockMvc.perform(MockMvcRequestBuilders.post(loginApiPath)

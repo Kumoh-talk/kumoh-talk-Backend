@@ -60,23 +60,17 @@ include::{snippets}/auth/auth-signup-success/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-success/http-response.adoc[]
-.Response Body
-include::{snippets}/auth/auth-signup-success/response-body.adoc[]
 ---
 
 === 실패: 빈 값이 존재하는 경우
 
 .Request
 include::{snippets}/auth/auth-signup-fail-not-exist/http-request.adoc[]
-.Request Fields
-include::{snippets}/auth/auth-signup-fail-not-exist/request-fields.adoc[]
 .Request Body
 include::{snippets}/auth/auth-signup-fail-not-exist/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-fail-not-exist/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-signup-fail-not-exist/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-fail-not-exist/response-body.adoc[]
 ---
@@ -85,15 +79,11 @@ include::{snippets}/auth/auth-signup-fail-not-exist/response-body.adoc[]
 
 .Request
 include::{snippets}/auth/auth-signup-fail-already-exist/http-request.adoc[]
-.Request Fields
-include::{snippets}/auth/auth-signup-fail-already-exist/request-fields.adoc[]
 .Request Body
 include::{snippets}/auth/auth-signup-fail-already-exist/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-fail-already-exist/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-signup-fail-already-exist/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-fail-already-exist/response-body.adoc[]
 ---
@@ -106,15 +96,11 @@ include::{snippets}/auth/auth-signup-fail-already-exist/response-body.adoc[]
 
 .Request
 include::{snippets}/auth/auth-signup-fail-not-regex/http-request.adoc[]
-.Request Fields
-include::{snippets}/auth/auth-signup-fail-not-regex/request-fields.adoc[]
 .Request Body
 include::{snippets}/auth/auth-signup-fail-not-regex/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-fail-not-regex/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-signup-fail-not-regex/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-fail-not-regex/response-body.adoc[]
 ---
@@ -124,15 +110,11 @@ include::{snippets}/auth/auth-signup-fail-not-regex/response-body.adoc[]
 
 .Request
 include::{snippets}/auth/auth-signup-fail-track-not-found/http-request.adoc[]
-.Request Fields
-include::{snippets}/auth/auth-signup-fail-track-not-found/request-fields.adoc[]
 .Request Body
 include::{snippets}/auth/auth-signup-fail-track-not-found/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-fail-track-not-found/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-signup-fail-track-not-found/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-fail-track-not-found/response-body.adoc[]
 ---
@@ -141,15 +123,11 @@ include::{snippets}/auth/auth-signup-fail-track-not-found/response-body.adoc[]
 
 .Request
 include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/http-request.adoc[]
-.Request Fields
-include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/request-fields.adoc[]
 .Request Body
 include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/request-body.adoc[]
 
 .Response
 include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-signup-fail-authCode-is-not-correct/response-body.adoc[]
 
@@ -187,8 +165,6 @@ include::{snippets}/auth/auth-login-fail-wrong-email-or-password/request-body.ad
 
 .Response
 include::{snippets}/auth/auth-login-fail-wrong-email-or-password/http-response.adoc[]
-.Response Fields
-include::{snippets}/auth/auth-login-fail-wrong-email-or-password/response-fields.adoc[]
 .Response Body
 include::{snippets}/auth/auth-login-fail-wrong-email-or-password/response-body.adoc[]
 ---

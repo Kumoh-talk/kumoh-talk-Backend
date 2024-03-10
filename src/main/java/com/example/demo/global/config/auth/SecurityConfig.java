@@ -3,6 +3,8 @@ package com.example.demo.global.config.auth;
 import com.example.demo.global.auth.token.application.TokenProvider;
 import com.example.demo.global.auth.token.exception.CustomAuthenticationEntryPoint;
 import com.example.demo.global.auth.token.filter.JwtFilter;
+import com.example.demo.global.auth.token.repository.RefreshTokenRepository;
+import com.example.demo.global.utils.HttpServletUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,8 @@ public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final HttpServletUtil httpServletUtil;
 
     @Bean
     public SecurityFilterChain httpSecurity(HttpSecurity http) throws Exception {
@@ -38,7 +42,7 @@ public class SecurityConfig {
 
                 .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(tokenProvider, refreshTokenRepository, httpServletUtil), UsernamePasswordAuthenticationFilter.class)
         ;
 
 
