@@ -50,7 +50,7 @@ public class CommentService {
     }
     @Transactional(readOnly = true)
     public List<CommentInfoResponse> findByPostId(Long postId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdWithComments(postId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
                 );
@@ -58,10 +58,4 @@ public class CommentService {
                 .map(comment -> Comment.entityToResponse(comment))
                 .collect(Collectors.toList());
     }
-
-
-
-
-
-
 }

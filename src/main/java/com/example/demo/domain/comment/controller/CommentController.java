@@ -47,7 +47,4 @@ public class CommentController {
         return ResponseEntity.ok(commentService.findByPostId(postId));
     }
 
-
-
-
 }

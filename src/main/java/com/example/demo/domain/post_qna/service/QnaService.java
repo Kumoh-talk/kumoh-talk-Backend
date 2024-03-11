@@ -50,7 +50,7 @@ public class QnaService {
 
     @Transactional(readOnly = true)
     public List<QnaInfoResponse> findByPostId(Long postId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findByIdWithPostQnas(postId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
                 );
