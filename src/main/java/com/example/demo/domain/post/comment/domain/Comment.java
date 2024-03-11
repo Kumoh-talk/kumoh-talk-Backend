@@ -2,6 +2,7 @@ package com.example.demo.domain.post.comment.domain;
 
 
 import com.example.demo.domain.post.comment.comment_file.CommentFile;
+import com.example.demo.domain.post.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.User;
 import jakarta.persistence.*;
@@ -30,7 +31,20 @@ public class Comment {
     @JoinColumn(name ="post_id",nullable = false)
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name ="user_id",nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentFile> commentFiles;
 
+    public Comment(String contents, Post post, User user) {
+        this.contents = contents;
+        this.post = post;
+        this.user = user;
+    }
+
+    public static CommentInfoResponse entityToResponse(Comment comment) {
+        return new CommentInfoResponse(comment.getId(), comment.getUser().getName(), comment.getContents());
+    }
 }
