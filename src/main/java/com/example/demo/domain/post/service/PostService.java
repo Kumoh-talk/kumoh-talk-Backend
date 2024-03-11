@@ -31,7 +31,8 @@ public class PostService {
      */
     @Transactional
     public PostInfoResponse postSave(PostCreateRequest postCreateRequest, Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));;
 
         Post post = PostCreateRequest.toEntity(postCreateRequest, user);
 
