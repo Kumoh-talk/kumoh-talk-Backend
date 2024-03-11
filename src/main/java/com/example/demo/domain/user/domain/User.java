@@ -1,9 +1,6 @@
 package com.example.demo.domain.user.domain;
 
-import com.example.demo.domain.announcement.domain.Announcement;
 import com.example.demo.domain.calendar.domain.Calendar;
-import com.example.demo.domain.post.comment.domain.Comment;
-import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -66,16 +63,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Calendar> calendars;
-
-    @OneToMany(mappedBy = "user")
-    private List<Post> posts;
-
-    @OneToMany(mappedBy = "user")
-    private List<Announcement> announcements;
-
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments;
-
 
     @Builder
     public User(Long id, String name, String email, String password, Track track, String major, LocalDateTime createdAt, LocalDateTime updatedAt) {
