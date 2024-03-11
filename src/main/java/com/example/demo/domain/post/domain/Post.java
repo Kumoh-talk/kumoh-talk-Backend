@@ -2,7 +2,7 @@ package com.example.demo.domain.post.domain;
 
 
 import com.example.demo.domain.post.comment.domain.Comment;
-import com.example.demo.domain.post.post_qna.Post_Qna;
+import com.example.demo.domain.post.post_qna.domain.Post_Qna;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
