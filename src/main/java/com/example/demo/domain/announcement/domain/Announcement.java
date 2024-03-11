@@ -38,6 +38,6 @@ public class Announcement {
     @JoinColumn(name ="user_id",nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "announcement")
+    @OneToMany(mappedBy = "announcement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<File> files;
 }
