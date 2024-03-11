@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +33,6 @@ public class PostController {
     @PatchMapping("/update")
     public ResponseEntity<PostInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user, @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
         CheckAuthentication(user);
-
         postService.postUpdate(postUpdateRequest,user.getName());
         return ResponseEntity.ok(postService.postUpdate(postUpdateRequest,user.getName()));
     }
