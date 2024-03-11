@@ -18,14 +18,16 @@ public class PostInfoResponse {
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime updatedAt;
 
-
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime createdAt;
     public static PostInfoResponse from(Post post, String username) {
         return new PostInfoResponse(
                 post.getId(),
                 username,
                 post.getTitle(),
                 post.getContents(),
-                post.getUpdatedAt()
+                post.getUpdatedAt(),
+                post.getCreatedAt()
         );
     }
 

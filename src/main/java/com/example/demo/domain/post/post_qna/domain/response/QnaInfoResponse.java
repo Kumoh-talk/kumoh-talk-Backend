@@ -20,13 +20,15 @@ public class QnaInfoResponse {
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime updatedAt;
 
-
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime createdAt;
     public static QnaInfoResponse from(Post_Qna qna) {
         return new QnaInfoResponse(
                 qna.getId(),
                 qna.getTitle(),
                 qna.getContents(),
-                qna.getUpdatedAt()
+                qna.getUpdatedAt(),
+                qna.getCreatedAt()
         );
     }
 }
