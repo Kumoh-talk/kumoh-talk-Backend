@@ -52,14 +52,10 @@ public class PostController {
 
         return ResponseEntity.ok(postService.findByALL());
     }
-
-
-
     private void CheckAuthentication(UserPrincipal user) {
         if(user == null){
             new NullPointerException("인증된 객체에 값이 없습니다.");
         }
     }
-
 
 }
