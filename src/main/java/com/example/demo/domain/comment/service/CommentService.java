@@ -50,7 +50,7 @@ public class CommentService {
     }
     @Transactional(readOnly = true)
     public List<CommentInfoResponse> findByPostId(Long postId) {
-        Post post = postRepository.findByIdWithComments(postId)
+        Post post = postRepository.findPostByIdWithComments(postId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
                 );
