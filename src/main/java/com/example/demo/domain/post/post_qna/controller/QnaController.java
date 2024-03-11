@@ -1,8 +1,7 @@
 package com.example.demo.domain.post.post_qna.controller;
 
 
-import com.example.demo.domain.post.post_qna.domain.request.QnaSaveRequest;
-import com.example.demo.domain.post.post_qna.domain.request.QnaUpdateRequest;
+import com.example.demo.domain.post.post_qna.domain.request.QnaRequest;
 import com.example.demo.domain.post.post_qna.domain.response.QnaInfoResponse;
 import com.example.demo.domain.post.post_qna.service.QnaService;
 import jakarta.validation.Valid;
@@ -19,25 +18,26 @@ public class QnaController {
     private QnaService qnaService;
 
 
-    @PostMapping("/save")
-    public ResponseEntity<QnaInfoResponse> qnaSave(@RequestBody @Valid QnaSaveRequest qnaSaveRequest) {
-        return ResponseEntity.ok(qnaService.save(qnaSaveRequest));
+    @PostMapping("/save/{postId}")
+    public ResponseEntity<QnaInfoResponse> qnaSave(@RequestBody @Valid QnaRequest qnaRequest,
+                                                   @PathVariable Long postId) {
+        return ResponseEntity.ok(qnaService.save(qnaRequest,postId));
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<QnaInfoResponse> qnaUpdate(@RequestBody @Valid QnaUpdateRequest qnaUpdateRequest) {
-        return ResponseEntity.ok(qnaService.update(qnaUpdateRequest));
+    @PatchMapping("/update/{qnaId}")
+    public ResponseEntity<QnaInfoResponse> qnaUpdate(@RequestBody @Valid QnaRequest qnaRequest,
+                                                     @PathVariable Long qnaId) {
+        return ResponseEntity.ok(qnaService.update(qnaRequest,qnaId));
     }
 
-    @PatchMapping("/delete")
-    public ResponseEntity<Void> qnaDelete(@RequestParam @NotBlank(message = "Qna 고유id를 작성해주세요") Long qnaId) {
+    @PatchMapping("/delete/{qnaId}")
+    public ResponseEntity<Void> qnaDelete(@PathVariable Long qnaId) {
         qnaService.delete(qnaId);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/postqna")
-    public ResponseEntity<List<QnaInfoResponse>> qnaFindByPostId(@RequestParam @NotBlank(message = " 게시글의 고유 id가 누락 되었습니다.")
-                                                                     Long postId) {
+    @PatchMapping("/postqna/{postId}")
+    public ResponseEntity<List<QnaInfoResponse>> qnaFindByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(qnaService.findByPostId(postId));
     }
 
