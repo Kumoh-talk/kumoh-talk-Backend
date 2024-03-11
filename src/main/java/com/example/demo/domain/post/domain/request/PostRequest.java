@@ -18,7 +18,7 @@ public class PostRequest {
     private String title;
 
     @NotBlank(message = "게시물 내용은 필수 항목입니다.")
-    @Max(value = 45,message = "최대 제한 500글자 입니다.")
+    @Max(value = 500,message = "최대 제한 500글자 입니다.")
     private String contents;
 
     @NotBlank(message = "트랙을 지정해야합니다.")
