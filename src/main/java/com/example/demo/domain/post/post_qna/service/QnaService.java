@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,14 +52,15 @@ public class QnaService {
     }
 
     @Transactional(readOnly = true)
-    public List<Post_Qna> findByPostId(Long postId) {
+    public List<QnaInfoResponse> findByPostId(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
                 );
-        return post.getPostQnas();
+        return post.getPostQnas().stream()
+                .map(postQna -> QnaInfoResponse.from(postQna))
+                .collect(Collectors.toList());
     }
-
 
 
 }
