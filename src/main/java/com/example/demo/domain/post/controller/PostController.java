@@ -33,7 +33,6 @@ public class PostController {
     @PatchMapping("/update")
     public ResponseEntity<PostInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user, @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
         CheckAuthentication(user);
-        postService.postUpdate(postUpdateRequest,user.getName());
         return ResponseEntity.ok(postService.postUpdate(postUpdateRequest,user.getName()));
     }
 
