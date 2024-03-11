@@ -1,4 +1,4 @@
-package com.example.demo.domain.post.post_qna.domain.request;
+package com.example.demo.domain.post_qna.domain.request;
 
 
 import com.example.demo.domain.post.domain.Post;

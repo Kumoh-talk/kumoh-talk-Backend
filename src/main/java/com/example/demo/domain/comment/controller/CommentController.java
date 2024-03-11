@@ -1,14 +1,11 @@
-package com.example.demo.domain.post.comment.controller;
+package com.example.demo.domain.comment.controller;
 
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
-import com.example.demo.domain.post.comment.domain.request.CommentSaveRequest;
-import com.example.demo.domain.post.comment.domain.request.CommentUpdateRequest;
-import com.example.demo.domain.post.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.post.comment.service.CommentService;
-import com.example.demo.domain.post.post_qna.domain.request.QnaSaveRequest;
-import com.example.demo.domain.post.post_qna.domain.request.QnaUpdateRequest;
-import com.example.demo.domain.post.post_qna.domain.response.QnaInfoResponse;
+import com.example.demo.domain.comment.domain.request.CommentSaveRequest;
+import com.example.demo.domain.comment.domain.request.CommentUpdateRequest;
+import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
+import com.example.demo.domain.comment.service.CommentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;

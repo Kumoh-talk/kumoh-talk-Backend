@@ -1,4 +1,4 @@
-package com.example.demo.domain.post.post_qna.domain;
+package com.example.demo.domain.post_qna.domain;
 
 
 import com.example.demo.domain.post.domain.Post;

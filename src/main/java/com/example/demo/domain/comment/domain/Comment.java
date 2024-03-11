@@ -1,8 +1,8 @@
-package com.example.demo.domain.post.comment.domain;
+package com.example.demo.domain.comment.domain;
 
 
-import com.example.demo.domain.post.comment.comment_file.CommentFile;
-import com.example.demo.domain.post.comment.domain.response.CommentInfoResponse;
+import com.example.demo.domain.comment.comment_file.CommentFile;
+import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.User;
 import jakarta.persistence.*;

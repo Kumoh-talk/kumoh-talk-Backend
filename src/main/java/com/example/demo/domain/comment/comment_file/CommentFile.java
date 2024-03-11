@@ -1,8 +1,7 @@
-package com.example.demo.domain.post.comment.comment_file;
+package com.example.demo.domain.comment.comment_file;
 
 
-import com.example.demo.domain.post.comment.domain.Comment;
-import com.example.demo.domain.post.domain.Post;
+import com.example.demo.domain.comment.domain.Comment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

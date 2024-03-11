@@ -1,4 +1,4 @@
-package com.example.demo.domain.post.comment.domain.request;
+package com.example.demo.domain.comment.domain.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;

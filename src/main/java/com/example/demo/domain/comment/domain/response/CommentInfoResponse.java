@@ -1,7 +1,7 @@
-package com.example.demo.domain.post.comment.domain.response;
+package com.example.demo.domain.comment.domain.response;
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
-import com.example.demo.domain.post.comment.domain.Comment;
+import com.example.demo.domain.comment.domain.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

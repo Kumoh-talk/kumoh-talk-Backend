@@ -1,19 +1,16 @@
-package com.example.demo.domain.post.comment.service;
+package com.example.demo.domain.comment.service;
 
 
 import com.example.demo.domain.post.Repository.PostRepository;
-import com.example.demo.domain.post.comment.domain.Comment;
-import com.example.demo.domain.post.comment.domain.request.CommentSaveRequest;
-import com.example.demo.domain.post.comment.domain.request.CommentUpdateRequest;
-import com.example.demo.domain.post.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.post.comment.repository.CommentRepository;
+import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.comment.domain.request.CommentSaveRequest;
+import com.example.demo.domain.comment.domain.request.CommentUpdateRequest;
+import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
+import com.example.demo.domain.comment.repository.CommentRepository;
 import com.example.demo.domain.post.domain.Post;
-import com.example.demo.domain.post.post_qna.domain.Post_Qna;
-import com.example.demo.domain.post.post_qna.domain.response.QnaInfoResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

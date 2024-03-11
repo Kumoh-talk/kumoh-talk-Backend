@@ -1,4 +1,4 @@
-package com.example.demo.domain.post.post_qna.controller;
+package com.example.demo.domain.post_qna.controller;
 
 
 import com.example.demo.domain.post.post_qna.domain.request.QnaRequest;
