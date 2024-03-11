@@ -6,6 +6,7 @@ import com.example.demo.domain.post.domain.request.PostCreateRequest;
 import com.example.demo.domain.post.domain.request.PostUpdateRequest;
 import com.example.demo.domain.post.domain.response.PostInfoResponse;
 import com.example.demo.domain.post.post_qna.domain.request.QnaSaveRequest;
+import com.example.demo.domain.post.post_qna.domain.request.QnaUpdateRequest;
 import com.example.demo.domain.post.post_qna.domain.response.QnaInfoResponse;
 import com.example.demo.domain.post.post_qna.service.QnaService;
 import com.example.demo.domain.post.service.PostService;
@@ -25,14 +26,11 @@ public class QnaController {
 
     @PostMapping("/save")
     public ResponseEntity<QnaInfoResponse> qnaSave(@RequestBody @Valid QnaSaveRequest qnaSaveRequest) {
-
         return ResponseEntity.ok(qnaService.save(qnaSaveRequest));
     }
 
-
-
-
-
-
-
+    @PatchMapping("/update")
+    public ResponseEntity<QnaInfoResponse> qnaUpdate(@RequestBody @Valid QnaUpdateRequest qnaUpdateRequest) {
+        return ResponseEntity.ok(qnaService.update(qnaUpdateRequest));
+    }
 }
