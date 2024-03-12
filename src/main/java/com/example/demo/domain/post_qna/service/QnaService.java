@@ -1,11 +1,12 @@
-package com.example.demo.domain.post.post_qna.service;
+package com.example.demo.domain.post_qna.service;
 
 import com.example.demo.domain.post.Repository.PostRepository;
 import com.example.demo.domain.post.domain.Post;
-import com.example.demo.domain.post.post_qna.domain.Post_Qna;
-import com.example.demo.domain.post.post_qna.domain.request.QnaRequest;
-import com.example.demo.domain.post.post_qna.domain.response.QnaInfoResponse;
-import com.example.demo.domain.post.post_qna.repository.QnaRepository;
+
+import com.example.demo.domain.post_qna.domain.Post_Qna;
+import com.example.demo.domain.post_qna.domain.request.QnaRequest;
+import com.example.demo.domain.post_qna.domain.response.QnaInfoResponse;
+import com.example.demo.domain.post_qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +51,7 @@ public class QnaService {
 
     @Transactional(readOnly = true)
     public List<QnaInfoResponse> findByPostId(Long postId) {
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findPostByIdWithPostQnas(postId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
                 );

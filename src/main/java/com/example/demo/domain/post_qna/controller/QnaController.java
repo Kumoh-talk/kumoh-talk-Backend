@@ -1,9 +1,10 @@
-package com.example.demo.domain.post.post_qna.controller;
+package com.example.demo.domain.post_qna.controller;
 
 
-import com.example.demo.domain.post.post_qna.domain.request.QnaRequest;
-import com.example.demo.domain.post.post_qna.domain.response.QnaInfoResponse;
-import com.example.demo.domain.post.post_qna.service.QnaService;
+
+import com.example.demo.domain.post_qna.domain.request.QnaRequest;
+import com.example.demo.domain.post_qna.domain.response.QnaInfoResponse;
+import com.example.demo.domain.post_qna.service.QnaService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;

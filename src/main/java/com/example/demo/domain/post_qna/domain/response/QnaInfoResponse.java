@@ -1,8 +1,6 @@
-package com.example.demo.domain.post.post_qna.domain.response;
+package com.example.demo.domain.post_qna.domain.response;
 
-import com.example.demo.domain.post.domain.Post;
-import com.example.demo.domain.post.domain.response.PostInfoResponse;
-import com.example.demo.domain.post.post_qna.domain.Post_Qna;
+import com.example.demo.domain.post_qna.domain.Post_Qna;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,7 +2,7 @@ package com.example.demo.domain.user.domain;
 
 import com.example.demo.domain.announcement.domain.Announcement;
 import com.example.demo.domain.calendar.domain.Calendar;
-import com.example.demo.domain.post.comment.domain.Comment;
+import com.example.demo.domain.comment.domain.Comment;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
