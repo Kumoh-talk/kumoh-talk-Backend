@@ -2,12 +2,10 @@ package com.example.demo.domain.comment.controller;
 
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
-import com.example.demo.domain.comment.domain.request.CommentSaveRequest;
-import com.example.demo.domain.comment.domain.request.CommentUpdateRequest;
+import com.example.demo.domain.comment.domain.request.CommentRequest;
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.service.CommentService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,27 +21,30 @@ public class CommentController {
 
     private CommentService commentService;
 
-    @PostMapping("/save")
-    public ResponseEntity<CommentInfoResponse> Save(@AuthenticationPrincipal UserPrincipal user, @RequestBody @Valid CommentSaveRequest commentSaveRequest) {
+    @PostMapping("/save/{postId}")
+    public ResponseEntity<CommentInfoResponse> Save(@AuthenticationPrincipal UserPrincipal user,
+                                                    @RequestBody @Valid CommentRequest commentRequest,
+                                                    @PathVariable Long postId) {
 
-        return ResponseEntity.ok(commentService.save(user.getId(), commentSaveRequest));
+        return ResponseEntity.ok(commentService.save(user.getId(), commentRequest,postId));
     }
 
 
-    @PatchMapping("/update")
-    public ResponseEntity<CommentInfoResponse> qnaUpdate(@RequestBody @Valid CommentUpdateRequest commentUpdateRequest) {
-
-        return ResponseEntity.ok(commentService.update(commentUpdateRequest));
+    @PatchMapping("/update/{commentId}")
+    public ResponseEntity<CommentInfoResponse> qnaUpdate(@AuthenticationPrincipal UserPrincipal user,
+                                                         @RequestBody @Valid CommentRequest commentRequest,
+                                                         @PathVariable Long commentId) {
+        return ResponseEntity.ok(commentService.update(commentRequest,commentId,user.getUsername()));
     }
 
-    @PatchMapping("/delete")
-    public ResponseEntity<Void> qnaDelete(@RequestParam @NotBlank(message = "Comment 고유id 누락") Long commentId) {
+    @PatchMapping("/delete/{commentId}")
+    public ResponseEntity<Void> qnaDelete(@PathVariable Long commentId) {
         commentService.delete(commentId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/find-comment")
-    public ResponseEntity<List<CommentInfoResponse>> findCommentByPostId(@RequestParam @NotBlank(message = "게시글 고유id 누락") Long postId) {
+    @GetMapping("/find-comment/{postId}")
+    public ResponseEntity<List<CommentInfoResponse>> findCommentByPostId(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.findByPostId(postId));
     }
 

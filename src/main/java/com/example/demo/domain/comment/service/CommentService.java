@@ -3,8 +3,7 @@ package com.example.demo.domain.comment.service;
 
 import com.example.demo.domain.post.Repository.PostRepository;
 import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.comment.domain.request.CommentSaveRequest;
-import com.example.demo.domain.comment.domain.request.CommentUpdateRequest;
+import com.example.demo.domain.comment.domain.request.CommentRequest;
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
 import com.example.demo.domain.post.domain.Post;
@@ -23,23 +22,28 @@ public class CommentService {
     private CommentRepository commentRepository;
     private PostRepository postRepository;
     private UserRepository userRepository;
+
+
     @Transactional
-    public CommentInfoResponse save(Long userId, CommentSaveRequest commentSaveRequest) {
-        Post findPost = postRepository.findById(commentSaveRequest.getPostId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
-        );
-        User findUser = userRepository.findById(userId).get();
-        Comment comment = new Comment(commentSaveRequest.getContents(), findPost, findUser);
-        Comment saved = commentRepository.save(comment);
-        return CommentInfoResponse.from(saved);
+    public CommentInfoResponse save(Long userId, CommentRequest commentRequest,Long postId) {
+        Post findPost = postRepository.findById(postId).orElseThrow(() ->
+                new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다."));
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
+
+        Comment saved = commentRepository.save(new Comment(commentRequest.getContents(), findPost, findUser));
+        return CommentInfoResponse.from(saved, findUser.getName());
     }
+
     @Transactional
-    public CommentInfoResponse update(CommentUpdateRequest commentUpdateRequest) {
-        Comment findComment = commentRepository.findById(commentUpdateRequest.getCommentId()).orElseThrow(() ->
+    public CommentInfoResponse update(CommentRequest commentRequest,
+                                      Long commentId,
+                                      String username) {
+        Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new IllegalArgumentException("해당 id 의 comment를 찾을 수 없습니다.")
         );
-        findComment.setContents(commentUpdateRequest.getContents());
-        return CommentInfoResponse.from(findComment);
+        findComment.setContents(commentRequest.getContents());
+        return CommentInfoResponse.from(findComment,username);
     }
     @Transactional
     public void delete(Long commentId) {

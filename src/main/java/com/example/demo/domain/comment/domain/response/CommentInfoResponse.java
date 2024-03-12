@@ -16,9 +16,7 @@ public class CommentInfoResponse {
     private String contents;
 
 
-    public static CommentInfoResponse from(Comment comment) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserPrincipal user = (UserPrincipal)principal;
-        return new CommentInfoResponse(comment.getId(), user.getName(), comment.getContents());
+    public static CommentInfoResponse from(Comment comment, String username) {
+        return new CommentInfoResponse(comment.getId(), username, comment.getContents());
     }
 }
