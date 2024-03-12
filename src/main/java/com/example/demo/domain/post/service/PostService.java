@@ -2,8 +2,7 @@ package com.example.demo.domain.post.service;
 
 import com.example.demo.domain.post.Repository.PostRepository;
 import com.example.demo.domain.post.domain.Post;
-import com.example.demo.domain.post.domain.request.PostCreateRequest;
-import com.example.demo.domain.post.domain.request.PostUpdateRequest;
+import com.example.demo.domain.post.domain.request.PostRequest;
 import com.example.demo.domain.post.domain.response.PostInfoResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,31 +23,34 @@ public class PostService {
 
     /**
      *
-     * @param postCreateRequest
+     * @param postRequest
      * @param userId
      * @return PostInfoResponse 생성된 post 정보 객체 반환
      */
     @Transactional
-    public PostInfoResponse postSave(PostCreateRequest postCreateRequest, Long userId) {
-        User user = userRepository.findById(userId).get();
+    public PostInfoResponse postSave(PostRequest postRequest, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));;
 
-        Post post = PostCreateRequest.toEntity(postCreateRequest, user);
+        Post post = PostRequest.toEntity(postRequest, user);
 
         Post saved = postRepository.save(post);
         return PostInfoResponse.from(saved,user.getName());
     }
 
+
     /**
      *
-     * @param postUpdateRequest
+     * @param postRequest
      * @param userName
-     * @return PostInfoResponse 수정된 post 정보 객체 반환
+     * @param postId
+     * @return
      */
     @Transactional
-    public PostInfoResponse postUpdate(PostUpdateRequest postUpdateRequest, String userName) {
-        Post post = postRepository.findById(postUpdateRequest.getPostId())
+    public PostInfoResponse postUpdate(PostRequest postRequest, String userName, Long postId) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다"));
-        return updatePost(post, postUpdateRequest, userName);
+        return updatePost(post, postRequest, userName);
     }
 
 
@@ -91,9 +92,9 @@ public class PostService {
 
 
 
-    private PostInfoResponse updatePost(Post post, PostUpdateRequest postUpdateRequest, String userName) {
-        post.setTitle(postUpdateRequest.getTitle());
-        post.setContents(postUpdateRequest.getContents());
+    private PostInfoResponse updatePost(Post post, PostRequest postRequest, String userName) {
+        post.setTitle(postRequest.getTitle());
+        post.setContents(postRequest.getContents());
         return PostInfoResponse.from(post, userName);
     }
 
