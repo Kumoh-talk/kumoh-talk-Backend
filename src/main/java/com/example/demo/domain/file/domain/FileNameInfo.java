@@ -1,5 +1,6 @@
 package com.example.demo.domain.file.domain;
 
+import com.example.demo.domain.file.domain.entity.UploadFile;
 import lombok.Getter;
 import lombok.Setter;
 

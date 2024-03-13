@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.domain;
 
 
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.file.domain.UploadFile;
+import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.User;
 import jakarta.persistence.*;

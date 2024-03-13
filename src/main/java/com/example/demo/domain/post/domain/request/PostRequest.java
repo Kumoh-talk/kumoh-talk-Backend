@@ -30,7 +30,10 @@ public class PostRequest {
     private Track track;
 
     @Nullable
-    private List<MultipartFile> attachFiles;
+    private MultipartFile attachFile;
+
+    @Nullable
+    private List<MultipartFile> imageFiles;
 
 
 

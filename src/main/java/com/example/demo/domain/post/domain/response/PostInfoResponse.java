@@ -16,20 +16,23 @@ public class PostInfoResponse {
     private String username;
     private String title;
     private String contents;
-    private List<FileNameInfo> attachFileNameInfos;
+    private FileNameInfo attachFileNameInfo;
+    private List<FileNameInfo> imageFileNameInfos;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime updatedAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdAt;
-    public static PostInfoResponse from(Post post, String username,List<FileNameInfo> attachFileNameInfos) {
+    public static PostInfoResponse from(Post post, String username,FileNameInfo attachFileNameInfo,List<FileNameInfo> imageFileNameInfos) {
         return new PostInfoResponse(
                 post.getId(),
                 username,
                 post.getTitle(),
                 post.getContents(),
-                attachFileNameInfos,
+                attachFileNameInfo,
+                imageFileNameInfos,
                 post.getUpdatedAt(),
                 post.getCreatedAt()
         );

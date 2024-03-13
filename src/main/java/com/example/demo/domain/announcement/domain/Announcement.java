@@ -1,7 +1,7 @@
 package com.example.demo.domain.announcement.domain;
 
 
-import com.example.demo.domain.file.domain.UploadFile;
+import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
 import jakarta.persistence.*;

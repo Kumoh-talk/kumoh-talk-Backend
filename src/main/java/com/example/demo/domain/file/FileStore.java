@@ -1,9 +1,8 @@
 package com.example.demo.domain.file;
 
 
-import com.example.demo.domain.comment.domain.Comment;
 import com.example.demo.domain.file.domain.FileNameInfo;
-import com.example.demo.domain.file.domain.UploadFile;
+import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.file.repository.FileRepository;
 import com.example.demo.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
@@ -26,32 +25,19 @@ public class FileStore {
     @Value("${file.dir}")
     private String fileDir;
 
-    public String getFullPath(String filename) {
+
+    public String getFullDir(String filename) {
         return fileDir + filename;
     }
 
-    public List<FileNameInfo> storePostFiles(List<MultipartFile> multipartFiles, Post savedPost) throws IOException {
+
+
+    public List<FileNameInfo> storePostFiles(List<MultipartFile> multipartFiles, Post post) throws IOException {
         List<FileNameInfo> result = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
             if (!multipartFile.isEmpty()) {
-                UploadFile uploadFile = storeFile(multipartFile); // 파일 시스템 저장
-                uploadFile.setPost(savedPost); // 연관 관계 생성
-                fileRepository.save(uploadFile); // DB 에 저장
-                result.add(FileNameInfo.from(uploadFile));
-            }
-        }
-        return result;
-    }
-
-    public List<UploadFile> storeCommentFiles(List<MultipartFile> multipartFiles, Comment savedComment) throws IOException {
-        List<UploadFile> result = new ArrayList<>();
-        for (MultipartFile multipartFile : multipartFiles) {
-            if (!multipartFile.isEmpty()) {
-                UploadFile uploadFile = storeFile(multipartFile); // 파일 시스템 저장
-                uploadFile.setComment(savedComment); // 연관 관계 생성
-                fileRepository.save(uploadFile); // DB 에 저장
-                result.add(uploadFile);
+                result.add(storeFile(multipartFile, post));
             }
         }
         return result;
@@ -60,16 +46,66 @@ public class FileStore {
 
 
 
-    public UploadFile storeFile(MultipartFile multipartFile) throws IOException
+    /**
+     * 게시물 관련  파일들 삭제 메서드
+     * @param post
+     */
+    public void deletePostFiles(Post post) {
+        post.getUploadFiles().forEach(uploadFile -> {
+            fileRepository.delete(uploadFile);
+            deleteFile(uploadFile.getStoreFileName());
+        });
+    }
+
+
+
+
+    /**
+     *  요청으로온 파일 하나를 파일 시스템에 저장하는 메서드
+      * @param multipartFile
+     * @return 업로드된 파일
+     * @throws IOException
+     */
+    public FileNameInfo storeFile(MultipartFile multipartFile,Post savedPost) throws IOException
     {
         if (multipartFile.isEmpty()) {
             return null;
         }
         String originalFilename = multipartFile.getOriginalFilename();
         String storeFileName = createStoreFileName(originalFilename);
-        multipartFile.transferTo(new File(getFullPath(storeFileName))); // 파일 저장
-        return new UploadFile(originalFilename, storeFileName);
+        multipartFile.transferTo(new File(getFullDir(storeFileName))); // 파일 저장
+
+        UploadFile uploadFile = new UploadFile(originalFilename, storeFileName);
+        uploadFile.setPost(savedPost);
+
+        return FileNameInfo.from(fileRepository.save(uploadFile)); // DB 에 저장
     }
+
+
+    /**
+     *  파일 삭제 메서드
+     * @param storeFileName
+     */
+    public void deleteFile(String storeFileName) {
+        File file = new File(getFullDir(storeFileName));
+        file.delete();
+    }
+
+    /**
+     * 게시물의 파일 전부 반환
+     * @param post
+     * @return
+     */
+    public List<FileNameInfo> getPostFiles(Post post) {
+        List<FileNameInfo> result = new ArrayList<>();
+        post.getUploadFiles().forEach(uploadFile -> {
+            result.add(FileNameInfo.from(uploadFile));
+        });
+        return result;
+    }
+
+
+
     private String createStoreFileName(String originalFilename) {
         String ext = extractExt(originalFilename);
         String uuid = UUID.randomUUID().toString();
@@ -78,5 +114,14 @@ public class FileStore {
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);
+    }
+
+
+    public FileNameInfo getPostAttachFile(Post post) {
+        return null;
+    }
+
+    public List<FileNameInfo> getPostImagesFiles(Post post) {
+        return null;
     }
 }

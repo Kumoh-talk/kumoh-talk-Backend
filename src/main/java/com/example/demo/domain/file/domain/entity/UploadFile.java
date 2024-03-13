@@ -1,4 +1,4 @@
-package com.example.demo.domain.file.domain;
+package com.example.demo.domain.file.domain.entity;
 
 
 import com.example.demo.domain.announcement.domain.Announcement;

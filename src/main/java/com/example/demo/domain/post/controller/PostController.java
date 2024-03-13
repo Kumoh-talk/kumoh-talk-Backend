@@ -35,8 +35,8 @@ public class PostController {
 
     @PatchMapping("/update/{postId}")
     public ResponseEntity<PostInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user,
-                                                       @RequestBody @Valid PostRequest postRequest,
-                                                       @PathVariable Long postId) {
+                                                       @ModelAttribute @Valid PostRequest postRequest,
+                                                       @PathVariable Long postId) throws IOException {
         CheckAuthentication(user);
         return ResponseEntity.ok(postService.postUpdate(postRequest,user.getName(),postId));
     }
