@@ -3,6 +3,7 @@ package com.example.demo.domain.file;
 
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.entity.UploadFile;
+import com.example.demo.domain.file.domain.util.FileUtil;
 import com.example.demo.domain.file.repository.FileRepository;
 import com.example.demo.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -43,26 +45,9 @@ public class FileStore {
         return result;
     }
 
-
-
-
-    /**
-     * 게시물 관련  파일들 삭제 메서드
-     * @param post
-     */
-    public void deletePostFiles(Post post) {
-        post.getUploadFiles().forEach(uploadFile -> {
-            fileRepository.delete(uploadFile);
-            deleteFile(uploadFile.getStoreFileName());
-        });
-    }
-
-
-
-
     /**
      *  요청으로온 파일 하나를 파일 시스템에 저장하는 메서드
-      * @param multipartFile
+     * @param multipartFile
      * @return 업로드된 파일
      * @throws IOException
      */
@@ -80,6 +65,23 @@ public class FileStore {
 
         return FileNameInfo.from(fileRepository.save(uploadFile)); // DB 에 저장
     }
+
+
+
+
+    /**
+     * 게시물 관련  파일들 삭제 메서드
+     * @param post
+     */
+    public void deletePostFiles(Post post) {
+        post.getUploadFiles().forEach(uploadFile -> {
+            fileRepository.delete(uploadFile);
+            deleteFile(uploadFile.getStoreFileName());
+        });
+    }
+
+
+
 
 
     /**
@@ -117,11 +119,19 @@ public class FileStore {
     }
 
 
-    public FileNameInfo getPostAttachFile(Post post) {
+    public FileNameInfo getPostAttachFile(List<UploadFile> uploadFiles) {
+        for (UploadFile uploadFile : uploadFiles) {
+            if (!FileUtil.isImageFile(uploadFile.getStoreFileName())) {
+                return FileNameInfo.from(uploadFile);
+            }
+        }
         return null;
     }
 
-    public List<FileNameInfo> getPostImagesFiles(Post post) {
-        return null;
+    public List<FileNameInfo> getPostImagesFiles(List<UploadFile> uploadFiles) {
+        return uploadFiles.stream()
+                .filter(uploadFile -> {return FileUtil.isImageFile(uploadFile.getStoreFileName());})
+                .map(FileNameInfo::from)
+                .toList();
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.domain.post.service;
 
 import com.example.demo.domain.file.FileStore;
 import com.example.demo.domain.file.domain.FileNameInfo;
+import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.post.Repository.PostRepository;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.post.domain.request.PostRequest;
@@ -85,7 +86,11 @@ public class PostService {
     public PostInfoResponse findById(Long postId,String userName) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다"));
-        return PostInfoResponse.from(post, userName,fileStore.getPostAttachFile(post),fileStore.getPostImagesFiles(post));
+        List<UploadFile> uploadFiles = post.getUploadFiles();
+        return PostInfoResponse.from(post,
+                userName,
+                fileStore.getPostAttachFile(uploadFiles),
+                fileStore.getPostImagesFiles(uploadFiles));
     }
 
     /**
