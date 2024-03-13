@@ -1,5 +1,9 @@
 package com.example.demo.domain.post.service;
 
+import com.example.demo.domain.file.FileStore;
+import com.example.demo.domain.file.domain.FileNameInfo;
+import com.example.demo.domain.file.domain.UploadFile;
+import com.example.demo.domain.file.repository.FileRepository;
 import com.example.demo.domain.post.Repository.PostRepository;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.post.domain.request.PostRequest;
@@ -10,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +24,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
+    private final FileStore fileStore;
+    private final FileRepository fileRepository;
 
     /**
      *
@@ -28,14 +34,16 @@ public class PostService {
      * @return PostInfoResponse 생성된 post 정보 객체 반환
      */
     @Transactional
-    public PostInfoResponse postSave(PostRequest postRequest, Long userId) {
+    public PostInfoResponse postSave(PostRequest postRequest, Long userId) throws IOException {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));;
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
         Post post = PostRequest.toEntity(postRequest, user);
+        Post savedPost = postRepository.save(post);
 
-        Post saved = postRepository.save(post);
-        return PostInfoResponse.from(saved,user.getName());
+        List<FileNameInfo> files = fileStore.storePostFiles(postRequest.getAttachFiles(),savedPost);
+
+        return PostInfoResponse.from(savedPost,user.getName(),files);
     }
 
 

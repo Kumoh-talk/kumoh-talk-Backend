@@ -1,8 +1,8 @@
 package com.example.demo.domain.file.repository;
 
+import com.example.demo.domain.file.domain.UploadFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.io.File;
 
-public interface FileRepository extends JpaRepository<File, Long> {
+public interface FileRepository extends JpaRepository<UploadFile, Long> {
 }

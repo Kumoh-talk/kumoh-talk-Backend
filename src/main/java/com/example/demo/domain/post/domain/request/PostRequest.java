@@ -4,10 +4,15 @@ package com.example.demo.domain.post.domain.request;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Null;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -23,6 +28,11 @@ public class PostRequest {
 
     @NotBlank(message = "트랙을 지정해야합니다.")
     private Track track;
+
+    @Nullable
+    private List<MultipartFile> attachFiles;
+
+
 
     public static Post toEntity(PostRequest postRequest, User user) {
         return Post.builder()
