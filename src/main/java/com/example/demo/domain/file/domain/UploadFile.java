@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class File {
+public class UploadFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,4 +40,9 @@ public class File {
     @ManyToOne
     @JoinColumn(name ="comment_id",nullable = true)
     private Comment comment;
+
+    public UploadFile(String uploadFileName, String storeFileName) {
+        this.uploadFileName = uploadFileName;
+        this.storeFileName = storeFileName;
+    }
 }

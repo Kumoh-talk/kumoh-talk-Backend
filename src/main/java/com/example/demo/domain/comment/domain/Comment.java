@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.domain;
 
 
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.file.domain.File;
+import com.example.demo.domain.file.domain.UploadFile;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.User;
 import jakarta.persistence.*;
@@ -36,7 +36,7 @@ public class Comment {
     private User user;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<File> files;
+    private List<UploadFile> uploadFiles;
 
     public Comment(String contents, Post post, User user) {
         this.contents = contents;
