@@ -1,7 +1,9 @@
-package com.example.demo.domain.post.domain;
+package com.example.demo.domain.file.domain.entity;
 
 
 import com.example.demo.domain.announcement.domain.Announcement;
+import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.post.domain.Post;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -13,19 +15,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class File {
+public class UploadFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false,length = 45)
     @NotBlank(message = "파일이름이 누락되었습니다.")
-    private String filename;
+    private String uploadFileName;
 
-    @Lob
-    @Column(nullable = false)
-    @NotBlank(message = "파일에 데이터가 없습니다.")
-    private byte[] file;
+    @Column(nullable = false,length = 45)
+    @NotBlank(message = "파일이름이 누락되었습니다.")
+    private String storeFileName;
 
 
     @ManyToOne
@@ -36,10 +37,12 @@ public class File {
     @JoinColumn(name ="announcement_id",nullable = true)
     private Announcement announcement;
 
+    @ManyToOne
+    @JoinColumn(name ="comment_id",nullable = true)
+    private Comment comment;
 
-
-
-
-
-
+    public UploadFile(String uploadFileName, String storeFileName) {
+        this.uploadFileName = uploadFileName;
+        this.storeFileName = storeFileName;
+    }
 }

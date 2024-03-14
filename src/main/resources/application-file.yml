@@ -1,0 +1,11 @@
+# ?? part ?? ??
+spring:
+  servlet:
+    multipart:
+      maxFileSize: 50MB
+      maxRequestSize: 50MB
+
+# ?? ??
+file:
+  dir: classpath:files/
+

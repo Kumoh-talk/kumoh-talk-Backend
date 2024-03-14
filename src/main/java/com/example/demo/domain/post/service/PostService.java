@@ -1,5 +1,8 @@
 package com.example.demo.domain.post.service;
 
+import com.example.demo.domain.file.FileStore;
+import com.example.demo.domain.file.domain.FileNameInfo;
+import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.post.Repository.PostRepository;
 import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.post.domain.request.PostRequest;
@@ -10,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
+    private final FileStore fileStore;
 
     /**
      *
@@ -28,14 +31,21 @@ public class PostService {
      * @return PostInfoResponse 생성된 post 정보 객체 반환
      */
     @Transactional
-    public PostInfoResponse postSave(PostRequest postRequest, Long userId) {
+    public PostInfoResponse postSave(PostRequest postRequest, Long userId) throws IOException {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));;
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
         Post post = PostRequest.toEntity(postRequest, user);
+        Post savedPost = postRepository.save(post);
 
-        Post saved = postRepository.save(post);
-        return PostInfoResponse.from(saved,user.getName());
+        FileNameInfo attachfileNameInfo = fileStore.storeFile(postRequest.getAttachFile(), savedPost);
+        List<FileNameInfo> imagesFileNameInfos = fileStore.storePostFiles(postRequest.getImageFiles(),savedPost);
+
+        return PostInfoResponse.from(
+                savedPost,
+                user.getName(),
+                attachfileNameInfo,
+                imagesFileNameInfos);
     }
 
 
@@ -47,26 +57,27 @@ public class PostService {
      * @return
      */
     @Transactional
-    public PostInfoResponse postUpdate(PostRequest postRequest, String userName, Long postId) {
+    public PostInfoResponse postUpdate(PostRequest postRequest, String userName, Long postId) throws IOException {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다"));
-        return updatePost(post, postRequest, userName);
+
+        return updatePost(postRequest, post, userName);
     }
 
 
     /**
-     *
+     * 게시물 삭제 메서드
      * @param postId
      */
     @Transactional
     public void postRemove(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다"));
-
+        fileStore.deletePostFiles(post);
         postRepository.delete(post);
-
     }
     /**
+     * 게시물 id로 게시물을 찾는 메서드
      * @param postId
      * @param userName
      * @return
@@ -75,28 +86,37 @@ public class PostService {
     public PostInfoResponse findById(Long postId,String userName) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다"));
-        return PostInfoResponse.from(post, userName);
+        List<UploadFile> uploadFiles = post.getUploadFiles();
+        return PostInfoResponse.from(post,
+                userName,
+                fileStore.getPostAttachFile(uploadFiles),
+                fileStore.getPostImagesFiles(uploadFiles));
     }
 
     /**
-     *
+     * 전체 게시물을 불러오는 메서드
      * @return List<PostInfoResponse>
      */
     @Transactional(readOnly = true)
     public List<PostInfoResponse> findByALL() {
-        return postRepository.findAll().stream()
+/*        return postRepository.findAll().stream()
                 .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        return null;  // 추후 pagging 처리 추가
     }
 
 
 
-
-    private PostInfoResponse updatePost(Post post, PostRequest postRequest, String userName) {
+    public PostInfoResponse updatePost(PostRequest postRequest , Post post, String userName) throws IOException {
+        fileStore.deletePostFiles(post);
+        FileNameInfo attachfileNameInfo = fileStore.storeFile(postRequest.getAttachFile(), post);
+        List<FileNameInfo> imagesFileNameInfos = fileStore.storePostFiles(postRequest.getImageFiles(),post);
         post.setTitle(postRequest.getTitle());
         post.setContents(postRequest.getContents());
-        return PostInfoResponse.from(post, userName);
+
+        return PostInfoResponse.from(post, userName, attachfileNameInfo, imagesFileNameInfos);
     }
+
 
 
 

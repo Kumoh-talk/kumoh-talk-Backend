@@ -2,6 +2,7 @@ package com.example.demo.domain.post.controller;
 
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
+import com.example.demo.domain.file.FileStore;
 import com.example.demo.domain.post.domain.request.PostRequest;
 import com.example.demo.domain.post.domain.response.PostInfoResponse;
 import com.example.demo.domain.post.service.PostService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,10 +22,11 @@ public class PostController {
 
     private final PostService postService;
 
+
     @PostMapping("/save")
     public ResponseEntity<PostInfoResponse> postSave(
             @AuthenticationPrincipal UserPrincipal user,
-            @RequestBody @Valid PostRequest postRequest) {
+            @ModelAttribute @Valid PostRequest postRequest) throws IOException {
         CheckAuthentication(user);
 
         return ResponseEntity.ok(postService.postSave(postRequest, user.getId()));
@@ -32,15 +35,15 @@ public class PostController {
 
     @PatchMapping("/update/{postId}")
     public ResponseEntity<PostInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user,
-                                                       @RequestBody @Valid PostRequest postRequest,
-                                                       @PathVariable Long postId) {
+                                                       @ModelAttribute @Valid PostRequest postRequest,
+                                                       @PathVariable Long postId) throws IOException {
         CheckAuthentication(user);
         return ResponseEntity.ok(postService.postUpdate(postRequest,user.getName(),postId));
     }
 
 
     @PatchMapping("/delete/{postId}")
-    public ResponseEntity postUpdate(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
+    public ResponseEntity postDelete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
         CheckAuthentication(user);
         postService.postRemove(postId);
         return ResponseEntity.ok().build();

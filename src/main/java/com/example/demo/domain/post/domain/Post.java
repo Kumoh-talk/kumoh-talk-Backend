@@ -2,6 +2,7 @@ package com.example.demo.domain.post.domain;
 
 
 import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.post_qna.domain.Post_Qna;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
@@ -46,11 +47,13 @@ public class Post extends BaseEntity {
     private List<Post_Qna> postQnas;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<File> files;
+    private List<UploadFile> uploadFiles;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UploadFile> files;
 
 
     @Builder

@@ -12,6 +12,8 @@ import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -77,6 +79,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         logError(e);
         return ErrorResponse.of(ErrorCode.INVALID_JSON);
+    }
+
+    @ResponseStatus(HttpStatus.REQUEST_ENTITY_TOO_LARGE)
+    @ExceptionHandler(MaxUploadSizeExceededException .class) // 파일 용량 제한 예외
+    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        logError(e);
+        return ErrorResponse.of(ErrorCode.FILE_TOO_LARGE);
     }
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)
