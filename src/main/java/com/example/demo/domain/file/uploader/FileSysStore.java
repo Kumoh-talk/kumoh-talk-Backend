@@ -59,7 +59,7 @@ public class FileSysStore {
         String storeFileName = createStoreFileName(originalFilename);
         multipartFile.transferTo(new File(getFullDir(storeFileName))); // 파일 저장
 
-        UploadFile uploadFile = new UploadFile(originalFilename, storeFileName);
+        UploadFile uploadFile = new UploadFile(originalFilename, storeFileName,"");
         uploadFile.setPost(savedPost);
 
         return FileNameInfo.from(fileRepository.save(uploadFile)); // DB 에 저장

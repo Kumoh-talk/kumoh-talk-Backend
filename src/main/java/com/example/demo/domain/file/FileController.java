@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.MalformedURLException;
 
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/file")
 public class FileController {

@@ -59,9 +59,7 @@ public class FileS3Uploader implements FileUploader{
         String storeFileName = createStoreFileName(originalFilename); // 파일 식별 고유 이름
 
         String uploadUrl = uploadS3File(multipartFile, storeFileName);
-        UploadFile uploadFile = new UploadFile(originalFilename, storeFileName);
-
-
+        UploadFile uploadFile = new UploadFile(originalFilename, storeFileName,uploadUrl);
         uploadFile.setEntity(saved);
 
 

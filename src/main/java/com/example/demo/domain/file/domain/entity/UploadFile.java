@@ -29,6 +29,9 @@ public class UploadFile {
     @NotBlank(message = "파일이름이 누락되었습니다.")
     private String storeFileName;
 
+    @Column(nullable = false,length = 45)
+    @NotBlank(message = "파일이름이 누락되었습니다.")
+    private String url;
 
     @ManyToOne
     @JoinColumn(name ="post_id",nullable = true)
@@ -42,9 +45,11 @@ public class UploadFile {
     @JoinColumn(name ="comment_id",nullable = true)
     private Comment comment;
 
-    public UploadFile(String uploadFileName, String storeFileName) {
+
+    public UploadFile(String uploadFileName, String storeFileName, String url) {
         this.uploadFileName = uploadFileName;
         this.storeFileName = storeFileName;
+        this.url = url;
     }
 
     public void setEntity(Object saved) {
