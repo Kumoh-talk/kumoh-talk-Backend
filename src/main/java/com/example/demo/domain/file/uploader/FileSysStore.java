@@ -1,4 +1,4 @@
-package com.example.demo.domain.file;
+package com.example.demo.domain.file.uploader;
 
 
 import com.example.demo.domain.file.domain.FileNameInfo;
@@ -9,7 +9,6 @@ import com.example.demo.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -20,7 +19,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class FileUploader {
+public class FileSysStore implements FileUploader{
 
     private final FileRepository fileRepository;
 
@@ -34,7 +33,7 @@ public class FileUploader {
 
 
 
-    public List<FileNameInfo> storePostFiles(List<MultipartFile> multipartFiles, Post post) throws IOException {
+    public List<FileNameInfo> storeFiles(List<MultipartFile> multipartFiles, Post post) throws IOException {
         List<FileNameInfo> result = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
@@ -106,17 +105,6 @@ public class FileUploader {
         return result;
     }
 
-
-
-    private String createStoreFileName(String originalFilename) {
-        String ext = extractExt(originalFilename);
-        String uuid = UUID.randomUUID().toString();
-        return uuid + "." + ext;
-    }
-    private String extractExt(String originalFilename) {
-        int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos + 1);
-    }
 
 
     public FileNameInfo getPostAttachFile(List<UploadFile> uploadFiles) {

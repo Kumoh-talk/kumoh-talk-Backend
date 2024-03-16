@@ -1,6 +1,7 @@
 package com.example.demo.domain.file;
 
 
+import com.example.demo.domain.file.uploader.FileSysStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,7 +18,7 @@ import java.net.MalformedURLException;
 @RequiredArgsConstructor
 @RequestMapping("/api/file")
 public class FileController {
-    private final FileUploader fileUploader;
+    private final FileSysStore fileUploader;
     @GetMapping("/images/{filename}")
     public ResponseEntity<Resource> downloadImage(@PathVariable String filename) throws
             MalformedURLException {

@@ -1,6 +1,6 @@
 package com.example.demo.domain.post.service;
 
-import com.example.demo.domain.file.FileUploader;
+import com.example.demo.domain.file.uploader.FileSysStore;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.post.Repository.PostRepository;
@@ -22,7 +22,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final FileUploader fileUploader;
+    private final FileSysStore fileUploader;
 
     /**
      *
@@ -39,7 +39,7 @@ public class PostService {
         Post savedPost = postRepository.save(post);
 
         FileNameInfo attachfileNameInfo = fileUploader.storeFile(postRequest.getAttachFile(), savedPost);
-        List<FileNameInfo> imagesFileNameInfos = fileUploader.storePostFiles(postRequest.getImageFiles(),savedPost);
+        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(postRequest.getImageFiles(),savedPost);
 
         return PostInfoResponse.from(
                 savedPost,
@@ -110,7 +110,7 @@ public class PostService {
     public PostInfoResponse updatePost(PostRequest postRequest , Post post, String userName) throws IOException {
         fileUploader.deletePostFiles(post);
         FileNameInfo attachfileNameInfo = fileUploader.storeFile(postRequest.getAttachFile(), post);
-        List<FileNameInfo> imagesFileNameInfos = fileUploader.storePostFiles(postRequest.getImageFiles(),post);
+        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(postRequest.getImageFiles(),post);
         post.setTitle(postRequest.getTitle());
         post.setContents(postRequest.getContents());
 
