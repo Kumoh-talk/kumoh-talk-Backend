@@ -2,7 +2,6 @@ package com.example.demo.domain.post.controller;
 
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
-import com.example.demo.domain.file.FileStore;
 import com.example.demo.domain.post.domain.request.PostRequest;
 import com.example.demo.domain.post.domain.response.PostInfoResponse;
 import com.example.demo.domain.post.service.PostService;

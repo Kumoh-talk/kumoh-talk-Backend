@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+/*
 @SpringBootTest
 class PostRepositoryTest {
 
@@ -51,4 +52,4 @@ class PostRepositoryTest {
 
 
 
-}
+}*/

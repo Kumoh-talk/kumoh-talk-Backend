@@ -1,6 +1,6 @@
 package com.example.demo.domain.post.service;
 
-import com.example.demo.domain.file.FileStore;
+import com.example.demo.domain.file.FileUploader;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.post.Repository.PostRepository;
@@ -22,7 +22,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final FileStore fileStore;
+    private final FileUploader fileUploader;
 
     /**
      *
@@ -38,8 +38,8 @@ public class PostService {
         Post post = PostRequest.toEntity(postRequest, user);
         Post savedPost = postRepository.save(post);
 
-        FileNameInfo attachfileNameInfo = fileStore.storeFile(postRequest.getAttachFile(), savedPost);
-        List<FileNameInfo> imagesFileNameInfos = fileStore.storePostFiles(postRequest.getImageFiles(),savedPost);
+        FileNameInfo attachfileNameInfo = fileUploader.storeFile(postRequest.getAttachFile(), savedPost);
+        List<FileNameInfo> imagesFileNameInfos = fileUploader.storePostFiles(postRequest.getImageFiles(),savedPost);
 
         return PostInfoResponse.from(
                 savedPost,
@@ -73,7 +73,7 @@ public class PostService {
     public void postRemove(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다"));
-        fileStore.deletePostFiles(post);
+        fileUploader.deletePostFiles(post);
         postRepository.delete(post);
     }
     /**
@@ -89,8 +89,8 @@ public class PostService {
         List<UploadFile> uploadFiles = post.getUploadFiles();
         return PostInfoResponse.from(post,
                 userName,
-                fileStore.getPostAttachFile(uploadFiles),
-                fileStore.getPostImagesFiles(uploadFiles));
+                fileUploader.getPostAttachFile(uploadFiles),
+                fileUploader.getPostImagesFiles(uploadFiles));
     }
 
     /**
@@ -108,9 +108,9 @@ public class PostService {
 
 
     public PostInfoResponse updatePost(PostRequest postRequest , Post post, String userName) throws IOException {
-        fileStore.deletePostFiles(post);
-        FileNameInfo attachfileNameInfo = fileStore.storeFile(postRequest.getAttachFile(), post);
-        List<FileNameInfo> imagesFileNameInfos = fileStore.storePostFiles(postRequest.getImageFiles(),post);
+        fileUploader.deletePostFiles(post);
+        FileNameInfo attachfileNameInfo = fileUploader.storeFile(postRequest.getAttachFile(), post);
+        List<FileNameInfo> imagesFileNameInfos = fileUploader.storePostFiles(postRequest.getImageFiles(),post);
         post.setTitle(postRequest.getTitle());
         post.setContents(postRequest.getContents());
 
