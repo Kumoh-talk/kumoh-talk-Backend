@@ -1,0 +1,11 @@
+cloud:
+  aws:
+    credentials:
+      access-key: ${s3_access-key}
+      secret-key: ${s3_your_secret-key}
+    s3:
+      bucket: ${s3_bucket_name}
+    region:
+      static: ap-northeast-2 # 리전 정보(서울)
+    stack:
+      auto: false
