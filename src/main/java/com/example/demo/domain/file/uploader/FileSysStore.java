@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class FileSysStore implements FileUploader{
+public class FileSysStore {
 
     private final FileRepository fileRepository;
 
@@ -121,5 +121,15 @@ public class FileSysStore implements FileUploader{
                 .filter(uploadFile -> {return FileUtil.isImageFile(uploadFile.getStoreFileName());})
                 .map(FileNameInfo::from)
                 .toList();
+    }
+
+    private String createStoreFileName(String originalFilename) {
+        String ext = extractExt(originalFilename);
+        String uuid = UUID.randomUUID().toString();
+        return uuid + "." + ext;
+    }
+    private String extractExt(String originalFilename) {
+        int pos = originalFilename.lastIndexOf(".");
+        return originalFilename.substring(pos + 1);
     }
 }
