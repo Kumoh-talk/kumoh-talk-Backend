@@ -20,6 +20,8 @@ public class AmazonS3Config {
     @Value("${cloud.aws.region.static}")                                //S3 region
     private String region;
 
+
+
     @Bean
     public AmazonS3Client amazonS3Client() {
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);

@@ -66,7 +66,7 @@ public class FileS3Uploader implements FileUploader {
         return FileNameInfo.from(fileRepository.save(uploadFile)); // DB 에 저장
     }
 
-    protected String uploadS3File(MultipartFile multipartFile, String storeFileName) throws IOException {
+    public String uploadS3File(MultipartFile multipartFile, String storeFileName) throws IOException {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
