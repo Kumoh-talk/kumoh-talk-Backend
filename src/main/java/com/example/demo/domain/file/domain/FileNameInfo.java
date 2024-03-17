@@ -2,10 +2,12 @@ package com.example.demo.domain.file.domain;
 
 import com.example.demo.domain.file.domain.entity.UploadFile;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class FileNameInfo {
 
 

@@ -7,3 +7,5 @@
 
 include::auth.adoc[]
 include::user.adoc[]
+include::post.adoc[]
+include::file.adoc[]

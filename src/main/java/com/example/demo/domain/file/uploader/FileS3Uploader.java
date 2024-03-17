@@ -23,7 +23,7 @@ import java.util.List;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class FileS3Uploader implements FileUploader{
+public class FileS3Uploader implements FileUploader {
     private final FileRepository fileRepository;
     private final AmazonS3Client amazonS3Client;
 

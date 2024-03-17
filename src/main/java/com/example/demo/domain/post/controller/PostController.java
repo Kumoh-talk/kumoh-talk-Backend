@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,23 +29,27 @@ public class PostController {
             @ModelAttribute @Valid PostRequest postRequest) throws IOException {
         CheckAuthentication(user);
 
-        return ResponseEntity.ok(postService.postSave(postRequest, user.getId()));
+            return ResponseEntity.ok(postService.postSave(postRequest, user.getId()));
     }
 
-
-    @PatchMapping("/update/{postId}")
+    @PostMapping("/update/{postId}")
     public ResponseEntity<PostInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user,
                                                        @ModelAttribute @Valid PostRequest postRequest,
                                                        @PathVariable Long postId) throws IOException {
         CheckAuthentication(user);
         return ResponseEntity.ok(postService.postUpdate(postRequest,user.getName(),postId));
     }
-
+    @GetMapping("/search/{postId}")
+    public ResponseEntity<PostInfoResponse> postSearch(@AuthenticationPrincipal UserPrincipal user,
+                                                       @PathVariable Long postId) throws IOException {
+        CheckAuthentication(user);
+        return ResponseEntity.ok(postService.findById(postId,user.getName()));
+    }
 
     @PatchMapping("/delete/{postId}")
     public ResponseEntity postDelete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
         CheckAuthentication(user);
-        postService.postRemove(postId);
+        postService.postRemove(postId, user.getUsername());
         return ResponseEntity.ok().build();
     }
 
