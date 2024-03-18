@@ -1,0 +1,12 @@
+|===
+|Parameter|필수값|디폴트 값|Description
+
+{{#parameters}}
+|{{#tableCellContent}}`+{{name}}+`{{/tableCellContent}}
+|{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#defaultValue}}{{.}}{{/defaultValue}}{{^defaultValue}} {{/defaultValue}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+
+
+{{/parameters}}
+|===

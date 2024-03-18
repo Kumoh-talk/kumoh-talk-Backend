@@ -3,14 +3,19 @@ package com.example.demo.domain.post.controller;
 import com.example.demo.base.ControllerTest;
 import com.example.demo.domain.auth.domain.UserPrincipal;
 import com.example.demo.domain.file.domain.FileNameInfo;
+import com.example.demo.domain.post.domain.page.PageInfo;
+import com.example.demo.domain.post.domain.page.PageSort;
+import com.example.demo.domain.post.domain.page.PageTitleInfo;
 import com.example.demo.domain.post.domain.request.PostRequest;
 import com.example.demo.domain.post.domain.response.PostInfoResponse;
+import com.example.demo.domain.post.domain.response.PostPageResponse;
 import com.example.demo.domain.post.service.PostService;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import jdk.jfr.ContentType;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,6 +48,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +64,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -544,6 +551,136 @@ public class PostControllerTest {
 
 
 
+
+
+    @Nested
+    @DisplayName("<페이징 조회>")
+    class pagging {
+        String pagelistUrl = "/api/post/list";
+        @Test
+        @DisplayName("성공")
+        void success() throws Exception {
+            //given
+            PostPageResponse postPageResponse = createTestPostPageResponse();
+            given(postService.findPageList(any(Integer.class), any(Track.class), any(PageSort.class)))
+                    .willReturn(postPageResponse);
+
+            //when -> then
+            mockMvc
+                    .perform(
+                            MockMvcRequestBuilders
+                                    .get(pagelistUrl)
+                                    .queryParam("page", "1")
+                                    .queryParam("track", "BACK")
+                                    .queryParam("pageSort", "DESC")
+
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].postId").value(postPageResponse.getPageTitleInfoList().get(0).getPostId()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].userName").value(postPageResponse.getPageTitleInfoList().get(0).getUserName()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].title").value(postPageResponse.getPageTitleInfoList().get(0).getTitle()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].track").value(postPageResponse.getPageTitleInfoList().get(0).getTrack().toString()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].createdAt").value(postPageResponse.getPageTitleInfoList().get(0).getCreatedAt().format(formatter)))
+                    // 검증 추가
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].postId").value(postPageResponse.getPageTitleInfoList().get(1).getPostId()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].userName").value(postPageResponse.getPageTitleInfoList().get(1).getUserName()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].title").value(postPageResponse.getPageTitleInfoList().get(1).getTitle()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].track").value(postPageResponse.getPageTitleInfoList().get(1).getTrack().toString()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].createdAt").value(postPageResponse.getPageTitleInfoList().get(1).getCreatedAt().format(formatter)))
+                    .andExpect(jsonPath("$.pageInfo.pageSize").value(postPageResponse.getPageInfo().getPageSize()))
+                    .andExpect(jsonPath("$.pageInfo.page").value(postPageResponse.getPageInfo().getPage()))
+                    .andExpect(jsonPath("$.pageInfo.totalPage").value(postPageResponse.getPageInfo().getTotalPage()))
+                    .andExpect(jsonPath("$.pageInfo.pageSort").value(postPageResponse.getPageInfo().getPageSort().toString()))
+
+                    .andDo(document("post/post-page-success",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            queryParameters(
+                                    parameterWithName("page").description("페이지 번호").attributes(key("defaultValue").value("1")).optional(),
+                                    parameterWithName("track").description("트랙"),
+                                    parameterWithName("pageSort").description("페이징 정렬 방법(오름차순 or 내림차순)").attributes(key("defaultValue").value("DESC")).optional()
+                            ),
+                            responseFields(
+                                    fieldWithPath("pageTitleInfoList").type(JsonFieldType.ARRAY).description("페이지에 게시물 정보 리스트"),
+                                    fieldWithPath("pageTitleInfoList[].postId").type(JsonFieldType.NUMBER).description("게시물 ID"),
+                                    fieldWithPath("pageTitleInfoList[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                    fieldWithPath("pageTitleInfoList[].userName").type(JsonFieldType.STRING).description("사용자 이름"),
+                                    fieldWithPath("pageTitleInfoList[].track").type(JsonFieldType.STRING).description("트랙"),
+                                    fieldWithPath("pageTitleInfoList[].createdAt").type(JsonFieldType.STRING).description("작성 시간"),
+                                    fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                    fieldWithPath("pageInfo.pageSize").type(JsonFieldType.NUMBER).description("한 페이지당 게시물 수"),
+                                    fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("현재 페이지 번호"),
+                                    fieldWithPath("pageInfo.totalPage").type(JsonFieldType.NUMBER).description("총 페이지 수"),
+                                    fieldWithPath("pageInfo.pageSort").type(JsonFieldType.STRING).description("정렬 방식")
+                            )));
+        }
+        @Test
+        @DisplayName("쿼리 타입 미스매치")
+        void fail() throws Exception {
+            //given
+
+            //when -> then
+            mockMvc
+                    .perform(
+                            MockMvcRequestBuilders
+                                    .get(pagelistUrl)
+                                    .queryParam("page", "fdsf")
+                                    .queryParam("pageSort", "DESC")
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andDo(document("post/post-page-query-mismatch",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+
+                            responseFields(
+                                    fieldWithPath("timestamp").description("에러 발생 시간"),
+                                    fieldWithPath("message").description("에러 메시지")
+                            )));
+
+        };
+        @Test
+        @DisplayName("필수 인자 제외")
+        void fail2() throws Exception {
+            //given
+
+            //when -> then
+            mockMvc
+                    .perform(
+                            MockMvcRequestBuilders
+                                    .get(pagelistUrl)
+                                    .queryParam("page", "1")
+                                    .queryParam("pageSort", "DESC")
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andDo(document("post/post-page-query-required",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+
+                            responseFields(
+                                    fieldWithPath("timestamp").description("에러 발생 시간"),
+                                    fieldWithPath("message").description("에러 메시지")
+                            )));
+
+        };
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     PostRequest postRequest() {
         MultipartFile attachFile = new MockMultipartFile("attachFile", "첨부파일1.pdf", MediaType.APPLICATION_PDF_VALUE, "attachFile".getBytes());
         List<MultipartFile> imageFiles = List.of(
@@ -558,7 +695,6 @@ public class PostControllerTest {
                 .imageFiles(imageFiles)
                 .build();
     }
-
     PostInfoResponse postInfoResponse() {
         // FileNameInfo 객체 예시 생성
         FileNameInfo attachFile = new FileNameInfo("originalFileName.pdf", "storeFileName20230315.pdf", "https://example.com/files/storeFileName20230315.pdf");
@@ -576,5 +712,25 @@ public class PostControllerTest {
                 .attachFileNameInfo(attachFile)
                 .imageFileNameInfos(imageFiles)
                 .build();
+    }
+    PostPageResponse createTestPostPageResponse() {
+        List<PageTitleInfo> pageTitleInfoList = new ArrayList<>();
+        pageTitleInfoList.add(PageTitleInfo.builder()
+                .postId(1L)
+                .title("첫 번째 게시글")
+                .userName("홍길동")
+                .track(Track.BACK)
+                .createdAt(LocalDateTime.now())
+                .build());
+        pageTitleInfoList.add(PageTitleInfo.builder()
+                .postId(2L)
+                .title("두 번째 게시글")
+                .userName("김서방")
+                .track(Track.FRONT)
+                .createdAt(LocalDateTime.now().minusDays(1))
+                .build());
+        PageInfo pageInfo = new PageInfo(10, 1, 2, PageSort.DESC);
+
+        return new PostPageResponse(pageTitleInfoList, pageInfo);
     }
 }
