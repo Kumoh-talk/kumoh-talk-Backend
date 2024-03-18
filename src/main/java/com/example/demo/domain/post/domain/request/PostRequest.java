@@ -5,9 +5,8 @@ import com.example.demo.domain.post.domain.Post;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +18,14 @@ import java.util.List;
 public class PostRequest {
 
     @NotBlank(message = "제목은 필수 항목입니다.")
-    @Max(value = 45,message = "최대 제한 45글자 입니다.")
+    @Size(max = 45,message = "최대 제한 45글자 입니다.")
     private String title;
 
     @NotBlank(message = "게시물 내용은 필수 항목입니다.")
-    @Max(value = 500,message = "최대 제한 500글자 입니다.")
+    @Size(max = 500,message = "최대 제한 500글자 입니다.")
     private String contents;
 
-    @NotBlank(message = "트랙을 지정해야합니다.")
+    @NotNull(message = "트랙을 지정해야합니다.")
     private Track track;
 
     @Nullable
@@ -35,7 +34,14 @@ public class PostRequest {
     @Nullable
     private List<MultipartFile> imageFiles;
 
-
+    @Builder
+    public PostRequest(String title, String contents, Track track, @Nullable MultipartFile attachFile, @Nullable List<MultipartFile> imageFiles) {
+        this.title = title;
+        this.contents = contents;
+        this.track = track;
+        this.attachFile = attachFile;
+        this.imageFiles = imageFiles;
+    }
 
     public static Post toEntity(PostRequest postRequest, User user) {
         return Post.builder()

@@ -1,4 +1,4 @@
-package com.example.demo.domain.file;
+package com.example.demo.domain.file.uploader;
 
 
 import com.example.demo.domain.file.domain.FileNameInfo;
@@ -16,13 +16,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class FileStore {
+public class FileSysStore {
 
-    private FileRepository fileRepository;
+    private final FileRepository fileRepository;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -34,7 +33,7 @@ public class FileStore {
 
 
 
-    public List<FileNameInfo> storePostFiles(List<MultipartFile> multipartFiles, Post post) throws IOException {
+    public List<FileNameInfo> storeFiles(List<MultipartFile> multipartFiles, Post post) throws IOException {
         List<FileNameInfo> result = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
@@ -60,7 +59,7 @@ public class FileStore {
         String storeFileName = createStoreFileName(originalFilename);
         multipartFile.transferTo(new File(getFullDir(storeFileName))); // 파일 저장
 
-        UploadFile uploadFile = new UploadFile(originalFilename, storeFileName);
+        UploadFile uploadFile = new UploadFile(originalFilename, storeFileName,"");
         uploadFile.setPost(savedPost);
 
         return FileNameInfo.from(fileRepository.save(uploadFile)); // DB 에 저장
@@ -108,17 +107,6 @@ public class FileStore {
 
 
 
-    private String createStoreFileName(String originalFilename) {
-        String ext = extractExt(originalFilename);
-        String uuid = UUID.randomUUID().toString();
-        return uuid + "." + ext;
-    }
-    private String extractExt(String originalFilename) {
-        int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos + 1);
-    }
-
-
     public FileNameInfo getPostAttachFile(List<UploadFile> uploadFiles) {
         for (UploadFile uploadFile : uploadFiles) {
             if (!FileUtil.isImageFile(uploadFile.getStoreFileName())) {
@@ -133,5 +121,15 @@ public class FileStore {
                 .filter(uploadFile -> {return FileUtil.isImageFile(uploadFile.getStoreFileName());})
                 .map(FileNameInfo::from)
                 .toList();
+    }
+
+    private String createStoreFileName(String originalFilename) {
+        String ext = extractExt(originalFilename);
+        String uuid = UUID.randomUUID().toString();
+        return uuid + "." + ext;
+    }
+    private String extractExt(String originalFilename) {
+        int pos = originalFilename.lastIndexOf(".");
+        return originalFilename.substring(pos + 1);
     }
 }

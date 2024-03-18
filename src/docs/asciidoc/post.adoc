@@ -1,0 +1,127 @@
+= Post API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+[[Post-API]]
+== POST: <게시판 저장>
+=== 성공
+
+.Request
+include::{snippets}/post/post-save-success/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-save-success/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-save-success/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-save-success/http-response.adoc[]
+
+
+
+== POST: <게시판 수정>
+=== 성공
+
+.Request
+include::{snippets}/post/post-update-success/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-update-success/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-update-success/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-update-success/http-response.adoc[]
+
+
+=== 게시물을 찾을 수 없으면 에러 반환
+
+.Request
+include::{snippets}/post/post-update-not-found-post/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-update-not-found-post/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-update-not-found-post/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-update-not-found-post/http-response.adoc[]
+
+
+=== user의 게시물이 아닌 경우 에러 반환
+
+.Request
+include::{snippets}/post/post-update-not-matched-user/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-update-not-matched-user/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-update-not-matched-user/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-update-not-matched-user/http-response.adoc[]
+
+== POST: <게시판 삭제>
+=== 성공
+
+.Request
+include::{snippets}/post/post-delete-success/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-delete-success/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-delete-success/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-delete-success/http-response.adoc[]
+
+
+=== 게시물을 찾을 수 없으면 에러 반환
+
+.Request
+include::{snippets}/post/post-delete-not-found-post/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-delete-not-found-post/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-delete-not-found-post/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-delete-not-found-post/http-response.adoc[]
+
+
+=== user의 게시물이 아닌 경우 에러 반환
+
+.Request
+include::{snippets}/post/post-delete-not-matched-user/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-delete-not-matched-user/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-delete-not-matched-user/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-delete-not-matched-user/http-response.adoc[]
+
+== POST: <게시판 검색>
+=== 성공
+
+.Request
+include::{snippets}/post/post-search-success/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-search-success/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-search-success/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-search-success/http-response.adoc[]
+
+
+=== 게시물을 찾을 수 없으면 에러 반환
+
+.Request
+include::{snippets}/post/post-search-not-found-post/http-request.adoc[]
+.Request Header
+include::{snippets}/post/post-search-not-found-post/request-headers.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-search-not-found-post/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-search-not-found-post/http-response.adoc[]
+

@@ -9,3 +9,6 @@ spring:
       - db
       - security
       - mail
+
+file:
+  dir: classpath:files/
