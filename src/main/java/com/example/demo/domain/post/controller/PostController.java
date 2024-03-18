@@ -2,10 +2,14 @@ package com.example.demo.domain.post.controller;
 
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
+import com.example.demo.domain.post.domain.page.PageSort;
 import com.example.demo.domain.post.domain.request.PostRequest;
 import com.example.demo.domain.post.domain.response.PostInfoResponse;
+import com.example.demo.domain.post.domain.response.PostPageResponse;
 import com.example.demo.domain.post.service.PostService;
 import com.example.demo.domain.user.domain.vo.Track;
+import com.example.demo.global.base.exception.ErrorCode;
+import com.example.demo.global.base.exception.ServiceException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -55,17 +59,17 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<PostInfoResponse>> findAll(@AuthenticationPrincipal UserPrincipal user,
-                                                          @RequestParam int page,
-                                                          @RequestParam Track track) {
-        CheckAuthentication(user);
+    public ResponseEntity<PostPageResponse> findPageList(
+                                                         @RequestParam(defaultValue = "1", required = false) int page,
+                                                         @RequestParam(required = true) Track track,
+                                                         @RequestParam(defaultValue = "DESC", required = false ) PageSort pageSort) {
 
-        return ResponseEntity.ok(postService.findByALL());
+        return ResponseEntity.ok(postService.findPageList(page,track,pageSort));
     }
 
     private void CheckAuthentication(UserPrincipal user) {
         if(user == null){
-            new NullPointerException("인증된 객체에 값이 없습니다.");
+            throw new ServiceException(ErrorCode.NEED_AUTHORIZED);
         }
     }
 
