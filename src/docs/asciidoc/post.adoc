@@ -13,6 +13,8 @@
 include::{snippets}/post/post-save-success/http-request.adoc[]
 .Request Header
 include::{snippets}/post/post-save-success/request-headers.adoc[]
+.Request Fields
+include::{snippets}/post/post-save-success/request-fields.adoc[]
 
 .Response-Fields
 include::{snippets}/post/post-save-success/response-fields.adoc[]
@@ -125,3 +127,39 @@ include::{snippets}/post/post-search-not-found-post/response-fields.adoc[]
 .Response
 include::{snippets}/post/post-search-not-found-post/http-response.adoc[]
 
+
+== POST: <<페이징 조회>>
+=== 성공
+
+.Request
+include::{snippets}/post/post-page-success/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/post/post-page-success/query-parameters.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-page-success/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-page-success/http-response.adoc[]
+
+=== 쿼리 타입 미스매치 예외
+
+.Request
+include::{snippets}/post/post-page-query-mismatch/http-request.adoc[]
+
+
+.Response-Fields
+include::{snippets}/post/post-page-query-mismatch/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-page-query-mismatch/http-response.adoc[]
+
+
+=== 필수 인자 제외 예외
+
+.Request
+include::{snippets}/post/post-page-query-required/http-request.adoc[]
+
+.Response-Fields
+include::{snippets}/post/post-page-query-required/response-fields.adoc[]
+.Response
+include::{snippets}/post/post-page-query-required/http-response.adoc[]

@@ -64,6 +64,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -596,9 +597,9 @@ public class PostControllerTest {
                             preprocessRequest(prettyPrint()),
                             preprocessResponse(prettyPrint()),
                             queryParameters(
-                                    parameterWithName("page").description("페이지"),
-                                    parameterWithName("track").description("게시물"),
-                                    parameterWithName("pageSort").description("페이징 정렬")
+                                    parameterWithName("page").description("페이지 번호").attributes(key("defaultValue").value("1")).optional(),
+                                    parameterWithName("track").description("트랙"),
+                                    parameterWithName("pageSort").description("페이징 정렬 방법(오름차순 or 내림차순)").attributes(key("defaultValue").value("DESC")).optional()
                             ),
                             responseFields(
                                     fieldWithPath("pageTitleInfoList").type(JsonFieldType.ARRAY).description("페이지에 게시물 정보 리스트"),
