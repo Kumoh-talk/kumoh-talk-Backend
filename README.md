@@ -1,28 +1,11 @@
 ## DB ERD
-<img width="951" alt="image" src="https://github.com/LikeLion-Kit/LikeLion-Kit-Backend/assets/96743351/f182d634-77b8-4503-87a4-486fc94af949">
+![image](https://github.com/LikeLion-Kit/LikeLion-Kit-Backend/assets/96743351/a59ba9a3-e136-45bf-87d0-d1b6097cb5b8)
 
-## 패키지 구조
-```
-- domain
-    |- user
-	|- post
-	|- post_qna
-	|- announcement
-	|- comment
-	|- calendar
 
-- global
-	|- auth
-		|- oauth
-		|- token
-	|- base
-		|- domain
-		|- dto
-		|- exception
-	|- config
-	|- utils
+## 초기 아키텍처
+![image](https://github.com/LikeLion-Kit/LikeLion-Kit-Backend/assets/96743351/cf89a1ed-7683-4f40-bcff-9b632d37f3f4)
 
-```
+
 ## 커밋 규칙
 
 | init | 프로젝트 생성 |
