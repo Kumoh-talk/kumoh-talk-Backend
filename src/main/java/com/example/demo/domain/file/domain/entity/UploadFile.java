@@ -2,9 +2,8 @@ package com.example.demo.domain.file.domain.entity;
 
 
 import com.example.demo.domain.announcement.domain.Announcement;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.post.domain.Post;
-import com.example.demo.global.base.exception.ServiceException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -35,7 +34,7 @@ public class UploadFile {
 
     @ManyToOne
     @JoinColumn(name ="post_id",nullable = true)
-    private Post post;
+    private Board board;
 
     @ManyToOne
     @JoinColumn(name ="announcement_id",nullable = true)
@@ -53,8 +52,8 @@ public class UploadFile {
     }
 
     public void setEntity(Object saved) {
-        if (saved instanceof Post) {
-            this.post = (Post) saved;
+        if (saved instanceof Board) {
+            this.board = (Board) saved;
         } else if (saved instanceof Announcement) {
             this.announcement = (Announcement) saved;
         } else if (saved instanceof Comment) {

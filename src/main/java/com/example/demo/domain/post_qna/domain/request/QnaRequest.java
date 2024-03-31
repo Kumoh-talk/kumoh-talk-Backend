@@ -1,7 +1,7 @@
 package com.example.demo.domain.post_qna.domain.request;
 
 
-import com.example.demo.domain.post.domain.Post;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.post_qna.domain.Post_Qna;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -21,8 +21,8 @@ public class QnaRequest {
     @Max(value = 500,message = "최대 제한 500글자 입니다.")
     private String contents;
 
-    public static Post_Qna toEntity(QnaRequest qnaRequest, Post post) {
-        return new Post_Qna(qnaRequest.getTitle(), qnaRequest.getContents(), post);
+    public static Post_Qna toEntity(QnaRequest qnaRequest, Board board) {
+        return new Post_Qna(qnaRequest.getTitle(), qnaRequest.getContents(), board);
     }
 
 

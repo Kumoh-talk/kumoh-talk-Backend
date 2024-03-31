@@ -1,9 +1,8 @@
-package com.example.demo.domain.post.domain;
+package com.example.demo.domain.board.domain;
 
 
 import com.example.demo.domain.comment.domain.Comment;
 import com.example.demo.domain.file.domain.entity.UploadFile;
-import com.example.demo.domain.post_qna.domain.Post_Qna;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
@@ -17,11 +16,11 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name ="post")
+@Table(name ="board")
 @NoArgsConstructor
 @Getter
 @Setter
-public class Post extends BaseEntity {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,21 +42,19 @@ public class Post extends BaseEntity {
     @JoinColumn(name ="user_id",nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post_Qna> postQnas;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UploadFile> uploadFiles;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UploadFile> files;
 
 
     @Builder
-    public Post(String title, String contents, Track track, User user) {
+    public Board(String title, String contents, Track track, User user) {
         this.title = title;
         this.contents = contents;
         this.track = track;

@@ -3,7 +3,7 @@ package com.example.demo.domain.user.domain;
 import com.example.demo.domain.announcement.domain.Announcement;
 import com.example.demo.domain.calendar.domain.Calendar;
 import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.post.domain.Post;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -68,7 +68,7 @@ public class User extends BaseEntity {
     private List<Calendar> calendars;
 
     @OneToMany(mappedBy = "user")
-    private List<Post> posts;
+    private List<Board> boards;
 
     @OneToMany(mappedBy = "user")
     private List<Announcement> announcements;

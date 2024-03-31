@@ -37,10 +37,10 @@ public class QnaController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/postqna/{postId}")
-    public ResponseEntity<List<QnaInfoResponse>> qnaFindByPostId(@PathVariable Long postId) {
-        return ResponseEntity.ok(qnaService.findByPostId(postId));
-    }
+//    @PatchMapping("/postqna/{postId}")
+//    public ResponseEntity<List<QnaInfoResponse>> qnaFindByPostId(@PathVariable Long postId) {
+//        return ResponseEntity.ok(qnaService.findByPostId(postId));
+//    }
 
 
 

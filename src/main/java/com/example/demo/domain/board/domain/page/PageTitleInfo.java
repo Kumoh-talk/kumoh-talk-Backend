@@ -1,6 +1,6 @@
-package com.example.demo.domain.post.domain.page;
+package com.example.demo.domain.board.domain.page;
 
-import com.example.demo.domain.post.domain.Post;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
@@ -29,13 +29,13 @@ public class PageTitleInfo {
         this.createdAt = createdAt;
     }
 
-    public static PageTitleInfo from(Post post,String userName){
+    public static PageTitleInfo from(Board board, String userName){
         return PageTitleInfo.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
+                .postId(board.getId())
+                .title(board.getTitle())
                 .userName(userName)
-                .track(post.getTrack())
-                .createdAt(post.getCreatedAt())
+                .track(board.getTrack())
+                .createdAt(board.getCreatedAt())
                 .build();
     }
 }

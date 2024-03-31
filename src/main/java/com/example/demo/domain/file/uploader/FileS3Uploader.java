@@ -3,12 +3,12 @@ package com.example.demo.domain.file.uploader;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.demo.domain.announcement.domain.Announcement;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.comment.domain.Comment;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.file.domain.util.FileUtil;
 import com.example.demo.domain.file.repository.FileRepository;
-import com.example.demo.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class FileS3Uploader implements FileUploader {
     public String bucket;
 
     private void check(Object saved) {
-        if (!(saved instanceof Post || saved instanceof Announcement || saved instanceof Comment)) {
+        if (!(saved instanceof Board || saved instanceof Announcement || saved instanceof Comment)) {
             throw new IllegalArgumentException("saved 객체는 알 수 없는 타입입니다.");
         }
     }
@@ -76,8 +76,8 @@ public class FileS3Uploader implements FileUploader {
     }
 
 
-    public void deletePostFiles(Post post) {
-        post.getUploadFiles().forEach(uploadFile -> {
+    public void deletePostFiles(Board board) {
+        board.getUploadFiles().forEach(uploadFile -> {
             fileRepository.delete(uploadFile);
             deleteFile(uploadFile.getStoreFileName());
         });
@@ -85,12 +85,12 @@ public class FileS3Uploader implements FileUploader {
 
     /**
      * 게시물의 파일 이름 전부 반환
-     * @param post
+     * @param board
      * @return
      */
-    public List<FileNameInfo> getPostFiles(Post post) {
+    public List<FileNameInfo> getPostFiles(Board board) {
         List<FileNameInfo> result = new ArrayList<>();
-        post.getUploadFiles().forEach(uploadFile -> {
+        board.getUploadFiles().forEach(uploadFile -> {
             result.add(FileNameInfo.from(uploadFile));
         });
         return result;

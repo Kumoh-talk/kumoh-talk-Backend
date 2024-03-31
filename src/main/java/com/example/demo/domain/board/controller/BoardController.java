@@ -1,12 +1,12 @@
-package com.example.demo.domain.post.controller;
+package com.example.demo.domain.board.controller;
 
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
-import com.example.demo.domain.post.domain.page.PageSort;
-import com.example.demo.domain.post.domain.request.PostRequest;
-import com.example.demo.domain.post.domain.response.PostInfoResponse;
-import com.example.demo.domain.post.domain.response.PostPageResponse;
-import com.example.demo.domain.post.service.PostService;
+import com.example.demo.domain.board.domain.page.PageSort;
+import com.example.demo.domain.board.domain.request.BoardRequest;
+import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.response.BoardPageResponse;
+import com.example.demo.domain.board.service.BoardService;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -15,56 +15,54 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
-public class PostController {
+public class BoardController {
 
-    private final PostService postService;
+    private final BoardService boardService;
 
 
     @PostMapping("/save")
-    public ResponseEntity<PostInfoResponse> postSave(
+    public ResponseEntity<BoardInfoResponse> postSave(
             @AuthenticationPrincipal UserPrincipal user,
-            @ModelAttribute @Valid PostRequest postRequest) throws IOException {
+            @ModelAttribute @Valid BoardRequest boardRequest) throws IOException {
         CheckAuthentication(user);
 
-            return ResponseEntity.ok(postService.postSave(postRequest, user.getId()));
+            return ResponseEntity.ok(boardService.postSave(boardRequest, user.getId()));
     }
 
     @PostMapping("/update/{postId}")
-    public ResponseEntity<PostInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user,
-                                                       @ModelAttribute @Valid PostRequest postRequest,
-                                                       @PathVariable Long postId) throws IOException {
+    public ResponseEntity<BoardInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user,
+                                                        @ModelAttribute @Valid BoardRequest boardRequest,
+                                                        @PathVariable Long postId) throws IOException {
         CheckAuthentication(user);
-        return ResponseEntity.ok(postService.postUpdate(postRequest,user.getName(),postId));
+        return ResponseEntity.ok(boardService.postUpdate(boardRequest,user.getName(),postId));
     }
     @GetMapping("/search/{postId}")
-    public ResponseEntity<PostInfoResponse> postSearch(@AuthenticationPrincipal UserPrincipal user,
-                                                       @PathVariable Long postId) throws IOException {
+    public ResponseEntity<BoardInfoResponse> postSearch(@AuthenticationPrincipal UserPrincipal user,
+                                                        @PathVariable Long postId) throws IOException {
         CheckAuthentication(user);
-        return ResponseEntity.ok(postService.findById(postId,user.getName()));
+        return ResponseEntity.ok(boardService.findById(postId,user.getName()));
     }
 
     @PatchMapping("/delete/{postId}")
     public ResponseEntity postDelete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
         CheckAuthentication(user);
-        postService.postRemove(postId, user.getUsername());
+        boardService.postRemove(postId, user.getUsername());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
-    public ResponseEntity<PostPageResponse> findPageList(
+    public ResponseEntity<BoardPageResponse> findPageList(
                                                          @RequestParam(defaultValue = "1", required = false) int page,
                                                          @RequestParam(required = true) Track track,
                                                          @RequestParam(defaultValue = "DESC", required = false ) PageSort pageSort) {
 
-        return ResponseEntity.ok(postService.findPageList(page,track,pageSort));
+        return ResponseEntity.ok(boardService.findPageList(page,track,pageSort));
     }
 
     private void CheckAuthentication(UserPrincipal user) {

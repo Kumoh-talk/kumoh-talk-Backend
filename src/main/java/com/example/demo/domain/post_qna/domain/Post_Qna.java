@@ -1,18 +1,13 @@
 package com.example.demo.domain.post_qna.domain;
 
 
-import com.example.demo.domain.post.domain.Post;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name ="post_qna")
@@ -34,12 +29,12 @@ public class Post_Qna extends BaseEntity {
     private String contents;
     @ManyToOne
     @JoinColumn(name ="post_id",nullable = false)
-    private Post post;
+    private Board board;
 
 
-    public Post_Qna(String title, String contents, Post post) {
+    public Post_Qna(String title, String contents, Board board) {
         this.title = title;
         this.contents = contents;
-        this.post = post;
+        this.board = board;
     }
 }

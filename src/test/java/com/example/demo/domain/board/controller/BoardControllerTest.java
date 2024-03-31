@@ -1,31 +1,25 @@
-package com.example.demo.domain.post.controller;
+package com.example.demo.domain.board.controller;
 
-import com.example.demo.base.ControllerTest;
 import com.example.demo.domain.auth.domain.UserPrincipal;
 import com.example.demo.domain.file.domain.FileNameInfo;
-import com.example.demo.domain.post.domain.page.PageInfo;
-import com.example.demo.domain.post.domain.page.PageSort;
-import com.example.demo.domain.post.domain.page.PageTitleInfo;
-import com.example.demo.domain.post.domain.request.PostRequest;
-import com.example.demo.domain.post.domain.response.PostInfoResponse;
-import com.example.demo.domain.post.domain.response.PostPageResponse;
-import com.example.demo.domain.post.service.PostService;
+import com.example.demo.domain.board.domain.page.PageInfo;
+import com.example.demo.domain.board.domain.page.PageSort;
+import com.example.demo.domain.board.domain.page.PageTitleInfo;
+import com.example.demo.domain.board.domain.request.BoardRequest;
+import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.response.BoardPageResponse;
+import com.example.demo.domain.board.service.BoardService;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import jdk.jfr.ContentType;
-import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,16 +30,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,7 +42,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -72,16 +60,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = PostController.class)
+@WebMvcTest(value = BoardController.class)
 @AutoConfigureRestDocs
 @ExtendWith(MockitoExtension.class)
 @WithMockUser
-public class PostControllerTest {
+public class BoardControllerTest {
     @InjectMocks
-    private PostController postController;
+    private BoardController boardController;
 
     @MockBean
-    private PostService postService;
+    private BoardService boardService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -108,7 +96,7 @@ public class PostControllerTest {
 
     @Nested
     @DisplayName("<게시판 저장>")
-    class savePost {
+    class saveBoard {
         String savePostUrl = "/api/post/save";
 
 
@@ -118,19 +106,19 @@ public class PostControllerTest {
         @DisplayName("성공")
         void success() throws Exception {
             //Given
-            PostRequest postRequest = postRequest();
-            PostInfoResponse postInfoResponse = postInfoResponse();
-            given(postService.postSave(any(PostRequest.class), any(Long.class))).willReturn(postInfoResponse);
+            BoardRequest boardRequest = postRequest();
+            BoardInfoResponse boardInfoResponse = postInfoResponse();
+            given(boardService.postSave(any(BoardRequest.class), any(Long.class))).willReturn(boardInfoResponse);
             //When -> then
             mockMvc.perform(
                     MockMvcRequestBuilders
                             .multipart(savePostUrl)
-                            .file((MockMultipartFile) postRequest.getAttachFile())
-                            .file((MockMultipartFile) postRequest.getImageFiles().get(0))
-                            .file((MockMultipartFile) postRequest.getImageFiles().get(1))
-                            .param("title", postRequest.getTitle())
-                            .param("contents", postRequest.getContents())
-                            .param("track", String.valueOf(postRequest.getTrack()))
+                            .file((MockMultipartFile) boardRequest.getAttachFile())
+                            .file((MockMultipartFile) boardRequest.getImageFiles().get(0))
+                            .file((MockMultipartFile) boardRequest.getImageFiles().get(1))
+                            .param("title", boardRequest.getTitle())
+                            .param("contents", boardRequest.getContents())
+                            .param("track", String.valueOf(boardRequest.getTrack()))
 
                             .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                             .with(csrf())
@@ -138,26 +126,26 @@ public class PostControllerTest {
                             .with(userPrincipal())
             ).andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.postId").value(postInfoResponse.getPostId()))
-                    .andExpect(jsonPath("$.username").value(postInfoResponse.getUsername()))
-                    .andExpect(jsonPath("$.title").value(postInfoResponse.getTitle()))
-                    .andExpect(jsonPath("$.contents").value(postInfoResponse.getContents()))
+                    .andExpect(jsonPath("$.postId").value(boardInfoResponse.getPostId()))
+                    .andExpect(jsonPath("$.username").value(boardInfoResponse.getUsername()))
+                    .andExpect(jsonPath("$.title").value(boardInfoResponse.getTitle()))
+                    .andExpect(jsonPath("$.contents").value(boardInfoResponse.getContents()))
 
-                    .andExpect(jsonPath("$.attachFileNameInfo.originalFileName").value(postInfoResponse.getAttachFileNameInfo().getOriginalFileName()))
-                    .andExpect(jsonPath("$.attachFileNameInfo.storeFileName").value(postInfoResponse.getAttachFileNameInfo().getStoreFileName()))
-                    .andExpect(jsonPath("$.attachFileNameInfo.url").value(postInfoResponse.getAttachFileNameInfo().getUrl()))
+                    .andExpect(jsonPath("$.attachFileNameInfo.originalFileName").value(boardInfoResponse.getAttachFileNameInfo().getOriginalFileName()))
+                    .andExpect(jsonPath("$.attachFileNameInfo.storeFileName").value(boardInfoResponse.getAttachFileNameInfo().getStoreFileName()))
+                    .andExpect(jsonPath("$.attachFileNameInfo.url").value(boardInfoResponse.getAttachFileNameInfo().getUrl()))
 
 
-                    .andExpect(jsonPath("$.imageFileNameInfos[0].originalFileName").value(postInfoResponse.getImageFileNameInfos().get(0).getOriginalFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[0].storeFileName").value(postInfoResponse.getImageFileNameInfos().get(0).getStoreFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[0].url").value(postInfoResponse.getImageFileNameInfos().get(0).getUrl()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[0].originalFileName").value(boardInfoResponse.getImageFileNameInfos().get(0).getOriginalFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[0].storeFileName").value(boardInfoResponse.getImageFileNameInfos().get(0).getStoreFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[0].url").value(boardInfoResponse.getImageFileNameInfos().get(0).getUrl()))
 
-                    .andExpect(jsonPath("$.imageFileNameInfos[1].originalFileName").value(postInfoResponse.getImageFileNameInfos().get(1).getOriginalFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[1].storeFileName").value(postInfoResponse.getImageFileNameInfos().get(1).getStoreFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[1].url").value(postInfoResponse.getImageFileNameInfos().get(1).getUrl()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[1].originalFileName").value(boardInfoResponse.getImageFileNameInfos().get(1).getOriginalFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[1].storeFileName").value(boardInfoResponse.getImageFileNameInfos().get(1).getStoreFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[1].url").value(boardInfoResponse.getImageFileNameInfos().get(1).getUrl()))
 
-                    .andExpect(jsonPath("$.createdAt").value(postInfoResponse.getUpdatedAt().format(formatter)))
-                    .andExpect(jsonPath("$.updatedAt").value(postInfoResponse.getCreatedAt().format(formatter)))
+                    .andExpect(jsonPath("$.createdAt").value(boardInfoResponse.getUpdatedAt().format(formatter)))
+                    .andExpect(jsonPath("$.updatedAt").value(boardInfoResponse.getCreatedAt().format(formatter)))
 
                     .andDo(document("post/post-save-success",
                     preprocessRequest(prettyPrint()),
@@ -200,51 +188,51 @@ public class PostControllerTest {
 
     @Nested
     @DisplayName("<게시판 수정>")
-    class updatePost {
+    class updateBoard {
         @Test
         @DisplayName("성공")
         void success() throws Exception {
             String updatePostUrl = "/api/post/update/{postId}";
             //Given
-            PostRequest postRequest = postRequest();
-            PostInfoResponse postInfoResponse = postInfoResponse();
-            given(postService.postUpdate(any(PostRequest.class), any(String.class), any(Long.class))).willReturn(postInfoResponse);
+            BoardRequest boardRequest = postRequest();
+            BoardInfoResponse boardInfoResponse = postInfoResponse();
+            given(boardService.postUpdate(any(BoardRequest.class), any(String.class), any(Long.class))).willReturn(boardInfoResponse);
             //When -> then
             mockMvc.perform(
                             MockMvcRequestBuilders
                                     .multipart(updatePostUrl, "1")
-                                    .file((MockMultipartFile) postRequest.getAttachFile())
-                                    .file((MockMultipartFile) postRequest.getImageFiles().get(0))
-                                    .file((MockMultipartFile) postRequest.getImageFiles().get(1))
-                                    .param("title", postRequest.getTitle())
-                                    .param("contents", postRequest.getContents())
-                                    .param("track", String.valueOf(postRequest.getTrack()))
+                                    .file((MockMultipartFile) boardRequest.getAttachFile())
+                                    .file((MockMultipartFile) boardRequest.getImageFiles().get(0))
+                                    .file((MockMultipartFile) boardRequest.getImageFiles().get(1))
+                                    .param("title", boardRequest.getTitle())
+                                    .param("contents", boardRequest.getContents())
+                                    .param("track", String.valueOf(boardRequest.getTrack()))
                                     .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                                     .with(csrf())
                                     .header("Authorization", "Bearer {ACCESS_TOKEN}")
                                     .with(userPrincipal())
                     ).andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.postId").value(postInfoResponse.getPostId()))
-                    .andExpect(jsonPath("$.username").value(postInfoResponse.getUsername()))
-                    .andExpect(jsonPath("$.title").value(postInfoResponse.getTitle()))
-                    .andExpect(jsonPath("$.contents").value(postInfoResponse.getContents()))
+                    .andExpect(jsonPath("$.postId").value(boardInfoResponse.getPostId()))
+                    .andExpect(jsonPath("$.username").value(boardInfoResponse.getUsername()))
+                    .andExpect(jsonPath("$.title").value(boardInfoResponse.getTitle()))
+                    .andExpect(jsonPath("$.contents").value(boardInfoResponse.getContents()))
 
-                    .andExpect(jsonPath("$.attachFileNameInfo.originalFileName").value(postInfoResponse.getAttachFileNameInfo().getOriginalFileName()))
-                    .andExpect(jsonPath("$.attachFileNameInfo.storeFileName").value(postInfoResponse.getAttachFileNameInfo().getStoreFileName()))
-                    .andExpect(jsonPath("$.attachFileNameInfo.url").value(postInfoResponse.getAttachFileNameInfo().getUrl()))
+                    .andExpect(jsonPath("$.attachFileNameInfo.originalFileName").value(boardInfoResponse.getAttachFileNameInfo().getOriginalFileName()))
+                    .andExpect(jsonPath("$.attachFileNameInfo.storeFileName").value(boardInfoResponse.getAttachFileNameInfo().getStoreFileName()))
+                    .andExpect(jsonPath("$.attachFileNameInfo.url").value(boardInfoResponse.getAttachFileNameInfo().getUrl()))
 
 
-                    .andExpect(jsonPath("$.imageFileNameInfos[0].originalFileName").value(postInfoResponse.getImageFileNameInfos().get(0).getOriginalFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[0].storeFileName").value(postInfoResponse.getImageFileNameInfos().get(0).getStoreFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[0].url").value(postInfoResponse.getImageFileNameInfos().get(0).getUrl()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[0].originalFileName").value(boardInfoResponse.getImageFileNameInfos().get(0).getOriginalFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[0].storeFileName").value(boardInfoResponse.getImageFileNameInfos().get(0).getStoreFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[0].url").value(boardInfoResponse.getImageFileNameInfos().get(0).getUrl()))
 
-                    .andExpect(jsonPath("$.imageFileNameInfos[1].originalFileName").value(postInfoResponse.getImageFileNameInfos().get(1).getOriginalFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[1].storeFileName").value(postInfoResponse.getImageFileNameInfos().get(1).getStoreFileName()))
-                    .andExpect(jsonPath("$.imageFileNameInfos[1].url").value(postInfoResponse.getImageFileNameInfos().get(1).getUrl()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[1].originalFileName").value(boardInfoResponse.getImageFileNameInfos().get(1).getOriginalFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[1].storeFileName").value(boardInfoResponse.getImageFileNameInfos().get(1).getStoreFileName()))
+                    .andExpect(jsonPath("$.imageFileNameInfos[1].url").value(boardInfoResponse.getImageFileNameInfos().get(1).getUrl()))
 
-                    .andExpect(jsonPath("$.createdAt").value(postInfoResponse.getUpdatedAt().format(formatter)))
-                    .andExpect(jsonPath("$.updatedAt").value(postInfoResponse.getCreatedAt().format(formatter)))
+                    .andExpect(jsonPath("$.createdAt").value(boardInfoResponse.getUpdatedAt().format(formatter)))
+                    .andExpect(jsonPath("$.updatedAt").value(boardInfoResponse.getCreatedAt().format(formatter)))
 
                     .andDo(document("post/post-update-success",
                             preprocessRequest(prettyPrint()),
@@ -284,20 +272,20 @@ public class PostControllerTest {
         void FailNotMathcedUser() throws Exception {
             String updatePostUrl = "/api/post/update/{postId}";
             //Given
-            PostRequest postRequest = postRequest();
-            PostInfoResponse postInfoResponse = postInfoResponse();
-            given(postService.postUpdate(any(PostRequest.class), any(String.class), any(Long.class))).willThrow(new ServiceException(ErrorCode.NOT_ACCESS_USER));
+            BoardRequest boardRequest = postRequest();
+            BoardInfoResponse boardInfoResponse = postInfoResponse();
+            given(boardService.postUpdate(any(BoardRequest.class), any(String.class), any(Long.class))).willThrow(new ServiceException(ErrorCode.NOT_ACCESS_USER));
 
             //When -> then
             mockMvc.perform(
                             MockMvcRequestBuilders
                                     .multipart(updatePostUrl, "1")
-                                    .file((MockMultipartFile) postRequest.getAttachFile())
-                                    .file((MockMultipartFile) postRequest.getImageFiles().get(0))
-                                    .file((MockMultipartFile) postRequest.getImageFiles().get(1))
-                                    .param("title", postRequest.getTitle())
-                                    .param("contents", postRequest.getContents())
-                                    .param("track", String.valueOf(postRequest.getTrack()))
+                                    .file((MockMultipartFile) boardRequest.getAttachFile())
+                                    .file((MockMultipartFile) boardRequest.getImageFiles().get(0))
+                                    .file((MockMultipartFile) boardRequest.getImageFiles().get(1))
+                                    .param("title", boardRequest.getTitle())
+                                    .param("contents", boardRequest.getContents())
+                                    .param("track", String.valueOf(boardRequest.getTrack()))
                                     .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                                     .with(csrf())
                                     .header("Authorization", "Bearer {ACCESS_TOKEN}")
@@ -322,19 +310,19 @@ public class PostControllerTest {
         void FailPostNotFound() throws Exception {
             String updatePostUrl = "/api/post/update/{postId}";
             //Given
-            PostRequest postRequest = postRequest();
-            given(postService.postUpdate(any(PostRequest.class), any(String.class), any(Long.class))).willThrow(new ServiceException(ErrorCode.POST_NOT_FOUND));
+            BoardRequest boardRequest = postRequest();
+            given(boardService.postUpdate(any(BoardRequest.class), any(String.class), any(Long.class))).willThrow(new ServiceException(ErrorCode.POST_NOT_FOUND));
 
             //When -> then
             mockMvc.perform(
                             MockMvcRequestBuilders
                                     .multipart(updatePostUrl, "1")
-                                    .file((MockMultipartFile) postRequest.getAttachFile())
-                                    .file((MockMultipartFile) postRequest.getImageFiles().get(0))
-                                    .file((MockMultipartFile) postRequest.getImageFiles().get(1))
-                                    .param("title", postRequest.getTitle())
-                                    .param("contents", postRequest.getContents())
-                                    .param("track", String.valueOf(postRequest.getTrack()))
+                                    .file((MockMultipartFile) boardRequest.getAttachFile())
+                                    .file((MockMultipartFile) boardRequest.getImageFiles().get(0))
+                                    .file((MockMultipartFile) boardRequest.getImageFiles().get(1))
+                                    .param("title", boardRequest.getTitle())
+                                    .param("contents", boardRequest.getContents())
+                                    .param("track", String.valueOf(boardRequest.getTrack()))
                                     .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                                     .with(csrf())
                                     .header("Authorization", "Bearer {ACCESS_TOKEN}")
@@ -358,15 +346,15 @@ public class PostControllerTest {
 
     @Nested
     @DisplayName("<게시물 삭제>")
-    class deletePost {
+    class deleteBoard {
         String deletePostUrl = "/api/post/delete/{postId}";
         @Test
         @DisplayName("성공")
         void success() throws Exception {
             //Given
-            PostRequest postRequest = postRequest();
-            PostInfoResponse postInfoResponse = postInfoResponse();
-            doNothing().when(postService).postRemove(any(Long.class),any(String.class));
+            BoardRequest boardRequest = postRequest();
+            BoardInfoResponse boardInfoResponse = postInfoResponse();
+            doNothing().when(boardService).postRemove(any(Long.class),any(String.class));
             //When -> then
             mockMvc.perform(
                             MockMvcRequestBuilders
@@ -392,7 +380,7 @@ public class PostControllerTest {
 
             //Given
             doThrow(new ServiceException(ErrorCode.NOT_ACCESS_USER))
-                    .when(postService).postRemove(any(Long.class),any(String.class));
+                    .when(boardService).postRemove(any(Long.class),any(String.class));
 
             //When -> then
             mockMvc.perform(
@@ -421,7 +409,7 @@ public class PostControllerTest {
         void FailPostNotFound() throws Exception {
             //Given
             doThrow(new ServiceException(ErrorCode.POST_NOT_FOUND))
-                    .when(postService).postRemove(any(Long.class),any(String.class));
+                    .when(boardService).postRemove(any(Long.class),any(String.class));
 
 
             //When -> then
@@ -450,14 +438,14 @@ public class PostControllerTest {
 
     @Nested
     @DisplayName("<단일 게시물 검색>")
-    class searchPost {
+    class searchBoard {
         String searchPostUrl = "/api/post/search/{postId}";
         @Test
         @DisplayName("성공")
         void success() throws Exception {
             //Given
-            PostInfoResponse postInfoResponse = postInfoResponse();
-            given(postService.findById(any(Long.class),any(String.class))).willReturn(postInfoResponse);
+            BoardInfoResponse boardInfoResponse = postInfoResponse();
+            given(boardService.findById(any(Long.class),any(String.class))).willReturn(boardInfoResponse);
 
             //when -> then
             mockMvc.perform(
@@ -468,26 +456,26 @@ public class PostControllerTest {
                                     .with(userPrincipal())
                     ).andDo(print())
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.postId").value(postInfoResponse.getPostId()))
-                        .andExpect(jsonPath("$.username").value(postInfoResponse.getUsername()))
-                        .andExpect(jsonPath("$.title").value(postInfoResponse.getTitle()))
-                        .andExpect(jsonPath("$.contents").value(postInfoResponse.getContents()))
+                        .andExpect(jsonPath("$.postId").value(boardInfoResponse.getPostId()))
+                        .andExpect(jsonPath("$.username").value(boardInfoResponse.getUsername()))
+                        .andExpect(jsonPath("$.title").value(boardInfoResponse.getTitle()))
+                        .andExpect(jsonPath("$.contents").value(boardInfoResponse.getContents()))
 
-                        .andExpect(jsonPath("$.attachFileNameInfo.originalFileName").value(postInfoResponse.getAttachFileNameInfo().getOriginalFileName()))
-                        .andExpect(jsonPath("$.attachFileNameInfo.storeFileName").value(postInfoResponse.getAttachFileNameInfo().getStoreFileName()))
-                        .andExpect(jsonPath("$.attachFileNameInfo.url").value(postInfoResponse.getAttachFileNameInfo().getUrl()))
+                        .andExpect(jsonPath("$.attachFileNameInfo.originalFileName").value(boardInfoResponse.getAttachFileNameInfo().getOriginalFileName()))
+                        .andExpect(jsonPath("$.attachFileNameInfo.storeFileName").value(boardInfoResponse.getAttachFileNameInfo().getStoreFileName()))
+                        .andExpect(jsonPath("$.attachFileNameInfo.url").value(boardInfoResponse.getAttachFileNameInfo().getUrl()))
 
 
-                        .andExpect(jsonPath("$.imageFileNameInfos[0].originalFileName").value(postInfoResponse.getImageFileNameInfos().get(0).getOriginalFileName()))
-                        .andExpect(jsonPath("$.imageFileNameInfos[0].storeFileName").value(postInfoResponse.getImageFileNameInfos().get(0).getStoreFileName()))
-                        .andExpect(jsonPath("$.imageFileNameInfos[0].url").value(postInfoResponse.getImageFileNameInfos().get(0).getUrl()))
+                        .andExpect(jsonPath("$.imageFileNameInfos[0].originalFileName").value(boardInfoResponse.getImageFileNameInfos().get(0).getOriginalFileName()))
+                        .andExpect(jsonPath("$.imageFileNameInfos[0].storeFileName").value(boardInfoResponse.getImageFileNameInfos().get(0).getStoreFileName()))
+                        .andExpect(jsonPath("$.imageFileNameInfos[0].url").value(boardInfoResponse.getImageFileNameInfos().get(0).getUrl()))
 
-                        .andExpect(jsonPath("$.imageFileNameInfos[1].originalFileName").value(postInfoResponse.getImageFileNameInfos().get(1).getOriginalFileName()))
-                        .andExpect(jsonPath("$.imageFileNameInfos[1].storeFileName").value(postInfoResponse.getImageFileNameInfos().get(1).getStoreFileName()))
-                        .andExpect(jsonPath("$.imageFileNameInfos[1].url").value(postInfoResponse.getImageFileNameInfos().get(1).getUrl()))
+                        .andExpect(jsonPath("$.imageFileNameInfos[1].originalFileName").value(boardInfoResponse.getImageFileNameInfos().get(1).getOriginalFileName()))
+                        .andExpect(jsonPath("$.imageFileNameInfos[1].storeFileName").value(boardInfoResponse.getImageFileNameInfos().get(1).getStoreFileName()))
+                        .andExpect(jsonPath("$.imageFileNameInfos[1].url").value(boardInfoResponse.getImageFileNameInfos().get(1).getUrl()))
 
-                        .andExpect(jsonPath("$.createdAt").value(postInfoResponse.getUpdatedAt().format(formatter)))
-                        .andExpect(jsonPath("$.updatedAt").value(postInfoResponse.getCreatedAt().format(formatter)))
+                        .andExpect(jsonPath("$.createdAt").value(boardInfoResponse.getUpdatedAt().format(formatter)))
+                        .andExpect(jsonPath("$.updatedAt").value(boardInfoResponse.getCreatedAt().format(formatter)))
 
                     .andDo(document("post/post-search-success",
                             preprocessRequest(prettyPrint()),
@@ -517,7 +505,7 @@ public class PostControllerTest {
         @DisplayName("게시물을 찾을 수 없으면 에러 반환")
         void failIfPostNotFound() throws Exception {
             //given
-            given(postService.findById( any(Long.class),any(String.class))).willThrow(new ServiceException(ErrorCode.POST_NOT_FOUND));
+            given(boardService.findById( any(Long.class),any(String.class))).willThrow(new ServiceException(ErrorCode.POST_NOT_FOUND));
 
             //When -> then
             mockMvc.perform(
@@ -561,9 +549,9 @@ public class PostControllerTest {
         @DisplayName("성공")
         void success() throws Exception {
             //given
-            PostPageResponse postPageResponse = createTestPostPageResponse();
-            given(postService.findPageList(any(Integer.class), any(Track.class), any(PageSort.class)))
-                    .willReturn(postPageResponse);
+            BoardPageResponse boardPageResponse = createTestPostPageResponse();
+            given(boardService.findPageList(any(Integer.class), any(Track.class), any(PageSort.class)))
+                    .willReturn(boardPageResponse);
 
             //when -> then
             mockMvc
@@ -577,21 +565,21 @@ public class PostControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.pageTitleInfoList[0].postId").value(postPageResponse.getPageTitleInfoList().get(0).getPostId()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[0].userName").value(postPageResponse.getPageTitleInfoList().get(0).getUserName()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[0].title").value(postPageResponse.getPageTitleInfoList().get(0).getTitle()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[0].track").value(postPageResponse.getPageTitleInfoList().get(0).getTrack().toString()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[0].createdAt").value(postPageResponse.getPageTitleInfoList().get(0).getCreatedAt().format(formatter)))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].postId").value(boardPageResponse.getPageTitleInfoList().get(0).getPostId()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].userName").value(boardPageResponse.getPageTitleInfoList().get(0).getUserName()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].title").value(boardPageResponse.getPageTitleInfoList().get(0).getTitle()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].track").value(boardPageResponse.getPageTitleInfoList().get(0).getTrack().toString()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[0].createdAt").value(boardPageResponse.getPageTitleInfoList().get(0).getCreatedAt().format(formatter)))
                     // 검증 추가
-                    .andExpect(jsonPath("$.pageTitleInfoList[1].postId").value(postPageResponse.getPageTitleInfoList().get(1).getPostId()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[1].userName").value(postPageResponse.getPageTitleInfoList().get(1).getUserName()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[1].title").value(postPageResponse.getPageTitleInfoList().get(1).getTitle()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[1].track").value(postPageResponse.getPageTitleInfoList().get(1).getTrack().toString()))
-                    .andExpect(jsonPath("$.pageTitleInfoList[1].createdAt").value(postPageResponse.getPageTitleInfoList().get(1).getCreatedAt().format(formatter)))
-                    .andExpect(jsonPath("$.pageInfo.pageSize").value(postPageResponse.getPageInfo().getPageSize()))
-                    .andExpect(jsonPath("$.pageInfo.page").value(postPageResponse.getPageInfo().getPage()))
-                    .andExpect(jsonPath("$.pageInfo.totalPage").value(postPageResponse.getPageInfo().getTotalPage()))
-                    .andExpect(jsonPath("$.pageInfo.pageSort").value(postPageResponse.getPageInfo().getPageSort().toString()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].postId").value(boardPageResponse.getPageTitleInfoList().get(1).getPostId()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].userName").value(boardPageResponse.getPageTitleInfoList().get(1).getUserName()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].title").value(boardPageResponse.getPageTitleInfoList().get(1).getTitle()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].track").value(boardPageResponse.getPageTitleInfoList().get(1).getTrack().toString()))
+                    .andExpect(jsonPath("$.pageTitleInfoList[1].createdAt").value(boardPageResponse.getPageTitleInfoList().get(1).getCreatedAt().format(formatter)))
+                    .andExpect(jsonPath("$.pageInfo.pageSize").value(boardPageResponse.getPageInfo().getPageSize()))
+                    .andExpect(jsonPath("$.pageInfo.page").value(boardPageResponse.getPageInfo().getPage()))
+                    .andExpect(jsonPath("$.pageInfo.totalPage").value(boardPageResponse.getPageInfo().getTotalPage()))
+                    .andExpect(jsonPath("$.pageInfo.pageSort").value(boardPageResponse.getPageInfo().getPageSort().toString()))
 
                     .andDo(document("post/post-page-success",
                             preprocessRequest(prettyPrint()),
@@ -681,13 +669,13 @@ public class PostControllerTest {
 
 
 
-    PostRequest postRequest() {
+    BoardRequest postRequest() {
         MultipartFile attachFile = new MockMultipartFile("attachFile", "첨부파일1.pdf", MediaType.APPLICATION_PDF_VALUE, "attachFile".getBytes());
         List<MultipartFile> imageFiles = List.of(
                 new MockMultipartFile("imageFiles", "이미지파일1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
                 new MockMultipartFile("imageFiles", "이미지파일2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
         );
-        return PostRequest.builder()
+        return BoardRequest.builder()
                 .title("title")
                 .contents("content")
                 .track(Track.BACK)
@@ -695,14 +683,14 @@ public class PostControllerTest {
                 .imageFiles(imageFiles)
                 .build();
     }
-    PostInfoResponse postInfoResponse() {
+    BoardInfoResponse postInfoResponse() {
         // FileNameInfo 객체 예시 생성
         FileNameInfo attachFile = new FileNameInfo("originalFileName.pdf", "storeFileName20230315.pdf", "https://example.com/files/storeFileName20230315.pdf");
         List<FileNameInfo> imageFiles = Arrays.asList(
                 new FileNameInfo("image1.jpg", "storeImage120230315.jpg", "https://example.com/images/storeImage120230315.jpg"),
                 new FileNameInfo("image2.jpg", "storeImage220230315.jpg", "https://example.com/images/storeImage220230315.jpg")
         );
-        return PostInfoResponse.builder()
+        return BoardInfoResponse.builder()
                 .postId(1L)
                 .title("title")
                 .contents("content")
@@ -713,7 +701,7 @@ public class PostControllerTest {
                 .imageFileNameInfos(imageFiles)
                 .build();
     }
-    PostPageResponse createTestPostPageResponse() {
+    BoardPageResponse createTestPostPageResponse() {
         List<PageTitleInfo> pageTitleInfoList = new ArrayList<>();
         pageTitleInfoList.add(PageTitleInfo.builder()
                 .postId(1L)
@@ -731,6 +719,6 @@ public class PostControllerTest {
                 .build());
         PageInfo pageInfo = new PageInfo(10, 1, 2, PageSort.DESC);
 
-        return new PostPageResponse(pageTitleInfoList, pageInfo);
+        return new BoardPageResponse(pageTitleInfoList, pageInfo);
     }
 }

@@ -1,17 +1,16 @@
-package com.example.demo.domain.post.service;
+package com.example.demo.domain.board.service;
 
-import com.example.demo.domain.file.uploader.FileSysStore;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.file.uploader.FileUploader;
-import com.example.demo.domain.post.Repository.PostRepository;
-import com.example.demo.domain.post.domain.Post;
-import com.example.demo.domain.post.domain.page.PageInfo;
-import com.example.demo.domain.post.domain.page.PageSort;
-import com.example.demo.domain.post.domain.page.PageTitleInfo;
-import com.example.demo.domain.post.domain.request.PostRequest;
-import com.example.demo.domain.post.domain.response.PostInfoResponse;
-import com.example.demo.domain.post.domain.response.PostPageResponse;
+import com.example.demo.domain.board.Repository.BoardRepository;
+import com.example.demo.domain.board.domain.page.PageInfo;
+import com.example.demo.domain.board.domain.page.PageSort;
+import com.example.demo.domain.board.domain.page.PageTitleInfo;
+import com.example.demo.domain.board.domain.request.BoardRequest;
+import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.response.BoardPageResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -30,32 +29,32 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class BoardService {
 
-    private final PostRepository postRepository;
+    private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final FileUploader fileUploader;
 
     private static final int PAGE_SIZE = 10;
     /**
      *
-     * @param postRequest
+     * @param boardRequest
      * @param userId
      * @return PostInfoResponse 생성된 post 정보 객체 반환
      */
     @Transactional
-    public PostInfoResponse postSave(PostRequest postRequest, Long userId) throws IOException {
+    public BoardInfoResponse postSave(BoardRequest boardRequest, Long userId) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
-        Post post = PostRequest.toEntity(postRequest, user);
-        Post savedPost = postRepository.save(post);
+        Board board = BoardRequest.toEntity(boardRequest, user);
+        Board savedBoard = boardRepository.save(board);
 
-        FileNameInfo attachfileNameInfo = fileUploader.storeFile(postRequest.getAttachFile(), savedPost);
-        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(postRequest.getImageFiles(),savedPost);
+        FileNameInfo attachfileNameInfo = fileUploader.storeFile(boardRequest.getAttachFile(), savedBoard);
+        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(boardRequest.getImageFiles(), savedBoard);
 
-        return PostInfoResponse.from(
-                savedPost,
+        return BoardInfoResponse.from(
+                savedBoard,
                 user.getName(),
                 attachfileNameInfo,
                 imagesFileNameInfos);
@@ -64,19 +63,19 @@ public class PostService {
 
     /**
      *
-     * @param postRequest
+     * @param boardRequest
      * @param userName
      * @param postId
      * @return
      */
     @Transactional
-    public PostInfoResponse postUpdate(PostRequest postRequest, String userName, Long postId) throws IOException {
-        Post post = postRepository.findById(postId)
+    public BoardInfoResponse postUpdate(BoardRequest boardRequest, String userName, Long postId) throws IOException {
+        Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-        if(!post.getUser().getName().equals(userName)) {
+        if(!board.getUser().getName().equals(userName)) {
             new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        return updatePost(postRequest, post, userName);
+        return updatePost(boardRequest, board, userName);
     }
 
 
@@ -86,13 +85,13 @@ public class PostService {
      */
     @Transactional
     public void postRemove(Long postId,String userName) {
-        Post post = postRepository.findById(postId)
+        Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-        if(!post.getUser().getName().equals(userName)) {
+        if(!board.getUser().getName().equals(userName)) {
             new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        fileUploader.deletePostFiles(post);
-        postRepository.delete(post);
+        fileUploader.deletePostFiles(board);
+        boardRepository.delete(board);
     }
     /**
      * 게시물 id로 게시물을 찾는 메서드
@@ -101,11 +100,11 @@ public class PostService {
      * @return
      */
     @Transactional(readOnly = true)
-    public PostInfoResponse findById(Long postId,String userName) {
-        Post post = postRepository.findById(postId)
+    public BoardInfoResponse findById(Long postId, String userName) {
+        Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-        List<UploadFile> uploadFiles = post.getUploadFiles();
-        return PostInfoResponse.from(post,
+        List<UploadFile> uploadFiles = board.getUploadFiles();
+        return BoardInfoResponse.from(board,
                 userName,
                 fileUploader.getPostAttachFile(uploadFiles),
                 fileUploader.getPostImagesFiles(uploadFiles));
@@ -116,7 +115,7 @@ public class PostService {
      * @return List<PostInfoResponse>
      */
     @Transactional(readOnly = true)
-    public List<PostInfoResponse> findByALL() {
+    public List<BoardInfoResponse> findByALL() {
 /*        return postRepository.findAll().stream()
                 .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
                 .collect(Collectors.toList());*/
@@ -124,12 +123,12 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostPageResponse findPageList(int page, Track track, PageSort pageSort) {
+    public BoardPageResponse findPageList(int page, Track track, PageSort pageSort) {
         PageRequest pageRequest = (pageSort == PageSort.DESC) ? PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending()):
                 PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").ascending());
 
 
-        Page<Post> postPage = postRepository.findAllByTrack(track, pageRequest);
+        Page<Board> postPage = boardRepository.findAllByTrack(track, pageRequest);
 
         PageInfo pageInfo = new PageInfo(postPage.getSize(), postPage.getNumber(), postPage.getTotalPages(), pageSort);
 
@@ -139,18 +138,18 @@ public class PostService {
         });
 
 
-        return new PostPageResponse(pageTitleInfoList, pageInfo);
+        return new BoardPageResponse(pageTitleInfoList, pageInfo);
     }
 
-    public PostInfoResponse updatePost(PostRequest postRequest, Post post, String userName) throws IOException {
+    public BoardInfoResponse updatePost(BoardRequest boardRequest, Board board, String userName) throws IOException {
 
-        fileUploader.deletePostFiles(post);
-        FileNameInfo attachfileNameInfo = fileUploader.storeFile(postRequest.getAttachFile(), post);
-        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(postRequest.getImageFiles(), post);
-        post.setTitle(postRequest.getTitle());
-        post.setContents(postRequest.getContents());
+        fileUploader.deletePostFiles(board);
+        FileNameInfo attachfileNameInfo = fileUploader.storeFile(boardRequest.getAttachFile(), board);
+        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(boardRequest.getImageFiles(), board);
+        board.setTitle(boardRequest.getTitle());
+        board.setContents(boardRequest.getContents());
 
-        return PostInfoResponse.from(post, userName, attachfileNameInfo, imagesFileNameInfos);
+        return BoardInfoResponse.from(board, userName, attachfileNameInfo, imagesFileNameInfos);
     }
 
 

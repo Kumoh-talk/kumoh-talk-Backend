@@ -1,11 +1,11 @@
 package com.example.demo.domain.file.uploader;
 
 
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.entity.UploadFile;
 import com.example.demo.domain.file.domain.util.FileUtil;
 import com.example.demo.domain.file.repository.FileRepository;
-import com.example.demo.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,12 +33,12 @@ public class FileSysStore {
 
 
 
-    public List<FileNameInfo> storeFiles(List<MultipartFile> multipartFiles, Post post) throws IOException {
+    public List<FileNameInfo> storeFiles(List<MultipartFile> multipartFiles, Board board) throws IOException {
         List<FileNameInfo> result = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
             if (!multipartFile.isEmpty()) {
-                result.add(storeFile(multipartFile, post));
+                result.add(storeFile(multipartFile, board));
             }
         }
         return result;
@@ -50,7 +50,7 @@ public class FileSysStore {
      * @return 업로드된 파일
      * @throws IOException
      */
-    public FileNameInfo storeFile(MultipartFile multipartFile,Post savedPost) throws IOException
+    public FileNameInfo storeFile(MultipartFile multipartFile, Board savedBoard) throws IOException
     {
         if (multipartFile.isEmpty()) {
             return null;
@@ -60,7 +60,7 @@ public class FileSysStore {
         multipartFile.transferTo(new File(getFullDir(storeFileName))); // 파일 저장
 
         UploadFile uploadFile = new UploadFile(originalFilename, storeFileName,"");
-        uploadFile.setPost(savedPost);
+        uploadFile.setBoard(savedBoard);
 
         return FileNameInfo.from(fileRepository.save(uploadFile)); // DB 에 저장
     }
@@ -70,10 +70,10 @@ public class FileSysStore {
 
     /**
      * 게시물 관련  파일들 삭제 메서드
-     * @param post
+     * @param board
      */
-    public void deletePostFiles(Post post) {
-        post.getUploadFiles().forEach(uploadFile -> {
+    public void deletePostFiles(Board board) {
+        board.getUploadFiles().forEach(uploadFile -> {
             fileRepository.delete(uploadFile);
             deleteFile(uploadFile.getStoreFileName());
         });
@@ -94,12 +94,12 @@ public class FileSysStore {
 
     /**
      * 게시물의 파일 전부 반환
-     * @param post
+     * @param board
      * @return
      */
-    public List<FileNameInfo> getPostFiles(Post post) {
+    public List<FileNameInfo> getPostFiles(Board board) {
         List<FileNameInfo> result = new ArrayList<>();
-        post.getUploadFiles().forEach(uploadFile -> {
+        board.getUploadFiles().forEach(uploadFile -> {
             result.add(FileNameInfo.from(uploadFile));
         });
         return result;

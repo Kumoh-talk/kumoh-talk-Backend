@@ -1,9 +1,8 @@
-package com.example.demo.domain.post.domain.response;
+package com.example.demo.domain.board.domain.response;
 
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.file.domain.FileNameInfo;
-import com.example.demo.domain.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class PostInfoResponse {
+public class BoardInfoResponse {
     private Long postId;
     private String username;
     private String title;
@@ -24,7 +23,7 @@ public class PostInfoResponse {
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdAt;
     @Builder
-    public PostInfoResponse(Long postId, String username, String title, String contents, FileNameInfo attachFileNameInfo, List<FileNameInfo> imageFileNameInfos, LocalDateTime updatedAt, LocalDateTime createdAt) {
+    public BoardInfoResponse(Long postId, String username, String title, String contents, FileNameInfo attachFileNameInfo, List<FileNameInfo> imageFileNameInfos, LocalDateTime updatedAt, LocalDateTime createdAt) {
         this.postId = postId;
         this.username = username;
         this.title = title;
@@ -36,16 +35,16 @@ public class PostInfoResponse {
     }
 
 
-    public static PostInfoResponse from(Post post, String username,FileNameInfo attachFileNameInfo,List<FileNameInfo> imageFileNameInfos) {
-        return new PostInfoResponse(
-                post.getId(),
+    public static BoardInfoResponse from(Board board, String username, FileNameInfo attachFileNameInfo, List<FileNameInfo> imageFileNameInfos) {
+        return new BoardInfoResponse(
+                board.getId(),
                 username,
-                post.getTitle(),
-                post.getContents(),
+                board.getTitle(),
+                board.getContents(),
                 attachFileNameInfo,
                 imageFileNameInfos,
-                post.getUpdatedAt(),
-                post.getCreatedAt()
+                board.getUpdatedAt(),
+                board.getCreatedAt()
         );
     }
 
