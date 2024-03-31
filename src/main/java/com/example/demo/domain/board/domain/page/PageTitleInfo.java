@@ -16,8 +16,6 @@ public class PageTitleInfo {
     private Long postId;
     private String title;
     private String userName;
-    private Track track;
-    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdAt; // 작성 시간
 
     @Builder
@@ -25,7 +23,6 @@ public class PageTitleInfo {
         this.postId = postId;
         this.title = title;
         this.userName = userName;
-        this.track = track;
         this.createdAt = createdAt;
     }
 
@@ -34,7 +31,6 @@ public class PageTitleInfo {
                 .postId(board.getId())
                 .title(board.getTitle())
                 .userName(userName)
-                .track(board.getTrack())
                 .createdAt(board.getCreatedAt())
                 .build();
     }

@@ -3,7 +3,6 @@ package com.example.demo.domain.file;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.demo.domain.file.uploader.FileS3Uploader;
-import com.example.demo.domain.file.uploader.FileSysStore;
 import com.example.demo.domain.file.uploader.FileUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

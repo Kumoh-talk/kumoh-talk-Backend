@@ -2,7 +2,7 @@ package com.example.demo.domain.file.uploader;
 
 import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.file.domain.FileNameInfo;
-import com.example.demo.domain.file.domain.entity.UploadFile;
+import com.example.demo.domain.file.domain.entity.File;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,16 +17,8 @@ public interface FileUploader {
     void deleteFile(String storeFileName);
     List<FileNameInfo> getPostFiles(Board board);
 
-    FileNameInfo getPostAttachFile(List<UploadFile> uploadFiles);
-    List<FileNameInfo> getPostImagesFiles(List<UploadFile> uploadFiles);
+    FileNameInfo getPostAttachFile(List<File> files);
+    List<FileNameInfo> getPostImagesFiles(List<File> files);
 
-    default String createStoreFileName(String originalFilename) {
-        String ext = extractExt(originalFilename);
-        String uuid = UUID.randomUUID().toString();
-        return uuid + "." + ext;
-    }
-    default String extractExt(String originalFilename) {
-        int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos + 1);
-    }
+
 }

@@ -1,9 +1,9 @@
 package com.example.demo.domain.user.domain;
 
-import com.example.demo.domain.announcement.domain.Announcement;
 import com.example.demo.domain.calendar.domain.Calendar;
 import com.example.demo.domain.comment.domain.Comment;
 import com.example.demo.domain.board.domain.Board;
+import com.example.demo.domain.like.domain.Like;
 import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -70,12 +70,12 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<Board> boards;
 
-    @OneToMany(mappedBy = "user")
-    private List<Announcement> announcements;
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Like> likes;
 
     @Builder
     public User(Long id, String name, String email, String password, Track track, String major, LocalDateTime createdAt, LocalDateTime updatedAt) {

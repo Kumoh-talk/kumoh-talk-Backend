@@ -42,7 +42,7 @@ public class CommentService {
         Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new IllegalArgumentException("해당 id 의 comment를 찾을 수 없습니다.")
         );
-        findComment.setContents(commentRequest.getContents());
+        findComment.setContent(commentRequest.getContents());
         return CommentInfoResponse.from(findComment,username);
     }
     @Transactional

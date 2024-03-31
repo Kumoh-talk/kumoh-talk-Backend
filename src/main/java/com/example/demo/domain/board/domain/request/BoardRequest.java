@@ -25,8 +25,6 @@ public class BoardRequest {
     @Size(max = 500,message = "최대 제한 500글자 입니다.")
     private String contents;
 
-    @NotNull(message = "트랙을 지정해야합니다.")
-    private Track track;
 
     @Nullable
     private MultipartFile attachFile;
@@ -35,10 +33,9 @@ public class BoardRequest {
     private List<MultipartFile> imageFiles;
 
     @Builder
-    public BoardRequest(String title, String contents, Track track, @Nullable MultipartFile attachFile, @Nullable List<MultipartFile> imageFiles) {
+    public BoardRequest(String title, String contents, @Nullable MultipartFile attachFile, @Nullable List<MultipartFile> imageFiles) {
         this.title = title;
         this.contents = contents;
-        this.track = track;
         this.attachFile = attachFile;
         this.imageFiles = imageFiles;
     }
@@ -46,10 +43,8 @@ public class BoardRequest {
     public static Board toEntity(BoardRequest boardRequest, User user) {
         return Board.builder()
                 .title(boardRequest.getTitle())
-                .contents(boardRequest.getContents())
-                .track(user.getTrack())
+                .content(boardRequest.getContents())
                 .user(user) // 과제 게시판의 트랙은 글쓴이의 트랙으로 지정
                 .build();
-
     }
 }

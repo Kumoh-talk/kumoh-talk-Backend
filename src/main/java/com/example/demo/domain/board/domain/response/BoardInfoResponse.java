@@ -11,20 +11,18 @@ import java.util.List;
 
 @Getter
 public class BoardInfoResponse {
-    private Long postId;
+    private Long boardId;
     private String username;
     private String title;
     private String contents;
     private FileNameInfo attachFileNameInfo;
     private List<FileNameInfo> imageFileNameInfos;
-    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
-    private LocalDateTime updatedAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
     @Builder
-    public BoardInfoResponse(Long postId, String username, String title, String contents, FileNameInfo attachFileNameInfo, List<FileNameInfo> imageFileNameInfos, LocalDateTime updatedAt, LocalDateTime createdAt) {
-        this.postId = postId;
+    public BoardInfoResponse(Long boardId, String username, String title, String contents, FileNameInfo attachFileNameInfo, List<FileNameInfo> imageFileNameInfos, LocalDateTime updatedAt, LocalDateTime createdAt) {
+        this.boardId = boardId;
         this.username = username;
         this.title = title;
         this.contents = contents;
@@ -40,7 +38,7 @@ public class BoardInfoResponse {
                 board.getId(),
                 username,
                 board.getTitle(),
-                board.getContents(),
+                board.getContent(),
                 attachFileNameInfo,
                 imageFileNameInfos,
                 board.getUpdatedAt(),

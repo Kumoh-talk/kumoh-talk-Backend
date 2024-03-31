@@ -2,7 +2,8 @@ package com.example.demo.domain.board.service;
 
 import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.file.domain.FileNameInfo;
-import com.example.demo.domain.file.domain.entity.UploadFile;
+import com.example.demo.domain.file.domain.entity.File;
+import com.example.demo.domain.file.uploader.FileS3Uploader;
 import com.example.demo.domain.file.uploader.FileUploader;
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.page.PageInfo;
@@ -33,7 +34,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-    private final FileUploader fileUploader;
+    private final FileS3Uploader fileS3Uploader;
 
     private static final int PAGE_SIZE = 10;
     /**
@@ -43,15 +44,16 @@ public class BoardService {
      * @return PostInfoResponse 생성된 post 정보 객체 반환
      */
     @Transactional
-    public BoardInfoResponse postSave(BoardRequest boardRequest, Long userId) throws IOException {
+    public BoardInfoResponse save(BoardRequest boardRequest, Long userId) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
         Board board = BoardRequest.toEntity(boardRequest, user);
         Board savedBoard = boardRepository.save(board);
 
-        FileNameInfo attachfileNameInfo = fileUploader.storeFile(boardRequest.getAttachFile(), savedBoard);
-        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(boardRequest.getImageFiles(), savedBoard);
+        // file 엔티티 전이 ALL 이기 때문에 fileRepository로 save 호출 필요 x
+        FileNameInfo attachfileNameInfo = fileS3Uploader.attachStore(boardRequest.getAttachFile(), savedBoard);
+        List<FileNameInfo> imagesFileNameInfos = fileS3Uploader.imageStore(boardRequest.getImageFiles(), savedBoard);
 
         return BoardInfoResponse.from(
                 savedBoard,
@@ -69,28 +71,29 @@ public class BoardService {
      * @return
      */
     @Transactional
-    public BoardInfoResponse postUpdate(BoardRequest boardRequest, String userName, Long postId) throws IOException {
+    public BoardInfoResponse update(BoardRequest boardRequest, String userName, Long postId) throws IOException {
         Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
         if(!board.getUser().getName().equals(userName)) {
             new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        return updatePost(boardRequest, board, userName);
+        return updateBoard(boardRequest, board, userName);
     }
 
 
     /**
      * 게시물 삭제 메서드
-     * @param postId
+     * @param boardId
      */
     @Transactional
-    public void postRemove(Long postId,String userName) {
-        Board board = boardRepository.findById(postId)
+    public void remove(Long boardId,String userName) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
         if(!board.getUser().getName().equals(userName)) {
             new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        fileUploader.deletePostFiles(board);
+
+        fileS3Uploader.deleteAllFiles(board);
         boardRepository.delete(board);
     }
     /**
@@ -103,11 +106,11 @@ public class BoardService {
     public BoardInfoResponse findById(Long postId, String userName) {
         Board board = boardRepository.findById(postId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-        List<UploadFile> uploadFiles = board.getUploadFiles();
+        List<File> files = board.getFiles(); // TODO : N+1 문제 해결해야함
         return BoardInfoResponse.from(board,
                 userName,
-                fileUploader.getPostAttachFile(uploadFiles),
-                fileUploader.getPostImagesFiles(uploadFiles));
+                fileS3Uploader.getAttachFileName(files),
+                fileS3Uploader.getImagesFilesName(files));
     }
 
     /**
@@ -122,32 +125,32 @@ public class BoardService {
         return null;  // 추후 pagging 처리 추가
     }
 
-    @Transactional(readOnly = true)
-    public BoardPageResponse findPageList(int page, Track track, PageSort pageSort) {
-        PageRequest pageRequest = (pageSort == PageSort.DESC) ? PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending()):
-                PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").ascending());
+//    @Transactional(readOnly = true)
+//    public BoardPageResponse findPageList(int page, Track track, PageSort pageSort) {
+//        PageRequest pageRequest = (pageSort == PageSort.DESC) ? PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending()):
+//                PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").ascending());
+//
+//
+//        Page<Board> postPage = boardRepository.findAllByTrack(track, pageRequest);
+//
+//        PageInfo pageInfo = new PageInfo(postPage.getSize(), postPage.getNumber(), postPage.getTotalPages(), pageSort);
+//
+//        List<PageTitleInfo> pageTitleInfoList = new ArrayList<>();
+//        postPage.forEach(post -> {
+//            pageTitleInfoList.add(PageTitleInfo.from(post, post.getUser().getName()));
+//        });
+//
+//
+//        return new BoardPageResponse(pageTitleInfoList, pageInfo);
+//    }
 
+    public BoardInfoResponse updateBoard(BoardRequest boardRequest, Board board, String userName) throws IOException {
 
-        Page<Board> postPage = boardRepository.findAllByTrack(track, pageRequest);
-
-        PageInfo pageInfo = new PageInfo(postPage.getSize(), postPage.getNumber(), postPage.getTotalPages(), pageSort);
-
-        List<PageTitleInfo> pageTitleInfoList = new ArrayList<>();
-        postPage.forEach(post -> {
-            pageTitleInfoList.add(PageTitleInfo.from(post, post.getUser().getName()));
-        });
-
-
-        return new BoardPageResponse(pageTitleInfoList, pageInfo);
-    }
-
-    public BoardInfoResponse updatePost(BoardRequest boardRequest, Board board, String userName) throws IOException {
-
-        fileUploader.deletePostFiles(board);
-        FileNameInfo attachfileNameInfo = fileUploader.storeFile(boardRequest.getAttachFile(), board);
-        List<FileNameInfo> imagesFileNameInfos = fileUploader.storeFiles(boardRequest.getImageFiles(), board);
+        fileS3Uploader.deleteAllFiles(board);
+        FileNameInfo attachfileNameInfo = fileS3Uploader.attachStore(boardRequest.getAttachFile(), board);
+        List<FileNameInfo> imagesFileNameInfos = fileS3Uploader.imageStore(boardRequest.getImageFiles(), board);
         board.setTitle(boardRequest.getTitle());
-        board.setContents(boardRequest.getContents());
+        board.setContent(boardRequest.getContents());
 
         return BoardInfoResponse.from(board, userName, attachfileNameInfo, imagesFileNameInfos);
     }

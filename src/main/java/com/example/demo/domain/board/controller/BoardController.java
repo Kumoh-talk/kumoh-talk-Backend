@@ -27,43 +27,43 @@ public class BoardController {
 
 
     @PostMapping("/save")
-    public ResponseEntity<BoardInfoResponse> postSave(
+    public ResponseEntity<BoardInfoResponse> save(
             @AuthenticationPrincipal UserPrincipal user,
             @ModelAttribute @Valid BoardRequest boardRequest) throws IOException {
         CheckAuthentication(user);
 
-            return ResponseEntity.ok(boardService.postSave(boardRequest, user.getId()));
+            return ResponseEntity.ok(boardService.save(boardRequest, user.getId()));
     }
 
     @PostMapping("/update/{postId}")
-    public ResponseEntity<BoardInfoResponse> postUpdate(@AuthenticationPrincipal UserPrincipal user,
+    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
                                                         @ModelAttribute @Valid BoardRequest boardRequest,
                                                         @PathVariable Long postId) throws IOException {
         CheckAuthentication(user);
-        return ResponseEntity.ok(boardService.postUpdate(boardRequest,user.getName(),postId));
+        return ResponseEntity.ok(boardService.update(boardRequest,user.getName(),postId));
     }
     @GetMapping("/search/{postId}")
-    public ResponseEntity<BoardInfoResponse> postSearch(@AuthenticationPrincipal UserPrincipal user,
+    public ResponseEntity<BoardInfoResponse> search(@AuthenticationPrincipal UserPrincipal user,
                                                         @PathVariable Long postId) throws IOException {
         CheckAuthentication(user);
         return ResponseEntity.ok(boardService.findById(postId,user.getName()));
     }
 
     @PatchMapping("/delete/{postId}")
-    public ResponseEntity postDelete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
+    public ResponseEntity delete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
         CheckAuthentication(user);
-        boardService.postRemove(postId, user.getUsername());
+        boardService.remove(postId, user.getUsername());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<BoardPageResponse> findPageList(
-                                                         @RequestParam(defaultValue = "1", required = false) int page,
-                                                         @RequestParam(required = true) Track track,
-                                                         @RequestParam(defaultValue = "DESC", required = false ) PageSort pageSort) {
-
-        return ResponseEntity.ok(boardService.findPageList(page,track,pageSort));
-    }
+//    @GetMapping("/list")
+//    public ResponseEntity<BoardPageResponse> findPageList(
+//                                                         @RequestParam(defaultValue = "1", required = false) int page,
+//                                                         @RequestParam(required = true) Track track,
+//                                                         @RequestParam(defaultValue = "DESC", required = false ) PageSort pageSort) {
+//
+//        return ResponseEntity.ok(boardService.findPageList(page,track,pageSort));
+//    }
 
     private void CheckAuthentication(UserPrincipal user) {
         if(user == null){
