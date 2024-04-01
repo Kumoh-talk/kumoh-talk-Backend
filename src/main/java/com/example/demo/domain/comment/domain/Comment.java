@@ -2,8 +2,8 @@ package com.example.demo.domain.comment.domain;
 
 
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.file.domain.entity.UploadFile;
-import com.example.demo.domain.post.domain.Post;
+import com.example.demo.domain.file.domain.entity.File;
+import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -25,26 +25,25 @@ public class Comment {
 
     @Column(nullable = false,length = 45)
     @NotBlank(message = "해당 내용은 빈 값일 수 없습니다.")
-    private String contents;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name ="post_id",nullable = false)
-    private Post post;
+    private Board board;
 
     @ManyToOne
     @JoinColumn(name ="user_id",nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UploadFile> uploadFiles;
 
-    public Comment(String contents, Post post, User user) {
-        this.contents = contents;
-        this.post = post;
+
+    public Comment(String content, Board board, User user) {
+        this.content = content;
+        this.board = board;
         this.user = user;
     }
 
     public static CommentInfoResponse entityToResponse(Comment comment) {
-        return new CommentInfoResponse(comment.getId(), comment.getUser().getName(), comment.getContents());
+        return new CommentInfoResponse(comment.getId(), comment.getUser().getName(), comment.getContent());
     }
 }

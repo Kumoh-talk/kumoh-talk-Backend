@@ -1,6 +1,6 @@
 package com.example.demo.domain.file.domain;
 
-import com.example.demo.domain.file.domain.entity.UploadFile;
+import com.example.demo.domain.file.domain.entity.File;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,15 +13,14 @@ public class FileNameInfo {
 
     private String originalFileName;
     private String storeFileName;
-    private String url;
 
-    public FileNameInfo(String originalFileName, String storeFileName, String url) {
+
+    public FileNameInfo(String originalFileName, String storeFileName) {
         this.originalFileName = originalFileName;
         this.storeFileName = storeFileName;
-        this.url = url;
     }
 
-    public static FileNameInfo from(UploadFile uploadFile) {
-        return new FileNameInfo(uploadFile.getUploadFileName(), uploadFile.getStoreFileName(),uploadFile.getUrl());
+    public static FileNameInfo from(File file) {
+        return new FileNameInfo(file.getOrigin_name(), file.getStored_name());
     }
 }

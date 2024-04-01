@@ -17,6 +17,6 @@ public class CommentInfoResponse {
 
 
     public static CommentInfoResponse from(Comment comment, String username) {
-        return new CommentInfoResponse(comment.getId(), username, comment.getContents());
+        return new CommentInfoResponse(comment.getId(), username, comment.getContent());
     }
 }

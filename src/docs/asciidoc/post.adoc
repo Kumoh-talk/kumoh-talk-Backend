@@ -10,16 +10,16 @@
 === 성공
 
 .Request
-include::{snippets}/post/post-save-success/http-request.adoc[]
+include::{snippets}/board/board-save-success/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-save-success/request-headers.adoc[]
+include::{snippets}/board/board-save-success/request-headers.adoc[]
 .Request Fields
-include::{snippets}/post/post-save-success/request-fields.adoc[]
+include::{snippets}/board/board-save-success/request-fields.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-save-success/response-fields.adoc[]
+include::{snippets}/board/board-save-success/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-save-success/http-response.adoc[]
+include::{snippets}/board/board-save-success/http-response.adoc[]
 
 
 
@@ -27,139 +27,139 @@ include::{snippets}/post/post-save-success/http-response.adoc[]
 === 성공
 
 .Request
-include::{snippets}/post/post-update-success/http-request.adoc[]
+include::{snippets}/board/board-update-success/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-update-success/request-headers.adoc[]
+include::{snippets}/board/board-update-success/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-update-success/response-fields.adoc[]
+include::{snippets}/board/board-update-success/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-update-success/http-response.adoc[]
+include::{snippets}/board/board-update-success/http-response.adoc[]
 
 
 === 게시물을 찾을 수 없으면 에러 반환
 
 .Request
-include::{snippets}/post/post-update-not-found-post/http-request.adoc[]
+include::{snippets}/board/board-update-not-found-board/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-update-not-found-post/request-headers.adoc[]
+include::{snippets}/board/board-update-not-found-board/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-update-not-found-post/response-fields.adoc[]
+include::{snippets}/board/board-update-not-found-board/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-update-not-found-post/http-response.adoc[]
+include::{snippets}/board/board-update-not-found-board/http-response.adoc[]
 
 
 === user의 게시물이 아닌 경우 에러 반환
 
 .Request
-include::{snippets}/post/post-update-not-matched-user/http-request.adoc[]
+include::{snippets}/board/board-update-not-matched-user/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-update-not-matched-user/request-headers.adoc[]
+include::{snippets}/board/board-update-not-matched-user/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-update-not-matched-user/response-fields.adoc[]
+include::{snippets}/board/board-update-not-matched-user/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-update-not-matched-user/http-response.adoc[]
+include::{snippets}/board/board-update-not-matched-user/http-response.adoc[]
 
 == POST: <게시판 삭제>
 === 성공
 
 .Request
-include::{snippets}/post/post-delete-success/http-request.adoc[]
+include::{snippets}/board/board-delete-success/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-delete-success/request-headers.adoc[]
+include::{snippets}/board/board-delete-success/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-delete-success/response-fields.adoc[]
+include::{snippets}/board/board-delete-success/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-delete-success/http-response.adoc[]
+include::{snippets}/board/board-delete-success/http-response.adoc[]
 
 
 === 게시물을 찾을 수 없으면 에러 반환
 
 .Request
-include::{snippets}/post/post-delete-not-found-post/http-request.adoc[]
+include::{snippets}/board/board-delete-not-found-board/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-delete-not-found-post/request-headers.adoc[]
+include::{snippets}/board/board-delete-not-found-board/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-delete-not-found-post/response-fields.adoc[]
+include::{snippets}/board/board-delete-not-found-board/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-delete-not-found-post/http-response.adoc[]
+include::{snippets}/board/board-delete-not-found-board/http-response.adoc[]
 
 
 === user의 게시물이 아닌 경우 에러 반환
 
 .Request
-include::{snippets}/post/post-delete-not-matched-user/http-request.adoc[]
+include::{snippets}/board/board-delete-not-matched-user/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-delete-not-matched-user/request-headers.adoc[]
+include::{snippets}/board/board-delete-not-matched-user/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-delete-not-matched-user/response-fields.adoc[]
+include::{snippets}/board/board-delete-not-matched-user/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-delete-not-matched-user/http-response.adoc[]
+include::{snippets}/board/board-delete-not-matched-user/http-response.adoc[]
 
 == POST: <게시판 검색>
 === 성공
 
 .Request
-include::{snippets}/post/post-search-success/http-request.adoc[]
+include::{snippets}/board/board-search-success/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-search-success/request-headers.adoc[]
+include::{snippets}/board/board-search-success/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-search-success/response-fields.adoc[]
+include::{snippets}/board/board-search-success/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-search-success/http-response.adoc[]
+include::{snippets}/board/board-search-success/http-response.adoc[]
 
 
 === 게시물을 찾을 수 없으면 에러 반환
 
 .Request
-include::{snippets}/post/post-search-not-found-post/http-request.adoc[]
+include::{snippets}/board/board-search-not-found-board/http-request.adoc[]
 .Request Header
-include::{snippets}/post/post-search-not-found-post/request-headers.adoc[]
+include::{snippets}/board/board-search-not-found-board/request-headers.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-search-not-found-post/response-fields.adoc[]
+include::{snippets}/board/board-search-not-found-board/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-search-not-found-post/http-response.adoc[]
+include::{snippets}/board/board-search-not-found-board/http-response.adoc[]
 
 
 == POST: <<페이징 조회>>
 === 성공
 
 .Request
-include::{snippets}/post/post-page-success/http-request.adoc[]
+include::{snippets}/board/board-page-success/http-request.adoc[]
 
 .Request Fields
-include::{snippets}/post/post-page-success/query-parameters.adoc[]
+include::{snippets}/board/board-page-success/query-parameters.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-page-success/response-fields.adoc[]
+include::{snippets}/board/board-page-success/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-page-success/http-response.adoc[]
+include::{snippets}/board/board-page-success/http-response.adoc[]
 
 === 쿼리 타입 미스매치 예외
 
 .Request
-include::{snippets}/post/post-page-query-mismatch/http-request.adoc[]
+include::{snippets}/board/board-page-query-mismatch/http-request.adoc[]
 
 
 .Response-Fields
-include::{snippets}/post/post-page-query-mismatch/response-fields.adoc[]
+include::{snippets}/board/board-page-query-mismatch/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-page-query-mismatch/http-response.adoc[]
+include::{snippets}/board/board-page-query-mismatch/http-response.adoc[]
 
 
 === 필수 인자 제외 예외
 
 .Request
-include::{snippets}/post/post-page-query-required/http-request.adoc[]
+include::{snippets}/board/board-page-query-required/http-request.adoc[]
 
 .Response-Fields
-include::{snippets}/post/post-page-query-required/response-fields.adoc[]
+include::{snippets}/board/board-page-query-required/response-fields.adoc[]
 .Response
-include::{snippets}/post/post-page-query-required/http-response.adoc[]
+include::{snippets}/board/board-page-query-required/http-response.adoc[]
