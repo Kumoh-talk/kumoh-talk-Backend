@@ -1,6 +1,0 @@
-jwt:
-  issuer: LIKELION
-  secret-key: ${JWT_SECRET_KEY}
-  expiry-seconds:
-    access-token: 1800 # 30m
-    refresh-token: 604800 # 7d
