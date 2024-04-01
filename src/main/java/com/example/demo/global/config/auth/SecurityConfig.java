@@ -1,9 +1,5 @@
 package com.example.demo.global.config.auth;
 
-import com.example.demo.global.auth.token.application.TokenProvider;
-import com.example.demo.global.auth.token.exception.CustomAuthenticationEntryPoint;
-import com.example.demo.global.auth.token.filter.JwtFilter;
-import com.example.demo.global.auth.token.repository.RefreshTokenRepository;
 import com.example.demo.global.utils.HttpServletUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +17,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final HttpServletUtil httpServletUtil;
 
     @Bean
@@ -40,9 +32,9 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated())
 
-                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
-                .and()
-                .addFilterBefore(new JwtFilter(tokenProvider, refreshTokenRepository, httpServletUtil), UsernamePasswordAuthenticationFilter.class)
+//                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
+//                .and()
+//                .addFilterBefore(new JwtFilter(tokenProvider, refreshTokenRepository, httpServletUtil), UsernamePasswordAuthenticationFilter.class)
         ;
 
 
