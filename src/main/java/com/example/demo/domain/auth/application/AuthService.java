@@ -6,12 +6,8 @@ import com.example.demo.domain.auth.dto.request.ValidateEmailRequest;
 import com.example.demo.domain.auth.dto.response.LoginResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
-import com.example.demo.global.auth.token.application.TokenProvider;
-import com.example.demo.global.auth.token.domain.RefreshToken;
-import com.example.demo.global.auth.token.repository.RefreshTokenRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.global.utils.HttpServletUtil;
 import com.example.demo.global.utils.RedisUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -31,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Random;
-import java.util.UUID;
 
 import static com.example.demo.global.base.exception.ErrorCode.*;
 
@@ -43,7 +38,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final TokenProvider tokenProvider;
     private final JavaMailSender emailSender;
     private final RedisUtils redisUtils;
 
@@ -84,19 +78,19 @@ public class AuthService {
         return !userRepository.existsByEmail(email);
     }
 
-    public LoginResponse login(HttpServletRequest httpServletRequest, LoginRequest request) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
-        try {
-            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-            return tokenProvider.generateToken(authentication, httpServletRequest);
-        } catch (Exception e) {
-            // 이메일 & 비밀번호를 따로 예외처리를 하면 이메일을 유추할 수 있게되기에 공통 처리
-            throw new ServiceException(MISMATCH_EMAIL_OR_PASSWORD);
-        }
-
-    }
+    // TODO : 로그인 수정 필요 - to session
+//    public LoginResponse login(HttpServletRequest httpServletRequest, LoginRequest request) {
+//        UsernamePasswordAuthenticationToken authenticationToken =
+//                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+//        try {
+//            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//
+//            return tokenProvider.generateToken(authentication, httpServletRequest);
+//        } catch (Exception e) {
+//            // 이메일 & 비밀번호를 따로 예외처리를 하면 이메일을 유추할 수 있게되기에 공통 처리
+//            throw new ServiceException(MISMATCH_EMAIL_OR_PASSWORD);
+//        }
+//    }
 
     private String createCode() {
         int length = 6;
