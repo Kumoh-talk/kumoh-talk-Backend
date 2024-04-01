@@ -1,7 +1,7 @@
 package com.example.demo.domain.user.dto.request;
 
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Track;
+import com.example.demo.domain.user.domain.vo.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,7 +23,7 @@ public class UserUpdateRequest {
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private Track track;
+    private Status status;
 
     @Column(nullable = false)
     @NotBlank(message = "전공은 빈값 일 수 없습니다.")
@@ -32,8 +32,7 @@ public class UserUpdateRequest {
     public static User toUser(UserUpdateRequest request) {
         return User.builder()
                 .name(request.getName())
-                .track(request.getTrack())
-                .major(request.getMajor())
+                .status(request.getStatus())
                 .build();
     }
 }
