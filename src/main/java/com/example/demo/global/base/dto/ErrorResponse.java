@@ -6,42 +6,36 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
-public class ErrorResponse{
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
-    private LocalDateTime timestamp;
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ErrorResponse {
+    private final LocalDateTime timestamp = LocalDateTime.now();
+    private String code;
+    private HttpStatus status;
     private String message;
 
-    public ErrorResponse(String message) {
-        this.timestamp = LocalDateTime.now();
+    @Builder
+    public ErrorResponse(String code, HttpStatus status, String message) {
+        this.code = code;
+        this.status = status;
         this.message = message;
     }
 
-    public ErrorResponse(ErrorCode code) {
-        this.timestamp = LocalDateTime.now();
-        this.message = code.getMessage();
-    }
+    public static ErrorResponse of(@NonNull ErrorCode errorCode, @Nullable String message) {
+        if(message == null)
+            message = errorCode.getMessage();
 
-    public static ResponseEntity<ErrorResponse> of(ErrorCode code) {
-        return ResponseEntity
-                .status(code.getStatus())
-                .body(new ErrorResponse(LocalDateTime.now() ,code.getMessage()));
-    }
-
-    public static ResponseEntity<ErrorResponse> of(HttpStatus status, String message) {
-        return ResponseEntity
-                .status(status)
-                .body(new ErrorResponse(LocalDateTime.now() , message));
+        return ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .status(errorCode.getStatus())
+                .message(message)
+                .build();
     }
 }

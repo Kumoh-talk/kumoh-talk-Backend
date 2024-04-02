@@ -37,11 +37,12 @@ public class AuthController {
                 .build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(HttpServletRequest httpServletRequest,
-                                               @RequestBody @Valid LoginRequest request) {
-        LoginResponse loginResponse = authService.login(httpServletRequest, request);
-
-        return ResponseEntity.ok(loginResponse);
-    }
+    // TODO : 로그인 수정 필요 - to session
+//    @PostMapping("/login")
+//    public ResponseEntity<LoginResponse> login(HttpServletRequest httpServletRequest,
+//                                               @RequestBody @Valid LoginRequest request) {
+//        LoginResponse loginResponse = authService.login(httpServletRequest, request);
+//
+//        return ResponseEntity.ok(loginResponse);
+//    }
 }

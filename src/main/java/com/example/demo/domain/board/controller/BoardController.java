@@ -2,12 +2,9 @@ package com.example.demo.domain.board.controller;
 
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
-import com.example.demo.domain.board.domain.page.PageSort;
 import com.example.demo.domain.board.domain.request.BoardRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.response.BoardPageResponse;
 import com.example.demo.domain.board.service.BoardService;
-import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import jakarta.validation.Valid;

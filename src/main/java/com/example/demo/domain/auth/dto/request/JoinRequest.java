@@ -1,11 +1,10 @@
 package com.example.demo.domain.auth.dto.request;
 
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Track;
+import com.example.demo.domain.user.domain.vo.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -35,18 +34,15 @@ public class JoinRequest {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Track track;
+    private Status status;
 
-    @NotBlank(message = "전공은 빈값 일 수 없습니다.")
-    private String major;
 
     public User toEntity(String password) {
         return User.builder()
                 .name(this.name)
                 .email(this.email)
                 .password(password)
-                .track(this.track)
-                .major(this.major)
+                .status(this.status)
                 .build();
     }
 }

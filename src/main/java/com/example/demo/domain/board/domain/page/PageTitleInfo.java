@@ -1,8 +1,7 @@
 package com.example.demo.domain.board.domain.page;
 
 import com.example.demo.domain.board.domain.Board;
-import com.example.demo.domain.user.domain.vo.Track;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.example.demo.domain.user.domain.vo.Status;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +17,8 @@ public class PageTitleInfo {
     private String userName;
     private LocalDateTime createdAt; // 작성 시간
 
-    @Builder
-    public PageTitleInfo(Long postId, String title, String userName, Track track, LocalDateTime createdAt) {
+    @Builder // TODO : Track 정보가 인자로 있는데, 안써서 뺌..
+    public PageTitleInfo(Long postId, String title, String userName,LocalDateTime createdAt) {
         this.postId = postId;
         this.title = title;
         this.userName = userName;

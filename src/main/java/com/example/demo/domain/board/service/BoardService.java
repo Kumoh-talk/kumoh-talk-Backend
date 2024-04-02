@@ -4,28 +4,18 @@ import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.file.uploader.FileS3Uploader;
-import com.example.demo.domain.file.uploader.FileUploader;
 import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.domain.page.PageInfo;
-import com.example.demo.domain.board.domain.page.PageSort;
-import com.example.demo.domain.board.domain.page.PageTitleInfo;
 import com.example.demo.domain.board.domain.request.BoardRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.response.BoardPageResponse;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Track;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

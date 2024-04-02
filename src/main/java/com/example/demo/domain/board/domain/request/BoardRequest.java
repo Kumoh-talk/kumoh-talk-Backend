@@ -3,7 +3,6 @@ package com.example.demo.domain.board.domain.request;
 
 import com.example.demo.domain.board.domain.Board;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Track;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
