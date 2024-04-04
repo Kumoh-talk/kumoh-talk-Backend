@@ -1,7 +1,6 @@
 package com.example.demo.domain.like.domain;
 
-import com.example.demo.domain.board.domain.Board;
-import com.example.demo.domain.category.domain.entity.Category;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;

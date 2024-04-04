@@ -1,7 +1,7 @@
 package com.example.demo.domain.user.domain;
 
 import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.board.domain.Board;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.like.domain.Like;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.domain.vo.Status;

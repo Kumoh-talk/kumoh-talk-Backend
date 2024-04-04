@@ -2,12 +2,10 @@ package com.example.demo.domain.file.uploader;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.example.demo.domain.board.domain.Board;
-import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.FileType;
 import com.example.demo.domain.file.domain.entity.File;
-import com.example.demo.domain.file.domain.util.FileUtil;
 import com.example.demo.domain.file.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -87,13 +84,13 @@ public class FileS3Uploader  {
         return FileNameInfo.from(fileRepository.save(file));
     }
 
-    public String uploadS3File(MultipartFile multipartFile, String storeFileName) throws IOException {
+    //S3 서버에 파일 업로드
+    public void uploadS3File(MultipartFile multipartFile, String storeFileName) throws IOException {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(multipartFile.getContentType());
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
 
         amazonS3Client.putObject(bucket, storeFileName, multipartFile.getInputStream(), objectMetadata);
-        return amazonS3Client.getUrl(bucket, storeFileName).toString();
     }
 
 

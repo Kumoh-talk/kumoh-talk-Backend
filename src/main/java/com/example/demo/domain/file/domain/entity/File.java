@@ -1,8 +1,7 @@
 package com.example.demo.domain.file.domain.entity;
 
 
-import com.example.demo.domain.board.domain.Board;
-import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.file.domain.FileType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

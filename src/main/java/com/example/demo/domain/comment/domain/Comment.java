@@ -2,16 +2,13 @@ package com.example.demo.domain.comment.domain;
 
 
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.file.domain.entity.File;
-import com.example.demo.domain.board.domain.Board;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name ="comment")

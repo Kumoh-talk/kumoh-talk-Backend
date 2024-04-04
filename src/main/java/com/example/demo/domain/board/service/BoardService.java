@@ -1,9 +1,7 @@
 package com.example.demo.domain.board.service;
 
-import com.example.demo.domain.board.domain.Board;
-import com.example.demo.domain.file.domain.FileNameInfo;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.file.domain.entity.File;
-import com.example.demo.domain.file.uploader.FileS3Uploader;
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.request.BoardRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
@@ -24,11 +22,10 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-    private final FileS3Uploader fileS3Uploader;
 
     private static final int PAGE_SIZE = 10;
     /**
-     *
+     *  파일 저장 메서드
      * @param boardRequest
      * @param userId
      * @return PostInfoResponse 생성된 post 정보 객체 반환
@@ -38,18 +35,11 @@ public class BoardService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
-        Board board = BoardRequest.toEntity(boardRequest, user);
+        Board board = BoardRequest.toEntity(boardRequest, user); // Board User 연관관계 맺음
         Board savedBoard = boardRepository.save(board);
-
-        // file 엔티티 전이 ALL 이기 때문에 fileRepository로 save 호출 필요 x
-        FileNameInfo attachfileNameInfo = fileS3Uploader.attachStore(boardRequest.getAttachFile(), savedBoard);
-        List<FileNameInfo> imagesFileNameInfos = fileS3Uploader.imageStore(boardRequest.getImageFiles(), savedBoard);
-
         return BoardInfoResponse.from(
                 savedBoard,
-                user.getName(),
-                attachfileNameInfo,
-                imagesFileNameInfos);
+                user.getName());
     }
 
 
@@ -60,32 +50,32 @@ public class BoardService {
      * @param postId
      * @return
      */
-    @Transactional
-    public BoardInfoResponse update(BoardRequest boardRequest, String userName, Long postId) throws IOException {
-        Board board = boardRepository.findById(postId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-        if(!board.getUser().getName().equals(userName)) {
-            new ServiceException(ErrorCode.NOT_ACCESS_USER);
-        }
-        return updateBoard(boardRequest, board, userName);
-    }
+//    @Transactional
+//    public BoardInfoResponse update(BoardRequest boardRequest, String userName, Long postId) throws IOException {
+//        Board board = boardRepository.findById(postId)
+//                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
+//        if(!board.getUser().getName().equals(userName)) {
+//            new ServiceException(ErrorCode.NOT_ACCESS_USER);
+//        }
+//        return updateBoard(boardRequest, board, userName);
+//    }
 
 
     /**
      * 게시물 삭제 메서드
      * @param boardId
      */
-    @Transactional
-    public void remove(Long boardId,String userName) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-        if(!board.getUser().getName().equals(userName)) {
-            new ServiceException(ErrorCode.NOT_ACCESS_USER);
-        }
-
-        fileS3Uploader.deleteAllFiles(board);
-        boardRepository.delete(board);
-    }
+//    @Transactional
+//    public void remove(Long boardId,String userName) {
+//        Board board = boardRepository.findById(boardId)
+//                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
+//        if(!board.getUser().getName().equals(userName)) {
+//            new ServiceException(ErrorCode.NOT_ACCESS_USER);
+//        }
+//
+//        fileS3Uploader.deleteAllFiles(board);
+//        boardRepository.delete(board);
+//    }
     /**
      * 게시물 id로 게시물을 찾는 메서드
      * @param postId
@@ -98,9 +88,7 @@ public class BoardService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
         List<File> files = board.getFiles(); // TODO : N+1 문제 해결해야함
         return BoardInfoResponse.from(board,
-                userName,
-                fileS3Uploader.getAttachFileName(files),
-                fileS3Uploader.getImagesFilesName(files));
+                userName);
     }
 
     /**
@@ -134,17 +122,15 @@ public class BoardService {
 //        return new BoardPageResponse(pageTitleInfoList, pageInfo);
 //    }
 
-    public BoardInfoResponse updateBoard(BoardRequest boardRequest, Board board, String userName) throws IOException {
-
-        fileS3Uploader.deleteAllFiles(board);
-        FileNameInfo attachfileNameInfo = fileS3Uploader.attachStore(boardRequest.getAttachFile(), board);
-        List<FileNameInfo> imagesFileNameInfos = fileS3Uploader.imageStore(boardRequest.getImageFiles(), board);
-        board.setTitle(boardRequest.getTitle());
-        board.setContent(boardRequest.getContents());
-
-        return BoardInfoResponse.from(board, userName, attachfileNameInfo, imagesFileNameInfos);
-    }
-
+//    public BoardInfoResponse updateBoard(BoardRequest boardRequest, Board board, String userName) throws IOException {
+//
+//        fileS3Uploader.deleteAllFiles(board);
+//        board.setTitle(boardRequest.getTitle());
+//        board.setContent(boardRequest.getContents());
+//
+//        return BoardInfoResponse.from(board, userName);
+//    }
+//
 
 
 }

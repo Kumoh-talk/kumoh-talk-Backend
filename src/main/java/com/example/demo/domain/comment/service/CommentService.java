@@ -6,7 +6,7 @@ import com.example.demo.domain.comment.domain.Comment;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.board.domain.Board;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

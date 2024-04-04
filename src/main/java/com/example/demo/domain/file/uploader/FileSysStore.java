@@ -1,7 +1,7 @@
 //package com.example.demo.domain.file.uploader;
 //
 //
-//import com.example.demo.domain.board.domain.Board;
+//import com.example.demo.domain.board.domain.entity.Board;
 //import com.example.demo.domain.file.domain.FileNameInfo;
 //import com.example.demo.domain.file.domain.entity.File;
 //import com.example.demo.domain.file.domain.util.FileUtil;

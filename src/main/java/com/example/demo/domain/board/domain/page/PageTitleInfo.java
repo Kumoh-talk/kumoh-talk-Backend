@@ -1,7 +1,6 @@
 package com.example.demo.domain.board.domain.page;
 
-import com.example.demo.domain.board.domain.Board;
-import com.example.demo.domain.user.domain.vo.Status;
+import com.example.demo.domain.board.domain.entity.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
