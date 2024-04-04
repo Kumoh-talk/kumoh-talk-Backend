@@ -31,12 +31,12 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
             return ResponseEntity.ok(boardService.save(boardRequest, user.getId()));
     }
 
-    @PostMapping("/update/{boardId}")
-    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
-                                                        @ModelAttribute @Valid BoardRequest boardRequest,
-                                                        @PathVariable Long boardId) throws IOException {
-        return ResponseEntity.ok(boardService.update(boardRequest,user.getName(),boardId));
-    }
+//    @PostMapping("/update/{boardId}")
+//    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
+//                                                        @ModelAttribute @Valid BoardRequest boardRequest,
+//                                                        @PathVariable Long boardId) throws IOException {
+//        return ResponseEntity.ok(boardService.update(boardRequest,user.getName(),boardId));
+//    }
     @GetMapping("/search/{boardId}")
     public ResponseEntity<BoardInfoResponse> search(@AuthenticationPrincipal UserPrincipal user,
                                                         @PathVariable Long boardId) throws IOException {

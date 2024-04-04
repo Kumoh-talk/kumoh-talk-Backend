@@ -3,6 +3,7 @@ package com.example.demo.domain.file.controller;
 
 import com.example.demo.domain.auth.domain.UserPrincipal;
 import com.example.demo.domain.file.domain.FileNameInfo;
+import com.example.demo.domain.file.domain.FileType;
 import com.example.demo.domain.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,10 +20,16 @@ public class FileController {
     private final FileService fileService;
 
 
-    @PostMapping("/{boardId}")
-    public FileNameInfo upload(@PathVariable Long boardId,
+    @PostMapping("/image/{boardId}")
+    public FileNameInfo uploadImage(@PathVariable Long boardId,
                                MultipartFile multipartFile) throws IOException {
-        return fileService.upload(multipartFile, boardId);
+        return fileService.upload(multipartFile, boardId, FileType.IMAGE);
     }
+    @PostMapping("/attach/{boardId}")
+    public FileNameInfo uploadAttach(@PathVariable Long boardId,
+                               MultipartFile multipartFile) throws IOException {
+        return fileService.upload(multipartFile, boardId,FileType.ATTACH);
+    }
+
 
 }

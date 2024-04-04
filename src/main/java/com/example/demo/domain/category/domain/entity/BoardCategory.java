@@ -23,10 +23,17 @@ public class BoardCategory extends BaseEntity {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "category_id",
+            nullable = false)
     private Category category;
 
     private String categoryName;
 
+
+    public BoardCategory(Board board, Category category) {
+        this.board = board;
+        this.category = category;
+        this.categoryName = category.getName();
+    }
 }

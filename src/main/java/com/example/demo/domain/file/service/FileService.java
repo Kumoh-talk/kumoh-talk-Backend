@@ -24,10 +24,10 @@ public class FileService {
     private final FileS3Uploader fileS3Uploader;
 
     @Transactional
-    public FileNameInfo upload(MultipartFile multipartFile, Long boardId) throws IOException {
+    public FileNameInfo upload(MultipartFile multipartFile, Long boardId,FileType fileType) throws IOException {
         Board board = boardRepository.findById(boardId).orElseThrow(() ->
             new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        File file = fileS3Uploader.storeFile(multipartFile, board, FileType.IMAGE);
+        File file = fileS3Uploader.storeFile(multipartFile, board, fileType);
         file.setBoard(board); // 연관관계 매핑
         return FileNameInfo.from(fileRepository.save(file));
     }

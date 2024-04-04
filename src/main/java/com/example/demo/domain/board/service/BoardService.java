@@ -1,6 +1,9 @@
 package com.example.demo.domain.board.service;
 
 import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.domain.category.domain.entity.BoardCategory;
+import com.example.demo.domain.category.domain.entity.Category;
+import com.example.demo.domain.category.repository.CategoryRepository;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.request.BoardRequest;
@@ -22,7 +25,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-
+    private final CategoryRepository categoryRepository;
     private static final int PAGE_SIZE = 10;
     /**
      *  파일 저장 메서드
@@ -36,6 +39,17 @@ public class BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
         Board board = BoardRequest.toEntity(boardRequest, user); // Board User 연관관계 맺음
+
+
+        boardRequest.getCategoryName()
+                .forEach(name ->{
+            categoryRepository.findByName(name).stream().findAny()
+                    .ifPresentOrElse(category -> {
+                        board.getBoardCategories().add(new BoardCategory(board,category));
+                    },()->{
+                        board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
+                    });
+        });
         Board savedBoard = boardRepository.save(board);
         return BoardInfoResponse.from(
                 savedBoard,
@@ -85,7 +99,7 @@ public class BoardService {
     @Transactional(readOnly = true)
     public BoardInfoResponse findById(Long postId, String userName) {
         Board board = boardRepository.findById(postId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         List<File> files = board.getFiles(); // TODO : N+1 문제 해결해야함
         return BoardInfoResponse.from(board,
                 userName);
