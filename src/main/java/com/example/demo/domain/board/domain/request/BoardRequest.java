@@ -33,6 +33,7 @@ public class BoardRequest {
                 .content(boardRequest.getContents())
                 .user(user) // 과제 게시판의 트랙은 글쓴이의 트랙으로 지정
                 .status(BoardStatus.FAKE) // 첫 저장은 임시 게시물이기 때문
+                .view(0L)
                 .build();
     }
 }
