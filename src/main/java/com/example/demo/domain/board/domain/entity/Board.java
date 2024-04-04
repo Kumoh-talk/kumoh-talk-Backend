@@ -10,6 +10,7 @@ import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,12 +39,12 @@ public class Board extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    @NotBlank(message = "조회수는 빈 값일 수 없습니다.")
+    @NotNull(message = "조회수는 빈 값일 수 없습니다.")
     private Long view;
 
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "게시물 상태는 빈 값일 수 없음")
+    @NotNull(message = "게시물 상태는 빈 값일 수 없음")
     private BoardStatus status;
 
 
