@@ -29,59 +29,17 @@ public class FileS3Uploader  {
     @Value("${cloud.aws.s3.bucket}")                                                        //bucket 이름
     public String bucket;
 
-    private void check(Object saved) {
-        if (!(saved instanceof Board)) {  // 파일 업로더가 다른 객체가 추가되면 여기서 클래스 추가하면 됨
-            throw new IllegalArgumentException("saved 객체는 알 수 없는 타입입니다.");
-        }
-    }
 
-    /**
-     * 이미지 파일 저장하는 메서드
-     * @param multipartFiles ( 이미지 파일들 )
-     * @param saved
-     * @return List<FileNameInfo>
-     * @throws IOException
-     */
-    public List<FileNameInfo> imageStore(List<MultipartFile> multipartFiles,  Object saved) throws IOException {
-        List<FileNameInfo> result = new ArrayList<>();
-
-        for (MultipartFile multipartFile : multipartFiles) {
-            if (!multipartFile.isEmpty()) {
-                result.add(storeFile(multipartFile, saved,FileType.IMAGE));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Attach 파일 저장하는 메서드
-     * @param multipartFile
-     * @param saved
-     * @return FileNameInfo
-     * @throws IOException
-     */
-    public FileNameInfo attachStore(MultipartFile multipartFile, Object saved) throws IOException { 
-
-        check(saved); // 저장 가능한 엔티티인지 체크
-
-        return storeFile(multipartFile, saved,FileType.ATTACH);
-    }
-
-    private FileNameInfo storeFile(MultipartFile multipartFile, Object saved,FileType fileType) throws IOException {
+    public File storeFile(MultipartFile multipartFile, Object saved, FileType fileType) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
         }
-
         String originalFilename = multipartFile.getOriginalFilename(); // 실제 이름
         String storeFileName = createStoreFileName(originalFilename); // 파일 식별 고유 이름 생성
 
         uploadS3File(multipartFile, storeFileName); // s3 업로드
 
-        File file = new File(originalFilename, storeFileName, fileType);
-        file.setEntity(saved); // 연관관계 매핑
-
-
-        return FileNameInfo.from(fileRepository.save(file));
+        return new File(originalFilename, storeFileName, fileType);
     }
 
     //S3 서버에 파일 업로드
