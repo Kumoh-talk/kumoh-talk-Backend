@@ -6,6 +6,7 @@ import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,12 @@ public class BoardRequest {
     @Nullable
     private List<String> categoryName;
 
+    @Builder
+    public BoardRequest(String title, String contents, @Nullable List<String> categoryName) {
+        this.title = title;
+        this.contents = contents;
+        this.categoryName = categoryName;
+    }
 
     public static Board toEntity(BoardRequest boardRequest, User user) {
         return Board.builder()

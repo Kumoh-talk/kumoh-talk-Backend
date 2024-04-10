@@ -62,6 +62,10 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private List<Like> likes= new ArrayList<>();
 
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    private List<View> views = new ArrayList<>();
+
+
 
     @OneToMany(mappedBy = "board",
             fetch = FetchType.LAZY,

@@ -9,19 +9,19 @@ import java.time.LocalDateTime;
 @Getter
 public class BoardInfoResponse {
     private Long boardId;
-    private String username;
+    private String username; // TODO : username 이 필드명 맞는지 다시 봐야함  게시물은 실명 댓글은 별명이어서
     private String title;
     private String contents;
-
+    private Long view;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
     @Builder
-    public BoardInfoResponse(Long boardId, String username, String title, String contents,  LocalDateTime updatedAt, LocalDateTime createdAt) {
+    public BoardInfoResponse(Long boardId, String username, String title, String contents,  LocalDateTime updatedAt, LocalDateTime createdAt,Long view) {
         this.boardId = boardId;
         this.username = username;
         this.title = title;
         this.contents = contents;
-
+        this.view = view;
         this.updatedAt = updatedAt;
         this.createdAt = createdAt;
     }
@@ -34,7 +34,8 @@ public class BoardInfoResponse {
                 board.getTitle(),
                 board.getContent(),
                 board.getUpdatedAt(),
-                board.getCreatedAt()
+                board.getCreatedAt(),
+                board.getView()
         );
     }
 
