@@ -38,7 +38,8 @@ public class BoardService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
-        Board board = BoardRequest.toEntity(boardRequest, user); // Board User 연관관계 맺음
+        Board board = BoardRequest.toEntity(boardRequest);
+        board.setUser(user);
 
 
         boardRequest.getCategoryName()
@@ -53,7 +54,8 @@ public class BoardService {
         Board savedBoard = boardRepository.save(board);
         return BoardInfoResponse.from(
                 savedBoard,
-                user.getName());
+                user.getName(),
+                0L);
     }
 
 
@@ -96,14 +98,14 @@ public class BoardService {
      * @param userName
      * @return
      */
-    @Transactional(readOnly = true)
-    public BoardInfoResponse findById(Long postId, String userName) {
-        Board board = boardRepository.findById(postId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        List<File> files = board.getFiles(); // TODO : N+1 문제 해결해야함
-        return BoardInfoResponse.from(board,
-                userName);
-    }
+//    @Transactional(readOnly = true)
+//    public BoardInfoResponse findById(Long postId, String userName) {
+//        Board board = boardRepository.findById(postId)
+//                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+//        List<File> files = board.getFiles(); // TODO : N+1 문제 해결해야함
+//        return BoardInfoResponse.from(board,
+//                userName);
+//    }
 
     /**
      * 전체 게시물을 불러오는 메서드

@@ -38,9 +38,6 @@ public class Board extends BaseEntity {
     @NotBlank(message = "게시물은 빈 값일 수 없습니다.")
     private String content;
 
-    @Column(nullable = false)
-    @NotNull(message = "조회수는 빈 값일 수 없습니다.")
-    private Long view;
 
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
@@ -74,10 +71,9 @@ public class Board extends BaseEntity {
     private List<BoardCategory> boardCategories = new ArrayList<>(); // TODO : 카테고리 게시판 저장시 요청을 한번에 받는지 따로 카테고리만 연관하는 요청을 보내는지 확인 필요
 
     @Builder
-    public Board(String title, String content, Long view, User user,BoardStatus status) {
+    public Board(String title, String content, User user,BoardStatus status) {
         this.title = title;
         this.content = content;
-        this.view = view;
         this.user = user;
         this.status = status;
     }

@@ -21,7 +21,7 @@ public class BoardRequest {
     private String title;
 
     @NotBlank(message = "게시물 내용은 필수 항목입니다.")
-    @Size(max = 500,message = "최대 제한 500글자 입니다.")
+    @Size(max = 500,message = "최대 제한 500글자 입니다.") // TODO : 게시판 글자수 수정해야함
     private String contents;
 
     @Nullable
@@ -34,13 +34,11 @@ public class BoardRequest {
         this.categoryName = categoryName;
     }
 
-    public static Board toEntity(BoardRequest boardRequest, User user) {
+    public static Board toEntity(BoardRequest boardRequest) {
         return Board.builder()
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContents())
-                .user(user) // 과제 게시판의 트랙은 글쓴이의 트랙으로 지정
                 .status(BoardStatus.FAKE) // 첫 저장은 임시 게시물이기 때문
-                .view(0L)
                 .build();
     }
 }

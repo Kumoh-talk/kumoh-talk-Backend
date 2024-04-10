@@ -27,16 +27,16 @@ public class BoardInfoResponse {
     }
 
 
-    public static BoardInfoResponse from(Board board, String username) {
-        return new BoardInfoResponse(
-                board.getId(),
-                username,
-                board.getTitle(),
-                board.getContent(),
-                board.getUpdatedAt(),
-                board.getCreatedAt(),
-                board.getView()
-        );
+    public static BoardInfoResponse from(Board board, String username,Long view) {
+        return BoardInfoResponse.builder()
+                .boardId(board.getId())
+                .username(username)
+                .title(board.getTitle())
+                .contents(board.getContent())
+                .view(view)
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
+                .build();
     }
 
 }
