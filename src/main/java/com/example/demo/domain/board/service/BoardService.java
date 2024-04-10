@@ -59,6 +59,23 @@ public class BoardService {
                 0L,
                 0L);
     }
+    /**
+     * 게시물 id로 게시물을 찾는 메서드
+     * @param postId
+     * @return
+     */
+//    @Transactional(readOnly = true)
+//    public BoardInfoResponse findById(Long postId) {
+//        Board board = boardRepository.findById(postId)
+//                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+//        Long viewNum;
+//        Long likeNum;
+//
+//        return BoardInfoResponse.from(
+//                board,
+//                viewNum,
+//                likeNum);
+//    }
 
 
     /**
@@ -94,20 +111,7 @@ public class BoardService {
 //        fileS3Uploader.deleteAllFiles(board);
 //        boardRepository.delete(board);
 //    }
-    /**
-     * 게시물 id로 게시물을 찾는 메서드
-     * @param postId
-     * @param userName
-     * @return
-     */
-//    @Transactional(readOnly = true)
-//    public BoardInfoResponse findById(Long postId, String userName) {
-//        Board board = boardRepository.findById(postId)
-//                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-//        List<File> files = board.getFiles(); // TODO : N+1 문제 해결해야함
-//        return BoardInfoResponse.from(board,
-//                userName);
-//    }
+
 
     /**
      * 전체 게시물을 불러오는 메서드

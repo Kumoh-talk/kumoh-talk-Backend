@@ -11,6 +11,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("SELECT b FROM Board b JOIN FETCH b.comments q WHERE b.id = :id")
     Optional<Board> findPostByIdWithComments(@Param("id") Long id);
 
+    @Query("SELECT COUNT(v) FROM View v WHERE v.board.id = :boardId")
+    int countViewsByBoardId(@Param("boardId") Long boardId);
 
 }
 

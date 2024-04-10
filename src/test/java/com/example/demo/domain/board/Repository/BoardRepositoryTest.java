@@ -3,6 +3,7 @@ package com.example.demo.domain.board.Repository;
 import com.example.demo.base.RepositoryTest;
 import com.example.demo.domain.board.domain.BoardStatus;
 import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.domain.board.domain.entity.View;
 import com.example.demo.domain.category.domain.entity.BoardCategory;
 import com.example.demo.domain.category.domain.entity.Category;
 import com.example.demo.domain.category.repository.CategoryRepository;
@@ -75,6 +76,39 @@ class BoardRepositoryTest extends RepositoryTest{
         assertThat(board1.getStatus()).isEqualTo(board.getStatus());
     }
 
+    @Test
+    @DisplayName("view 숫자 조회 쿼리 테스트")
+    void viewCount() {
+        //given
+        Board board = Board.builder()
+                .title("제목")
+                .content("내용")
+                .status(BoardStatus.FAKE)
+                .user(user)
+                .build();
+
+        //when
+        View view = new View();
+        View view1 = new View();
+        View view2 = new View();
+        View view3 = new View();
+        view.setBoard(board);
+        view1.setBoard(board);
+        view2.setBoard(board);
+        view3.setBoard(board);
+
+
+        board.getViews().add(view);
+        board.getViews().add(view1);
+        board.getViews().add(view2);
+        board.getViews().add(view3);
+        Board save = boardRepository.save(board);
+
+        //then
+        assertThat(boardRepository.countViewsByBoardId(save.getId())).isEqualTo(4);
+
+    }
+
     @Nested
     @DisplayName("Board 와 Category 영속성 전이 확인")
     class BoardCategory{
@@ -109,6 +143,7 @@ class BoardRepositoryTest extends RepositoryTest{
 
 
     }
+
 
 
 
