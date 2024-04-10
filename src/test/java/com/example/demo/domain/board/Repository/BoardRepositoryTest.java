@@ -23,17 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@Transactional
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class BoardRepositoryTest {
+
+class BoardRepositoryTest extends RepositoryTest{
 
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+
 
     private User user;
 
@@ -65,7 +62,6 @@ class BoardRepositoryTest {
         Board board = Board.builder()
                 .title("제목")
                 .content("내용")
-                .view(0L)
                 .status(BoardStatus.FAKE)
                 .user(user)
                 .build();
@@ -76,7 +72,6 @@ class BoardRepositoryTest {
         Board board1 = boardRepository.findById(save.getId()).get();
         assertThat(board1.getTitle()).isEqualTo(board.getTitle());
         assertThat(board1.getContent()).isEqualTo(board.getContent());
-        assertThat(board1.getView()).isEqualTo(board.getView());
         assertThat(board1.getStatus()).isEqualTo(board.getStatus());
     }
 

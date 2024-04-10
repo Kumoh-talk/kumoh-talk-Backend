@@ -51,6 +51,7 @@ public class BoardService {
                         board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
                     });
         });
+
         Board savedBoard = boardRepository.save(board);
         return BoardInfoResponse.from(
                 savedBoard,
