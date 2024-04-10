@@ -3,6 +3,8 @@ package com.example.demo.domain.board.Repository;
 import com.example.demo.base.RepositoryTest;
 import com.example.demo.domain.board.domain.BoardStatus;
 import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.domain.category.domain.entity.BoardCategory;
+import com.example.demo.domain.category.domain.entity.Category;
 import com.example.demo.domain.category.repository.CategoryRepository;
 import com.example.demo.domain.file.domain.FileType;
 import com.example.demo.domain.file.domain.entity.File;
@@ -11,10 +13,7 @@ import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.domain.vo.Status;
 import com.example.demo.domain.user.repository.UserRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -30,7 +29,8 @@ class BoardRepositoryTest extends RepositoryTest{
     private BoardRepository boardRepository;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     private User user;
 
@@ -74,6 +74,42 @@ class BoardRepositoryTest extends RepositoryTest{
         assertThat(board1.getContent()).isEqualTo(board.getContent());
         assertThat(board1.getStatus()).isEqualTo(board.getStatus());
     }
+
+    @Nested
+    @DisplayName("Board 와 Category 영속성 전이 확인")
+    class BoardCategory{
+        @Test
+        @DisplayName("Board 카테고리 영속성 전이 저장 성공")
+        void cascadeTest() {
+            //given
+            Board board = Board.builder()
+                    .title("제목")
+                    .content("내용")
+                    .status(BoardStatus.FAKE)
+                    .user(user)
+                    .build();
+
+            String categoryName = "category1";
+
+
+            //when
+            categoryRepository.findByName(categoryName).stream().findAny()
+                    .ifPresentOrElse(category -> {
+                        board.getBoardCategories().add(new com.example.demo.domain.category.domain.entity.BoardCategory(board,category));
+                    },()->{
+                        board.getBoardCategories().add(new com.example.demo.domain.category.domain.entity.BoardCategory(board,new Category(categoryName)));
+                    });
+            Board savedBoard = boardRepository.save(board);
+            //then
+            Category category = categoryRepository.findByName(categoryName).stream().findAny().get();
+
+            assertThat(category.getName()).isEqualTo(categoryName);
+
+        }
+
+
+    }
+
 
 
 }
