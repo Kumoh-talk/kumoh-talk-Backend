@@ -56,6 +56,7 @@ public class BoardService {
         return BoardInfoResponse.from(
                 savedBoard,
                 user.getName(),
+                0L,
                 0L);
     }
 

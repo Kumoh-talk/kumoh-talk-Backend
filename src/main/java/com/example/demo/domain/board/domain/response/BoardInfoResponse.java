@@ -13,27 +13,30 @@ public class BoardInfoResponse {
     private String title;
     private String contents;
     private Long view;
+    private Long like;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
     @Builder
-    public BoardInfoResponse(Long boardId, String username, String title, String contents,  LocalDateTime updatedAt, LocalDateTime createdAt,Long view) {
+    public BoardInfoResponse(Long boardId, String username, String title, String contents,  LocalDateTime updatedAt, LocalDateTime createdAt,Long view,Long like) {
         this.boardId = boardId;
         this.username = username;
         this.title = title;
         this.contents = contents;
         this.view = view;
+        this.like = like;
         this.updatedAt = updatedAt;
         this.createdAt = createdAt;
     }
 
 
-    public static BoardInfoResponse from(Board board, String username,Long view) {
+    public static BoardInfoResponse from(Board board, String username,Long view,Long like) {
         return BoardInfoResponse.builder()
                 .boardId(board.getId())
                 .username(username)
                 .title(board.getTitle())
                 .contents(board.getContent())
                 .view(view)
+                .like(like)
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .build();

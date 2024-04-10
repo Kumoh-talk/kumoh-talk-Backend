@@ -4,6 +4,7 @@ package com.example.demo.domain.category.repository;
 import com.example.demo.base.RepositoryTest;
 import com.example.demo.domain.category.domain.entity.Category;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,10 @@ public class CategoryRepositoryTest extends RepositoryTest {
     private Category category;
 
 
+    @AfterEach
+    void afterEach() {
+        category = null;
+    }
 
     @Test
     @DisplayName("카테고리 이름을 찾기 성공")
