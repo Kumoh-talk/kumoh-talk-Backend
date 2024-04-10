@@ -1,6 +1,8 @@
 package com.example.demo.domain.board.service;
 
+import com.example.demo.domain.board.Repository.ViewRepository;
 import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.domain.board.domain.entity.View;
 import com.example.demo.domain.category.domain.entity.BoardCategory;
 import com.example.demo.domain.category.domain.entity.Category;
 import com.example.demo.domain.category.repository.CategoryRepository;
@@ -26,6 +28,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final ViewRepository viewRepository;
     private static final int PAGE_SIZE = 10;
     /**
      *  파일 저장 메서드
@@ -61,21 +64,26 @@ public class BoardService {
     }
     /**
      * 게시물 id로 게시물을 찾는 메서드
-     * @param postId
-     * @return
+     * @param boardId
+     * @return BoardInfoResponse
      */
-//    @Transactional(readOnly = true)
-//    public BoardInfoResponse findById(Long postId) {
-//        Board board = boardRepository.findById(postId)
-//                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-//        Long viewNum;
-//        Long likeNum;
-//
-//        return BoardInfoResponse.from(
-//                board,
-//                viewNum,
-//                likeNum);
-//    }
+    @Transactional(readOnly = true)
+    public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함 
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        String name = board.getUser().getName();
+        Long viewNum = boardRepository.countViewsByBoardId(boardId);
+        Long likeNum = boardRepository.countLikesByBoardId(boardId);
+
+        View view = new View(board);
+        viewRepository.save(view);
+
+        return BoardInfoResponse.from(
+                board,
+                name,
+                viewNum+1,
+                likeNum);
+    }
 
 
     /**

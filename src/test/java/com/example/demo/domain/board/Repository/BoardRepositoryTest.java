@@ -32,6 +32,8 @@ class BoardRepositoryTest extends RepositoryTest{
     private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ViewRepository viewRepository;
 
     private User user;
 
@@ -87,25 +89,18 @@ class BoardRepositoryTest extends RepositoryTest{
                 .user(user)
                 .build();
 
+        View view = new View(board);
+        View view1 = new View(board);
+
         //when
-        View view = new View();
-        View view1 = new View();
-        View view2 = new View();
-        View view3 = new View();
-        view.setBoard(board);
-        view1.setBoard(board);
-        view2.setBoard(board);
-        view3.setBoard(board);
-
-
-        board.getViews().add(view);
-        board.getViews().add(view1);
-        board.getViews().add(view2);
-        board.getViews().add(view3);
         Board save = boardRepository.save(board);
+        viewRepository.save(view);
+        viewRepository.save(view1);
+
+
 
         //then
-        assertThat(boardRepository.countViewsByBoardId(save.getId())).isEqualTo(4);
+        assertThat(boardRepository.countViewsByBoardId(save.getId())).isEqualTo(2);
 
     }
 

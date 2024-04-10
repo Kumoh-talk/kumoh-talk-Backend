@@ -30,10 +30,10 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
 
             return ResponseEntity.ok(boardService.save(boardRequest, user.getId()));
     }
-//    @GetMapping("/search/{boardId}")
-//    public ResponseEntity<BoardInfoResponse> search(@PathVariable Long boardId) throws IOException {
-//        return ResponseEntity.ok(boardService.findById(boardId));
-//    }
+    @GetMapping("/search/{boardId}")
+    public ResponseEntity<BoardInfoResponse> search(@PathVariable Long boardId) throws IOException {
+        return ResponseEntity.ok(boardService.findById(boardId));
+    }
 
 
 
