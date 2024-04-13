@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/post")
+@RequestMapping("/api/board")
 @RequiredArgsConstructor
-public class BoardController {
+public class BoardController { // TODO : princapal null 값 반환 확인 후 user null 감지 로직 추가 고민해야함
 
     private final BoardService boardService;
 
@@ -27,31 +27,29 @@ public class BoardController {
     public ResponseEntity<BoardInfoResponse> save(
             @AuthenticationPrincipal UserPrincipal user,
             @ModelAttribute @Valid BoardRequest boardRequest) throws IOException {
-        CheckAuthentication(user);
 
             return ResponseEntity.ok(boardService.save(boardRequest, user.getId()));
     }
-
-    @PostMapping("/update/{postId}")
-    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
-                                                        @ModelAttribute @Valid BoardRequest boardRequest,
-                                                        @PathVariable Long postId) throws IOException {
-        CheckAuthentication(user);
-        return ResponseEntity.ok(boardService.update(boardRequest,user.getName(),postId));
-    }
-    @GetMapping("/search/{postId}")
-    public ResponseEntity<BoardInfoResponse> search(@AuthenticationPrincipal UserPrincipal user,
-                                                        @PathVariable Long postId) throws IOException {
-        CheckAuthentication(user);
-        return ResponseEntity.ok(boardService.findById(postId,user.getName()));
+    @GetMapping("/search/{boardId}")
+    public ResponseEntity<BoardInfoResponse> search(@PathVariable Long boardId) throws IOException {
+        return ResponseEntity.ok(boardService.findById(boardId));
     }
 
-    @PatchMapping("/delete/{postId}")
-    public ResponseEntity delete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
-        CheckAuthentication(user);
-        boardService.remove(postId, user.getUsername());
-        return ResponseEntity.ok().build();
-    }
+
+
+//    @PostMapping("/update/{boardId}")
+//    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
+//                                                        @ModelAttribute @Valid BoardRequest boardRequest,
+//                                                        @PathVariable Long boardId) throws IOException {
+//        return ResponseEntity.ok(boardService.update(boardRequest,user.getName(),boardId));
+//    }
+
+//
+//    @PatchMapping("/delete/{postId}")
+//    public ResponseEntity delete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
+//        boardService.remove(postId, user.getUsername());
+//        return ResponseEntity.ok().build();
+//    }
 
 //    @GetMapping("/list")
 //    public ResponseEntity<BoardPageResponse> findPageList(
@@ -62,10 +60,6 @@ public class BoardController {
 //        return ResponseEntity.ok(boardService.findPageList(page,track,pageSort));
 //    }
 
-    private void CheckAuthentication(UserPrincipal user) {
-        if(user == null){
-            throw new ServiceException(ErrorCode.NEED_AUTHORIZED);
-        }
-    }
+
 
 }

@@ -1,7 +1,7 @@
 package com.example.demo.domain.user.domain;
 
 import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.board.domain.Board;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.like.domain.Like;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.domain.vo.Status;
@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.global.regex.UserRegex.EMAIL_REGEXP;
@@ -71,13 +72,13 @@ public class User extends BaseEntity {
     private String field;
 
     @OneToMany(mappedBy = "user")
-    private List<Board> boards;
+    private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Comment> comments;
+    private List<Comment> comments= new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<Like> likes;
+    private List<Like> likes= new ArrayList<>();
 
     @Builder
     public User(String email, String name, String nickname, String password, Role role, String department, Status status, String field) {

@@ -1,26 +1,27 @@
-package com.example.demo.domain.like.domain;
+package com.example.demo.domain.board.domain.entity;
 
-import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.user.domain.User;
+
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "like_board")
+@Table(name = "view")
 @NoArgsConstructor
 @Getter
-public class Like extends BaseEntity {
+@Setter
+public class View extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-    @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    public View(Board board) {
+        this.board = board;
+    }
 }

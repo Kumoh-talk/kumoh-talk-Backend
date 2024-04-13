@@ -1,6 +1,5 @@
 package com.example.demo.domain.file.controller;
 
-import com.example.demo.domain.file.FileController;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;

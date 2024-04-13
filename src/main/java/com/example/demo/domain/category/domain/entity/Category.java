@@ -6,10 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="board_category")
+@Table(name ="category")
 @NoArgsConstructor
 @Getter
 public class Category extends BaseEntity {
@@ -25,5 +26,9 @@ public class Category extends BaseEntity {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true) // TODO: 삭제 전이 한번 다시 볼 필요 있음
-    private List<BoardCategory> boardCategories;
+    private List<BoardCategory> boardCategories = new ArrayList<>();
+
+    public Category(String name) {
+        this.name = name;
+    }
 }
