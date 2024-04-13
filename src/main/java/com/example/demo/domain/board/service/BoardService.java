@@ -107,7 +107,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         if(!board.getUser().getId().equals(userId)) {
-            new ServiceException(ErrorCode.NOT_ACCESS_USER);
+            throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
         board.setTitle(boardRequest.getTitle());
         board.setContent(boardRequest.getContents());

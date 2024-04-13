@@ -81,7 +81,8 @@ public class User extends BaseEntity {
     private List<Like> likes= new ArrayList<>();
 
     @Builder
-    public User(String email, String name, String nickname, String password, Role role, String department, Status status, String field) {
+    public User(Long id,String email, String name, String nickname, String password, Role role, String department, Status status, String field) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.nickname = nickname;

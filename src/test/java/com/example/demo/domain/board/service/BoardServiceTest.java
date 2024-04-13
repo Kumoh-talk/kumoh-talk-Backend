@@ -8,6 +8,7 @@ import com.example.demo.domain.board.domain.request.BoardRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.category.domain.entity.BoardCategory;
 import com.example.demo.domain.category.domain.entity.Category;
+import com.example.demo.domain.category.repository.BoardCategoryRepository;
 import com.example.demo.domain.category.repository.CategoryRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
@@ -37,6 +38,8 @@ import static org.mockito.Mockito.when;
 class BoardServiceTest {
 
     @Mock
+    BoardCategoryRepository boardCategoryRepository;
+    @Mock
     BoardRepository boardRepository;
     @Mock
     UserRepository userRepository;
@@ -51,6 +54,7 @@ class BoardServiceTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
+                .id(1L)
                 .email("20200013@kumoh.ac.kr")
                 .name("name")
                 .nickname("nickname")
@@ -194,5 +198,97 @@ class BoardServiceTest {
 
         }
 
+    }
+
+    @Nested
+    @DisplayName("게시물 수정")
+    class update {
+        @Test
+        @DisplayName("게시물 수정 성공")
+        void success() throws IOException {
+            // Given
+            List<String> names = new ArrayList<>();
+            names.add("category1");
+            names.add("category2");
+
+            BoardRequest boardRequest = BoardRequest.builder()
+                    .title("title")
+                    .contents("content")
+                    .categoryName(names)
+                    .build();
+
+
+            Board board = Board.builder()
+                    .id(1L)
+                    .title("saveTitle")
+                    .content("savedContent")
+                    .user(user)
+                    .build();
+            board.getBoardCategories().add(new BoardCategory("name1"));
+            board.getBoardCategories().add(new BoardCategory("name2"));
+
+            Long viewNum = 0L;
+            Long likeNum = 1L;
+            when(boardRepository.findById(any(Long.class))).thenReturn(Optional.of(board));
+            when(boardRepository.countViewsByBoardId(any(Long.class))).thenReturn(viewNum);
+            when(boardRepository.countLikesByBoardId(any(Long.class))).thenReturn(likeNum);
+
+            board.getBoardCategories().clear();
+            Category dummyCategory = new Category(names.get(0));
+            when(categoryRepository.findByName(names.get(0))).thenReturn(Optional.of(dummyCategory).stream().toList());
+            Category dummyCategory1 = new Category(names.get(1));
+            when(categoryRepository.findByName(names.get(1))).thenReturn(Optional.of(dummyCategory1).stream().toList());
+
+            //when
+            BoardInfoResponse update = boardService.update(boardRequest, user.getId(), board.getId());
+
+            //then
+            assertThat(update.getTitle()).isEqualTo(boardRequest.getTitle());
+            assertThat(update.getContents()).isEqualTo(boardRequest.getContents());
+            assertThat(update.getCategoryNames().get(0)).isEqualTo(boardRequest.getCategoryName().get(0));
+            assertThat(update.getCategoryNames().get(1)).isEqualTo(boardRequest.getCategoryName().get(1));
+
+
+        }
+
+        @Test
+        @DisplayName("게시판 수정 실패 : 게시물 조회 실패")
+        void boardId_not_found() {
+            //given
+            BoardRequest boardRequest = BoardRequest.builder()
+                    .title("title")
+                    .contents("content")
+                    .build();
+            when(boardRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+            //when -> then
+            assertThrows(ServiceException.class, ()->{boardService.update(boardRequest,0L,0L);});
+        }
+
+        @Test
+        @DisplayName("게시판 수정 실패 : 요청자의 유저와 게시판의 등록 유저가 다름")
+        void Not_Access() {
+            //given
+            List<String> names = new ArrayList<>();
+            names.add("category1");
+            names.add("category2");
+
+            BoardRequest boardRequest = BoardRequest.builder()
+                    .title("title")
+                    .contents("content")
+                    .categoryName(names)
+                    .build();
+            Board board = Board.builder()
+                    .id(1L)
+                    .title("saveTitle")
+                    .content("savedContent")
+                    .user(user)
+                    .build();
+            when(boardRepository.findById(any(Long.class))).thenReturn(Optional.of(board));
+
+            //when -> then
+            assertThrows(ServiceException.class, ()->{boardService.update(boardRequest,10L,board.getId());});
+
+        }
     }
 }
