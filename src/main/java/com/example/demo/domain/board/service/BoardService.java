@@ -5,6 +5,7 @@ import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.View;
 import com.example.demo.domain.category.domain.entity.BoardCategory;
 import com.example.demo.domain.category.domain.entity.Category;
+import com.example.demo.domain.category.repository.BoardCategoryRepository;
 import com.example.demo.domain.category.repository.CategoryRepository;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.board.Repository.BoardRepository;
@@ -19,16 +20,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
+    // TODO : 너무 의존성 많아지는데 Service 계층 분리 생각중..
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ViewRepository viewRepository;
+    private final BoardCategoryRepository boardCategoryRepository;
     private static final int PAGE_SIZE = 10;
     /**
      *  파일 저장 메서드
@@ -60,15 +64,16 @@ public class BoardService {
                 savedBoard,
                 user.getName(),
                 0L,
-                0L);
+                0L,
+                boardRequest.getCategoryName());
     }
     /**
      * 게시물 id로 게시물을 찾는 메서드
      * @param boardId
      * @return BoardInfoResponse
      */
-    @Transactional(readOnly = true)
-    public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함 
+    @Transactional
+    public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         String name = board.getUser().getName();
@@ -78,30 +83,57 @@ public class BoardService {
         View view = new View(board);
         viewRepository.save(view);
 
+        List<String> categoryNames = new ArrayList<>();
+        board.getBoardCategories().forEach(categoryName ->{categoryNames.add(categoryName.getCategoryName());});
+
         return BoardInfoResponse.from(
                 board,
                 name,
                 viewNum+1,
-                likeNum);
+                likeNum,
+                categoryNames);
     }
 
 
     /**
      *
      * @param boardRequest
-     * @param userName
-     * @param postId
-     * @return
+     * @param userId
+     * @param boardId
+     * @return BoardInfoResponse
      */
-//    @Transactional
-//    public BoardInfoResponse update(BoardRequest boardRequest, String userName, Long postId) throws IOException {
-//        Board board = boardRepository.findById(postId)
-//                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-//        if(!board.getUser().getName().equals(userName)) {
-//            new ServiceException(ErrorCode.NOT_ACCESS_USER);
-//        }
-//        return updateBoard(boardRequest, board, userName);
-//    }
+    @Transactional
+    public BoardInfoResponse update(BoardRequest boardRequest, Long userId, Long boardId) throws IOException {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        if(!board.getUser().getId().equals(userId)) {
+            throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
+        }
+        board.setTitle(boardRequest.getTitle());
+        board.setContent(boardRequest.getContents());
+
+        board.getBoardCategories()
+                        .forEach(boardCategory -> {
+                            boardCategoryRepository.delete(boardCategory);
+                        });
+
+        boardRequest.getCategoryName()
+                .forEach(name ->{
+                    categoryRepository.findByName(name).stream().findAny()
+                            .ifPresentOrElse(category -> {
+                                board.getBoardCategories().add(new BoardCategory(board,category));
+                            },()->{
+                                board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
+                            });
+                });
+        Long viewNum = boardRepository.countViewsByBoardId(boardId);
+        Long likeNum = boardRepository.countLikesByBoardId(boardId);
+        return BoardInfoResponse.from(board,
+                board.getUser().getName(),
+                viewNum,
+                likeNum,
+                boardRequest.getCategoryName());
+    }
 
 
     /**

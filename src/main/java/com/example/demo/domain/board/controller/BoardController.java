@@ -8,6 +8,7 @@ import com.example.demo.domain.board.service.BoardService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,23 +27,20 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
     @PostMapping("/save")
     public ResponseEntity<BoardInfoResponse> save(
             @AuthenticationPrincipal UserPrincipal user,
-            @ModelAttribute @Valid BoardRequest boardRequest) throws IOException {
+            @RequestBody @Valid BoardRequest boardRequest) throws IOException {
 
             return ResponseEntity.ok(boardService.save(boardRequest, user.getId()));
     }
-    @GetMapping("/search/{boardId}")
+    @GetMapping("/search/{boardId}") //TODO : @PathValidation validation 처리 한번 생각해봐야함
     public ResponseEntity<BoardInfoResponse> search(@PathVariable Long boardId) throws IOException {
         return ResponseEntity.ok(boardService.findById(boardId));
     }
-
-
-
-//    @PostMapping("/update/{boardId}")
-//    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
-//                                                        @ModelAttribute @Valid BoardRequest boardRequest,
-//                                                        @PathVariable Long boardId) throws IOException {
-//        return ResponseEntity.ok(boardService.update(boardRequest,user.getName(),boardId));
-//    }
+    @PostMapping("/update/{boardId}")
+    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
+                                                        @RequestBody @Valid BoardRequest boardRequest,
+                                                        @PathVariable Long boardId) throws IOException {
+        return ResponseEntity.ok(boardService.update(boardRequest,user.getId(),boardId));
+    }
 
 //
 //    @PatchMapping("/delete/{postId}")
