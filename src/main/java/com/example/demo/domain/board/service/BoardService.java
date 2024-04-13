@@ -69,7 +69,7 @@ public class BoardService {
      * @param boardId
      * @return BoardInfoResponse
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));

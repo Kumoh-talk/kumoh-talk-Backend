@@ -30,6 +30,9 @@ public class BoardCategory extends BaseEntity {
 
     private String categoryName;
 
+    public BoardCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
     public BoardCategory(Board board, Category category) {
         this.board = board;

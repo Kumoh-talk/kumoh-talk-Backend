@@ -70,7 +70,8 @@ public class Board extends BaseEntity {
     private List<BoardCategory> boardCategories = new ArrayList<>(); // TODO : 카테고리 게시판 저장시 요청을 한번에 받는지 따로 카테고리만 연관하는 요청을 보내는지 확인 필요
 
     @Builder
-    public Board(String title, String content, User user,BoardStatus status) {
+    public Board(Long id, String title, String content, User user, BoardStatus status) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.user = user;
