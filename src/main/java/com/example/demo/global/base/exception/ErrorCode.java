@@ -16,8 +16,10 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_0005", "사용할 수 없는 메서드입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_0006", "서버 에러입니다."),
     INVALID_JSON(HttpStatus.BAD_REQUEST, "COMMON_0007", "JSON 파싱 오류입니다."),
-    NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON_0008","인증이 필요합니다."),
 
+    // Security
+    NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED, "SECURITY_0001","인증이 필요합니다."),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "SECURITY_0002","권한이 없습니다."),
 
     // User
     MISMATCH_EMAIL_OR_PASSWORD(HttpStatus.BAD_REQUEST, "USER_0001", "이메일 혹은 비밀번호가 틀렸습니다."),
