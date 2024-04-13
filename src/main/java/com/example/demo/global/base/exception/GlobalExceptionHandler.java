@@ -95,6 +95,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request, Exception e) {
         log.debug("Exception", e);
         return ResponseEntity.internalServerError()
-                .body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, null));
+                .body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
 }
