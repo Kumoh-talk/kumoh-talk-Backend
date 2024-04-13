@@ -5,6 +5,7 @@ import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.View;
 import com.example.demo.domain.category.domain.entity.BoardCategory;
 import com.example.demo.domain.category.domain.entity.Category;
+import com.example.demo.domain.category.repository.BoardCategoryRepository;
 import com.example.demo.domain.category.repository.CategoryRepository;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.board.Repository.BoardRepository;
@@ -26,10 +27,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
+    // TODO : 너무 의존성 많아지는데 Service 계층 분리 생각중..
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ViewRepository viewRepository;
+    private final BoardCategoryRepository boardCategoryRepository;
     private static final int PAGE_SIZE = 10;
     /**
      *  파일 저장 메서드
@@ -95,19 +98,42 @@ public class BoardService {
     /**
      *
      * @param boardRequest
-     * @param userName
-     * @param postId
-     * @return
+     * @param userId
+     * @param boardId
+     * @return BoardInfoResponse
      */
-//    @Transactional
-//    public BoardInfoResponse update(BoardRequest boardRequest, String userName, Long postId) throws IOException {
-//        Board board = boardRepository.findById(postId)
-//                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-//        if(!board.getUser().getName().equals(userName)) {
-//            new ServiceException(ErrorCode.NOT_ACCESS_USER);
-//        }
-//        return updateBoard(boardRequest, board, userName);
-//    }
+    @Transactional
+    public BoardInfoResponse update(BoardRequest boardRequest, Long userId, Long boardId) throws IOException {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        if(!board.getUser().getId().equals(userId)) {
+            new ServiceException(ErrorCode.NOT_ACCESS_USER);
+        }
+        board.setTitle(boardRequest.getTitle());
+        board.setContent(boardRequest.getContents());
+
+        board.getBoardCategories()
+                        .forEach(boardCategory -> {
+                            boardCategoryRepository.delete(boardCategory);
+                        });
+
+        boardRequest.getCategoryName()
+                .forEach(name ->{
+                    categoryRepository.findByName(name).stream().findAny()
+                            .ifPresentOrElse(category -> {
+                                board.getBoardCategories().add(new BoardCategory(board,category));
+                            },()->{
+                                board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
+                            });
+                });
+        Long viewNum = boardRepository.countViewsByBoardId(boardId);
+        Long likeNum = boardRepository.countLikesByBoardId(boardId);
+        return BoardInfoResponse.from(board,
+                board.getUser().getName(),
+                viewNum,
+                likeNum,
+                boardRequest.getCategoryName());
+    }
 
 
     /**

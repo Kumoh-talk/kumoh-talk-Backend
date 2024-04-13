@@ -24,6 +24,7 @@ public class BoardRequest {
     @Size(max = 500,message = "최대 제한 500글자 입니다.") // TODO : 게시판 글자수 수정해야함
     private String contents;
 
+    //TODO : 카테고리 수 제한 할건지 확인 필요
     @Nullable
     private List<String> categoryName;
 
