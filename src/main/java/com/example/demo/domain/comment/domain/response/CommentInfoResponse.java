@@ -1,11 +1,9 @@
 package com.example.demo.domain.comment.domain.response;
 
-import com.example.demo.domain.auth.domain.UserPrincipal;
 import com.example.demo.domain.comment.domain.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Getter
 @Setter
