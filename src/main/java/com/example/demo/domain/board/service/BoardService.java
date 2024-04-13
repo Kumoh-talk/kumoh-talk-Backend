@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,7 +61,8 @@ public class BoardService {
                 savedBoard,
                 user.getName(),
                 0L,
-                0L);
+                0L,
+                boardRequest.getCategoryName());
     }
     /**
      * 게시물 id로 게시물을 찾는 메서드
@@ -68,7 +70,7 @@ public class BoardService {
      * @return BoardInfoResponse
      */
     @Transactional(readOnly = true)
-    public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함 
+    public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         String name = board.getUser().getName();
@@ -78,11 +80,15 @@ public class BoardService {
         View view = new View(board);
         viewRepository.save(view);
 
+        List<String> categoryNames = new ArrayList<>();
+        board.getBoardCategories().forEach(categoryName ->{categoryNames.add(categoryName.getCategoryName());});
+
         return BoardInfoResponse.from(
                 board,
                 name,
                 viewNum+1,
-                likeNum);
+                likeNum,
+                categoryNames);
     }
 
 
