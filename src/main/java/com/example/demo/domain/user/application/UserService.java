@@ -1,6 +1,6 @@
 package com.example.demo.domain.user.application;
 
-import com.example.demo.domain.auth.domain.UserPrincipal;
+import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.dto.request.UserPasswordUpdateRequest;
 import com.example.demo.domain.user.dto.request.UserUpdateRequest;
@@ -22,14 +22,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    public UserInfoResponse getUserProfile(UserPrincipal user) {
+    public UserInfoResponse getUserProfile(UserContext user) {
         User savedUser = getUserOrThrow(user.getId());
 
         return new UserInfoResponse(savedUser);
     }
 
     @Transactional
-    public UserUpdateResponse updateUserProfile(UserPrincipal user, UserUpdateRequest request) {
+    public UserUpdateResponse updateUserProfile(UserContext user, UserUpdateRequest request) {
         User savedUser =  getUserOrThrow(user.getId());
 
         User userToUpdate = UserUpdateRequest.toUser(request);
@@ -44,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserPassword(UserPrincipal user, UserPasswordUpdateRequest request) {
+    public void updateUserPassword(UserContext user, UserPasswordUpdateRequest request) {
         User savedUser = getUserOrThrow(user.getId());
 
         if(!encoder.matches(request.getOldPassword(), savedUser.getPassword()))

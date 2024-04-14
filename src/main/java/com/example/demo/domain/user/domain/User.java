@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
@@ -30,46 +31,37 @@ import static com.example.demo.global.regex.UserRegex.NAME_REGEXP;
 @Entity
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLRestriction(value = "deleted_at is NULL")
 public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 30)
-    @NotBlank(message = "이메일은 빈값 일 수 없습니다.")
-    @Pattern(regexp = EMAIL_REGEXP, message = "이메일 형식이 맞지 않습니다.")
-    private String email;
-
-    @Column(nullable = false, length = 20)
-    @NotBlank(message = "이름은 빈값 일 수 없습니다.")
-    @Pattern(regexp = NAME_REGEXP, message = "이름 형식이 맞지 않습니다.")
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, length = 20)
-    @NotBlank(message = "이름은 빈값 일 수 없습니다.")
-    @Pattern(regexp = NAME_REGEXP, message = "이름 형식이 맞지 않습니다.")
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false, length = 20, unique = true)
     private String nickname;
 
     @Column(nullable = false)
-    @NotBlank(message = "비밀번호는 빈값 일 수 없습니다.")
     private String password;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false, length = 10)
     private Role role;
 
-    @Column(nullable = false, length = 10)
-    private String department;
+    @Column(nullable = false)
+    private String department; // 학과
 
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false)
     private Status status; // 재학 상태
 
     @Column(nullable = false)
-    @NotBlank(message = "필드 값은 빈값 일 수 없습니다.")
-    private String field;
+    private String field; // 희망분야
 
     @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();

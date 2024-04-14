@@ -1,12 +1,10 @@
 package com.example.demo.domain.board.controller;
 
 
-import com.example.demo.domain.auth.domain.UserPrincipal;
+import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.board.domain.request.BoardRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.BoardService;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +23,8 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
 
 
     @PostMapping("/save")
-    public ResponseEntity<BoardInfoResponse> save(
-            @AuthenticationPrincipal UserPrincipal user,
-            @RequestBody @Valid BoardRequest boardRequest) throws IOException {
+    public ResponseEntity<BoardInfoResponse> save(@AuthenticationPrincipal UserContext user,
+                                                  @ModelAttribute @Valid BoardRequest boardRequest) throws IOException {
 
             return ResponseEntity.ok(boardService.save(boardRequest, user.getId()));
     }
@@ -36,7 +33,7 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
         return ResponseEntity.ok(boardService.findById(boardId));
     }
     @PostMapping("/update/{boardId}")
-    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserPrincipal user,
+    public ResponseEntity<BoardInfoResponse> update(@AuthenticationPrincipal UserContext user,
                                                         @RequestBody @Valid BoardRequest boardRequest,
                                                         @PathVariable Long boardId) throws IOException {
         return ResponseEntity.ok(boardService.update(boardRequest,user.getId(),boardId));

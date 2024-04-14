@@ -1,12 +1,10 @@
 package com.example.demo.domain.file.controller;
 
 
-import com.example.demo.domain.auth.domain.UserPrincipal;
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.FileType;
 import com.example.demo.domain.file.service.FileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

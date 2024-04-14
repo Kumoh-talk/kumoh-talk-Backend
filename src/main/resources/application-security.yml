@@ -1,0 +1,8 @@
+server:
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        path: /
+        secure: false
+      timeout: 1800
