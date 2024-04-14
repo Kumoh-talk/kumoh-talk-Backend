@@ -1,7 +1,7 @@
 package com.example.demo.domain.comment.controller;
 
 
-import com.example.demo.domain.auth.domain.UserPrincipal;
+import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.service.CommentService;
@@ -22,7 +22,7 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/save/{postId}")
-    public ResponseEntity<CommentInfoResponse> Save(@AuthenticationPrincipal UserPrincipal user,
+    public ResponseEntity<CommentInfoResponse> Save(@AuthenticationPrincipal UserContext user,
                                                     @RequestBody @Valid CommentRequest commentRequest,
                                                     @PathVariable Long postId) {
 
@@ -31,7 +31,7 @@ public class CommentController {
 
 
     @PatchMapping("/update/{commentId}")
-    public ResponseEntity<CommentInfoResponse> qnaUpdate(@AuthenticationPrincipal UserPrincipal user,
+    public ResponseEntity<CommentInfoResponse> qnaUpdate(@AuthenticationPrincipal UserContext user,
                                                          @RequestBody @Valid CommentRequest commentRequest,
                                                          @PathVariable Long commentId) {
         return ResponseEntity.ok(commentService.update(commentRequest,commentId,user.getUsername()));
