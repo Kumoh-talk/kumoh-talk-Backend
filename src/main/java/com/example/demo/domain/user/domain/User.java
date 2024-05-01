@@ -1,6 +1,6 @@
 package com.example.demo.domain.user.domain;
 
-import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.like.domain.Like;
 import com.example.demo.domain.user.domain.vo.Role;
@@ -9,21 +9,15 @@ import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.demo.global.regex.UserRegex.EMAIL_REGEXP;
-import static com.example.demo.global.regex.UserRegex.NAME_REGEXP;
 
 @Slf4j
 @Getter
@@ -71,6 +65,10 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Like> likes= new ArrayList<>();
+
+    @ManyToMany(mappedBy = "likedUsers")
+    private List<Comment> likedComments = new ArrayList<>();
+
 
     @Builder
     public User(Long id,String email, String name, String nickname, String password, Role role, String department, Status status, String field) {

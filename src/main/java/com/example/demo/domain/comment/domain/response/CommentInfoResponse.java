@@ -1,6 +1,6 @@
 package com.example.demo.domain.comment.domain.response;
 
-import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.comment.domain.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,11 +10,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CommentInfoResponse {
     private Long commentId;
-    private String usernme;
+    private String username;
     private String contents;
 
-
-    public static CommentInfoResponse from(Comment comment, String username) {
+    public static CommentInfoResponse of(Comment comment, String username) {
         return new CommentInfoResponse(comment.getId(), username, comment.getContent());
     }
 }

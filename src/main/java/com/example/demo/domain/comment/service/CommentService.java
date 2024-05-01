@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.service;
 
 
 import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
@@ -23,16 +23,22 @@ public class CommentService {
     private BoardRepository boardRepository;
     private UserRepository userRepository;
 
-
     @Transactional
-    public CommentInfoResponse save(Long userId, CommentRequest commentRequest,Long postId) {
-        Board findBoard = boardRepository.findById(postId).orElseThrow(() ->
+    public CommentInfoResponse save(Long userId, CommentRequest commentRequest,Long boardId) {
+        Board findBoard = boardRepository.findById(boardId).orElseThrow(() ->
                 new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다."));
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
-        Comment saved = commentRepository.save(new Comment(commentRequest.getContents(), findBoard, findUser));
-        return CommentInfoResponse.from(saved, findUser.getName());
+        Comment parentComment;
+        if (commentRequest.getParentId() == null)
+            parentComment = null;
+        else
+            parentComment = commentRepository.findById(commentRequest.getParentId()).orElseThrow(() ->
+                    new IllegalArgumentException("부모 댓글을 찾을 수 없습니다."));
+
+        Comment saved = commentRepository.save(new Comment(commentRequest.getContents(), findBoard, findUser, parentComment));
+        return CommentInfoResponse.of(saved, findUser.getName());
     }
 
     @Transactional
@@ -42,8 +48,8 @@ public class CommentService {
         Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new IllegalArgumentException("해당 id 의 comment를 찾을 수 없습니다.")
         );
-        findComment.setContent(commentRequest.getContents());
-        return CommentInfoResponse.from(findComment,username);
+        findComment.changeContent(commentRequest.getContents());
+        return CommentInfoResponse.of(findComment,username);
     }
     @Transactional
     public void delete(Long commentId) {
@@ -59,7 +65,7 @@ public class CommentService {
                         new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
                 );
         return board.getComments().stream()
-                .map(comment -> Comment.entityToResponse(comment))
+                .map(comment -> Comment.newCommentInfoResponse(comment))
                 .collect(Collectors.toList());
     }
 }
