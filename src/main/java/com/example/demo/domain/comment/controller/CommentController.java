@@ -24,7 +24,7 @@ public class CommentController {
     /**
      * 게시물 댓글 조회
      * @param : boardId
-     * @return : 댓글 수, 댓글 관련내용(작성자, 대댓글 여부, 댓글 내용, 좋아요, 수정 날짜, 댓글 페이지)
+     * @return : 전체 페이지 수, 현재 페이지 번호, 댓글 수, 댓글 관련내용(작성자, 대댓글 여부, 댓글 내용, 좋아요, 수정 날짜, 댓글 페이지)
      */
     @GetMapping("/find-comment/{boardId}")
     public ResponseEntity<List<CommentInfoResponse>> findCommentByPostId(@PathVariable Long boardId) {

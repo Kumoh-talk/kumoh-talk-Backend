@@ -4,11 +4,13 @@ package com.example.demo.domain.comment.domain.entity;
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -22,7 +24,8 @@ import java.util.Set;
 @Table(name ="comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Comment {
+@SQLDelete(sql = "UPDATE comment SET deleted_at = NOW() where id = ?")
+public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -45,19 +48,9 @@ public class Comment {
     @JoinColumn(name ="parent_id")
     private Comment parentComment = null;
 
+    // 쿼리 실험 필요 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "parentComment")
     private Set<Comment> replyComments = new HashSet<>();
-
-    @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @ManyToMany
     @JoinTable(name = "comment_like",

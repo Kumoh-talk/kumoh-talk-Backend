@@ -66,9 +66,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Like> likes= new ArrayList<>();
 
-    @ManyToMany(mappedBy = "likedUsers")
-    private List<Comment> likedComments = new ArrayList<>();
-
 
     @Builder
     public User(Long id,String email, String name, String nickname, String password, Role role, String department, Status status, String field) {
