@@ -21,15 +21,34 @@ public class CommentController {
 
     private CommentService commentService;
 
-    @PostMapping("/save/{postId}")
-    public ResponseEntity<CommentInfoResponse> Save(@AuthenticationPrincipal UserContext user,
-                                                    @RequestBody @Valid CommentRequest commentRequest,
-                                                    @PathVariable Long postId) {
-
-        return ResponseEntity.ok(commentService.save(user.getId(), commentRequest,postId));
+    /**
+     * 게시물 댓글 조회
+     * @param : boardId
+     * @return : 전체 페이지 수, 현재 페이지 번호, 댓글 수, 댓글 관련내용(작성자, 대댓글 여부, 댓글 내용, 좋아요, 수정 날짜, 댓글 페이지)
+     */
+    @GetMapping("/find-comment/{boardId}")
+    public ResponseEntity<List<CommentInfoResponse>> findCommentByPostId(@PathVariable Long boardId) {
+        return ResponseEntity.ok(commentService.findByPostId(boardId));
     }
 
+    /**
+     * 댓글 저장
+     * @param : user, commentRequest(content, parentId, ), boardId
+     * @return : commentId, content, username, createdAt, parentId
+     */
+    @PostMapping("/save/{boardId}")
+    public ResponseEntity<CommentInfoResponse> Save(@AuthenticationPrincipal UserContext user,
+                                                    @RequestBody @Valid CommentRequest commentRequest,
+                                                    @PathVariable Long boardId) {
 
+        return ResponseEntity.ok(commentService.save(user.getId(), commentRequest, boardId));
+    }
+
+    /**
+     * 댓글 수정
+     * @param : user, commentRequest()
+     * @return : commentId, content, username, updatedAt, parentId
+     */
     @PatchMapping("/update/{commentId}")
     public ResponseEntity<CommentInfoResponse> qnaUpdate(@AuthenticationPrincipal UserContext user,
                                                          @RequestBody @Valid CommentRequest commentRequest,
@@ -37,15 +56,25 @@ public class CommentController {
         return ResponseEntity.ok(commentService.update(commentRequest,commentId,user.getUsername()));
     }
 
+    /**
+     * 댓글 삭제(부모 댓글 삭제 시 삭제가 아닌 닉네임, 내용 교체만)
+     * @param : commentId
+     * @return : 응답코드
+     */
     @PatchMapping("/delete/{commentId}")
     public ResponseEntity<Void> qnaDelete(@PathVariable Long commentId) {
         commentService.delete(commentId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/find-comment/{postId}")
-    public ResponseEntity<List<CommentInfoResponse>> findCommentByPostId(@PathVariable Long postId) {
-        return ResponseEntity.ok(commentService.findByPostId(postId));
-    }
+    // 게시물 댓글 수 조회
+
+    // 사용자가 작성한 댓글 조회
+
+    // 대댓글 작성
+
+    // 댓글 좋아요
+
+    // 댓글 좋아요 삭제
 
 }
