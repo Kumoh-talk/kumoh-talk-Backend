@@ -1,20 +1,14 @@
 package com.example.demo.domain.comment.domain.entity;
 
 
-import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,12 +38,16 @@ public class Comment extends BaseEntity {
     @JoinColumn(name ="user_id",nullable = false)
     private User user;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="parent_id")
-    private Comment parentComment = null;
+    @JoinColumn(name ="group_id")
+    private Comment parentComment;
 
-    // 쿼리 실험 필요 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "parentComment")
+    @Column(name = "depth", nullable = false)
+    private int depth;
+
+    // 쿼리 실험 필요
+    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
     private Set<Comment> replyComments = new HashSet<>();
 
     @ManyToMany
@@ -58,16 +56,14 @@ public class Comment extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> likedUsers = new ArrayList<>();
 
-    public Comment(String content, Board board, User user, Comment parentComment) {
+    @Builder
+    public Comment(String content, Board board, User user, int depth) {
         this.content = content;
         this.board = board;
         this.user = user;
-        this.parentComment = parentComment;
+        this.depth = depth;
     }
 
-    public static CommentInfoResponse newCommentInfoResponse(Comment comment) {
-        return new CommentInfoResponse(comment.getId(), comment.getUser().getName(), comment.getContent());
-    }
     public void changeContent(String newContent){
         this.content = newContent;
     }
