@@ -1,0 +1,28 @@
+= Comment API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+[[Comment-API]]
+== GET: 게시물 댓글 조회
+.path-parameter
+include::{snippets}/comment/comment-get-success/path-parameters.adoc[]
+=== 댓글 반환 성공
+.request
+include::{snippets}/comment/comment-get-success/http-request.adoc[]
+.response
+include::{snippets}/comment/comment-get-success/http-response.adoc[]
+
+=== 유효하지 않은 PathVariable로 인한 실패
+.request
+include::{snippets}/comment/comment-get-InValidInput-fail/http-request.adoc[]
+.response
+include::{snippets}/comment/comment-get-InValidInput-fail/http-response.adoc[]
+
+=== 존재하지 않는 게시물로 인한 실패
+.request
+include::{snippets}/comment/comment-get-BoardNotFound-fail/http-request.adoc[]
+.response
+include::{snippets}/comment/comment-get-BoardNotFound-fail/http-response.adoc[]
