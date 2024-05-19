@@ -33,7 +33,7 @@ public class CommentService {
             .orElseThrow(() ->
                     new ServiceException(ErrorCode.BOARD_NOT_FOUND)
             );
-        List<Comment> comments = commentRepository.findByBoard_IdOrderByParentComment_IdAsc(boardId);
+        List<Comment> comments = commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
 
         return CommentResponse.from(comments.stream()
                 .map(CommentInfo::from)
@@ -46,19 +46,16 @@ public class CommentService {
                 new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.FAIL_USER_LOGIN));
-
-        Comment requestComment = new Comment(commentRequest.getContents(), findBoard, findUser, commentRequest.getDepth());
-        Comment saved = commentRepository.save(requestComment);
-
         Comment parentComment;
-        if (commentRequest.getDepth() == 0)
-            parentComment = requestComment;
-        else
+        if (commentRequest.getGroupId() != null){
             parentComment = commentRepository.findById(commentRequest.getGroupId()).orElseThrow(() ->
                     new ServiceException(ErrorCode.PARENT_NOT_FOUND));
+        } else{
+            parentComment = null;
+        }
 
-        // 더티 체킹
-        saved.setParentComment(parentComment);
+        Comment requestComment = new Comment(commentRequest.getContents(), findBoard, findUser, parentComment);
+        Comment saved = commentRepository.save(requestComment);
 
         return CommentInfo.from(saved);
     }
