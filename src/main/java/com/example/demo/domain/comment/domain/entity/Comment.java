@@ -4,6 +4,7 @@ package com.example.demo.domain.comment.domain.entity;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.global.base.exception.ServiceException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -29,7 +30,6 @@ public class Comment extends BaseEntity {
     @NotBlank(message = "해당 내용은 빈 값일 수 없습니다.")
     private String content;
 
-    // 지연로딩 즉시로딩 고민
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="board_id",nullable = false)
     private Board board;
@@ -38,33 +38,36 @@ public class Comment extends BaseEntity {
     @JoinColumn(name ="user_id",nullable = false)
     private User user;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="group_id")
     private Comment parentComment;
 
-    @Column(name = "depth", nullable = false)
-    private int depth;
-
     // 쿼리 실험 필요
-    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
-    private Set<Comment> replyComments = new HashSet<>();
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderBy("createdAt ASC")
+    private List<Comment> replyComments = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "comment_like",
             joinColumns = @JoinColumn(name = "comment_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> likedUsers = new ArrayList<>();
+    private Set<User> likedUsers = new HashSet<>();
 
     @Builder
-    public Comment(String content, Board board, User user, int depth) {
+    public Comment(String content, Board board, User user, Comment parentComment) {
         this.content = content;
         this.board = board;
         this.user = user;
-        this.depth = depth;
+        setParentComment(parentComment);
     }
 
     public void changeContent(String newContent){
         this.content = newContent;
+    }
+
+    private void setParentComment(Comment parentComment){
+        this.parentComment = parentComment;
+        if (parentComment != null)
+            parentComment.getReplyComments().add(this);
     }
 }
