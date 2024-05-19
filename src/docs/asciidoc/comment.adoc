@@ -14,15 +14,21 @@ include::{snippets}/comment/comment-get-success/path-parameters.adoc[]
 include::{snippets}/comment/comment-get-success/http-request.adoc[]
 .response
 include::{snippets}/comment/comment-get-success/http-response.adoc[]
+.response-field
+include::{snippets}/comment/comment-get-success/response-fields.adoc[]
 
 === 유효하지 않은 PathVariable로 인한 실패
 .request
 include::{snippets}/comment/comment-get-InValidInput-fail/http-request.adoc[]
 .response
 include::{snippets}/comment/comment-get-InValidInput-fail/http-response.adoc[]
+.response-field
+include::{snippets}/comment/comment-get-InValidInput-fail/response-fields.adoc[]
 
 === 존재하지 않는 게시물로 인한 실패
 .request
 include::{snippets}/comment/comment-get-BoardNotFound-fail/http-request.adoc[]
 .response
 include::{snippets}/comment/comment-get-BoardNotFound-fail/http-response.adoc[]
+.response-field
+include::{snippets}/comment/comment-get-BoardNotFound-fail/response-fields.adoc[]

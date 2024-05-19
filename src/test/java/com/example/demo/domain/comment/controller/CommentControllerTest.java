@@ -22,6 +22,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,7 +67,6 @@ public class CommentControllerTest {
         public void success() throws Exception {
             // given
             List<CommentInfo> commentInfoList = TestDataFactory.createCommentInfoList();
-
             BDDMockito.given(commentService.findByBoardId(any(Long.class)))
                     .willReturn(CommentResponse.from(commentInfoList));
 
@@ -78,30 +79,21 @@ public class CommentControllerTest {
 
                     .andExpect(jsonPath("$.commentInfoList[0].commentId").value(commentInfoList.get(0).getCommentId()))
                     .andExpect(jsonPath("$.commentInfoList[0].groupId").value(commentInfoList.get(0).getGroupId()))
-                    .andExpect(jsonPath("$.commentInfoList[0].depth").value(commentInfoList.get(0).getDepth()))
-                    .andExpect(jsonPath("$.commentInfoList[0].username").value(commentInfoList.get(0).getUsername()))
+                    .andExpect(jsonPath("$.commentInfoList[0].userNickname").value(commentInfoList.get(0).getUserNickname()))
                     .andExpect(jsonPath("$.commentInfoList[0].contents").value(commentInfoList.get(0).getContents()))
                     .andExpect(jsonPath("$.commentInfoList[0].createdAt").value(commentInfoList.get(0).getCreatedAt().toString()))
                     .andExpect(jsonPath("$.commentInfoList[0].updatedAt").value(commentInfoList.get(0).getUpdatedAt()))
                     .andExpect(jsonPath("$.commentInfoList[0].deletedAt").value(commentInfoList.get(0).getDeletedAt()))
+                    .andExpect(jsonPath("$.commentInfoList[0].replyComments[0].commentId").value(commentInfoList.get(0).getReplyComments().get(0).getCommentId()))
 
                     .andExpect(jsonPath("$.commentInfoList[1].commentId").value(commentInfoList.get(1).getCommentId()))
                     .andExpect(jsonPath("$.commentInfoList[1].groupId").value(commentInfoList.get(1).getGroupId()))
-                    .andExpect(jsonPath("$.commentInfoList[1].depth").value(commentInfoList.get(1).getDepth()))
-                    .andExpect(jsonPath("$.commentInfoList[1].username").value(commentInfoList.get(1).getUsername()))
+                    .andExpect(jsonPath("$.commentInfoList[1].username").value(commentInfoList.get(1).getUserNickname()))
                     .andExpect(jsonPath("$.commentInfoList[1].contents").value(commentInfoList.get(1).getContents()))
                     .andExpect(jsonPath("$.commentInfoList[1].createdAt").value(commentInfoList.get(1).getCreatedAt().toString()))
                     .andExpect(jsonPath("$.commentInfoList[1].updatedAt").value(commentInfoList.get(1).getUpdatedAt()))
                     .andExpect(jsonPath("$.commentInfoList[1].deletedAt").value(commentInfoList.get(1).getDeletedAt()))
 
-                    .andExpect(jsonPath("$.commentInfoList[2].commentId").value(commentInfoList.get(2).getCommentId()))
-                    .andExpect(jsonPath("$.commentInfoList[2].groupId").value(commentInfoList.get(2).getGroupId()))
-                    .andExpect(jsonPath("$.commentInfoList[2].depth").value(commentInfoList.get(2).getDepth()))
-                    .andExpect(jsonPath("$.commentInfoList[2].username").value(commentInfoList.get(2).getUsername()))
-                    .andExpect(jsonPath("$.commentInfoList[2].contents").value(commentInfoList.get(2).getContents()))
-                    .andExpect(jsonPath("$.commentInfoList[2].createdAt").value(commentInfoList.get(2).getCreatedAt().toString()))
-                    .andExpect(jsonPath("$.commentInfoList[2].updatedAt").value(commentInfoList.get(2).getUpdatedAt()))
-                    .andExpect(jsonPath("$.commentInfoList[2].deletedAt").value(commentInfoList.get(2).getDeletedAt()))
                     .andDo(document("comment/comment-get-success",
                             preprocessRequest(prettyPrint()),
                             preprocessResponse(prettyPrint()),
@@ -111,16 +103,17 @@ public class CommentControllerTest {
                             responseFields(
                                     fieldWithPath("commentsCount").type(JsonFieldType.NUMBER).description("댓글 수"),
 
-                                    subsectionWithPath("commentInfoList").type(JsonFieldType.ARRAY).description("댓글 목록"),
+                                    fieldWithPath("commentInfoList").type(JsonFieldType.ARRAY).description("댓글 목록"),
                                     fieldWithPath("commentInfoList[].commentId").type(JsonFieldType.NUMBER).description("댓글 ID"),
-                                    fieldWithPath("commentInfoList[].groupId").type(JsonFieldType.NUMBER).description("댓글 그룹 ID(댓글과 대댓글이 같은 그룹 / 부모 댓글 ID를 그룹 ID로 가짐)"),
-                                    fieldWithPath("commentInfoList[].depth").type(JsonFieldType.NUMBER).description("깊이(부모 댓글이면 0, 대댓글이면 1)"),
+                                    fieldWithPath("commentInfoList[].groupId").type(JsonFieldType.NUMBER).description("댓글 그룹 ID(부모 댓글 ID를 그룹 ID로 가짐 / 부모 댓글은 null 값을 가짐)").optional(),
                                     fieldWithPath("commentInfoList[].username").type(JsonFieldType.STRING).description("작성자"),
                                     fieldWithPath("commentInfoList[].contents").type(JsonFieldType.STRING).description("댓글 내용"),
                                     fieldWithPath("commentInfoList[].likedCount").type(JsonFieldType.NUMBER).description("좋아요 개수"),
                                     fieldWithPath("commentInfoList[].createdAt").type(JsonFieldType.STRING).description("작성일"),
                                     fieldWithPath("commentInfoList[].updatedAt").type(JsonFieldType.STRING).description("수정일").optional(),
-                                    fieldWithPath("commentInfoList[].deletedAt").type(JsonFieldType.STRING).description("삭제일(null이 아니라면 작성자, 댓글 내용을 변경)").optional()
+                                    fieldWithPath("commentInfoList[].deletedAt").type(JsonFieldType.STRING).description("삭제일(null이 아니라면 작성자, 댓글 내용을 변경)").optional(),
+                                    subsectionWithPath("commentInfoList[].replyComments").type(JsonFieldType.ARRAY).description("대댓글 목록")
+
                             )
                             ));
         }
@@ -195,47 +188,50 @@ public class CommentControllerTest {
     }
 
     static class TestDataFactory{
-        public static List<CommentInfo> createCommentInfoList(){
+        public static List<CommentInfo> createCommentInfoList() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
             List<CommentInfo> commentInfoList = new ArrayList<>();
-            commentInfoList.add(
-                    CommentInfo.builder()
-                            .commentId(0L)
-                            .groupId(0L)
-                            .depth(0)
-                            .username("a")
-                            .contents("aaa")
-                            .likedCount(0)
-                            .createdAt(LocalDateTime.of(2024,1,1,0,0,10))
-                            .updatedAt(null)
-                            .deletedAt(null)
-                            .build()
-            );
-            commentInfoList.add(
-                    CommentInfo.builder()
-                            .commentId(1L)
-                            .groupId(0L)
-                            .depth(1)
-                            .username("b")
-                            .contents("bbb")
-                            .likedCount(1)
-                            .createdAt(LocalDateTime.of(2024,1,1,1,0,10))
-                            .updatedAt(null)
-                            .deletedAt(null)
-                            .build()
-            );
-            commentInfoList.add(
-                    CommentInfo.builder()
-                            .commentId(2L)
-                            .groupId(2L)
-                            .depth(0)
-                            .username("c")
-                            .contents("ccc")
-                            .likedCount(5)
-                            .createdAt(LocalDateTime.of(2024,1,1,2,0,10))
-                            .updatedAt(null)
-                            .deletedAt(null)
-                            .build()
-            );
+
+            Class<CommentInfo> commentInfoClass = CommentInfo.class;
+            Constructor<CommentInfo> constructor = commentInfoClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+
+            CommentInfo commentInfo1 = constructor.newInstance();
+            commentInfo1.setCommentId(1L);
+            commentInfo1.setGroupId(null);
+            commentInfo1.setUserNickname("aNickk");
+            commentInfo1.setContents("aaa");
+            commentInfo1.setLikedCount(1);
+            commentInfo1.setCreatedAt(LocalDateTime.of(2024,1,1,0,0,10));
+            commentInfo1.setDeletedAt(null);
+            commentInfo1.setUpdatedAt(null);
+            commentInfo1.setReplyComments(new ArrayList<>());
+
+            CommentInfo commentInfo2 = constructor.newInstance();
+            commentInfo2.setCommentId(2L);
+            commentInfo2.setGroupId(null);
+            commentInfo2.setUserNickname("bNickk");
+            commentInfo2.setContents("bbb");
+            commentInfo2.setLikedCount(0);
+            commentInfo2.setCreatedAt(LocalDateTime.of(2024,1,1,1,0,10));
+            commentInfo2.setDeletedAt(null);
+            commentInfo2.setUpdatedAt(null);
+            commentInfo2.setReplyComments(new ArrayList<>());
+
+            CommentInfo commentInfo3 = constructor.newInstance();
+            commentInfo3.setCommentId(3L);
+            commentInfo3.setGroupId(1L);
+            commentInfo3.setUserNickname("cNickk");
+            commentInfo3.setContents("ccc");
+            commentInfo3.setLikedCount(0);
+            commentInfo3.setCreatedAt(LocalDateTime.of(2024,1,1,2,0,10));
+            commentInfo3.setDeletedAt(null);
+            commentInfo3.setUpdatedAt(null);
+            commentInfo3.setReplyComments(new ArrayList<>());
+
+            commentInfo1.getReplyComments().add(commentInfo3);
+
+            commentInfoList.add(commentInfo1);
+            commentInfoList.add(commentInfo2);
 
             return commentInfoList;
         }

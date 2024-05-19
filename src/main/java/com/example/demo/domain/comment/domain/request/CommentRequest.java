@@ -14,5 +14,4 @@ public class CommentRequest {
 
     private Long groupId;
 
-    private int depth;
 }
