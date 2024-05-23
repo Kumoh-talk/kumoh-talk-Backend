@@ -11,6 +11,7 @@ import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Status;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.config.db.JpaConfig;
+import com.example.demo.global.config.db.QueryDSLConfig;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -25,7 +26,7 @@ import java.util.Optional;
 import static com.example.demo.domain.user.domain.vo.Role.ROLE_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(JpaConfig.class)
+@Import({JpaConfig.class, QueryDSLConfig.class})
 public class CommentRepositoryTest extends RepositoryTest {
     @Autowired
     private TestEntityManager tem;
