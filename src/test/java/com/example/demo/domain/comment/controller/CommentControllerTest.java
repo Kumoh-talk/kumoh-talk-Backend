@@ -88,7 +88,7 @@ public class CommentControllerTest {
 
                     .andExpect(jsonPath("$.commentInfoList[1].commentId").value(commentInfoList.get(1).getCommentId()))
                     .andExpect(jsonPath("$.commentInfoList[1].groupId").value(commentInfoList.get(1).getGroupId()))
-                    .andExpect(jsonPath("$.commentInfoList[1].username").value(commentInfoList.get(1).getUserNickname()))
+                    .andExpect(jsonPath("$.commentInfoList[1].userNickname").value(commentInfoList.get(1).getUserNickname()))
                     .andExpect(jsonPath("$.commentInfoList[1].contents").value(commentInfoList.get(1).getContents()))
                     .andExpect(jsonPath("$.commentInfoList[1].createdAt").value(commentInfoList.get(1).getCreatedAt().toString()))
                     .andExpect(jsonPath("$.commentInfoList[1].updatedAt").value(commentInfoList.get(1).getUpdatedAt()))
@@ -106,7 +106,7 @@ public class CommentControllerTest {
                                     fieldWithPath("commentInfoList").type(JsonFieldType.ARRAY).description("댓글 목록"),
                                     fieldWithPath("commentInfoList[].commentId").type(JsonFieldType.NUMBER).description("댓글 ID"),
                                     fieldWithPath("commentInfoList[].groupId").type(JsonFieldType.NUMBER).description("댓글 그룹 ID(부모 댓글 ID를 그룹 ID로 가짐 / 부모 댓글은 null 값을 가짐)").optional(),
-                                    fieldWithPath("commentInfoList[].username").type(JsonFieldType.STRING).description("작성자"),
+                                    fieldWithPath("commentInfoList[].userNickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
                                     fieldWithPath("commentInfoList[].contents").type(JsonFieldType.STRING).description("댓글 내용"),
                                     fieldWithPath("commentInfoList[].likedCount").type(JsonFieldType.NUMBER).description("좋아요 개수"),
                                     fieldWithPath("commentInfoList[].createdAt").type(JsonFieldType.STRING).description("작성일"),
