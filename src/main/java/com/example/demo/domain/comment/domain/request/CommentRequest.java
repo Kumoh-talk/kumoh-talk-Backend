@@ -12,5 +12,6 @@ public class CommentRequest {
     @Max(value = 500,message = "최대 제한 500글자 입니다.")
     private String contents;
 
-    private Long parentId;
+    private Long groupId;
+
 }
