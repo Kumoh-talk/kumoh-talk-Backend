@@ -27,8 +27,8 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "USER_0003", "비밀번호가 일치하지 않습니다."),
     FAIL_USER_LOGIN(HttpStatus.NOT_FOUND, "USER_0004", "존재하지 않는 계정입니다."),
     EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "USER_0005", "이미 사용중인 이메일 입니다."),
-    UNABLE_TO_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "USER_0006","이메일을 전송할 수 없습니다."),
-    NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "USER_0007","해당 알고리즘을 찾을 수 없습니다."),
+    EXIST_SAME_NICKNAME(HttpStatus.CONFLICT, "USER_0006","이미 사용중인 닉네임 입니다."),
+    UNABLE_TO_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "USER_0007","이메일을 전송할 수 없습니다."),
 
     // Board
     NOT_ACCESS_USER(HttpStatus.UNAUTHORIZED, "BOARD_0001", "해당 유저가 접근할 수 없는 게시물입니다."),

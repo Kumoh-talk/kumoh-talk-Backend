@@ -4,7 +4,6 @@ import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.like.domain.Like;
 import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.domain.vo.Status;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -32,13 +31,10 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 20, unique = true)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     @Column(nullable = false)
@@ -47,14 +43,10 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false)
+    @Column(nullable = false) // TODO. enum 타입?
     private String department; // 학과
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
-    private Status status; // 재학 상태
-
-    @Column(nullable = false)
+    @Column(nullable = false) // TODO. enum 타입?
     private String field; // 희망분야
 
     @OneToMany(mappedBy = "user")
@@ -68,15 +60,13 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(Long id,String email, String name, String nickname, String password, Role role, String department, Status status, String field) {
+    public User(Long id,String email, String nickname, String password, Role role, String department, String field) {
         this.id = id;
         this.email = email;
-        this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.role = role;
         this.department = department;
-        this.status = status;
         this.field = field;
     }
 
@@ -85,7 +75,7 @@ public class User extends BaseEntity {
             log.warn("UPDATE_FAILED: Invalid user data provided.");
             throw new ServiceException(ErrorCode.INVALID_INPUT_VALUE);
         }
-        this.name = user.getName();
+//        this.name = user.getName();
 //        this.track = user.getTrack();
 //        this.major = user.getMajor();
     }
