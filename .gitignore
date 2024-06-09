@@ -38,3 +38,4 @@ out/
 
 # 속성 제외
 **/application.properties
+/src/main/resources/application-**
