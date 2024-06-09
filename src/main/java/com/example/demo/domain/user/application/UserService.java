@@ -40,7 +40,7 @@ public class UserService {
 
     public User getUserOrThrow(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ServiceException(ErrorCode.FAIL_USER_LOGIN));
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional

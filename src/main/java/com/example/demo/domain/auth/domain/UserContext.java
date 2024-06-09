@@ -58,6 +58,6 @@ public class UserContext implements UserDetails {
     }
 
     public String getName() {
-        return user.getName();
+        return user.getNickname();
     }
 }

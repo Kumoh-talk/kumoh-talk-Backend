@@ -62,7 +62,7 @@ public class BoardService {
         Board savedBoard = boardRepository.save(board);
         return BoardInfoResponse.from(
                 savedBoard,
-                user.getName(),
+                user.getNickname(),
                 0L,
                 0L,
                 boardRequest.getCategoryName());
@@ -76,7 +76,7 @@ public class BoardService {
     public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        String name = board.getUser().getName();
+        String nickname = board.getUser().getNickname();
         Long viewNum = boardRepository.countViewsByBoardId(boardId);
         Long likeNum = boardRepository.countLikesByBoardId(boardId);
 
@@ -88,7 +88,7 @@ public class BoardService {
 
         return BoardInfoResponse.from(
                 board,
-                name,
+                nickname,
                 viewNum+1,
                 likeNum,
                 categoryNames);
@@ -129,7 +129,7 @@ public class BoardService {
         Long viewNum = boardRepository.countViewsByBoardId(boardId);
         Long likeNum = boardRepository.countLikesByBoardId(boardId);
         return BoardInfoResponse.from(board,
-                board.getUser().getName(),
+                board.getUser().getNickname(),
                 viewNum,
                 likeNum,
                 boardRequest.getCategoryName());

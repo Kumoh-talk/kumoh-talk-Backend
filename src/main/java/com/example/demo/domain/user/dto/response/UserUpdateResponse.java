@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserUpdateResponse {
     private String name;
-    private Status track;
     private String major;
     private LocalDateTime updatedAt;
 
