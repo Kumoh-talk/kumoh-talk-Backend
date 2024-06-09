@@ -1,26 +1,23 @@
 package com.example.demo.domain.auth.application;
 
 import com.example.demo.domain.auth.dto.request.JoinRequest;
-import com.example.demo.domain.auth.dto.request.ValidateEmailRequest;
+import com.example.demo.domain.auth.dto.request.LoginRequest;
+import com.example.demo.domain.auth.dto.response.LoginResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
-import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.global.utils.RedisUtils;
-import jakarta.validation.Valid;
+import com.example.demo.global.jwt.JwtHandler;
+import com.example.demo.global.jwt.JwtUserClaim;
+import com.example.demo.global.regex.UserRegex;
+
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.Duration;
-import java.util.Random;
 
 import static com.example.demo.global.base.exception.ErrorCode.*;
 
@@ -31,23 +28,18 @@ import static com.example.demo.global.base.exception.ErrorCode.*;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender emailSender;
+    private final JwtHandler jwtHandler;
 
-    // TODO. 인증코드가 아닌 링크식 이메일 인증 구현
-    public void sendCodeToEmail(@Valid ValidateEmailRequest request) {
-        if (isNotExistEmail(request.getEmail())) {
-            throw new ServiceException(EXIST_SAME_EMAIL);
+    @Transactional
+    public void nicknameDuplicateCheck(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new ServiceException(EXIST_SAME_NICKNAME);
         }
-//        String authCode = createCode();
-//        sendEmail(request.getEmail(), authCode);
-//        // Redis 저장
-//        redisUtils.setData(request.getEmail(), authCode, Duration.ofMillis(this.authCodeExpirationMillis));
     }
-
 
     @Transactional
     public void join(JoinRequest request) {
-        if (isNotExistEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new ServiceException(EXIST_SAME_EMAIL);
         }
 
@@ -57,22 +49,16 @@ public class AuthService {
         userRepository.save(newUser);
     }
 
-    public boolean isNotExistEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
+    @Transactional
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ServiceException(EMAIL_NOT_FOUND));
 
-    public void sendEmail(String toEmail, String authCode) {
-        SimpleMailMessage emailForm = new SimpleMailMessage();
-        emailForm.setTo(toEmail);
-        emailForm.setSubject("[LikeLion-Kit] 회원가입 인증 이메일 입니다.");
-        emailForm.setText("인증 코드는 " + authCode + " 입니다." +
-                "\n" +
-                "해당 인증 코드를 인증 코드 확인란에 기입하여 주세요.");
-
-        try{
-            emailSender.send(emailForm);
-        } catch (RuntimeException e) {
-            throw new ServiceException(ErrorCode.UNABLE_TO_SEND_EMAIL);
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new ServiceException(INVALID_PASSWORD);
         }
+
+        JwtUserClaim claim = new JwtUserClaim(user.getId(), user.getRole());
+        String token = jwtHandler.createToken(claim);
+        return new LoginResponse(token);
     }
 }
