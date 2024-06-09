@@ -1,0 +1,4 @@
+[submodule "src/main/java/resources/security"]
+	path = src/main/java/resources/security
+	url = https://github.com/Kumoh-talk/kumoh-talk-Backend-Security.git
+	branch = main
