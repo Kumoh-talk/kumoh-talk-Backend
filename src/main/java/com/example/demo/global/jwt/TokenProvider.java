@@ -1,18 +1,11 @@
 package com.example.demo.global.jwt;
 
-import static com.example.demo.global.base.exception.ErrorCode.*;
-
-import java.util.Collections;
-
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.global.jwt.exception.JwtAuthentication;
 import com.example.demo.global.jwt.exception.JwtTokenExpiredException;
 import com.example.demo.global.jwt.exception.JwtTokenInvalidException;
 
@@ -29,8 +22,8 @@ public class TokenProvider implements AuthenticationProvider {
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-		String tokenValue = (String)token.getPrincipal();
+		JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
+		String tokenValue = jwtAuthenticationToken.token();
 		if (tokenValue == null) {
 			return null;
 		}
@@ -47,6 +40,6 @@ public class TokenProvider implements AuthenticationProvider {
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+		return JwtAuthenticationToken.class.isAssignableFrom(authentication);
 	}
 }
