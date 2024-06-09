@@ -1,6 +1,7 @@
 package com.example.demo.global.jwt;
 
-import com.example.demo.global.base.dto.ErrorResponse;
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
 import com.example.demo.global.base.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), ErrorResponse.of(ErrorCode.NEED_AUTHORIZED, null));
+        objectMapper.writeValue(response.getWriter(), createFailureResponse(ErrorCode.NEED_AUTHORIZED));
     }
 }

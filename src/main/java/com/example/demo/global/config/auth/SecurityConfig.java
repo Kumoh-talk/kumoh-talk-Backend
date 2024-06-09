@@ -66,8 +66,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
         TokenProvider tokenProvider
     ){
-        ProviderManager providerManager = new ProviderManager(tokenProvider);
-        providerManager.setEraseCredentialsAfterAuthentication(true);
-        return providerManager;
+		return new ProviderManager(tokenProvider);
     }
 }

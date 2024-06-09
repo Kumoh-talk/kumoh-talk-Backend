@@ -1,20 +1,20 @@
 package com.example.demo.global.jwt;
 
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
 import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.exception.JwtAuthenticationException;
+import com.example.demo.global.jwt.exception.JwtNotExistException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.FilterChain;
@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            String tokenValue = resolveToken(request).orElseThrow(() -> new ServiceException(ErrorCode.JWT_NOT_EXIST));
+            String tokenValue = resolveToken(request).orElseThrow(JwtNotExistException::new);
             JwtAuthenticationToken token = new JwtAuthenticationToken(tokenValue); // 인증되지 않은 토큰
             Authentication authentication = this.authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setStatus(e.getErrorCode().getStatus().value());
         response.setContentType("application/json;charset=UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
-        String errorResponse = objectMapper.writeValueAsString(new ServiceException(e.getErrorCode()));
+        String errorResponse = objectMapper.writeValueAsString(createFailureResponse(e.getErrorCode()));
         response.getWriter().write(errorResponse);
         response.flushBuffer(); // 커밋
         response.getWriter().close();

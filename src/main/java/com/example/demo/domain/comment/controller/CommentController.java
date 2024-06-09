@@ -1,11 +1,15 @@
 package com.example.demo.domain.comment.controller;
 
 
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
 import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
 import com.example.demo.domain.comment.domain.response.CommentInfo;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.service.CommentService;
+import com.example.demo.global.base.dto.ResponseBody;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +29,8 @@ public class CommentController {
      * @return : 댓글 수, 댓글 관련내용(작성자, 대댓글 여부(그룹 아이디), 댓글 내용, 좋아요, 수정 날짜)
      */
     @GetMapping("/{boardId}")
-    public ResponseEntity<CommentResponse> getBoardComments(@PathVariable Long boardId) {
-        return ResponseEntity.ok(commentService.findByBoardId(boardId));
+    public ResponseEntity<ResponseBody<CommentResponse>> getBoardComments(@PathVariable Long boardId) {
+        return ResponseEntity.ok(createSuccessResponse(commentService.findByBoardId(boardId)));
     }
 
     /**
@@ -36,11 +40,11 @@ public class CommentController {
      * @return : commentId, content, username, createdAt, parentId
      */
     @PostMapping("/{boardId}")
-    public ResponseEntity<CommentInfo> createComment(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<CommentInfo>> createComment(@AuthenticationPrincipal UserContext user,
                                                      @RequestBody @Valid CommentRequest commentRequest,
                                                      @PathVariable Long boardId) {
 
-        return ResponseEntity.ok(commentService.save(user.getId(), commentRequest, boardId));
+        return ResponseEntity.ok(createSuccessResponse(commentService.save(user.getId(), commentRequest, boardId)));
     }
 
     /**
@@ -50,10 +54,10 @@ public class CommentController {
      * @return : commentId, content, username, updatedAt, parentId
      */
     @PatchMapping("/{commentId}")
-    public ResponseEntity<CommentInfo> updateComment(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<CommentInfo>> updateComment(@AuthenticationPrincipal UserContext user,
                                                      @RequestBody @Valid CommentRequest commentRequest,
                                                      @PathVariable Long commentId) {
-        return ResponseEntity.ok(commentService.update(commentRequest,commentId,user.getUsername()));
+        return ResponseEntity.ok(createSuccessResponse(commentService.update(commentRequest,commentId,user.getUsername())));
     }
 
     /**
@@ -63,9 +67,9 @@ public class CommentController {
      * @return : 응답코드
      */
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+    public ResponseEntity<ResponseBody<Void>> deleteComment(@PathVariable Long commentId) {
         commentService.delete(commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(createSuccessResponse());
     }
 
     // 게시물 댓글 수 조회

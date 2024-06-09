@@ -1,9 +1,13 @@
 package com.example.demo.domain.file.controller;
 
 
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
 import com.example.demo.domain.file.domain.FileNameInfo;
 import com.example.demo.domain.file.domain.FileType;
 import com.example.demo.domain.file.service.FileService;
+import com.example.demo.global.base.dto.ResponseBody;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +23,14 @@ public class FileController {
 
 
     @PostMapping("/image/{boardId}")
-    public FileNameInfo uploadImage(@PathVariable Long boardId,
+    public ResponseBody<FileNameInfo> uploadImage(@PathVariable Long boardId,
                                MultipartFile multipartFile) throws IOException {
-        return fileService.upload(multipartFile, boardId, FileType.IMAGE);
+        return createSuccessResponse(fileService.upload(multipartFile, boardId, FileType.IMAGE));
     }
     @PostMapping("/attach/{boardId}")
-    public FileNameInfo uploadAttach(@PathVariable Long boardId,
+    public ResponseBody<FileNameInfo> uploadAttach(@PathVariable Long boardId,
                                MultipartFile multipartFile) throws IOException {
-        return fileService.upload(multipartFile, boardId,FileType.ATTACH);
+        return createSuccessResponse(fileService.upload(multipartFile, boardId,FileType.ATTACH));
     }
 
 

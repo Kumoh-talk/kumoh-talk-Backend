@@ -22,8 +22,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    public UserInfoResponse getUserProfile(UserContext user) {
-        User savedUser = getUserOrThrow(user.getId());
+    public UserInfoResponse getUserProfile(Long userId) {
+        User savedUser = getUserOrThrow(userId);
 
         return new UserInfoResponse(savedUser);
     }

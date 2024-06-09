@@ -1,4 +1,4 @@
-package com.example.demo.global.jwt.exception;
+package com.example.demo.global.jwt;
 
 import java.util.Collection;
 import java.util.Collections;

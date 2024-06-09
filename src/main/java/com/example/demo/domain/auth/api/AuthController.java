@@ -1,9 +1,12 @@
 package com.example.demo.domain.auth.api;
 
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
 import com.example.demo.domain.auth.application.AuthService;
 import com.example.demo.domain.auth.dto.request.JoinRequest;
 import com.example.demo.domain.auth.dto.request.LoginRequest;
 import com.example.demo.domain.auth.dto.response.LoginResponse;
+import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.regex.UserRegex;
 
 import jakarta.validation.Valid;
@@ -24,29 +27,29 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/nickname-duplicate")
-    public ResponseEntity<Void> nicknameDuplicateCheck(@RequestParam @Pattern(regexp = UserRegex.NICKNAME_REGEXP, message = "닉네임 형식이 맞지 않습니다.") String nickname ) {
+    public ResponseEntity<ResponseBody<Void>> nicknameDuplicateCheck(@RequestParam @Pattern(regexp = UserRegex.NICKNAME_REGEXP, message = "닉네임 형식이 맞지 않습니다.") String nickname ) {
         authService.nicknameDuplicateCheck(nickname);
 
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
+                .status(HttpStatus.OK)
+                .body(createSuccessResponse());
     }
 
     @PostMapping(value = "/sign-up")
-    public ResponseEntity<Void> join(@RequestBody @Valid JoinRequest request) {
+    public ResponseEntity<ResponseBody<Void>> join(@RequestBody @Valid JoinRequest request) {
         authService.join(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .build();
+                .body(createSuccessResponse());
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<ResponseBody<LoginResponse>> login(@RequestBody @Valid LoginRequest request) {
         LoginResponse response = authService.login(request);
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(response);
+            .body(createSuccessResponse(response));
     }
 }
