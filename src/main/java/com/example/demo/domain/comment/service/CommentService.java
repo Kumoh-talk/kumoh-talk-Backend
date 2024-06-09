@@ -63,7 +63,7 @@ public class CommentService {
     @Transactional
     public CommentInfo update(CommentRequest commentRequest,
                               Long commentId,
-                              String username) {
+                              Long userId) {
         Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );

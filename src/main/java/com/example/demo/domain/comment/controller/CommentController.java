@@ -3,17 +3,16 @@ package com.example.demo.domain.comment.controller;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
-import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
 import com.example.demo.domain.comment.domain.response.CommentInfo;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.service.CommentService;
+import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,12 +38,13 @@ public class CommentController {
      * @param : user, commentRequest(content, groupId, depth), boardId
      * @return : commentId, content, username, createdAt, parentId
      */
+    @AssignUserId
     @PostMapping("/{boardId}")
-    public ResponseEntity<ResponseBody<CommentInfo>> createComment(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<CommentInfo>> createComment(Long userId,
                                                      @RequestBody @Valid CommentRequest commentRequest,
                                                      @PathVariable Long boardId) {
 
-        return ResponseEntity.ok(createSuccessResponse(commentService.save(user.getId(), commentRequest, boardId)));
+        return ResponseEntity.ok(createSuccessResponse(commentService.save(userId, commentRequest, boardId)));
     }
 
     /**
@@ -53,11 +53,12 @@ public class CommentController {
      * @param : user, commentRequest()
      * @return : commentId, content, username, updatedAt, parentId
      */
+    @AssignUserId
     @PatchMapping("/{commentId}")
-    public ResponseEntity<ResponseBody<CommentInfo>> updateComment(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<CommentInfo>> updateComment(Long userId,
                                                      @RequestBody @Valid CommentRequest commentRequest,
                                                      @PathVariable Long commentId) {
-        return ResponseEntity.ok(createSuccessResponse(commentService.update(commentRequest,commentId,user.getUsername())));
+        return ResponseEntity.ok(createSuccessResponse(commentService.update(commentRequest,commentId,userId)));
     }
 
     /**

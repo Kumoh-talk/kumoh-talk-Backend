@@ -1,6 +1,5 @@
 package com.example.demo.domain.user.application;
 
-import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.dto.request.UserPasswordUpdateRequest;
 import com.example.demo.domain.user.dto.request.UserUpdateRequest;
@@ -29,8 +28,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserUpdateResponse updateUserProfile(UserContext user, UserUpdateRequest request) {
-        User savedUser =  getUserOrThrow(user.getId());
+    public UserUpdateResponse updateUserProfile(Long userId, UserUpdateRequest request) {
+        User savedUser =  getUserOrThrow(userId);
 
         User userToUpdate = UserUpdateRequest.toUser(request);
         savedUser.updateInfo(userToUpdate);
@@ -44,8 +43,8 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserPassword(UserContext user, UserPasswordUpdateRequest request) {
-        User savedUser = getUserOrThrow(user.getId());
+    public void updateUserPassword(Long userId, UserPasswordUpdateRequest request) {
+        User savedUser = getUserOrThrow(userId);
 
         if(!encoder.matches(request.getOldPassword(), savedUser.getPassword()))
             throw new ServiceException(ErrorCode.INVALID_PASSWORD);

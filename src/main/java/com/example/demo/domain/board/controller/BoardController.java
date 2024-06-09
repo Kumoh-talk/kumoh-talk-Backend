@@ -3,17 +3,15 @@ package com.example.demo.domain.board.controller;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
-import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.board.domain.request.BoardRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.BoardService;
+import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,22 +23,25 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
 
     private final BoardService boardService;
 
-
+    @AssignUserId
     @PostMapping("/save")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> save(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
                                                   @ModelAttribute @Valid BoardRequest boardRequest) throws IOException {
 
-            return ResponseEntity.ok(createSuccessResponse(boardService.save(boardRequest, user.getId())));
+            return ResponseEntity.ok(createSuccessResponse(boardService.save(boardRequest, userId)));
     }
+
     @GetMapping("/search/{boardId}") //TODO : @PathValidation validation 처리 한번 생각해봐야함
     public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) throws IOException {
         return ResponseEntity.ok(createSuccessResponse(boardService.findById(boardId)));
     }
+
+    @AssignUserId
     @PostMapping("/update/{boardId}")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> update(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardRequest boardRequest,
                                                         @PathVariable Long boardId) throws IOException {
-        return ResponseEntity.ok(createSuccessResponse(boardService.update(boardRequest,user.getId(),boardId)));
+        return ResponseEntity.ok(createSuccessResponse(boardService.update(boardRequest,userId,boardId)));
     }
 
 //
