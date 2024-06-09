@@ -5,10 +5,10 @@ server:
 spring:
   config:
     import:
-      - application-db.yml
-      - application-security.yml
-      - application-mail.yml
-      - application-s3.yml
+      - security/application-db.yml
+      - security/application-security.yml
+      - security/application-mail.yml
+      - security/application-s3.yml
       - application-file.yml
 
 file:

@@ -1,4 +1,3 @@
-[submodule "kumoh-talk-backend-security"]
-	path = kumoh-talk-backend-security
+[submodule "src/main/resources/security"]
+	path = src/main/resources/security
 	url = https://github.com/Kumoh-talk/kumoh-talk-backend-security.git
-	branch = main

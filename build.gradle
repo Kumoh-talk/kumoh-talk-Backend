@@ -104,13 +104,6 @@ tasks.register('copyDocument', Copy) {
     //into file("src/main/resources/static/docs")
 }
 
-processResources.dependsOn('copySecret')
-
-tasks.register('copySecret', Copy) {
-    from './kumoh-talk-backend-security'
-    include "application*.yml"
-    into 'src/main/resources'
-}
 
 bootJar {
     dependsOn copyDocument
