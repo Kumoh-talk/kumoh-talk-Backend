@@ -4,6 +4,10 @@ import com.example.demo.global.jwt.CustomAccessDeniedHandler;
 import com.example.demo.global.jwt.CustomAuthenticationEntryPoint;
 import com.example.demo.global.jwt.JwtAuthenticationFilter;
 import com.example.demo.global.jwt.TokenProvider;
+import com.example.demo.global.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.example.demo.global.oauth.handler.OAuth2AuthenticationFailureHandler;
+import com.example.demo.global.oauth.handler.OAuth2AuthenticationSuccessHandler;
+import com.example.demo.global.oauth.service.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +33,10 @@ public class SecurityConfig {
 
 	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 	private final CustomAccessDeniedHandler accessDeniedHandler;
+	private final CustomOAuth2UserService customOAuth2UserService;
+	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+	private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+	private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 	@Bean
 	public SecurityFilterChain httpSecurity(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
@@ -48,10 +56,15 @@ public class SecurityConfig {
 
             .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
 
-
 			.exceptionHandling(e -> e
 				.accessDeniedHandler(accessDeniedHandler)
 				.authenticationEntryPoint(authenticationEntryPoint))
+
+			.oauth2Login(configure -> configure
+				.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+				.userInfoEndpoint(config -> config.userService(customOAuth2UserService))
+				.successHandler(oAuth2AuthenticationSuccessHandler)
+				.failureHandler(oAuth2AuthenticationFailureHandler))
 		;
 
 		return http.build();
