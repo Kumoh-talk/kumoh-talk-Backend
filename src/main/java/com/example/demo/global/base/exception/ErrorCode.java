@@ -1,6 +1,5 @@
 package com.example.demo.global.base.exception;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,8 +25,8 @@ public enum ErrorCode {
 
     // Auth
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_0002", "비밀번호가 일치하지 않습니다."),
-    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_0003", "존재하지 않는 이메일입니다."),
-    EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "AUTH_0004", "이미 사용중인 이메일 입니다."),
+    USERID_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_0003", "존재하지 않는 아이디입니다."),
+    EXIST_SAME_USERID(HttpStatus.CONFLICT, "AUTH_0004", "이미 사용중인 아이디 입니다."),
     EXIST_SAME_NICKNAME(HttpStatus.CONFLICT, "AUTH_0005","이미 사용중인 닉네임 입니다."),
 
     // User

@@ -8,13 +8,10 @@ import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
-import com.example.demo.global.regex.UserRegex;
 
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +27,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtHandler jwtHandler;
 
-    @Transactional
     public void nicknameDuplicateCheck(String nickname) {
         if (userRepository.existsByNickname(nickname)) {
             throw new ServiceException(EXIST_SAME_NICKNAME);
@@ -39,19 +35,21 @@ public class AuthService {
 
     @Transactional
     public void join(JoinRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ServiceException(EXIST_SAME_EMAIL);
+        if (userRepository.existsByUserId(request.getUserId())) {
+            throw new ServiceException(EXIST_SAME_USERID);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User newUser = request.toEntity(encodedPassword);
 
         userRepository.save(newUser);
+
+        // TODO. 이메일 전송 추가 필요
     }
 
-    @Transactional
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ServiceException(EMAIL_NOT_FOUND));
+        User user = userRepository.findByUserId(request.getUserId()).orElseThrow(() -> new ServiceException(
+            USERID_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new ServiceException(INVALID_PASSWORD);

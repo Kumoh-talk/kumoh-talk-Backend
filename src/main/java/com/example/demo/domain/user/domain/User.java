@@ -8,6 +8,7 @@ import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
@@ -31,22 +32,28 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false, unique = true)
-    private String nickname;
+    @Column
+    private String userId;
 
     @Column(nullable = false)
+    private String email;
+
+    @Column
+    private String name;
+
+    @Column(unique = true)
+    private String nickname;
+
+    @Column
     private String password;
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false) // TODO. enum 타입?
+    @Column// TODO. enum 타입?
     private String department; // 학과
 
-    @Column(nullable = false) // TODO. enum 타입?
+    @Column // TODO. enum 타입?
     private String field; // 희망분야
 
     @OneToMany(mappedBy = "user")
@@ -60,9 +67,11 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(Long id,String email, String nickname, String password, Role role, String department, String field) {
+    public User(Long id,String userId, String email, String name, String nickname, String password, Role role, String department, String field) {
         this.id = id;
+        this.userId = userId;
         this.email = email;
+        this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.role = role;

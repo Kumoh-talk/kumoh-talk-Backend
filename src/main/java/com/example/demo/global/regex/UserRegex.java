@@ -1,6 +1,9 @@
 package com.example.demo.global.regex;
 
 public interface UserRegex {
+    // 5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능
+    String USERID_REGEXP = "^[a-z0-9_-]{5,20}$";
+
     // 한글 2글자 ~ 6글자 / 영어 4글자 ~ 8글자 / 다른 글자 X
     String NICKNAME_REGEXP = "^(([가-힣]{2,6})|([A-Za-z]{4,8}))$";
 
