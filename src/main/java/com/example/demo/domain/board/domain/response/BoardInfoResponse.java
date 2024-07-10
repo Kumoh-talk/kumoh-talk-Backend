@@ -11,9 +11,10 @@ import java.util.List;
 @Getter
 public class BoardInfoResponse {
     private Long boardId;
-    private String username; // TODO : username 이 필드명 맞는지 다시 봐야함  게시물은 실명 댓글은 별명이어서
+    private String username;
     private String title;
     private String contents;
+    private String tag;
     private Long view;
     private Long like;
     private List<String> categoryNames;

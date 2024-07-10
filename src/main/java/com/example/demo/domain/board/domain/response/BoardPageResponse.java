@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class BoardPageResponse {
+public class BoardPageResponse { //TODO : [board] 수정전
     private List<PageTitleInfo> pageTitleInfoList; // 페이지 제목 관련
 
     private PageInfo pageInfo; // 페이지 숫자 관련

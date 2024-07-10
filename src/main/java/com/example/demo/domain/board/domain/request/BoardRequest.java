@@ -27,6 +27,9 @@ public class BoardRequest {
     @Nullable
     private List<String> categoryName;
 
+
+    private Tag status;
+
     @Builder
     public BoardRequest(String title, String contents, @Nullable List<String> categoryName) {
         this.title = title;
