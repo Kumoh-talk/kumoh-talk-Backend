@@ -83,7 +83,7 @@ public class BoardService {
         viewRepository.save(view);
 
         List<String> categoryNames = new ArrayList<>();
-        board.getBoardCategories().forEach(categoryName ->{categoryNames.add(categoryName.getCategoryName());});
+
 
         return BoardInfoResponse.from(
                 board,

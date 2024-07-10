@@ -93,12 +93,7 @@ public class FileS3Uploader  {
 
     public FileNameInfo getAttachFileName(List<File> files) {
         final FileNameInfo[] fileNameInfo = new FileNameInfo[1];
-        files.forEach(file -> {
-            if (file.getType() == FileType.ATTACH) {
-                fileNameInfo[0] =  FileNameInfo.from(file);
 
-            }
-        });
         return fileNameInfo[0];
 
     }
