@@ -17,7 +17,6 @@ public class CommentInfo {
     private Long groupId;
     private String userNickname;
     private String contents;
-    private int likedCount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -27,11 +26,10 @@ public class CommentInfo {
     private List<CommentInfo> replyComments;
 
     protected CommentInfo(Long commentId, String userNickname, String contents,
-                       int likedCount, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
+                          LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.commentId = commentId;
         this.userNickname = userNickname;
         this.contents = contents;
-        this.likedCount = likedCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
@@ -41,7 +39,6 @@ public class CommentInfo {
         CommentInfo commentInfo = new CommentInfo(comment.getId(),
                 comment.getUser().getNickname(),
                 comment.getContent(),
-                comment.getLikedUsers().size(),
                 comment.getCreatedAt(),
                 comment.getUpdatedAt(),
                 comment.getDeletedAt()

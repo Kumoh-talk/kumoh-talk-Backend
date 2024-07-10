@@ -20,7 +20,6 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
                 .join(comment.board, board).where(board.id.eq(boardId), comment.parentComment.isNull())
                 .join(comment.user, user).fetchJoin()
                 .leftJoin(comment.replyComments).fetchJoin()
-                .leftJoin(comment.likedUsers).fetchJoin()
                 .orderBy(comment.createdAt.asc())
                 .fetch();
     }

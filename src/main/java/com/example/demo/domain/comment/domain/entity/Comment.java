@@ -47,12 +47,6 @@ public class Comment extends BaseEntity {
     @OrderBy("createdAt ASC")
     private List<Comment> replyComments = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "comment_like",
-            joinColumns = @JoinColumn(name = "comment_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> likedUsers = new HashSet<>();
-
     @Builder
     public Comment(String content, Board board, User user, Comment parentComment) {
         this.content = content;
