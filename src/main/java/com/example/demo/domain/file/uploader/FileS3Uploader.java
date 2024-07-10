@@ -30,7 +30,7 @@ public class FileS3Uploader  {
     public String bucket;
 
 
-    public File storeFile(MultipartFile multipartFile, Object saved, FileType fileType) throws IOException {
+    public File storeFile(MultipartFile multipartFile, Object saved) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -39,7 +39,7 @@ public class FileS3Uploader  {
 
         uploadS3File(multipartFile, storeFileName); // s3 업로드
 
-        return new File(originalFilename, storeFileName, fileType);
+        return new File(originalFilename, storeFileName);
     }
 
     //S3 서버에 파일 업로드

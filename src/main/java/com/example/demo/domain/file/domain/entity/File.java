@@ -25,26 +25,22 @@ public class File {
     private String origin_name;
 
     @Column(nullable = false,length = 45)
-    @NotBlank(message = "파일이름이 누락되었습니다.")
+    @NotBlank(message = "고유 파일이름이 누락되었습니다.")
     private String stored_name;
 
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false,length = 10)
-    private FileType type;
-
-
+    @Column(nullable = false,length = 45)
+    @NotBlank(message = "url이 누락되었습니다.")
+    private String url;
 
     @ManyToOne
-    @JoinColumn(name ="post_id",nullable = true)
+    @JoinColumn(name ="board_id",nullable = true)
     private Board board;
 
 
     @Builder
-    public File(String origin_name, String stored_name, FileType type) {
+    public File(String origin_name, String stored_name) {
         this.origin_name = origin_name;
         this.stored_name = stored_name;
-        this.type = type;
     }
 
     public void setEntity(Object saved) {

@@ -2,7 +2,6 @@ package com.example.demo.domain.board.domain.entity;
 
 
 import com.example.demo.domain.board.domain.Tag;
-import com.example.demo.domain.category.domain.entity.BoardCategory;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.user.domain.User;
