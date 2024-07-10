@@ -7,9 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByName(String name);
 
-    boolean existsByEmail(String email);
+    boolean existsByUserId(String userId);
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByUserId(String userId);
+
+    Optional<User> findByNickname(String nickname);
+
+    boolean existsByNickname(String nickname);
 }

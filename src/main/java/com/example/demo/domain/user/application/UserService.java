@@ -1,6 +1,5 @@
 package com.example.demo.domain.user.application;
 
-import com.example.demo.domain.auth.domain.UserContext;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.dto.request.UserPasswordUpdateRequest;
 import com.example.demo.domain.user.dto.request.UserUpdateRequest;
@@ -22,15 +21,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    public UserInfoResponse getUserProfile(UserContext user) {
-        User savedUser = getUserOrThrow(user.getId());
+    public UserInfoResponse getUserProfile(Long userId) {
+        User savedUser = getUserOrThrow(userId);
 
         return new UserInfoResponse(savedUser);
     }
 
     @Transactional
-    public UserUpdateResponse updateUserProfile(UserContext user, UserUpdateRequest request) {
-        User savedUser =  getUserOrThrow(user.getId());
+    public UserUpdateResponse updateUserProfile(Long userId, UserUpdateRequest request) {
+        User savedUser =  getUserOrThrow(userId);
 
         User userToUpdate = UserUpdateRequest.toUser(request);
         savedUser.updateInfo(userToUpdate);
@@ -40,12 +39,12 @@ public class UserService {
 
     public User getUserOrThrow(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ServiceException(ErrorCode.FAIL_USER_LOGIN));
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional
-    public void updateUserPassword(UserContext user, UserPasswordUpdateRequest request) {
-        User savedUser = getUserOrThrow(user.getId());
+    public void updateUserPassword(Long userId, UserPasswordUpdateRequest request) {
+        User savedUser = getUserOrThrow(userId);
 
         if(!encoder.matches(request.getOldPassword(), savedUser.getPassword()))
             throw new ServiceException(ErrorCode.INVALID_PASSWORD);

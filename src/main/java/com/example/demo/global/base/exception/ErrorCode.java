@@ -1,6 +1,5 @@
 package com.example.demo.global.base.exception;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,15 +19,18 @@ public enum ErrorCode {
     // Security
     NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED, "SECURITY_0001","인증이 필요합니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "SECURITY_0002","권한이 없습니다."),
+    JWT_EXPIRED(HttpStatus.UNAUTHORIZED, "SECURITY_0003", "JWT 토큰이 만료되었습니다."),
+    JWT_INVALID(HttpStatus.UNAUTHORIZED, "SECURITY_0004", "JWT 토큰이 올바르지 않습니다."),
+    JWT_NOT_EXIST(HttpStatus.UNAUTHORIZED, "SECURITY_0005", "JWT 토큰이 존재하지 않습니다."),
+
+    // Auth
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_0002", "비밀번호가 일치하지 않습니다."),
+    USERID_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_0003", "존재하지 않는 아이디입니다."),
+    EXIST_SAME_USERID(HttpStatus.CONFLICT, "AUTH_0004", "이미 사용중인 아이디 입니다."),
+    EXIST_SAME_NICKNAME(HttpStatus.CONFLICT, "AUTH_0005","이미 사용중인 닉네임 입니다."),
 
     // User
-    MISMATCH_EMAIL_OR_PASSWORD(HttpStatus.BAD_REQUEST, "USER_0001", "이메일 혹은 비밀번호가 틀렸습니다."),
-    MISMATCH_EMAIL_AUTH_CODE(HttpStatus.BAD_REQUEST, "USER_0002", "인증 코드가 틀렸습니다."),
-    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "USER_0003", "비밀번호가 일치하지 않습니다."),
-    FAIL_USER_LOGIN(HttpStatus.NOT_FOUND, "USER_0004", "존재하지 않는 계정입니다."),
-    EXIST_SAME_EMAIL(HttpStatus.CONFLICT, "USER_0005", "이미 사용중인 이메일 입니다."),
-    UNABLE_TO_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "USER_0006","이메일을 전송할 수 없습니다."),
-    NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "USER_0007","해당 알고리즘을 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_0001", "해당 사용자는 존재하지 않는 사용자입니다."),
 
     // Board
     NOT_ACCESS_USER(HttpStatus.UNAUTHORIZED, "BOARD_0001", "해당 유저가 접근할 수 없는 게시물입니다."),

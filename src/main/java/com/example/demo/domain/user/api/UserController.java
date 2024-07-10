@@ -1,16 +1,19 @@
 package com.example.demo.domain.user.api;
 
 
-import com.example.demo.domain.auth.domain.UserContext;
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
 import com.example.demo.domain.user.application.UserService;
 import com.example.demo.domain.user.dto.request.UserPasswordUpdateRequest;
 import com.example.demo.domain.user.dto.request.UserUpdateRequest;
 import com.example.demo.domain.user.dto.response.UserInfoResponse;
 import com.example.demo.domain.user.dto.response.UserUpdateResponse;
+import com.example.demo.global.aop.AssignUserId;
+import com.example.demo.global.base.dto.ResponseBody;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,23 +23,26 @@ public class UserController {
 
     private final UserService userService;
 
+    @AssignUserId
     @GetMapping("/profile")
-    public ResponseEntity<UserInfoResponse> getUserProfile(@AuthenticationPrincipal UserContext user) {
+    public ResponseEntity<ResponseBody<UserInfoResponse>> getUserProfile(Long userId) {
 
-        return ResponseEntity.ok(userService.getUserProfile(user));
+        return ResponseEntity.ok(createSuccessResponse(userService.getUserProfile(userId)));
     }
 
+    @AssignUserId
     @PatchMapping("/profile")
-    public ResponseEntity<UserUpdateResponse> updateUserProfile(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<UserUpdateResponse>> updateUserProfile(Long userId,
                                                                 @RequestBody @Valid UserUpdateRequest request) {
 
-        return ResponseEntity.ok(userService.updateUserProfile(user, request));
+        return ResponseEntity.ok(createSuccessResponse(userService.updateUserProfile(userId, request)));
     }
 
+    @AssignUserId
     @PatchMapping("/profile-password")
-    public ResponseEntity<Void> updateUserPassword(@AuthenticationPrincipal UserContext user,
+    public ResponseEntity<ResponseBody<Void>> updateUserPassword(Long userId,
                                                                  @RequestBody @Valid UserPasswordUpdateRequest request) {
-        userService.updateUserPassword(user, request);
-        return ResponseEntity.ok().build();
+        userService.updateUserPassword(userId, request);
+        return ResponseEntity.ok().body(createSuccessResponse());
     }
 }

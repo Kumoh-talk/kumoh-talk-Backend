@@ -4,11 +4,11 @@ import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.like.domain.Like;
 import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.domain.vo.Status;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
@@ -32,29 +32,28 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column
+    private String userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false, length = 20, unique = true)
+    @Column
+    private String name;
+
+    @Column(unique = true)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false)
+    @Column// TODO. enum 타입?
     private String department; // 학과
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
-    private Status status; // 재학 상태
-
-    @Column(nullable = false)
+    @Column // TODO. enum 타입?
     private String field; // 희망분야
 
     @OneToMany(mappedBy = "user")
@@ -68,15 +67,15 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(Long id,String email, String name, String nickname, String password, Role role, String department, Status status, String field) {
+    public User(Long id,String userId, String email, String name, String nickname, String password, Role role, String department, String field) {
         this.id = id;
+        this.userId = userId;
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.role = role;
         this.department = department;
-        this.status = status;
         this.field = field;
     }
 
@@ -85,7 +84,7 @@ public class User extends BaseEntity {
             log.warn("UPDATE_FAILED: Invalid user data provided.");
             throw new ServiceException(ErrorCode.INVALID_INPUT_VALUE);
         }
-        this.name = user.getName();
+//        this.name = user.getName();
 //        this.track = user.getTrack();
 //        this.major = user.getMajor();
     }

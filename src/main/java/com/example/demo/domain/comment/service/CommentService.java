@@ -45,7 +45,7 @@ public class CommentService {
         Board findBoard = boardRepository.findById(boardId).orElseThrow(() ->
                 new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.FAIL_USER_LOGIN));
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         Comment parentComment;
         if (commentRequest.getGroupId() != null){
             parentComment = commentRepository.findById(commentRequest.getGroupId()).orElseThrow(() ->
@@ -63,7 +63,7 @@ public class CommentService {
     @Transactional
     public CommentInfo update(CommentRequest commentRequest,
                               Long commentId,
-                              String username) {
+                              Long userId) {
         Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );

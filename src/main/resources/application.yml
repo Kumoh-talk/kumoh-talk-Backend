@@ -1,14 +1,15 @@
 server:
-  shutdown: graceful # ?? ?? ? ?? ??
-  port: 8080 # ?? ??
+  shutdown: graceful
+  port: 8080
 
-# profiles setting
 spring:
-  profiles:
-    include:
-      - db
-      - security
-      - mail
+  config:
+    import:
+      - security/application-db.yml
+      - security/application-security.yml
+      - security/application-mail.yml
+      - security/application-s3.yml
+      - application-file.yml
 
 file:
   dir: classpath:files/
