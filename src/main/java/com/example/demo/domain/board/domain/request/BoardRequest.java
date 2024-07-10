@@ -1,9 +1,8 @@
 package com.example.demo.domain.board.domain.request;
 
 
-import com.example.demo.domain.board.domain.BoardStatus;
+import com.example.demo.domain.board.domain.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.user.domain.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
@@ -39,7 +38,6 @@ public class BoardRequest {
         return Board.builder()
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContents())
-                .status(BoardStatus.FAKE) // 첫 저장은 임시 게시물이기 때문
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.domain.like.domain;
+package com.example.demo.domain.board.domain.entity;
 
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;

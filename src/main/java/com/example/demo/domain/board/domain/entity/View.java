@@ -20,8 +20,4 @@ public class View extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
-
-    public View(Board board) {
-        this.board = board;
-    }
 }
