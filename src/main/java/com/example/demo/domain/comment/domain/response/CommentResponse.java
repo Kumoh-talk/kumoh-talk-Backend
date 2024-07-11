@@ -1,5 +1,6 @@
 package com.example.demo.domain.comment.domain.response;
 
+import com.example.demo.domain.comment.domain.entity.Comment;
 import lombok.*;
 
 import java.util.List;
@@ -12,6 +13,10 @@ public class CommentResponse {
     private List<CommentInfo> commentInfoList;
 
     public static CommentResponse from(List<CommentInfo> commentInfoList){
-        return new CommentResponse(commentInfoList.size(), commentInfoList);
+        int replyCommentsCount = 0;
+        for (CommentInfo commentInfo : commentInfoList){
+            replyCommentsCount += commentInfo.getReplyComments().size();
+        }
+        return new CommentResponse(replyCommentsCount+commentInfoList.size(), commentInfoList);
     }
 }

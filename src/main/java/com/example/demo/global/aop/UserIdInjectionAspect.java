@@ -12,6 +12,8 @@ import com.example.demo.global.jwt.JwtAuthentication;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+
 @Slf4j
 @Aspect
 @Component
@@ -31,12 +33,13 @@ public class UserIdInjectionAspect {
 		}
 
 		Object[] args = joinPoint.getArgs();
-		for (int i = 0; i < args.length; i++) {
-			if (args[i] instanceof Long) {
-				args[i] = userId;
-				break;
-			}
-		}
+		args[0] = userId;
+//		for (int i = 0; i < args.length; i++) {
+//			if (args[i] instanceof Long) {
+//				args[i] = userId;
+//				break;
+//			}
+//		}
 
 		return joinPoint.proceed(args);
 	}

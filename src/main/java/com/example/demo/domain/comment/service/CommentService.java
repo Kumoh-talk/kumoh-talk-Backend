@@ -23,14 +23,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    private CommentRepository commentRepository;
-    private BoardRepository boardRepository;
-    private UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public CommentResponse findByBoardId(Long boardId) {
-        boardRepository.findPostByIdWithComments(boardId)
-            .orElseThrow(() ->
+        boardRepository.findById(boardId).orElseThrow(() ->
                     new ServiceException(ErrorCode.BOARD_NOT_FOUND)
             );
         List<Comment> comments = commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
@@ -67,14 +66,29 @@ public class CommentService {
         Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
-        findComment.changeContent(commentRequest.getContents());
+
+        if (userId.equals(findComment.getUser().getId()))
+            findComment.changeContent(commentRequest.getContents());
+        else
+            throw new ServiceException(ErrorCode.ACCESS_DENIED);
         return CommentInfo.from(findComment);
     }
     @Transactional
-    public void delete(Long commentId) {
+    public void delete(Long commentId, Long userId) {
         Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
-        commentRepository.delete(findComment);
+
+        if (userId.equals(findComment.getUser().getId())){
+            commentRepository.delete(findComment);
+            deleteReplyComments(findComment);
+        }
+        else
+            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+    }
+    public void deleteReplyComments(Comment parentComment){
+        for(Comment replyComment : parentComment.getReplyComments()){
+            commentRepository.delete(replyComment);
+        }
     }
 }

@@ -60,7 +60,7 @@ public class JwtHandler {
 	public JwtUserClaim convert(Claims claims) {
 		return new JwtUserClaim(
 			claims.get(USER_ID, Long.class),
-			claims.get(USER_ROLE, Role.class)
+			Role.valueOf(claims.get(USER_ROLE, String.class))
 		);
 	}
 }

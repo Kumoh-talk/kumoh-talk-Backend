@@ -17,41 +17,39 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comments")
+@RequestMapping("/api/v1/comments")
 public class CommentController {
     private final CommentService commentService;
 
     /**
      * 게시물 댓글 조회
-     * 요청 URL : /api/comments/{boardId}
-     * @param : boardId
-     * @return : 댓글 수, 댓글 관련내용(작성자, 대댓글 여부(그룹 아이디), 댓글 내용, 좋아요, 수정 날짜)
+     * 요청 URL : /api/v1/comments/{boardId}
+     * @param :
+     * @return : 댓글 전체 수, 각 댓글 관련 정보(댓글 아이디, 작성자 닉네임, 대댓글 여부(그룹 아이디), 댓글 내용, 대댓글 리스트)
      */
     @GetMapping("/{boardId}")
-    public ResponseEntity<ResponseBody<CommentResponse>> getBoardComments(@PathVariable Long boardId) {
+    public ResponseEntity<ResponseBody<CommentResponse>> getComments(@PathVariable Long boardId) {
         return ResponseEntity.ok(createSuccessResponse(commentService.findByBoardId(boardId)));
     }
 
     /**
      * 댓글 저장
-     * 요청 URL : /api/comments/{boardId}
-     * @param : user, commentRequest(content, groupId, depth), boardId
-     * @return : commentId, content, username, createdAt, parentId
+     * 요청 URL : /api/v1/comments/{boardId}
+     * @param : 작성 댓글 정보(내용, 대댓글 여부(그룹 아이디))
+     * @return : 작성 댓글 관련 정보(댓글 아이디, 대댓글 여부(그룹 아이디), 작성자 닉네임, 댓글 내용, 대댓글 리스트)
      */
     @AssignUserId
     @PostMapping("/{boardId}")
-    public ResponseEntity<ResponseBody<CommentInfo>> createComment(Long userId,
-                                                     @RequestBody @Valid CommentRequest commentRequest,
-                                                     @PathVariable Long boardId) {
-
+    public ResponseEntity<ResponseBody<CommentInfo>> createComment(Long userId, @RequestBody @Valid CommentRequest commentRequest, @PathVariable Long boardId) {
+        // 댓글 작성시 사용자 권한 확인
         return ResponseEntity.ok(createSuccessResponse(commentService.save(userId, commentRequest, boardId)));
     }
 
     /**
      * 댓글 수정
-     * 요청 URL : /api/comments/{commentId}
-     * @param : user, commentRequest()
-     * @return : commentId, content, username, updatedAt, parentId
+     * 요청 URL : /api/v1/comments/{commentId}
+     * @param : 작성 댓글 정보(내용, 대댓글 여부(그룹 아이디))
+     * @return : 수정 댓글 관련 정보(댓글 아이디, 대댓글 여부(그룹 아이디), 작성자 닉네임, 댓글 내용, 대댓글 리스트)
      */
     @AssignUserId
     @PatchMapping("/{commentId}")
@@ -63,24 +61,17 @@ public class CommentController {
 
     /**
      * 댓글 삭제(부모 댓글 삭제 시 삭제가 아닌 닉네임, 내용 교체만)
-     * 요청 URL : /api/comments/{commentId}
-     * @param : commentId
+     * 요청 URL : /api/v1/comments/{commentId}
+     * @param :
      * @return : 응답코드
      */
+    @AssignUserId
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<ResponseBody<Void>> deleteComment(@PathVariable Long commentId) {
-        commentService.delete(commentId);
+    public ResponseEntity<ResponseBody<Void>> deleteComment(Long userId, @PathVariable Long commentId) {
+        commentService.delete(commentId, userId);
         return ResponseEntity.ok().body(createSuccessResponse());
     }
 
-    // 게시물 댓글 수 조회
-
-    // 사용자가 작성한 댓글 조회
-
-    // 대댓글 작성
-
-    // 댓글 좋아요
-
-    // 댓글 좋아요 삭제
+    // 사용자 댓글 조회?
 
 }
