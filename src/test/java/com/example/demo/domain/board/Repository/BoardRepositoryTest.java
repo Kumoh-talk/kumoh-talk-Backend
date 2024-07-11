@@ -4,9 +4,9 @@
 //import com.example.demo.domain.board.domain.BoardStatus;
 //import com.example.demo.domain.board.domain.entity.Board;
 //import com.example.demo.domain.board.domain.entity.View;
-//import com.example.demo.domain.category.domain.entity.BoardCategory;
-//import com.example.demo.domain.category.domain.entity.Category;
-//import com.example.demo.domain.category.repository.CategoryRepository;
+//import com.example.demo.domain.board.domain.entity.BoardCategory;
+//import com.example.demo.domain.board.domain.entity.Category;
+//import com.example.demo.domain.board.Repository.CategoryRepository;
 //import com.example.demo.domain.file.domain.FileType;
 //import com.example.demo.domain.file.domain.entity.File;
 //import com.example.demo.domain.user.domain.User;
@@ -124,9 +124,9 @@
 //            //when
 //            categoryRepository.findByName(categoryName).stream().findAny()
 //                    .ifPresentOrElse(category -> {
-//                        board.getBoardCategories().add(new com.example.demo.domain.category.domain.entity.BoardCategory(board,category));
+//                        board.getBoardCategories().add(new com.example.demo.domain.board.domain.entity.BoardCategory(board,category));
 //                    },()->{
-//                        board.getBoardCategories().add(new com.example.demo.domain.category.domain.entity.BoardCategory(board,new Category(categoryName)));
+//                        board.getBoardCategories().add(new com.example.demo.domain.board.domain.entity.BoardCategory(board,new Category(categoryName)));
 //                    });
 //            Board savedBoard = boardRepository.save(board);
 //            //then

@@ -2,7 +2,7 @@ package com.example.demo.domain.user.domain;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.like.domain.Like;
+import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;

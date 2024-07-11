@@ -3,11 +3,10 @@ package com.example.demo.domain.board.service;
 import com.example.demo.domain.board.Repository.ViewRepository;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.View;
-import com.example.demo.domain.category.domain.entity.BoardCategory;
-import com.example.demo.domain.category.domain.entity.Category;
-import com.example.demo.domain.category.repository.BoardCategoryRepository;
-import com.example.demo.domain.category.repository.CategoryRepository;
-import com.example.demo.domain.file.domain.entity.File;
+import com.example.demo.domain.board.domain.entity.BoardCategory;
+import com.example.demo.domain.board.domain.entity.Category;
+import com.example.demo.domain.board.Repository.BoardCategoryRepository;
+import com.example.demo.domain.board.Repository.CategoryRepository;
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.request.BoardRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
@@ -84,7 +83,7 @@ public class BoardService {
         viewRepository.save(view);
 
         List<String> categoryNames = new ArrayList<>();
-        board.getBoardCategories().forEach(categoryName ->{categoryNames.add(categoryName.getCategoryName());});
+
 
         return BoardInfoResponse.from(
                 board,
