@@ -25,12 +25,12 @@ public class FileController {
     @PostMapping("/image/{boardId}")
     public ResponseBody<FileNameInfo> uploadImage(@PathVariable Long boardId,
                                MultipartFile multipartFile) throws IOException {
-        return createSuccessResponse(fileService.upload(multipartFile, boardId, FileType.IMAGE));
+        return createSuccessResponse(fileService.upload(multipartFile, boardId));
     }
     @PostMapping("/attach/{boardId}")
     public ResponseBody<FileNameInfo> uploadAttach(@PathVariable Long boardId,
                                MultipartFile multipartFile) throws IOException {
-        return createSuccessResponse(fileService.upload(multipartFile, boardId,FileType.ATTACH));
+        return createSuccessResponse(fileService.upload(multipartFile, boardId));
     }
 
 

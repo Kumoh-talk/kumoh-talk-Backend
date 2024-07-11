@@ -5,10 +5,10 @@
 // import com.example.demo.domain.board.domain.entity.Board;
 // import com.example.demo.domain.board.domain.request.BoardRequest;
 // import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-// import com.example.demo.domain.category.domain.entity.BoardCategory;
-// import com.example.demo.domain.category.domain.entity.Category;
-// import com.example.demo.domain.category.repository.BoardCategoryRepository;
-// import com.example.demo.domain.category.repository.CategoryRepository;
+// import com.example.demo.domain.board.domain.entity.BoardCategory;
+// import com.example.demo.domain.board.domain.entity.Category;
+// import com.example.demo.domain.board.Repository.BoardCategoryRepository;
+// import com.example.demo.domain.board.Repository.CategoryRepository;
 // import com.example.demo.domain.user.domain.User;
 // import com.example.demo.domain.user.domain.vo.Role;
 // import com.example.demo.domain.user.repository.UserRepository;
