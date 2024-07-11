@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,9 @@ import com.example.demo.global.jwt.JwtAuthentication;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @Aspect
@@ -21,7 +24,7 @@ public class UserIdInjectionAspect {
 	@Pointcut("@annotation(com.example.demo.global.aop.AssignUserId) && args(userId, ..)")
 	public void userIdAnnotatedMethod(Long userId) {}
 
-	@Around("userIdAnnotatedMethod(userId)")
+	@Around(value = "userIdAnnotatedMethod(userId)", argNames = "joinPoint,userId")
 	public Object injectUserId(ProceedingJoinPoint joinPoint, Long userId) throws Throwable {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -33,13 +36,15 @@ public class UserIdInjectionAspect {
 		}
 
 		Object[] args = joinPoint.getArgs();
-		args[0] = userId;
-//		for (int i = 0; i < args.length; i++) {
-//			if (args[i] instanceof Long) {
-//				args[i] = userId;
-//				break;
-//			}
-//		}
+		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+		Parameter[] parameters = signature.getMethod().getParameters();
+
+		for (int i = 0; i < parameters.length; i++) {
+			if (parameters[i].getType() == Long.class && args[i] == null) {
+				args[i] = userId;
+				break;
+			}
+		}
 
 		return joinPoint.proceed(args);
 	}
