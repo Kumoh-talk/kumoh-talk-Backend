@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: kumoh-talk-mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: kumoh_talk
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    volumes:
+      - ./data/:/var/lib/mysql
+
+  redis:
+    image: redis
+    command: redis-server --port 6379
+    container_name: kumoh-talk-redis
+    ports:
+      - "6379:6379"
