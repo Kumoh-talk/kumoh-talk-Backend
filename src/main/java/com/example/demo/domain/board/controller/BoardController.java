@@ -3,7 +3,7 @@ package com.example.demo.domain.board.controller;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
-import com.example.demo.domain.board.domain.request.BoardRequest;
+import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.BoardService;
 import com.example.demo.global.aop.AssignUserId;
@@ -26,9 +26,9 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
     @AssignUserId
     @PostMapping("/save")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
-                                                  @ModelAttribute @Valid BoardRequest boardRequest) throws IOException {
+                                                  @RequestBody @Valid BoardCreateRequest boardCreateRequest) throws IOException {
 
-            return ResponseEntity.ok(createSuccessResponse(boardService.save(boardRequest, userId)));
+            return ResponseEntity.ok(createSuccessResponse(boardService.boardCreate(userId, boardCreateRequest)));
     }
 
     @GetMapping("/search/{boardId}") //TODO : @PathValidation validation 처리 한번 생각해봐야함
@@ -39,9 +39,9 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
     @AssignUserId
     @PostMapping("/update/{boardId}")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
-                                                        @RequestBody @Valid BoardRequest boardRequest,
+                                                        @RequestBody @Valid BoardCreateRequest boardCreateRequest,
                                                         @PathVariable Long boardId) throws IOException {
-        return ResponseEntity.ok(createSuccessResponse(boardService.update(boardRequest,userId,boardId)));
+        return ResponseEntity.ok(createSuccessResponse(boardService.update(boardCreateRequest,userId,boardId)));
     }
 
 //

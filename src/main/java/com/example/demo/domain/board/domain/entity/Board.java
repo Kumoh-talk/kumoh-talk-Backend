@@ -1,6 +1,7 @@
 package com.example.demo.domain.board.domain.entity;
 
 
+import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.vo.Status;
 import com.example.demo.domain.board.domain.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
@@ -13,7 +14,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ import java.util.List;
 @Table(name ="board")
 @NoArgsConstructor
 @Getter
-@Setter
 public class Board extends BaseEntity {
 
     @Id
@@ -63,10 +62,10 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<Like> likes= new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<View> views = new ArrayList<>();
 
     @Builder
@@ -76,6 +75,20 @@ public class Board extends BaseEntity {
         this.content = content;
         this.user = user;
         this.tag = tag;
+        this.status = status;
+    }
+
+    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
+        return Board.builder()
+                .title(boardCreateRequest.getTitle())
+                .content(boardCreateRequest.getContents())
+                .user(user)
+                .tag(boardCreateRequest.getTag())
+                .status(Status.DRAFT)
+                .build();
+    }
+
+    public void changeBoardStatus(Status status){
         this.status = status;
     }
 

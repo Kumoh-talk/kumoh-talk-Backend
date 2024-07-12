@@ -8,8 +8,9 @@ import com.example.demo.domain.board.domain.entity.Category;
 import com.example.demo.domain.board.Repository.BoardCategoryRepository;
 import com.example.demo.domain.board.Repository.CategoryRepository;
 import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.domain.request.BoardRequest;
+import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.vo.Status;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -26,51 +27,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
-    // TODO : 너무 의존성 많아지는데 Service 계층 분리 생각중..
+
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ViewRepository viewRepository;
     private final BoardCategoryRepository boardCategoryRepository;
     private static final int PAGE_SIZE = 10;
-    /**
-     *  파일 저장 메서드
-     * @param boardRequest
-     * @param userId
-     * @return PostInfoResponse 생성된 post 정보 객체 반환
-     */
+
     @Transactional
-    public BoardInfoResponse save(BoardRequest boardRequest, Long userId) throws IOException {
+    public BoardInfoResponse boardCreate(Long userId, BoardCreateRequest boardCreateRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
 
-        Board board = BoardRequest.toEntity(boardRequest);
-        board.setUser(user);
-
-
-        boardRequest.getCategoryName()
+        Board board = Board.fromBoardRequest(user,boardCreateRequest);
+        board.changeBoardStatus(Status.DRAFT);
+        boardCreateRequest.getCategoryName()
                 .forEach(name ->{
             categoryRepository.findByName(name).stream().findAny()
                     .ifPresentOrElse(category -> {
                         board.getBoardCategories().add(new BoardCategory(board,category));
                     },()->{
-                        board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
+                        Category category = new Category(name);
+                        BoardCategory boardCategory = new BoardCategory(board, category);
+                        board.getBoardCategories().add(boardCategory);
                     });
         });
 
         Board savedBoard = boardRepository.save(board);
+
         return BoardInfoResponse.from(
                 savedBoard,
                 user.getNickname(),
                 0L,
-                0L,
-                boardRequest.getCategoryName());
+                0L);
     }
-    /**
-     * 게시물 id로 게시물을 찾는 메서드
-     * @param boardId
-     * @return BoardInfoResponse
-     */
+
     @Transactional
     public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함
         Board board = boardRepository.findById(boardId)
@@ -94,29 +86,23 @@ public class BoardService {
     }
 
 
-    /**
-     *
-     * @param boardRequest
-     * @param userId
-     * @param boardId
-     * @return BoardInfoResponse
-     */
+
     @Transactional
-    public BoardInfoResponse update(BoardRequest boardRequest, Long userId, Long boardId) throws IOException {
+    public BoardInfoResponse update(BoardCreateRequest boardCreateRequest, Long userId, Long boardId) throws IOException {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         if(!board.getUser().getId().equals(userId)) {
             throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        board.setTitle(boardRequest.getTitle());
-        board.setContent(boardRequest.getContents());
+        board.setTitle(boardCreateRequest.getTitle());
+        board.setContent(boardCreateRequest.getContents());
 
         board.getBoardCategories()
                         .forEach(boardCategory -> {
                             boardCategoryRepository.delete(boardCategory);
                         });
 
-        boardRequest.getCategoryName()
+        boardCreateRequest.getCategoryName()
                 .forEach(name ->{
                     categoryRepository.findByName(name).stream().findAny()
                             .ifPresentOrElse(category -> {
@@ -131,7 +117,7 @@ public class BoardService {
                 board.getUser().getNickname(),
                 viewNum,
                 likeNum,
-                boardRequest.getCategoryName());
+                boardCreateRequest.getCategoryName());
     }
 
 
