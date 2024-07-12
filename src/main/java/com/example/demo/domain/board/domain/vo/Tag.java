@@ -1,6 +1,5 @@
-package com.example.demo.domain.board.domain;
+package com.example.demo.domain.board.domain.vo;
 
-import com.example.demo.global.base.exception.ServiceException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Tag {

@@ -1,7 +1,8 @@
 package com.example.demo.domain.board.domain.entity;
 
 
-import com.example.demo.domain.board.domain.Tag;
+import com.example.demo.domain.board.domain.vo.Status;
+import com.example.demo.domain.board.domain.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.user.domain.User;
@@ -40,8 +41,12 @@ public class Board extends BaseEntity {
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
     @NotNull(message = "게시물 분류는 빈 값일 수 없습니다")
-    private Tag status;
+    private Tag tag;
 
+    @Column(nullable = false,length = 15)
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "게시물 상태는 빈 값일 수 없습니다")
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -65,11 +70,12 @@ public class Board extends BaseEntity {
     private List<View> views = new ArrayList<>();
 
     @Builder
-    public Board(Long id, String title, String content, User user, Tag status) {
+    public Board(Long id, String title, String content, User user, Tag tag,Status status) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.user = user;
+        this.tag = tag;
         this.status = status;
     }
 

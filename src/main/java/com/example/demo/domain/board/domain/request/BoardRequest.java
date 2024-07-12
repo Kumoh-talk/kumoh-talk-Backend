@@ -1,7 +1,7 @@
 package com.example.demo.domain.board.domain.request;
 
 
-import com.example.demo.domain.board.domain.Tag;
+import com.example.demo.domain.board.domain.vo.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
