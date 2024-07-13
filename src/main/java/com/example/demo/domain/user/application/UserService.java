@@ -46,10 +46,10 @@ public class UserService {
     public void updateUserPassword(Long userId, UserPasswordUpdateRequest request) {
         User savedUser = getUserOrThrow(userId);
 
-        if(!encoder.matches(request.getOldPassword(), savedUser.getPassword()))
-            throw new ServiceException(ErrorCode.INVALID_PASSWORD);
-
+//        if(!encoder.matches(request.getOldPassword(), savedUser.getPassword()))
+//            throw new ServiceException(ErrorCode.INVALID_PASSWORD);
+//
         String encodedNewPassword = encoder.encode(request.getNewPassword());
-        savedUser.updatePassword(encodedNewPassword);
+//        savedUser.updatePassword(encodedNewPassword);
     }
 }
