@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/api/v1/board")
 @RequiredArgsConstructor
 public class BoardController { // TODO : princapal null 값 반환 확인 후 user null 감지 로직 추가 고민해야함
 
     private final BoardService boardService;
 
     @AssignUserId
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest) throws IOException {
 
