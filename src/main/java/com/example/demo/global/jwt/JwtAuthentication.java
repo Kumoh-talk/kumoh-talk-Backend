@@ -34,7 +34,7 @@ public record JwtAuthentication(
 
     @Override
     public Object getDetails() {
-        return new JwtUserClaim(this.userId, this.role);
+        return null;
     }
 
     @Override
