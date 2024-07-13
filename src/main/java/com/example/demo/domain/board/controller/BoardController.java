@@ -17,27 +17,27 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/board")
+@RequestMapping("/api/seminar")
 @RequiredArgsConstructor
 public class BoardController { // TODO : princapal null 값 반환 확인 후 user null 감지 로직 추가 고민해야함
 
     private final BoardService boardService;
 
     @AssignUserId
-    @PostMapping
+    @PostMapping("/v1/board")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest) throws IOException {
 
             return ResponseEntity.ok(createSuccessResponse(boardService.boardCreate(userId, boardCreateRequest)));
     }
 
-    @GetMapping("/search/{boardId}") //TODO : @PathValidation validation 처리 한번 생각해봐야함
+    @GetMapping("/v1/board/{boardId}")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) throws IOException {
-        return ResponseEntity.ok(createSuccessResponse(boardService.findById(boardId)));
+        return ResponseEntity.ok(createSuccessResponse(boardService.findByboardId(boardId)));
     }
 
     @AssignUserId
-    @PostMapping("/update/{boardId}")
+    @PatchMapping("/v1/board/{boardId}")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardCreateRequest boardCreateRequest,
                                                         @PathVariable Long boardId) throws IOException {
