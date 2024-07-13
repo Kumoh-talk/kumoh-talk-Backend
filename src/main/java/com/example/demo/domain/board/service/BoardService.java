@@ -60,7 +60,8 @@ public class BoardService {
                 savedBoard,
                 user.getNickname(),
                 0L,
-                0L);
+                0L,
+                boardCreateRequest.getCategoryName());
     }
 
     @Transactional
@@ -74,8 +75,7 @@ public class BoardService {
         View view = new View(board);
         viewRepository.save(view);
 
-        List<String> categoryNames = new ArrayList<>();
-
+        List<String> categoryNames = boardRepository.findCategoryNameByBoardId(boardId);
 
         return BoardInfoResponse.from(
                 board,

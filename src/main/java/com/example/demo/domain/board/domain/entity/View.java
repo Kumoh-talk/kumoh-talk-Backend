@@ -17,11 +17,12 @@ public class View extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     public View(Board board) {
         this.board = board;
+        board.getViews().add(this);
     }
 }

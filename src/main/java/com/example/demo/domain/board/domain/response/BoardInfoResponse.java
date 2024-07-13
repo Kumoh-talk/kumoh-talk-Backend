@@ -38,11 +38,7 @@ public class BoardInfoResponse {
         this.createdAt = createdAt;
     }
 
-    public static BoardInfoResponse from(Board board, String username, Long view, Long like) {
-        List<String> categoryNames = new ArrayList<>();
-        board.getBoardCategories().forEach(boardCategory -> {
-            categoryNames.add(boardCategory.getCategory().getName());
-        });
+    public static BoardInfoResponse from(Board board, String username, Long view, Long like, List<String> categoryNames) {
         return BoardInfoResponse.builder()
                 .boardId(board.getId())
                 .username(username)
