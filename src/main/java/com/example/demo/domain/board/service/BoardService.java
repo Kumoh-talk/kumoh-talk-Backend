@@ -43,17 +43,7 @@ public class BoardService {
 
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
-        boardCreateRequest.getCategoryName()
-                .forEach(name ->{
-            categoryRepository.findByName(name)
-                    .ifPresentOrElse(category -> {
-                        board.getBoardCategories().add(new BoardCategory(board,category));
-                    },()->{
-                        Category category = new Category(name);
-                        BoardCategory boardCategory = new BoardCategory(board, category);
-                        board.getBoardCategories().add(boardCategory);
-                    });
-        });
+        clearAndAddCategoriesToBoard(board, boardCreateRequest.getCategoryName());
 
         Board savedBoard = boardRepository.save(board);
 
@@ -112,18 +102,19 @@ public class BoardService {
     private void updateBoard(Board board , BoardUpdateRequest boardUpdateRequest) {
         board.changeBoardInfo(boardUpdateRequest);
         board.changeBoardStatus(boardUpdateRequest.getStatus());
-        updateBoardCategories(board, boardUpdateRequest.getCategoryName());
+        clearAndAddCategoriesToBoard(board, boardUpdateRequest.getCategoryName());
     }
 
-    private void updateBoardCategories(Board board, List<String> categoryNames) {
+    private void clearAndAddCategoriesToBoard(Board board, List<String> categoryNames) {
         board.getBoardCategories().clear();
-        for (String categoryName : categoryNames) {
+        categoryNames.forEach(categoryName -> {
             Category category = categoryRepository.findByName(categoryName)
                     .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
             BoardCategory boardCategory = new BoardCategory(board, category);
             board.getBoardCategories().add(boardCategory);
-        }
-        boardRepository.save(board);
+            boardCategoryRepository.save(boardCategory);
+        });
+
     }
 
     @Transactional
