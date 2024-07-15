@@ -55,7 +55,7 @@ public class BoardService {
                 boardCreateRequest.getCategoryName());
     }
 
-    @Transactional
+    @Transactional //TODO : 게시물 임시저장 상태와 게시 상태를 나눠서 조회 로직을 구현해야할지 고민중
     public BoardInfoResponse findByboardId(Long boardId) { // TODO : View 관련해서 의논해봐야함
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));

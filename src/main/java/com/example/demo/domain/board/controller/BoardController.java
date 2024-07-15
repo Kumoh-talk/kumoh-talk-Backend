@@ -48,7 +48,7 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
     @DeleteMapping("/v1/board/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardService.removeBoard(userId,boardId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(createSuccessResponse());
     }
 
 //    @GetMapping("/list")
