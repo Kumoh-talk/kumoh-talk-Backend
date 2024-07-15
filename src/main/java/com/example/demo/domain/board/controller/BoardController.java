@@ -44,12 +44,12 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
         return ResponseEntity.ok(createSuccessResponse(boardService.updateBoard(boardUpdateRequest,userId)));
     }
 
-//
-//    @PatchMapping("/delete/{postId}")
-//    public ResponseEntity delete(@AuthenticationPrincipal UserPrincipal user,@PathVariable Long postId) {
-//        boardService.remove(postId, user.getUsername());
-//        return ResponseEntity.ok().build();
-//    }
+    @AssignUserId
+    @DeleteMapping("/v1/board/{boardId}")
+    public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
+        boardService.removeBoard(userId,boardId);
+        return ResponseEntity.ok().build();
+    }
 
 //    @GetMapping("/list")
 //    public ResponseEntity<BoardPageResponse> findPageList(

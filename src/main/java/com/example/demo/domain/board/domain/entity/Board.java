@@ -15,6 +15,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.List;
 @Table(name ="board")
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@SQLRestriction(value = "deleted_at is NULL")
 public class Board extends BaseEntity {
 
     @Id
@@ -48,7 +52,7 @@ public class Board extends BaseEntity {
     @NotNull(message = "게시물 상태는 빈 값일 수 없습니다")
     private Status status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

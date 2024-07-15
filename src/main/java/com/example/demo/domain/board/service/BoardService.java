@@ -126,35 +126,26 @@ public class BoardService {
         boardRepository.save(board);
     }
 
-
-    /**
-     * 게시물 삭제 메서드
-     * @param boardId
-     */
-//    @Transactional
-//    public void remove(Long boardId,String userName) {
-//        Board board = boardRepository.findById(boardId)
-//                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-//        if(!board.getUser().getName().equals(userName)) {
-//            new ServiceException(ErrorCode.NOT_ACCESS_USER);
-//        }
-//
-//        fileS3Uploader.deleteAllFiles(board);
-//        boardRepository.delete(board);
-//    }
-
-
-    /**
-     * 전체 게시물을 불러오는 메서드
-     * @return List<PostInfoResponse>
-     */
-    @Transactional(readOnly = true)
-    public List<BoardInfoResponse> findByALL() {
-/*        return postRepository.findAll().stream()
-                .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
-                .collect(Collectors.toList());*/
-        return null;  // 추후 pagging 처리 추가
+    @Transactional
+    public void removeBoard(Long userId,Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        if(!board.getUser().getId().equals(userId)) {
+            new ServiceException(ErrorCode.NOT_ACCESS_USER);
+        }
+        //TODO : 연관된 엔티티들도 삭제 처리 할 지 고민중
+        //TODO : Board 와 연관된 엔티티들도 soft delete 적용 고민중
+        boardRepository.delete(board);
     }
+
+
+//    @Transactional(readOnly = true)
+//    public List<BoardInfoResponse> findByALL() {
+///*        return postRepository.findAll().stream()
+//                .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
+//                .collect(Collectors.toList());*/
+//        return null;  // 추후 pagging 처리 추가
+//    }
 
 //    @Transactional(readOnly = true)
 //    public BoardPageResponse findPageList(int page, Track track, PageSort pageSort) {
