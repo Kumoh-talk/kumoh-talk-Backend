@@ -15,7 +15,6 @@ public class UserInfoResponse {
     public UserInfoResponse(User user) {
         this.id = user.getId();
         this.username = user.getNickname();
-        this.email = user.getEmail();
         this.role = user.getRole();
     }
 

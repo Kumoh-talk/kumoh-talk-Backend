@@ -7,6 +7,7 @@ import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,7 +24,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "users")
 @SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class User extends BaseEntity {
@@ -32,29 +32,21 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String userId;
-
     @Column(nullable = false)
-    private String email;
+    private OAuth2Provider provider;
 
-    @Column
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String providerId;
 
     @Column(unique = true)
     private String nickname;
 
-    @Column
-    private String password;
-
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @Column// TODO. enum 타입?
-    private String department; // 학과
-
-    @Column // TODO. enum 타입?
-    private String field; // 희망분야
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private UserAdditionalInfo userAdditionalInfo;
 
     @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();
@@ -65,19 +57,15 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Like> likes= new ArrayList<>();
 
-
     @Builder
-    public User(Long id,String userId, String email, String name, String nickname, String password, Role role, String department, String field) {
-        this.id = id;
-        this.userId = userId;
-        this.email = email;
-        this.name = name;
+    public User(OAuth2Provider provider, String providerId, String nickname, Role role) {
+        this.provider = provider;
+        this.providerId = providerId;
         this.nickname = nickname;
-        this.password = password;
         this.role = role;
-        this.department = department;
-        this.field = field;
     }
+
+
 
     public void updateInfo(User user) {
         if (user == null) {
@@ -87,9 +75,5 @@ public class User extends BaseEntity {
 //        this.name = user.getName();
 //        this.track = user.getTrack();
 //        this.major = user.getMajor();
-    }
-
-    public void updatePassword(String newPassword) {
-        this.password = newPassword;
     }
 }
