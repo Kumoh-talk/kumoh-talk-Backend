@@ -2,6 +2,7 @@ package com.example.demo.domain.board.domain.entity;
 
 
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
+import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.vo.Status;
 import com.example.demo.domain.board.domain.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
@@ -86,6 +87,11 @@ public class Board extends BaseEntity {
                 .tag(boardCreateRequest.getTag())
                 .status(Status.DRAFT)
                 .build();
+    }
+
+    public void changeBoardInfo(BoardUpdateRequest boardUpdateRequest){
+        this.title = boardUpdateRequest.getTitle();
+        this.content = boardUpdateRequest.getContents();
     }
 
     public void changeBoardStatus(Status status){

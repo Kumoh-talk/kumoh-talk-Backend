@@ -9,6 +9,7 @@ import com.example.demo.domain.board.Repository.BoardCategoryRepository;
 import com.example.demo.domain.board.Repository.CategoryRepository;
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
+import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.vo.Status;
 import com.example.demo.domain.user.domain.User;
@@ -44,7 +45,7 @@ public class BoardService {
         board.changeBoardStatus(Status.DRAFT);
         boardCreateRequest.getCategoryName()
                 .forEach(name ->{
-            categoryRepository.findByName(name).stream().findAny()
+            categoryRepository.findByName(name)
                     .ifPresentOrElse(category -> {
                         board.getBoardCategories().add(new BoardCategory(board,category));
                     },()->{
@@ -88,36 +89,41 @@ public class BoardService {
 
 
     @Transactional
-    public BoardInfoResponse update(BoardCreateRequest boardCreateRequest, Long userId, Long boardId) throws IOException {
-        Board board = boardRepository.findById(boardId)
+    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId) throws IOException {
+        Board board = boardRepository.findById(boardUpdateRequest.getId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         if(!board.getUser().getId().equals(userId)) {
             throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        board.setTitle(boardCreateRequest.getTitle());
-        board.setContent(boardCreateRequest.getContents());
 
-        board.getBoardCategories()
-                        .forEach(boardCategory -> {
-                            boardCategoryRepository.delete(boardCategory);
-                        });
+        updateBoard(board, boardUpdateRequest);
 
-        boardCreateRequest.getCategoryName()
-                .forEach(name ->{
-                    categoryRepository.findByName(name).stream().findAny()
-                            .ifPresentOrElse(category -> {
-                                board.getBoardCategories().add(new BoardCategory(board,category));
-                            },()->{
-                                board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
-                            });
-                });
-        Long viewNum = boardRepository.countViewsByBoardId(boardId);
-        Long likeNum = boardRepository.countLikesByBoardId(boardId);
+
+        Long viewNum = boardRepository.countViewsByBoardId(boardUpdateRequest.getId());
+        Long likeNum = boardRepository.countLikesByBoardId(boardUpdateRequest.getId());
+
         return BoardInfoResponse.from(board,
                 board.getUser().getNickname(),
                 viewNum,
                 likeNum,
-                boardCreateRequest.getCategoryName());
+                boardUpdateRequest.getCategoryName());
+    }
+
+    private void updateBoard(Board board , BoardUpdateRequest boardUpdateRequest) {
+        board.changeBoardInfo(boardUpdateRequest);
+        board.changeBoardStatus(boardUpdateRequest.getStatus());
+        updateBoardCategories(board, boardUpdateRequest.getCategoryName());
+    }
+
+    private void updateBoardCategories(Board board, List<String> categoryNames) {
+        board.getBoardCategories().clear();
+        for (String categoryName : categoryNames) {
+            Category category = categoryRepository.findByName(categoryName)
+                    .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
+            BoardCategory boardCategory = new BoardCategory(board, category);
+            board.getBoardCategories().add(boardCategory);
+        }
+        boardRepository.save(board);
     }
 
 
