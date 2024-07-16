@@ -23,4 +23,9 @@ public class Like extends BaseEntity {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    public Like(User user, Board board) {
+        this.user = user;
+        this.board = board;
+        board.getLikes().add(this);
+    }
 }

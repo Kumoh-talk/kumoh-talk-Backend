@@ -49,7 +49,6 @@ public class Board extends BaseEntity {
 
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "게시물 상태는 빈 값일 수 없습니다")
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
