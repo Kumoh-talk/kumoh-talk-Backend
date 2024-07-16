@@ -8,8 +8,10 @@ import com.example.demo.domain.board.domain.entity.Category;
 import com.example.demo.domain.board.Repository.BoardCategoryRepository;
 import com.example.demo.domain.board.Repository.CategoryRepository;
 import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.domain.request.BoardRequest;
+import com.example.demo.domain.board.domain.request.BoardCreateRequest;
+import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.vo.Status;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -26,53 +28,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
-    // TODO : 너무 의존성 많아지는데 Service 계층 분리 생각중..
+
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ViewRepository viewRepository;
     private final BoardCategoryRepository boardCategoryRepository;
     private static final int PAGE_SIZE = 10;
-    /**
-     *  파일 저장 메서드
-     * @param boardRequest
-     * @param userId
-     * @return PostInfoResponse 생성된 post 정보 객체 반환
-     */
+
     @Transactional
-    public BoardInfoResponse save(BoardRequest boardRequest, Long userId) throws IOException {
+    public BoardInfoResponse boardCreate(Long userId, BoardCreateRequest boardCreateRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        Board board = BoardRequest.toEntity(boardRequest);
-        board.setUser(user);
-
-
-        boardRequest.getCategoryName()
-                .forEach(name ->{
-            categoryRepository.findByName(name).stream().findAny()
-                    .ifPresentOrElse(category -> {
-                        board.getBoardCategories().add(new BoardCategory(board,category));
-                    },()->{
-                        board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
-                    });
-        });
+        Board board = Board.fromBoardRequest(user,boardCreateRequest);
+        board.changeBoardStatus(Status.DRAFT);
+        clearAndAddCategoriesToBoard(board, boardCreateRequest.getCategoryName());
 
         Board savedBoard = boardRepository.save(board);
+
         return BoardInfoResponse.from(
                 savedBoard,
                 user.getNickname(),
                 0L,
                 0L,
-                boardRequest.getCategoryName());
+                boardCreateRequest.getCategoryName());
     }
-    /**
-     * 게시물 id로 게시물을 찾는 메서드
-     * @param boardId
-     * @return BoardInfoResponse
-     */
+
     @Transactional
-    public BoardInfoResponse findById(Long boardId) { // TODO : View 관련해서 의논해봐야함
+    public BoardInfoResponse findByboardId(Long boardId) { // TODO : View 관련해서 의논해봐야함
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         String nickname = board.getUser().getNickname();
@@ -82,8 +66,7 @@ public class BoardService {
         View view = new View(board);
         viewRepository.save(view);
 
-        List<String> categoryNames = new ArrayList<>();
-
+        List<String> categoryNames = boardRepository.findCategoryNameByBoardId(boardId);
 
         return BoardInfoResponse.from(
                 board,
@@ -94,75 +77,66 @@ public class BoardService {
     }
 
 
-    /**
-     *
-     * @param boardRequest
-     * @param userId
-     * @param boardId
-     * @return BoardInfoResponse
-     */
+
     @Transactional
-    public BoardInfoResponse update(BoardRequest boardRequest, Long userId, Long boardId) throws IOException {
-        Board board = boardRepository.findById(boardId)
+    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId) throws IOException {
+        Board board = boardRepository.findById(boardUpdateRequest.getId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         if(!board.getUser().getId().equals(userId)) {
             throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        board.setTitle(boardRequest.getTitle());
-        board.setContent(boardRequest.getContents());
 
-        board.getBoardCategories()
-                        .forEach(boardCategory -> {
-                            boardCategoryRepository.delete(boardCategory);
-                        });
+        updateBoard(board, boardUpdateRequest);
 
-        boardRequest.getCategoryName()
-                .forEach(name ->{
-                    categoryRepository.findByName(name).stream().findAny()
-                            .ifPresentOrElse(category -> {
-                                board.getBoardCategories().add(new BoardCategory(board,category));
-                            },()->{
-                                board.getBoardCategories().add(new BoardCategory(board,new Category(name)));
-                            });
-                });
-        Long viewNum = boardRepository.countViewsByBoardId(boardId);
-        Long likeNum = boardRepository.countLikesByBoardId(boardId);
+
+        Long viewNum = boardRepository.countViewsByBoardId(boardUpdateRequest.getId());
+        Long likeNum = boardRepository.countLikesByBoardId(boardUpdateRequest.getId());
+
         return BoardInfoResponse.from(board,
                 board.getUser().getNickname(),
                 viewNum,
                 likeNum,
-                boardRequest.getCategoryName());
+                boardUpdateRequest.getCategoryName());
+    }
+
+    private void updateBoard(Board board , BoardUpdateRequest boardUpdateRequest) {
+        board.changeBoardInfo(boardUpdateRequest);
+        board.changeBoardStatus(boardUpdateRequest.getStatus());
+        clearAndAddCategoriesToBoard(board, boardUpdateRequest.getCategoryName());
+    }
+
+    private void clearAndAddCategoriesToBoard(Board board, List<String> categoryNames) {
+        board.getBoardCategories().clear();
+        categoryNames.forEach(categoryName -> {
+            Category category = categoryRepository.findByName(categoryName)
+                    .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
+            BoardCategory boardCategory = new BoardCategory(board, category);
+            board.getBoardCategories().add(boardCategory);
+            boardCategoryRepository.save(boardCategory);
+        });
+
+    }
+
+    @Transactional
+    public void removeBoard(Long userId,Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        if(!board.getUser().getId().equals(userId)) {
+            new ServiceException(ErrorCode.NOT_ACCESS_USER);
+        }
+        //TODO : 연관된 엔티티들도 삭제 처리 할 지 고민중
+        //TODO : Board 와 연관된 엔티티들도 soft delete 적용 고민중
+        boardRepository.delete(board);
     }
 
 
-    /**
-     * 게시물 삭제 메서드
-     * @param boardId
-     */
-//    @Transactional
-//    public void remove(Long boardId,String userName) {
-//        Board board = boardRepository.findById(boardId)
-//                .orElseThrow(() -> new ServiceException(ErrorCode.POST_NOT_FOUND));
-//        if(!board.getUser().getName().equals(userName)) {
-//            new ServiceException(ErrorCode.NOT_ACCESS_USER);
-//        }
-//
-//        fileS3Uploader.deleteAllFiles(board);
-//        boardRepository.delete(board);
+//    @Transactional(readOnly = true)
+//    public List<BoardInfoResponse> findByALL() {
+///*        return postRepository.findAll().stream()
+//                .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
+//                .collect(Collectors.toList());*/
+//        return null;  // 추후 pagging 처리 추가
 //    }
-
-
-    /**
-     * 전체 게시물을 불러오는 메서드
-     * @return List<PostInfoResponse>
-     */
-    @Transactional(readOnly = true)
-    public List<BoardInfoResponse> findByALL() {
-/*        return postRepository.findAll().stream()
-                .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
-                .collect(Collectors.toList());*/
-        return null;  // 추후 pagging 처리 추가
-    }
 
 //    @Transactional(readOnly = true)
 //    public BoardPageResponse findPageList(int page, Track track, PageSort pageSort) {
