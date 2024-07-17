@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +39,10 @@ public class BoardService {
 
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
-        clearAndAddCategoriesToBoard(board, boardCreateRequest.getCategoryName());
+
+        boardCreateRequest.getCategoryName().forEach(categoryName -> {
+            saveCategoryAndBoardCategory(board, categoryName);
+        });
 
         Board savedBoard = boardRepository.save(board);
 
@@ -71,19 +75,44 @@ public class BoardService {
     private void updateBoard(Board board , BoardUpdateRequest boardUpdateRequest) {
         board.changeBoardInfo(boardUpdateRequest);
         board.changeBoardStatus(boardUpdateRequest.getStatus());
-        clearAndAddCategoriesToBoard(board, boardUpdateRequest.getCategoryName());
+        changeBoardCategories(board, boardUpdateRequest.getCategoryName());
     }
 
-    private void clearAndAddCategoriesToBoard(Board board, List<String> categoryNames) {
-        board.getBoardCategories().clear();
-        categoryNames.forEach(categoryName -> {
-            Category category = categoryRepository.findByName(categoryName)
-                    .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
-            BoardCategory boardCategory = new BoardCategory(board, category);
-            board.getBoardCategories().add(boardCategory);
-            boardCategoryRepository.save(boardCategory);
-        });
+    private void changeBoardCategories(Board board, List<String> newCategoryNames) {
+        List<BoardCategory> existingBoardCategories = board.getBoardCategories();
+        List<String> existingCategoryNames = existingBoardCategories.stream()
+                .map(boardCategory -> boardCategory.getCategory().getName())
+                .collect(Collectors.toList());
 
+        // 삭제할 카테고리 처리
+        existingBoardCategories.stream()
+                .filter(boardCategory -> !newCategoryNames.contains(boardCategory.getCategory().getName()))
+                .forEach(boardCategory -> {
+                    Category category = boardCategory.getCategory();
+                    boardCategoryRepository.delete(boardCategory);
+                    deleteCategory(category);
+                });
+
+        // 추가할 카테고리 처리
+        newCategoryNames.stream()
+                .filter(categoryName -> !existingCategoryNames.contains(categoryName))
+                .forEach(categoryName -> {
+                    saveCategoryAndBoardCategory(board, categoryName);
+                });
+    }
+
+    private void deleteCategory(Category category) {
+        if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 0) {
+            categoryRepository.delete(category);
+        }
+    }
+
+    private void saveCategoryAndBoardCategory(Board board, String categoryName) {
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
+        BoardCategory boardCategory = new BoardCategory(board, category);
+        board.getBoardCategories().add(boardCategory);
+        boardCategoryRepository.save(boardCategory);
     }
 
     @Transactional
@@ -103,9 +132,7 @@ public class BoardService {
 
         boardRepository.delete(board);
         for (Category category : categories) {
-            if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 0) {
-                categoryRepository.delete(category);
-            }
+            deleteCategory(category);
         }
     }
 
