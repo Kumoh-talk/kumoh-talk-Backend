@@ -3,6 +3,7 @@ package com.example.demo.domain.file.domain.entity;
 
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.file.domain.FileType;
+import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class File {
+public class File extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,17 +1,15 @@
 package com.example.demo.domain.board.service;
 
-import com.example.demo.domain.board.Repository.ViewRepository;
+import com.example.demo.domain.board.Repository.*;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.View;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
-import com.example.demo.domain.board.Repository.BoardCategoryRepository;
-import com.example.demo.domain.board.Repository.CategoryRepository;
-import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.vo.Status;
+import com.example.demo.domain.file.repository.FileRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -23,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +32,9 @@ public class BoardService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
-
     @Transactional
     public BoardInfoResponse boardCreate(Long userId, BoardCreateRequest boardCreateRequest) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        User user = validateUser(userId);
 
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
@@ -55,11 +52,8 @@ public class BoardService {
 
     @Transactional
     public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId) throws IOException {
-        Board board = boardRepository.findById(boardUpdateRequest.getId())
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        if(!board.getUser().getId().equals(userId)) {
-            throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
-        }
+        Board board = validateBoard(boardUpdateRequest.getId());
+        validateUserEqualBoardUser(userId, board);
 
         updateBoard(board, boardUpdateRequest);
 
@@ -94,14 +88,43 @@ public class BoardService {
 
     @Transactional
     public void removeBoard(Long userId,Long boardId) {
+        Board board = validateBoard(boardId);
+        validateUserEqualBoardUser(userId, board);
+
+        List<Category> categories = board.getBoardCategories().stream()
+                .map(BoardCategory::getCategory)
+                .collect(Collectors.toList());
+
+
+        boardRepository.deleteBoardCategoryByBoardId(boardId);
+        boardRepository.deleteViewByBoardId(boardId);
+        boardRepository.deleteFileByBoardId(boardId);
+        boardRepository.deleteLikeByBoardId(boardId);
+
+        boardRepository.delete(board);
+        for (Category category : categories) {
+            if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 0) {
+                categoryRepository.delete(category);
+            }
+        }
+    }
+
+    private Board validateBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        return board;
+    }
+
+    private static void validateUserEqualBoardUser(Long userId, Board board) {
         if(!board.getUser().getId().equals(userId)) {
-            new ServiceException(ErrorCode.NOT_ACCESS_USER);
+            throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        //TODO : [Board]연관된 엔티티들도 삭제 처리 할 지 고민중
-        //TODO : [Board]Board 와 연관된 엔티티들도 soft delete 적용 고민중
-        boardRepository.delete(board);
+    }
+
+    private User validateUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        return user;
     }
 
 }
