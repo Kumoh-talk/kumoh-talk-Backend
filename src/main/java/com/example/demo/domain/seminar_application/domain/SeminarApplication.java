@@ -1,19 +1,21 @@
 package com.example.demo.domain.seminar_application.domain;
 
+import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class SeminarApplication extends BaseEntity { // TODO. 수정,삭제가 필요할 시 soft delete 적용
+@SQLDelete(sql = "UPDATE seminar_application SET deleted_at = NOW() where id=?")
+@SQLRestriction(value = "deleted_at is NULL")
+public class SeminarApplication extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +33,10 @@ public class SeminarApplication extends BaseEntity { // TODO. 수정,삭제가 �
     private String estimatedDuration;
     private boolean isYoutubeUploadConsented;
     private boolean isBlogPostWritten;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Builder
     public SeminarApplication(String name, String department, int grade, String studentId, String phoneNumber, String preferredDate, String presentationTopic, String seminarName, String topicDescription, String estimatedDuration, boolean isYoutubeUploadConsented, boolean isBlogPostWritten) {

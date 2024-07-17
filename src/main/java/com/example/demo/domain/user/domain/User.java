@@ -3,6 +3,8 @@ package com.example.demo.domain.user.domain;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.domain.newsletter.domain.Newsletter;
+import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -45,8 +47,11 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
     private UserAdditionalInfo userAdditionalInfo;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
+    private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();
@@ -57,6 +62,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Like> likes= new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<SeminarApplication> seminarApplications = new ArrayList<>();
+
     @Builder
     public User(OAuth2Provider provider, String providerId, String nickname, Role role) {
         this.provider = provider;
@@ -64,8 +72,6 @@ public class User extends BaseEntity {
         this.nickname = nickname;
         this.role = role;
     }
-
-
 
     public void updateInfo(User user) {
         if (user == null) {
