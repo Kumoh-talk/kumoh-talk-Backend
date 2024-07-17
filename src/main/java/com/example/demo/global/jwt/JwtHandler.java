@@ -3,15 +3,18 @@ package com.example.demo.global.jwt;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.example.demo.domain.user.domain.vo.Role;
 
-import com.example.demo.global.jwt.refresh_token.RefreshToken;
-import com.example.demo.global.jwt.refresh_token.RefreshTokenRepository;
+import com.example.demo.global.jwt.domain.RefreshToken;
+import com.example.demo.global.jwt.exception.JwtTokenInvalidException;
+import com.example.demo.global.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,7 +75,7 @@ public class JwtHandler {
         );
     }
 
-    // exception은 사용하는 곳에서 처리
+    // 필터에서 토큰의 상태를 검증하기 위한 메서드 exception은 사용하는 곳에서 처리
     public JwtUserClaim parseToken(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(secretKey)
@@ -81,6 +84,23 @@ public class JwtHandler {
                 .getPayload();
 
         return this.convert(claims);
+    }
+
+    // 재발급을 위해 token이 만료되었더라도 claim을 반환하는 메서드
+    public Optional<JwtUserClaim> getClaims(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return Optional.of(this.convert(claims));
+        } catch (ExpiredJwtException e) {
+            Claims claims = e.getClaims();
+            return Optional.of(this.convert(claims));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public JwtUserClaim convert(Claims claims) {

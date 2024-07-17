@@ -31,55 +31,60 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
-	private final CustomAccessDeniedHandler accessDeniedHandler;
-	private final CustomOAuth2UserService customOAuth2UserService;
-	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-	private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-	private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-	@Bean
-	public SecurityFilterChain httpSecurity(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-		http
-			.csrf(AbstractHttpConfigurer::disable)
-			.formLogin(AbstractHttpConfigurer::disable)
-			.sessionManagement((s) -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.rememberMe(AbstractHttpConfigurer::disable)
-			.httpBasic(AbstractHttpConfigurer::disable)
-			.logout(AbstractHttpConfigurer::disable)
-			.requestCache(RequestCacheConfigurer::disable)
+    @Bean
+    public SecurityFilterChain httpSecurity(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .sessionManagement((s) -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .rememberMe(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .requestCache(RequestCacheConfigurer::disable)
 
-			.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-				.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET).permitAll()
-					.requestMatchers(HttpMethod.POST, "/api/test/**").permitAll()
-				.anyRequest().authenticated())
+                .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
+                        .requestMatchers(HttpMethod.POST, "/api/tokens/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/complete-registration").hasRole("GUEST")
 
-            .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                        .requestMatchers(HttpMethod.POST, "/api/reports/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reports/**").hasRole("ADMIN")
 
-			.exceptionHandling(e -> e
-				.accessDeniedHandler(accessDeniedHandler)
-				.authenticationEntryPoint(authenticationEntryPoint))
+                        .requestMatchers(HttpMethod.POST, "/api/test/**").permitAll()
+                        .requestMatchers(HttpMethod.GET).permitAll()
+                        .anyRequest().authenticated())
 
-			.oauth2Login(configure -> configure
-				.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
-				.userInfoEndpoint(config -> config.userService(customOAuth2UserService))
-				.successHandler(oAuth2AuthenticationSuccessHandler)
-				.failureHandler(oAuth2AuthenticationFailureHandler))
-		;
+                .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
 
-		return http.build();
-	}
+                .exceptionHandling(e -> e
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(authenticationEntryPoint))
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
+                .oauth2Login(configure -> configure
+                        .authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                        .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler))
+        ;
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(
-        TokenProvider tokenProvider
-    ){
-		return new ProviderManager(tokenProvider);
+            TokenProvider tokenProvider
+    ) {
+        return new ProviderManager(tokenProvider);
     }
 }

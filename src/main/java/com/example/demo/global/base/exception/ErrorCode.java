@@ -23,6 +23,10 @@ public enum ErrorCode {
     JWT_INVALID(HttpStatus.UNAUTHORIZED, "SECURITY_0004", "JWT 토큰이 올바르지 않습니다."),
     JWT_NOT_EXIST(HttpStatus.UNAUTHORIZED, "SECURITY_0005", "JWT 토큰이 존재하지 않습니다."),
 
+    // Token
+    REFRESH_TOKEN_NOT_EXIST(HttpStatus.NOT_FOUND, "TOKEN_0001", "REFRESH 토큰이 존재하지 않습니다."),
+    USER_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "TOKEN_0002", "일치하지 않는 사용자입니다."),
+
     // Auth
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_0002", "비밀번호가 일치하지 않습니다."),
     USERID_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_0003", "존재하지 않는 아이디입니다."),
