@@ -50,7 +50,7 @@ public class SecurityConfig {
 			.requestCache(RequestCacheConfigurer::disable)
 
 			.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-				.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/tokens/**").permitAll()
                 .requestMatchers(HttpMethod.GET).permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/test/**").permitAll()
 				.anyRequest().authenticated())
