@@ -35,7 +35,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private OAuth2Provider provider;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String providerId;
 
     @Column(unique = true)
