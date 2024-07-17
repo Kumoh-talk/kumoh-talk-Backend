@@ -32,13 +32,13 @@ public class UserService {
         // TODO. profile 초기 이미지 설정 추가
     }
 
-    @Transactional
-    public void updateUserProfile(Long userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-
-        User userToUpdate = UserUpdateRequest.toUser(request);
-        savedUser.updateInfo(userToUpdate);
-
-        return UserUpdateResponse.from(savedUser);
-    }
+//    @Transactional
+//    public void updateUserProfile(Long userId, UserUpdateRequest request) {
+//        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+//
+//        User userToUpdate = UserUpdateRequest.toUser(request);
+//        savedUser.updateInfo(userToUpdate);
+//
+//        return UserUpdateResponse.from(savedUser);
+//    }
 }

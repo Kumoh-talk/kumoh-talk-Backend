@@ -52,6 +52,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                         .requestMatchers(HttpMethod.POST, "/api/tokens/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/users/complete-registration").hasRole("GUEST")
+
+                        .requestMatchers(HttpMethod.POST, "/api/reports/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reports/**").hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.POST, "/api/test/**").permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll()
                         .anyRequest().authenticated())

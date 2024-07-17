@@ -5,6 +5,7 @@ import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,4 +25,10 @@ public class Report extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY) // 단방향
     @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
+
+    @Builder
+    public Report(User user, Comment comment) {
+        this.user = user;
+        this.comment = comment;
+    }
 }
