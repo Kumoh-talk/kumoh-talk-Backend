@@ -6,6 +6,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.service.BoardReadService;
 import com.example.demo.domain.board.service.BoardService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -20,9 +21,10 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/seminar")
 @RequiredArgsConstructor
-public class BoardController { // TODO : princapal null 값 반환 확인 후 user null 감지 로직 추가 고민해야함
+public class BoardController {
 
     private final BoardService boardService;
+    private final BoardReadService boardReadService;
 
     @AssignUserId
     @PostMapping("/v1/board")
@@ -34,7 +36,7 @@ public class BoardController { // TODO : princapal null 값 반환 확인 후 us
 
     @GetMapping("/v1/board/{boardId}")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) throws IOException {
-        return ResponseEntity.ok(createSuccessResponse(boardService.findByboardId(boardId)));
+        return ResponseEntity.ok(createSuccessResponse(boardReadService.findByboardId(boardId)));
     }
 
     @AssignUserId

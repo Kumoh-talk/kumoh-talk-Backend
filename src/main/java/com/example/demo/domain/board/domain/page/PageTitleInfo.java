@@ -16,7 +16,7 @@ public class PageTitleInfo {
     private String userName;
     private LocalDateTime createdAt; // 작성 시간
 
-    @Builder // TODO : Track 정보가 인자로 있는데, 안써서 뺌..
+    @Builder
     public PageTitleInfo(Long postId, String title, String userName,LocalDateTime createdAt) {
         this.postId = postId;
         this.title = title;

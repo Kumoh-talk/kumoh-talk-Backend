@@ -32,9 +32,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final ViewRepository viewRepository;
     private final BoardCategoryRepository boardCategoryRepository;
-    private static final int PAGE_SIZE = 10;
 
     @Transactional
     public BoardInfoResponse boardCreate(Long userId, BoardCreateRequest boardCreateRequest) {
@@ -54,29 +52,6 @@ public class BoardService {
                 0L,
                 boardCreateRequest.getCategoryName());
     }
-
-    @Transactional //TODO : 게시물 임시저장 상태와 게시 상태를 나눠서 조회 로직을 구현해야할지 고민중
-    public BoardInfoResponse findByboardId(Long boardId) { // TODO : View 관련해서 의논해봐야함
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        String nickname = board.getUser().getNickname();
-        Long viewNum = boardRepository.countViewsByBoardId(boardId);
-        Long likeNum = boardRepository.countLikesByBoardId(boardId);
-
-        View view = new View(board);
-        viewRepository.save(view);
-
-        List<String> categoryNames = boardRepository.findCategoryNameByBoardId(boardId);
-
-        return BoardInfoResponse.from(
-                board,
-                nickname,
-                viewNum+1,
-                likeNum,
-                categoryNames);
-    }
-
-
 
     @Transactional
     public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId) throws IOException {
@@ -124,48 +99,9 @@ public class BoardService {
         if(!board.getUser().getId().equals(userId)) {
             new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-        //TODO : 연관된 엔티티들도 삭제 처리 할 지 고민중
-        //TODO : Board 와 연관된 엔티티들도 soft delete 적용 고민중
+        //TODO : [Board]연관된 엔티티들도 삭제 처리 할 지 고민중
+        //TODO : [Board]Board 와 연관된 엔티티들도 soft delete 적용 고민중
         boardRepository.delete(board);
     }
-
-
-//    @Transactional(readOnly = true)
-//    public List<BoardInfoResponse> findByALL() {
-///*        return postRepository.findAll().stream()
-//                .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
-//                .collect(Collectors.toList());*/
-//        return null;  // 추후 pagging 처리 추가
-//    }
-
-//    @Transactional(readOnly = true)
-//    public BoardPageResponse findPageList(int page, Track track, PageSort pageSort) {
-//        PageRequest pageRequest = (pageSort == PageSort.DESC) ? PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending()):
-//                PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").ascending());
-//
-//
-//        Page<Board> postPage = boardRepository.findAllByTrack(track, pageRequest);
-//
-//        PageInfo pageInfo = new PageInfo(postPage.getSize(), postPage.getNumber(), postPage.getTotalPages(), pageSort);
-//
-//        List<PageTitleInfo> pageTitleInfoList = new ArrayList<>();
-//        postPage.forEach(post -> {
-//            pageTitleInfoList.add(PageTitleInfo.from(post, post.getUser().getName()));
-//        });
-//
-//
-//        return new BoardPageResponse(pageTitleInfoList, pageInfo);
-//    }
-
-//    public BoardInfoResponse updateBoard(BoardRequest boardRequest, Board board, String userName) throws IOException {
-//
-//        fileS3Uploader.deleteAllFiles(board);
-//        board.setTitle(boardRequest.getTitle());
-//        board.setContent(boardRequest.getContents());
-//
-//        return BoardInfoResponse.from(board, userName);
-//    }
-//
-
 
 }
