@@ -1,6 +1,7 @@
 package com.example.demo.domain.user.application;
 
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.dto.request.CompleteRegistrationRequest;
 import com.example.demo.domain.user.dto.request.UserPasswordUpdateRequest;
 import com.example.demo.domain.user.dto.request.UserUpdateRequest;
 import com.example.demo.domain.user.dto.response.UserInfoResponse;
@@ -21,35 +22,23 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    public UserInfoResponse getUserProfile(Long userId) {
-        User savedUser = getUserOrThrow(userId);
+    @Transactional
+    public void completeRegistration(Long userId, CompleteRegistrationRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        if(userRepository.existsByNickname(request.nickname()))
+            throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
 
-        return new UserInfoResponse(savedUser);
+        user.setNickname(request.nickname());
+        // TODO. profile 초기 이미지 설정 추가
     }
 
     @Transactional
-    public UserUpdateResponse updateUserProfile(Long userId, UserUpdateRequest request) {
-        User savedUser =  getUserOrThrow(userId);
+    public void updateUserProfile(Long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         User userToUpdate = UserUpdateRequest.toUser(request);
         savedUser.updateInfo(userToUpdate);
 
         return UserUpdateResponse.from(savedUser);
-    }
-
-    public User getUserOrThrow(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-    }
-
-    @Transactional
-    public void updateUserPassword(Long userId, UserPasswordUpdateRequest request) {
-        User savedUser = getUserOrThrow(userId);
-
-//        if(!encoder.matches(request.getOldPassword(), savedUser.getPassword()))
-//            throw new ServiceException(ErrorCode.INVALID_PASSWORD);
-//
-        String encodedNewPassword = encoder.encode(request.getNewPassword());
-//        savedUser.updatePassword(encodedNewPassword);
     }
 }

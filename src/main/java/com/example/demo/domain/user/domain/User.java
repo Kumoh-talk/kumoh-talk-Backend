@@ -11,10 +11,7 @@ import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -40,6 +37,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String providerId;
 
+    @Setter
     @Column(unique = true)
     private String nickname;
 

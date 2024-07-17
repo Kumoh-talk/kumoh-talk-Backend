@@ -44,7 +44,7 @@ public class JwtHandler {
         return Jwts.builder()
                 .claims(tokenClaims)
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + 2 * MILLI_SECOND))
+                .expiration(new Date(now.getTime() + expiredTime * MILLI_SECOND))
                 .signWith(secretKey)
                 .compact();
     }
