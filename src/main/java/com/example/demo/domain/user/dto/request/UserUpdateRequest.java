@@ -20,8 +20,6 @@ public class UserUpdateRequest {
     @Pattern(regexp = UserRegex.NICKNAME_REGEXP, message = "닉네임 형식이 맞지 않습니다.")
     private String name;
 
-
-
     @Column(nullable = false)
     @NotBlank(message = "전공은 빈값 일 수 없습니다.")
     private String major;
