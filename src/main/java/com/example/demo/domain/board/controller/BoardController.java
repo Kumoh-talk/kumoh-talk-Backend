@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/seminar")
 @RequiredArgsConstructor
 public class BoardController {
-
     private final BoardServiceImpl boardService;
 
     @AssignUserId
@@ -46,6 +45,13 @@ public class BoardController {
     @DeleteMapping("/v1/board/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardService.deleteBoard(userId,boardId);
+        return ResponseEntity.ok(createSuccessResponse());
+    }
+
+    @AssignUserId
+    @PostMapping("/v1/board/{boardId}/like")
+    public ResponseEntity<ResponseBody<Void>> like(Long userId,@PathVariable Long boardId) {
+        boardService.likeBoard(userId,boardId);
         return ResponseEntity.ok(createSuccessResponse());
     }
 

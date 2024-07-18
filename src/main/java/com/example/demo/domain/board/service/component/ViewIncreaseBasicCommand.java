@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class ViewIncreaseBasicCommand implements ViewIncreaseCommand {//TODO : [Board] 조회수 증가 로직 IP 로 구현하면 바꿀 예정
-
     private final BoardRepository boardRepository;
     private final ViewRepository viewRepository;
 

@@ -1,9 +1,10 @@
-package com.example.demo.domain.board.service.component;
+package com.example.demo.domain.board.service.component.command;
 
 import com.example.demo.domain.board.Repository.*;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
+import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
@@ -22,12 +23,11 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class BoardCommand {
-
-
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
+
     @Transactional
     public BoardInfoResponse createBoard(Long userId, BoardCreateRequest boardCreateRequest) {
         User user = validateUser(userId);
@@ -47,6 +47,14 @@ public class BoardCommand {
                 0L,
                 0L,
                 boardCreateRequest.getCategoryName());
+    }
+
+    private void saveCategoryAndBoardCategory(Board board, String categoryName) {
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
+        BoardCategory boardCategory = new BoardCategory(board, category);
+        board.getBoardCategories().add(boardCategory);
+        boardCategoryRepository.save(boardCategory);
     }
 
     @Transactional
@@ -100,14 +108,6 @@ public class BoardCommand {
         if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 0) {
             categoryRepository.delete(category);
         }
-    }
-
-    private void saveCategoryAndBoardCategory(Board board, String categoryName) {
-        Category category = categoryRepository.findByName(categoryName)
-                .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
-        BoardCategory boardCategory = new BoardCategory(board, category);
-        board.getBoardCategories().add(boardCategory);
-        boardCategoryRepository.save(boardCategory);
     }
 
     @Transactional

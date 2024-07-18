@@ -3,8 +3,9 @@ package com.example.demo.domain.board.service;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-import com.example.demo.domain.board.service.component.BoardCommand;
-import com.example.demo.domain.board.service.component.BoardQuery;
+import com.example.demo.domain.board.service.component.LikeComponent;
+import com.example.demo.domain.board.service.component.command.BoardCommand;
+import com.example.demo.domain.board.service.component.query.BoardQuery;
 import com.example.demo.domain.board.service.component.ViewIncreaseCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class BoardServiceImpl {
     private final BoardCommand boardCommand;
     private final BoardQuery boardQuery;
     private final ViewIncreaseCommand viewIncreaseCommand;
+    private final LikeComponent likeComponent;
 
     @Transactional
     public BoardInfoResponse saveBoard(Long userId, BoardCreateRequest boardCreateRequest) {
@@ -36,6 +38,11 @@ public class BoardServiceImpl {
     @Transactional
     public void deleteBoard(Long userId, Long boardId) {
         boardCommand.removeBoard(userId, boardId);
+    }
+
+    @Transactional
+    public void likeBoard(Long userId, Long boardId) {
+        likeComponent.increaseLike(userId, boardId);
     }
 
 }

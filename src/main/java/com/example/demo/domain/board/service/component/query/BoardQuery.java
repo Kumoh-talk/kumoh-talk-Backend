@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service.component;
+package com.example.demo.domain.board.service.component.query;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.Repository.ViewRepository;
