@@ -1,9 +1,10 @@
-package com.example.demo.domain.board.service.component;
+package com.example.demo.domain.board.service.component.command;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.Repository.ViewRepository;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.View;
+import com.example.demo.domain.board.service.component.command.ViewIncreaseCommand;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;

@@ -5,6 +5,7 @@ import com.example.demo.domain.board.Repository.ViewRepository;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.View;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.vo.Status;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class BoardQuery {
     }
 
     private void validateBoardStatus(Board board) {
-        if(board.getStatus().equals("DRAFT")) {
+        if(board.getStatus().equals(Status.DRAFT)) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = (Long) authentication.getPrincipal();
             if(!board.getUser().getId().equals(userId)) {

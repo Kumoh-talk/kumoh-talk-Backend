@@ -6,7 +6,7 @@ import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.component.LikeComponent;
 import com.example.demo.domain.board.service.component.command.BoardCommand;
 import com.example.demo.domain.board.service.component.query.BoardQuery;
-import com.example.demo.domain.board.service.component.ViewIncreaseCommand;
+import com.example.demo.domain.board.service.component.command.ViewIncreaseCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
