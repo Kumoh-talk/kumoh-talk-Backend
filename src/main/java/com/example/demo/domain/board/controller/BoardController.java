@@ -6,8 +6,6 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-import com.example.demo.domain.board.service.BoardQuery;
-import com.example.demo.domain.board.service.BoardCommand;
 import com.example.demo.domain.board.service.BoardServiceImpl;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -16,8 +14,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/seminar")

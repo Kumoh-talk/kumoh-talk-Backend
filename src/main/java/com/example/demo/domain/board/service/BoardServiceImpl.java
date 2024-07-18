@@ -3,6 +3,9 @@ package com.example.demo.domain.board.service;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
+import com.example.demo.domain.board.service.component.BoardCommand;
+import com.example.demo.domain.board.service.component.BoardQuery;
+import com.example.demo.domain.board.service.component.ViewIncreaseCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,14 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardServiceImpl {
     private final BoardCommand boardCommand;
     private final BoardQuery boardQuery;
+    private final ViewIncreaseCommand viewIncreaseCommand;
 
     @Transactional
     public BoardInfoResponse saveBoard(Long userId, BoardCreateRequest boardCreateRequest) {
-        return boardCommand.boardCreate(userId, boardCreateRequest);
+        return boardCommand.createBoard(userId, boardCreateRequest);
     }
 
     @Transactional
     public BoardInfoResponse searchSingleBoard(Long boardId) {
+        viewIncreaseCommand.increaseView(boardId);
         return boardQuery.findByboardId(boardId);
     }
 

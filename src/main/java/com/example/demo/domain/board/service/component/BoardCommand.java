@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service;
+package com.example.demo.domain.board.service.component;
 
 import com.example.demo.domain.board.Repository.*;
 import com.example.demo.domain.board.domain.entity.Board;
@@ -14,10 +14,8 @@ import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,7 @@ public class BoardCommand {
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
     @Transactional
-    public BoardInfoResponse boardCreate(Long userId, BoardCreateRequest boardCreateRequest) {
+    public BoardInfoResponse createBoard(Long userId, BoardCreateRequest boardCreateRequest) {
         User user = validateUser(userId);
 
         Board board = Board.fromBoardRequest(user,boardCreateRequest);

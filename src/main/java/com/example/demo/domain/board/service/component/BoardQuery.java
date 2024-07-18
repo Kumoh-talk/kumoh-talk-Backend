@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service;
+package com.example.demo.domain.board.service.component;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.Repository.ViewRepository;
@@ -21,33 +21,23 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BoardQuery {
     private final BoardRepository boardRepository;
-    private final ViewRepository viewRepository;
-    private static final int INCREASE_VIEW = 1;
 
     @Transactional(readOnly = true)
     public BoardInfoResponse findByboardId(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         validateBoardStatus(board); //TODO : [Board]조회수 증가 로직 신고 글 안보임 수정 사항이 많음
-        validateReportedBoard(board);
-
-        String nickname = board.getUser().getNickname();
-        Long viewNum = boardRepository.countViewsByBoardId(boardId);
-        Long likeNum = boardRepository.countLikesByBoardId(boardId);
-
-        int increaseViewNum = increaseView(board);
-
-        List<String> categoryNames = boardRepository.findCategoryNameByBoardId(boardId);
+        validateReportedBoard(board);  //TODO : [Board]report 기능 추가 시 로직 변경
 
         return BoardInfoResponse.from(
                 board,
-                nickname,
-                viewNum,
-                likeNum,
-                categoryNames);
+                board.getUser().getNickname(),
+                boardRepository.countViewsByBoardId(boardId),
+                boardRepository.countLikesByBoardId(boardId),
+                boardRepository.findCategoryNameByBoardId(boardId));
     }
 
-    private void validateReportedBoard(Board board) { //TODO : [Board]report 기능 추가 시 로직 변경
+    private void validateReportedBoard(Board board) { //TODO : [Board]report 기능 추가 시 로직 추가
     }
 
     private void validateBoardStatus(Board board) {
@@ -58,21 +48,6 @@ public class BoardQuery {
                 throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
             }
         }
-    }
-
-    private int increaseView(Board board) { // TODO : [Board]나중에 IP 체크로 조회수 증가 로직을 구현한다면 로직 변경
-        View view = new View(board);
-        viewRepository.save(view);
-        return INCREASE_VIEW;
-    }
-
-
-    @Transactional(readOnly = true)
-    public List<BoardInfoResponse> findByALL() {
-/*        return postRepository.findAll().stream()
-                .map(post -> PostInfoResponse.from(post, post.getUser().getName()))
-                .collect(Collectors.toList());*/
-        return null;  // 추후 pagging 처리 추가
     }
 
 //    @Transactional(readOnly = true)
