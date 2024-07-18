@@ -2,31 +2,28 @@ package com.example.demo.domain.board.service;
 
 import com.example.demo.domain.board.Repository.*;
 import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.board.domain.entity.View;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
 import com.example.demo.domain.board.domain.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.vo.Status;
-import com.example.demo.domain.file.repository.FileRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class BoardService {
+public class BoardCommand {
 
 
     private final BoardRepository boardRepository;
@@ -55,7 +52,7 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId) throws IOException {
+    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId)  {
         Board board = validateBoard(boardUpdateRequest.getId());
         validateUserEqualBoardUser(userId, board);
 

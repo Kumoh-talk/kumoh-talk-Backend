@@ -10,20 +10,21 @@ import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BoardReadService {
-    private static BoardRepository boardRepository;
-    private static ViewRepository viewRepository;
+public class BoardQuery {
+    private final BoardRepository boardRepository;
+    private final ViewRepository viewRepository;
     private static final int INCREASE_VIEW = 1;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public BoardInfoResponse findByboardId(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
@@ -41,7 +42,7 @@ public class BoardReadService {
         return BoardInfoResponse.from(
                 board,
                 nickname,
-                viewNum+increaseViewNum,
+                viewNum,
                 likeNum,
                 categoryNames);
     }
