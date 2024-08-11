@@ -9,6 +9,8 @@ on:
 # 권한 설정
 permissions:
   contents: read
+  packages: write
+  pull-requests: write
 
 jobs:
   build:
