@@ -2,91 +2,42 @@ name: CI - Gradle Build
 # Event
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 # 권한 설정
 permissions:
   contents: read
+  packages: write
+  pull-requests: write
 
-env:
-  S3_BUCKET_NAME: s3-myest
-  RESOURCE_PATH: ./src/main/resources/application.yml
-  RESOURCE_PATH_DB: ./src/main/resources/application-db.yml
-  RESOURCE_PATH_SECURITY: ./src/main/resources/application-security.yml
-  RESOURCE_PATH_MAIL: ./src/main/resources/application-mail.yml
-  CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-TEST
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
-
-# Work
 jobs:
   build:
-    runs-on: ubuntu-latest # 실행 환경
+    name: Build Jar
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3 # 기본 체크아웃 동작
-      # Java version 세팅
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACTION_TOKEN || github.token }}
+          submodules: recursive
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set yml file
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ${{ env.RESOURCE_PATH }}, ${{ env.RESOURCE_PATH_DB }}, ${{ env.RESOURCE_PATH_SECURITY }}, ${{ env.RESOURCE_PATH_MAIL }}
-        env:
-          spring.datasource.url: ${{ secrets.SPRING_DATASOURCE_URL }}
-          spring.datasource.username: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-          spring.datasource.password: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-          spring.data.redis.host: ${{ secrets.REDIS_HOST }}
-          spring.data.redis.port: ${{ secrets.REDIS_PORT }}
-          spring.mail.username: ${{ secrets.MAIL_USERNAME }}
-          spring.mail.password: ${{ secrets.MAIL_PASSWORD }}
-          jwt.secret-key: ${{ secrets.JWT_SECRET_KEY }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-
-
-
-#      # 환경 변수 설정
-#      - name: Set up Environment
-#        run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env # GitHub SecretKey 에서 설정한 내용으로 .env 파일 생성
-
-      # 실행 권한 추가
-      - name: Grant execute permission to gradlew
-        run: chmod +x ./gradlew
-      
-      # 빌드시 캐시 적용
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle
-          
-      # 빌드
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
 
-      # 압축
-      - name: Make zip file
-        run: zip -r ./$GITHUB_SHA .
-
-      # AWS
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
-
-      - name: Code Deploy
-        run: |
-          aws deploy create-deployment \
-          --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
+          name: build-libs
+          path: build/libs/*.jar
