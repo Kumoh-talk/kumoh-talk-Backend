@@ -28,8 +28,7 @@ public class UserService {
         if(userRepository.existsByNickname(request.nickname()))
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
 
-        user.setNickname(request.nickname());
-        // TODO. profile 초기 이미지 설정 추가
+        user.setInitialInfo(request);
     }
 
 //    @Transactional

@@ -6,6 +6,7 @@ import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.vo.Role;
+import com.example.demo.domain.user.dto.request.CompleteRegistrationRequest;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -23,7 +24,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class User extends BaseEntity {
 
@@ -38,9 +40,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String providerId;
 
-    @Setter
     @Column(unique = true)
     private String nickname;
+
+    private String profileImage;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -72,6 +75,11 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
+    public void setInitialInfo(CompleteRegistrationRequest request) {
+        this.nickname = request.nickname();
+        this.profileImage = "기본이미지 url";
+    }
+
     public void updateInfo(User user) {
         if (user == null) {
             log.warn("UPDATE_FAILED: Invalid user data provided.");
@@ -81,4 +89,6 @@ public class User extends BaseEntity {
 //        this.track = user.getTrack();
 //        this.major = user.getMajor();
     }
+
+
 }

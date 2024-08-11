@@ -20,7 +20,6 @@ public class UserAdditionalInfo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String profileImage;
     private String email;
     private String name;
     private String department; // 정해져있음.
