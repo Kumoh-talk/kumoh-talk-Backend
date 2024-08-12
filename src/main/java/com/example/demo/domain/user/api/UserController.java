@@ -2,6 +2,7 @@ package com.example.demo.domain.user.api;
 
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
+import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.service.UserService;
@@ -11,6 +12,7 @@ import com.example.demo.global.base.dto.ResponseBody;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.Token;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class UserController {
      */
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_GUEST')")
     @GetMapping("/check-nickname")
-    public ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(@Param("nickname") String nickname) {
+    public ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(@Param("nickname") @Pattern(regexp = NICKNAME_REGEXP) String nickname) {
         userService.checkNicknameDuplicate(nickname);
         return ResponseEntity.ok(createSuccessResponse());
     }
