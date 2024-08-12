@@ -1,13 +1,13 @@
-package com.example.demo.global.jwt.service;
+package com.example.demo.domain.token.service;
 
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
-import com.example.demo.global.jwt.domain.RefreshToken;
-import com.example.demo.global.jwt.dto.TokenRequest;
-import com.example.demo.global.jwt.dto.TokenResponse;
-import com.example.demo.global.jwt.repository.RefreshTokenRepository;
+import com.example.demo.domain.token.domain.RefreshToken;
+import com.example.demo.domain.token.domain.dto.TokenRequest;
+import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,9 +31,6 @@ public class TokenService {
 
         refreshTokenRepository.delete(savedRefreshToken); // refresh token
 
-        String accessToken = jwtHandler.createAccessToken(new JwtUserClaim(jwtUserClaim.userId(), jwtUserClaim.role()));
-        String refreshToken = jwtHandler.createRefreshToken(new JwtUserClaim(jwtUserClaim.userId(), jwtUserClaim.role()));
-
-        return new TokenResponse(accessToken, refreshToken);
+        return jwtHandler.createTokens(jwtUserClaim);
     }
 }

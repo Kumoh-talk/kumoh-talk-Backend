@@ -3,6 +3,7 @@ package com.example.demo.global.oauth.handler;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
+    private static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect-uri";
     private static final String MODE_PARAM_COOKIE_NAME = "mode";
     private static final String LOGIN_MODE = "login";
     private static final String UNLINK_MODE = "unlink";
@@ -108,13 +109,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             isNewUser.set(true);
         }
 
-        String accessToken = jwtHandler.createAccessToken(new JwtUserClaim(user.getId(), user.getRole()));
-        String refreshToken = jwtHandler.createRefreshToken(new JwtUserClaim(user.getId(), user.getRole()));
+        TokenResponse tokens = jwtHandler.createTokens(JwtUserClaim.create(user));
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("is-new-user", isNewUser.get())
-                .queryParam("access_token", accessToken)
-                .queryParam("refresh_token", refreshToken)
+                .queryParam("access-token", tokens.accessToken())
+                .queryParam("refresh-token", tokens.refreshToken())
                 .build().toUriString();
     }
 
