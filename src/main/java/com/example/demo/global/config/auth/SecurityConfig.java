@@ -49,13 +49,6 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .requestCache(RequestCacheConfigurer::disable)
 
-                .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                        .requestMatchers(HttpMethod.POST, "/api/tokens/**").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/api/test/**").permitAll()
-                        .requestMatchers(HttpMethod.GET).permitAll()
-                        .anyRequest().authenticated())
-
                 .addFilterAfter(new JwtAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
 
                 .exceptionHandling(e -> e
