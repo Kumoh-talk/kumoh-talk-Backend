@@ -1,10 +1,13 @@
 package com.example.demo.domain.user.service;
 
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.jwt.JwtHandler;
+import com.example.demo.global.jwt.JwtUserClaim;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtHandler jwtHandler;
 
     public void checkNicknameDuplicate(String nickname) {
         if(userRepository.existsByNickname(nickname)){
@@ -23,11 +27,12 @@ public class UserService {
     }
 
     @Transactional
-    public void completeRegistration(Long userId, CompleteRegistrationRequest request) {
+    public TokenResponse completeRegistration(Long userId, CompleteRegistrationRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         if(userRepository.existsByNickname(request.nickname())){
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
         }
         user.setInitialInfo(request.nickname());
+        return jwtHandler.createTokens(JwtUserClaim.create(user));
     }
 }
