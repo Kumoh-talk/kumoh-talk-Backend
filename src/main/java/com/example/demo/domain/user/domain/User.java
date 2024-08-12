@@ -77,5 +77,6 @@ public class User extends BaseEntity {
     public void setInitialInfo(String nickname) {
         this.nickname = nickname;
         this.profileImage = "기본이미지 url";
+        this.role = Role.ROLE_USER;
     }
 }
