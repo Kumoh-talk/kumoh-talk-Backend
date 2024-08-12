@@ -22,14 +22,14 @@ public class TokenService {
 
     public TokenResponse refresh(TokenRequest tokenRequest) {
         JwtUserClaim jwtUserClaim = jwtHandler.getClaims(tokenRequest.accessToken())
-                .orElseThrow(() -> new ServiceException(ErrorCode.JWT_INVALID));
+                .orElseThrow(() -> new ServiceException(ErrorCode.JWT_INVALID)); // invalid token 401
         RefreshToken savedRefreshToken = refreshTokenRepository.findByRefreshToken(tokenRequest.refreshToken())
-                .orElseThrow(() -> new ServiceException(ErrorCode.REFRESH_TOKEN_NOT_EXIST));
+                .orElseThrow(() -> new ServiceException(ErrorCode.REFRESH_TOKEN_NOT_EXIST)); // not exist token 404
 
         if(!jwtUserClaim.userId().equals(savedRefreshToken.getUserId())) // userId 비교
             throw new ServiceException(ErrorCode.USER_NOT_MATCHED);
 
-        refreshTokenRepository.delete(savedRefreshToken);
+        refreshTokenRepository.delete(savedRefreshToken); // refresh token
 
         String accessToken = jwtHandler.createAccessToken(new JwtUserClaim(jwtUserClaim.userId(), jwtUserClaim.role()));
         String refreshToken = jwtHandler.createRefreshToken(new JwtUserClaim(jwtUserClaim.userId(), jwtUserClaim.role()));

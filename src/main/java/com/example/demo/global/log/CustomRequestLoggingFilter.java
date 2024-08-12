@@ -34,7 +34,7 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
 
     private static final int MAX_PAYLOAD_LENGTH = 200;
     private static final String MULTIPART_FORM_DATA = "multipart/form-data";
-    private static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String X_WWW_FORM_URLENCODED = "service/x-www-form-urlencoded";
 
     @Override
     protected boolean shouldLog(HttpServletRequest request) {

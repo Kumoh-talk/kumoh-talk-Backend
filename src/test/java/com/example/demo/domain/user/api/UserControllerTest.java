@@ -3,10 +3,10 @@
 //import com.example.demo.base.ControllerTest;
 //import com.example.demo.domain.user.domain.User;
 //import com.example.demo.domain.user.domain.vo.Status;
-//import com.example.demo.domain.user.dto.request.UserPasswordUpdateRequest;
-//import com.example.demo.domain.user.dto.request.UserUpdateRequest;
-//import com.example.demo.domain.user.dto.response.UserInfoResponse;
-//import com.example.demo.domain.user.dto.response.UserUpdateResponse;
+//import com.example.demo.domain.user.domain.request.dto.UserPasswordUpdateRequest;
+//import com.example.demo.domain.user.domain.request.dto.UserUpdateRequest;
+//import com.example.demo.domain.user.domain.response.dto.UserInfoResponse;
+//import com.example.demo.domain.user.domain.response.dto.UserUpdateResponse;
 //import com.example.demo.global.base.exception.ErrorCode;
 //import com.example.demo.global.base.exception.ServiceException;
 //import org.junit.jupiter.api.DisplayName;

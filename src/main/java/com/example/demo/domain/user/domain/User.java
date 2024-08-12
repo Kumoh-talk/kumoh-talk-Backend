@@ -6,7 +6,6 @@ import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.dto.request.CompleteRegistrationRequest;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -49,10 +48,10 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
     private UserAdditionalInfo userAdditionalInfo;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
     private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
@@ -75,20 +74,8 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setInitialInfo(CompleteRegistrationRequest request) {
-        this.nickname = request.nickname();
+    public void setInitialInfo(String nickname) {
+        this.nickname = nickname;
         this.profileImage = "기본이미지 url";
     }
-
-    public void updateInfo(User user) {
-        if (user == null) {
-            log.warn("UPDATE_FAILED: Invalid user data provided.");
-            throw new ServiceException(ErrorCode.INVALID_INPUT_VALUE);
-        }
-//        this.name = user.getName();
-//        this.track = user.getTrack();
-//        this.major = user.getMajor();
-    }
-
-
 }

@@ -1,11 +1,7 @@
-package com.example.demo.domain.user.application;
+package com.example.demo.domain.user.service;
 
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.dto.request.CompleteRegistrationRequest;
-import com.example.demo.domain.user.dto.request.UserPasswordUpdateRequest;
-import com.example.demo.domain.user.dto.request.UserUpdateRequest;
-import com.example.demo.domain.user.dto.response.UserInfoResponse;
-import com.example.demo.domain.user.dto.response.UserUpdateResponse;
+import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -28,7 +24,7 @@ public class UserService {
         if(userRepository.existsByNickname(request.nickname()))
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
 
-        user.setInitialInfo(request);
+        user.setInitialInfo(request.nickname());
     }
 
 //    @Transactional
