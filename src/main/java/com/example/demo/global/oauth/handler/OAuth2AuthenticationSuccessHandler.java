@@ -94,21 +94,25 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     private String handleLogin(OAuth2UserPrincipal principal, String targetUrl) {
-        AtomicReference<String> addPath = new AtomicReference<>("/home"); // TODO. 프론트 협의
+        AtomicReference<Boolean> isNewUser = new AtomicReference<>(false);
         String providerId = principal.getUserInfo().getId();
         OAuth2Provider provider = principal.getUserInfo().getProvider();
 
         User user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseGet(() -> {
-                    addPath.set("/new-user"); // TODO. 프론트 협의
+                    isNewUser.set(true);
                     return createAndSaveNewUser(providerId, provider);
                 });
+
+        if (user.getRole().equals(Role.ROLE_GUEST)) {
+            isNewUser.set(true);
+        }
 
         String accessToken = jwtHandler.createAccessToken(new JwtUserClaim(user.getId(), user.getRole()));
         String refreshToken = jwtHandler.createRefreshToken(new JwtUserClaim(user.getId(), user.getRole()));
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .path(addPath.get())
+                .queryParam("is-new-user", isNewUser.get())
                 .queryParam("access_token", accessToken)
                 .queryParam("refresh_token", refreshToken)
                 .build().toUriString();
