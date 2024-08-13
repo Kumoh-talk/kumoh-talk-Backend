@@ -1,26 +1,21 @@
-package com.example.demo.domain.board.service.component.query;
+package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.Repository.ViewRepository;
 import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.board.domain.entity.View;
-import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.vo.Status;
+import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BoardQuery {
+public class BoardQueryService {
     private final BoardRepository boardRepository;
 
     @Transactional(readOnly = true)

@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service.component;
+package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.Repository.LikeRepository;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-public class LikeComponent {
+public class LikeService {
     private final LikeRepository likeRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;

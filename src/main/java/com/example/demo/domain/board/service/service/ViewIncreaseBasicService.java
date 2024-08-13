@@ -1,10 +1,9 @@
-package com.example.demo.domain.board.service.component.command;
+package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.Repository.ViewRepository;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.View;
-import com.example.demo.domain.board.service.component.command.ViewIncreaseCommand;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-public class ViewIncreaseBasicCommand implements ViewIncreaseCommand {//TODO : [Board] 조회수 증가 로직 IP 로 구현하면 바꿀 예정
+public class ViewIncreaseBasicService implements ViewIncreaseService {//TODO : [Board] 조회수 증가 로직 IP 로 구현하면 바꿀 예정
     private final BoardRepository boardRepository;
     private final ViewRepository viewRepository;
 

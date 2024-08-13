@@ -3,10 +3,10 @@ package com.example.demo.domain.board.controller;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
-import com.example.demo.domain.board.domain.request.BoardCreateRequest;
-import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
-import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-import com.example.demo.domain.board.service.BoardServiceImpl;
+import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
+import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
+import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardController {
-    private final BoardServiceImpl boardService;
+    private final BoardUseCase boardService;
 
     @AssignUserId
     @PostMapping("/v1/boards")
