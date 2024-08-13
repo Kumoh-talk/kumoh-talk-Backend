@@ -1,12 +1,10 @@
-package com.example.demo.domain.board.domain.response;
+package com.example.demo.domain.board.domain.dto.response;
 
 import com.example.demo.domain.board.domain.entity.Board;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

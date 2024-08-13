@@ -2,8 +2,10 @@ package com.example.demo.domain.board.Repository;
 
 import com.example.demo.domain.board.domain.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +25,26 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "left join bc.category c on bc.category.id = c.id " +
             "where b.id = :id")
     List<String> findCategoryNameByBoardId(@Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE File f SET f.deletedAt = NOW() WHERE f.board.id = :boardId")
+    void deleteFileByBoardId(Long boardId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Like l SET l.deletedAt = NOW() WHERE l.board.id = :boardId")
+    void deleteLikeByBoardId(Long boardId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE View v SET v.deletedAt = NOW() WHERE v.board.id = :boardId")
+    void deleteViewByBoardId(Long boardId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE BoardCategory bc SET bc.deletedAt = NOW() WHERE bc.board.id = :boardId")
+    void deleteBoardCategoryByBoardId(Long boardId);
 
 }
 

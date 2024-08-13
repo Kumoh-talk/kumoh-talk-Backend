@@ -3,52 +3,62 @@ package com.example.demo.domain.board.controller;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
-import com.example.demo.domain.board.domain.request.BoardCreateRequest;
-import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
-import com.example.demo.domain.board.domain.response.BoardInfoResponse;
-import com.example.demo.domain.board.service.BoardService;
+import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
+import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
+import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RestController
-@RequestMapping("/api/seminar")
+@RequestMapping("/api")
 @RequiredArgsConstructor
-public class BoardController { // TODO : princapal null 값 반환 확인 후 user null 감지 로직 추가 고민해야함
-
-    private final BoardService boardService;
-
-    @AssignUserId
-    @PostMapping("/v1/board")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
-                                                  @RequestBody @Valid BoardCreateRequest boardCreateRequest) throws IOException {
-
-            return ResponseEntity.ok(createSuccessResponse(boardService.boardCreate(userId, boardCreateRequest)));
-    }
-
-    @GetMapping("/v1/board/{boardId}")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) throws IOException {
-        return ResponseEntity.ok(createSuccessResponse(boardService.findByboardId(boardId)));
-    }
+public class BoardController {
+    private final BoardUseCase boardService;
 
     @AssignUserId
-    @PatchMapping("/v1/board")
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+    @PostMapping("/v1/boards")
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraft(Long userId,
+                                                  @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
+
+            return ResponseEntity.ok(createSuccessResponse(boardService.saveDraftBoard(userId, boardCreateRequest)));
+    }
+
+    @GetMapping("/v1/boards/{boardId}")
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) {
+        return ResponseEntity.ok(createSuccessResponse(boardService.searchSingleBoard(boardId)));
+    }
+
+
+    @AssignUserId
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+    @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
-                                                        @RequestBody @Valid BoardUpdateRequest boardUpdateRequest) throws IOException {
-        return ResponseEntity.ok(createSuccessResponse(boardService.updateBoard(boardUpdateRequest,userId)));
+                                                        @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
+        return ResponseEntity.ok(createSuccessResponse(boardService.updateBoard(userId,boardUpdateRequest)));
     }
 
     @AssignUserId
-    @DeleteMapping("/v1/board/{boardId}")
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+    @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
-        boardService.removeBoard(userId,boardId);
-        return ResponseEntity.ok().build();
+        boardService.deleteBoard(userId,boardId);
+        return ResponseEntity.ok(createSuccessResponse());
+    }
+
+    @AssignUserId
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+    @PostMapping("/v1/boards/{boardId}/like")
+    public ResponseEntity<ResponseBody<Void>> like(Long userId,@PathVariable Long boardId) {
+        boardService.likeBoard(userId,boardId);
+        return ResponseEntity.ok(createSuccessResponse());
     }
 
 //    @GetMapping("/list")

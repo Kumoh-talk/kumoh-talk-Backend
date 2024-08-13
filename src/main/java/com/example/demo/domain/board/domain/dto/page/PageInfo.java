@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.domain.page;
+package com.example.demo.domain.board.domain.dto.page;
 
 
 import lombok.Getter;

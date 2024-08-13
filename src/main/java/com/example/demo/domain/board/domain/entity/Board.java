@@ -1,10 +1,10 @@
 package com.example.demo.domain.board.domain.entity;
 
 
-import com.example.demo.domain.board.domain.request.BoardCreateRequest;
-import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
-import com.example.demo.domain.board.domain.vo.Status;
-import com.example.demo.domain.board.domain.vo.Tag;
+import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
+import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
+import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.user.domain.User;
@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="board")
+@Table(name ="boards")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE boards SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class Board extends BaseEntity {
 
@@ -49,10 +49,9 @@ public class Board extends BaseEntity {
 
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "게시물 상태는 빈 값일 수 없습니다")
     private Status status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -84,13 +83,15 @@ public class Board extends BaseEntity {
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
-        return Board.builder()
+        Board board = Board.builder()
                 .title(boardCreateRequest.getTitle())
                 .content(boardCreateRequest.getContents())
                 .user(user)
                 .tag(boardCreateRequest.getTag())
                 .status(Status.DRAFT)
                 .build();
+        user.getBoards().add(board);
+        return board;
     }
 
     public void changeBoardInfo(BoardUpdateRequest boardUpdateRequest){
