@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="categorys")
+@Table(name ="categories")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE categorys SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE categories SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class Category extends BaseEntity {
     @Id
