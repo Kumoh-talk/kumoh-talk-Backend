@@ -26,7 +26,6 @@ import java.util.List;
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-@Table(name = "users")
 public class User extends BaseEntity {
 
     @Id
