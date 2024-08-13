@@ -1,8 +1,8 @@
-package com.example.demo.domain.board.domain.response;
+package com.example.demo.domain.board.domain.dto.response;
 
 
-import com.example.demo.domain.board.domain.page.PageInfo;
-import com.example.demo.domain.board.domain.page.PageTitleInfo;
+import com.example.demo.domain.board.domain.dto.page.PageInfo;
+import com.example.demo.domain.board.domain.dto.page.PageTitleInfo;
 import lombok.Getter;
 import lombok.Setter;
 

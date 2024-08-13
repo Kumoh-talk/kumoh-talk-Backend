@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.domain.vo;
+package com.example.demo.domain.board.domain.dto.vo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

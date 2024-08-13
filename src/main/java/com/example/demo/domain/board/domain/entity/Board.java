@@ -1,10 +1,10 @@
 package com.example.demo.domain.board.domain.entity;
 
 
-import com.example.demo.domain.board.domain.request.BoardCreateRequest;
-import com.example.demo.domain.board.domain.request.BoardUpdateRequest;
-import com.example.demo.domain.board.domain.vo.Status;
-import com.example.demo.domain.board.domain.vo.Tag;
+import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
+import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
+import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.user.domain.User;
