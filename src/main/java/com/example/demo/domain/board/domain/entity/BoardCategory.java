@@ -10,10 +10,10 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name ="board_categorys")
+@Table(name ="board_categories")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE board_categorys SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE board_categories SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class BoardCategory extends BaseEntity {
 
