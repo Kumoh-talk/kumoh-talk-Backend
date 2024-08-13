@@ -6,15 +6,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name ="board_category")
+@Table(name ="board_categorys")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE board_categorys SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class BoardCategory extends BaseEntity {
 

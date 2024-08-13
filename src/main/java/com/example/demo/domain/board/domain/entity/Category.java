@@ -1,6 +1,5 @@
 package com.example.demo.domain.board.domain.entity;
 
-import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -13,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="category")
+@Table(name ="categorys")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE categorys SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class Category extends BaseEntity {
     @Id

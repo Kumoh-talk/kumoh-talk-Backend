@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name ="board")
+@Table(name ="boards")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE boards SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class Board extends BaseEntity {
 

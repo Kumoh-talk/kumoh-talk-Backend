@@ -1,6 +1,5 @@
 package com.example.demo.domain.board.domain.entity;
 
-import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -10,10 +9,10 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name = "like_board")
+@Table(name = "likes")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE likes SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class Like extends BaseEntity {
     @Id
