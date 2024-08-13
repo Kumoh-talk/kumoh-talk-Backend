@@ -38,6 +38,12 @@ public class BoardCategory extends BaseEntity {
         this.board = board;
         this.category = category;
         this.name = category.getName();
+        board.getBoardCategories().add(this);
         category.getBoardCategories().add(this);
+    }
+
+    public void setAssociateNull() {
+        this.board = null;
+        this.category = null;
     }
 }

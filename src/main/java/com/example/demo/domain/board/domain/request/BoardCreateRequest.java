@@ -29,4 +29,12 @@ public class BoardCreateRequest {
     private List<String> categoryName;
 
     private Tag tag;
+
+    @Builder
+    public BoardCreateRequest(String title, String contents, @Nullable List<String> categoryName, Tag tag) {
+        this.title = title;
+        this.contents = contents;
+        this.categoryName = categoryName;
+        this.tag = tag;
+    }
 }

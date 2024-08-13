@@ -30,4 +30,13 @@ public class BoardUpdateRequest {
     private List<String> categoryName;
 
     private Status status;
+
+    @Builder
+    public BoardUpdateRequest(Long id, String title, String contents, @Nullable List<String> categoryName, Status status) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.categoryName = categoryName;
+        this.status = status;
+    }
 }

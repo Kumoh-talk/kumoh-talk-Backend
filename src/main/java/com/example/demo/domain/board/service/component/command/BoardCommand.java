@@ -35,11 +35,11 @@ public class BoardCommand {
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
 
+        Board savedBoard = boardRepository.save(board);
+
         boardCreateRequest.getCategoryName().forEach(categoryName -> {
             saveCategoryAndBoardCategory(board, categoryName);
         });
-
-        Board savedBoard = boardRepository.save(board);
 
         return BoardInfoResponse.from(
                 savedBoard,
@@ -53,7 +53,6 @@ public class BoardCommand {
         Category category = categoryRepository.findByName(categoryName)
                 .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
         BoardCategory boardCategory = new BoardCategory(board, category);
-        board.getBoardCategories().add(boardCategory);
         boardCategoryRepository.save(boardCategory);
     }
 
@@ -68,11 +67,15 @@ public class BoardCommand {
         Long viewNum = boardRepository.countViewsByBoardId(boardUpdateRequest.getId());
         Long likeNum = boardRepository.countLikesByBoardId(boardUpdateRequest.getId());
 
+        List<String> categoryNames = board.getBoardCategories().stream()
+                .map(boardCategory -> boardCategory.getCategory().getName())
+                .collect(Collectors.toList());
+
         return BoardInfoResponse.from(board,
                 board.getUser().getNickname(),
                 viewNum,
                 likeNum,
-                boardUpdateRequest.getCategoryName());
+                categoryNames);
     }
 
     private void updateBoard(Board board , BoardUpdateRequest boardUpdateRequest) {
@@ -92,6 +95,9 @@ public class BoardCommand {
                 .filter(boardCategory -> !newCategoryNames.contains(boardCategory.getCategory().getName()))
                 .forEach(boardCategory -> {
                     Category category = boardCategory.getCategory();
+                    boardCategory.setAssociateNull();
+                    category.getBoardCategories().remove(boardCategory);
+                    board.getBoardCategories().remove(boardCategory);
                     boardCategoryRepository.delete(boardCategory);
                     deleteCategory(category);
                 });

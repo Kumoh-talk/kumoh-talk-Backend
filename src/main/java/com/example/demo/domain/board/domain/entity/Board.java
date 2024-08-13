@@ -51,7 +51,7 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -83,13 +83,15 @@ public class Board extends BaseEntity {
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
-        return Board.builder()
+        Board board = Board.builder()
                 .title(boardCreateRequest.getTitle())
                 .content(boardCreateRequest.getContents())
                 .user(user)
                 .tag(boardCreateRequest.getTag())
                 .status(Status.DRAFT)
                 .build();
+        user.getBoards().add(board);
+        return board;
     }
 
     public void changeBoardInfo(BoardUpdateRequest boardUpdateRequest){
