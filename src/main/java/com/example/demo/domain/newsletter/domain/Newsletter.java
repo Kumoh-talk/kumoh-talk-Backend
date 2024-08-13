@@ -13,7 +13,8 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@SQLDelete(sql = "UPDATE newsletter SET deleted_at = NOW() where id=?")
+@Table(name = "news_letters")
+@SQLDelete(sql = "UPDATE news_letters SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class Newsletter extends BaseEntity {
 

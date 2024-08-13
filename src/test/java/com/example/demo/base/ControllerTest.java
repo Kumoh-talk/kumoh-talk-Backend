@@ -1,7 +1,7 @@
 package com.example.demo.base;
 
 import com.example.demo.domain.user.api.UserController;
-import com.example.demo.domain.user.application.UserService;
+import com.example.demo.domain.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;

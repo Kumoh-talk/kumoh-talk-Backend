@@ -1,9 +1,9 @@
-package com.example.demo.global.jwt.controller;
+package com.example.demo.domain.token.controller;
 
 import com.example.demo.global.base.dto.ResponseBody;
-import com.example.demo.global.jwt.dto.TokenRequest;
-import com.example.demo.global.jwt.dto.TokenResponse;
-import com.example.demo.global.jwt.service.TokenService;
+import com.example.demo.domain.token.domain.dto.TokenRequest;
+import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.domain.token.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

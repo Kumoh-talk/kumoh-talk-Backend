@@ -1,4 +1,4 @@
-package com.example.demo.global.jwt.dto;
+package com.example.demo.domain.token.domain.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
