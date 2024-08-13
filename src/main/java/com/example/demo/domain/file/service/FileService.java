@@ -28,7 +28,7 @@ public class FileService {
         Board board = boardRepository.findById(boardId).orElseThrow(() ->
             new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         File file = fileS3Uploader.storeFile(multipartFile, board);
-        file.setBoard(board); // 연관관계 매핑
+        // file.setBoard(board); // 연관관계 매핑
         return FileNameInfo.from(fileRepository.save(file));
     }
 }
