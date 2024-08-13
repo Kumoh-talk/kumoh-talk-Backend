@@ -25,10 +25,10 @@ public class BoardController {
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
     @PostMapping("/v1/boards")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraft(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
 
-            return ResponseEntity.ok(createSuccessResponse(boardService.saveBoard(userId, boardCreateRequest)));
+            return ResponseEntity.ok(createSuccessResponse(boardService.saveDraftBoard(userId, boardCreateRequest)));
     }
 
     @GetMapping("/v1/boards/{boardId}")

@@ -26,7 +26,7 @@ public class BoardUseCase {
      * @return BoardInfoResponse
      */
     @Transactional
-    public BoardInfoResponse saveBoard(Long userId, BoardCreateRequest boardCreateRequest) {
+    public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
         return boardCommandService.createBoard(userId, boardCreateRequest);
     }
 
