@@ -3,6 +3,7 @@ package com.example.demo.global.oauth.handler;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
+    private static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect-uri";
     private static final String MODE_PARAM_COOKIE_NAME = "mode";
     private static final String LOGIN_MODE = "login";
     private static final String UNLINK_MODE = "unlink";
@@ -94,23 +95,26 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     private String handleLogin(OAuth2UserPrincipal principal, String targetUrl) {
-        AtomicReference<String> addPath = new AtomicReference<>("/home"); // TODO. 프론트 협의
+        AtomicReference<Boolean> isNewUser = new AtomicReference<>(false);
         String providerId = principal.getUserInfo().getId();
         OAuth2Provider provider = principal.getUserInfo().getProvider();
 
         User user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseGet(() -> {
-                    addPath.set("/new-user"); // TODO. 프론트 협의
+                    isNewUser.set(true);
                     return createAndSaveNewUser(providerId, provider);
                 });
 
-        String accessToken = jwtHandler.createAccessToken(new JwtUserClaim(user.getId(), user.getRole()));
-        String refreshToken = jwtHandler.createRefreshToken(new JwtUserClaim(user.getId(), user.getRole()));
+        if (user.getRole().equals(Role.ROLE_GUEST)) {
+            isNewUser.set(true);
+        }
+
+        TokenResponse tokens = jwtHandler.createTokens(JwtUserClaim.create(user));
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .path(addPath.get())
-                .queryParam("access_token", accessToken)
-                .queryParam("refresh_token", refreshToken)
+                .queryParam("is-new-user", isNewUser.get())
+                .queryParam("access-token", tokens.accessToken())
+                .queryParam("refresh-token", tokens.refreshToken())
                 .build().toUriString();
     }
 

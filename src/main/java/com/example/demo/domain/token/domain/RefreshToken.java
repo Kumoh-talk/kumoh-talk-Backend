@@ -1,4 +1,4 @@
-package com.example.demo.global.jwt.domain;
+package com.example.demo.domain.token.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

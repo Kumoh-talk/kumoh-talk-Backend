@@ -23,7 +23,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
+@Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class User extends BaseEntity {
 
@@ -32,23 +33,25 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private OAuth2Provider provider;
 
     @Column(nullable = false)
     private String providerId;
 
-    @Setter
     @Column(unique = true)
     private String nickname;
+
+    private String profileImage;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
     private UserAdditionalInfo userAdditionalInfo;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
     private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
@@ -71,13 +74,9 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void updateInfo(User user) {
-        if (user == null) {
-            log.warn("UPDATE_FAILED: Invalid user data provided.");
-            throw new ServiceException(ErrorCode.INVALID_INPUT_VALUE);
-        }
-//        this.name = user.getName();
-//        this.track = user.getTrack();
-//        this.major = user.getMajor();
+    public void setInitialInfo(String nickname) {
+        this.nickname = nickname;
+        this.profileImage = "기본이미지 url";
+        this.role = Role.ROLE_USER;
     }
 }

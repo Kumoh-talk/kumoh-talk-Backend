@@ -8,11 +8,11 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.vo.Role;
 
-import com.example.demo.global.jwt.domain.RefreshToken;
-import com.example.demo.global.jwt.exception.JwtTokenInvalidException;
-import com.example.demo.global.jwt.repository.RefreshTokenRepository;
+import com.example.demo.domain.token.domain.RefreshToken;
+import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -36,35 +36,30 @@ public class JwtHandler {
         secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String createAccessToken(JwtUserClaim jwtUserClaim) {
+    public TokenResponse createTokens(JwtUserClaim jwtUserClaim) {
         Map<String, Object> tokenClaims = this.createClaims(jwtUserClaim);
         Date now = new Date(System.currentTimeMillis());
-        long expiredTime = jwtProperties.getAccessTokenExpireIn();
+        long accessTokenExpireIn = jwtProperties.getAccessTokenExpireIn();
+        long refreshTokenExpireIn = jwtProperties.getRefreshTokenExpireIn();
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .claims(tokenClaims)
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + expiredTime * MILLI_SECOND))
+                .expiration(new Date(now.getTime() + accessTokenExpireIn * MILLI_SECOND))
                 .signWith(secretKey)
                 .compact();
-    }
-
-    public String createRefreshToken(JwtUserClaim jwtUserClaim) {
-        Map<String, Object> tokenClaims = this.createClaims(jwtUserClaim);
-        Date now = new Date(System.currentTimeMillis());
-        long expiredTime = jwtProperties.getRefreshTokenExpireIn();
 
         String refreshToken = Jwts.builder()
                 .claims(tokenClaims)
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + expiredTime * MILLI_SECOND))
+                .expiration(new Date(now.getTime() + refreshTokenExpireIn * MILLI_SECOND))
                 .signWith(secretKey)
                 .compact();
 
         RefreshToken token = new RefreshToken(refreshToken, jwtUserClaim.userId());
         refreshTokenRepository.save(token);
 
-        return refreshToken;
+        return TokenResponse.create(accessToken, refreshToken);
     }
 
 

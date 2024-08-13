@@ -1,6 +1,6 @@
-package com.example.demo.global.jwt.repository;
+package com.example.demo.domain.token.repository;
 
-import com.example.demo.global.jwt.domain.RefreshToken;
+import com.example.demo.domain.token.domain.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

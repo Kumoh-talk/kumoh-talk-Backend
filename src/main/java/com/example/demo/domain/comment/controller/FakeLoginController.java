@@ -1,5 +1,6 @@
 package com.example.demo.domain.comment.controller;
 
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.jwt.JwtHandler;
@@ -21,8 +22,8 @@ public class FakeLoginController {
     @PostMapping
     public ResponseEntity<ResponseBody<LoginResponse>> fakeLogin() {
         JwtUserClaim claim = new JwtUserClaim(1L, Role.ROLE_USER);
-        String token = jwtHandler.createAccessToken(claim);
-        LoginResponse response = new LoginResponse(token);
+        TokenResponse tokens = jwtHandler.createTokens(claim);
+        LoginResponse response = new LoginResponse(tokens.accessToken());
 
         return ResponseEntity
                 .status(HttpStatus.OK)

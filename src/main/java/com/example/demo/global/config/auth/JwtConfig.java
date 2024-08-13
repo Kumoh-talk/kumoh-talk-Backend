@@ -1,6 +1,6 @@
 package com.example.demo.global.config.auth;
 
-import com.example.demo.global.jwt.repository.RefreshTokenRepository;
+import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
