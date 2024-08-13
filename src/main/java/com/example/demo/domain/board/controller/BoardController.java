@@ -13,6 +13,7 @@ import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,7 @@ public class BoardController {
     private final BoardUseCase boardService;
 
     @AssignUserId
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
     @PostMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
@@ -34,7 +36,9 @@ public class BoardController {
         return ResponseEntity.ok(createSuccessResponse(boardService.searchSingleBoard(boardId)));
     }
 
+
     @AssignUserId
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
@@ -42,6 +46,7 @@ public class BoardController {
     }
 
     @AssignUserId
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
     @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardService.deleteBoard(userId,boardId);
@@ -49,6 +54,7 @@ public class BoardController {
     }
 
     @AssignUserId
+    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
     @PostMapping("/v1/boards/{boardId}/like")
     public ResponseEntity<ResponseBody<Void>> like(Long userId,@PathVariable Long boardId) {
         boardService.likeBoard(userId,boardId);
