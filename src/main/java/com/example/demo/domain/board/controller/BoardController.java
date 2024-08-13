@@ -16,40 +16,40 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/seminar")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardServiceImpl boardService;
 
     @AssignUserId
-    @PostMapping("/v1/board")
+    @PostMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> save(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
 
             return ResponseEntity.ok(createSuccessResponse(boardService.saveBoard(userId, boardCreateRequest)));
     }
 
-    @GetMapping("/v1/board/{boardId}")
+    @GetMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) {
         return ResponseEntity.ok(createSuccessResponse(boardService.searchSingleBoard(boardId)));
     }
 
     @AssignUserId
-    @PatchMapping("/v1/board")
+    @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
         return ResponseEntity.ok(createSuccessResponse(boardService.updateBoard(userId,boardUpdateRequest)));
     }
 
     @AssignUserId
-    @DeleteMapping("/v1/board/{boardId}")
+    @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardService.deleteBoard(userId,boardId);
         return ResponseEntity.ok(createSuccessResponse());
     }
 
     @AssignUserId
-    @PostMapping("/v1/board/{boardId}/like")
+    @PostMapping("/v1/boards/{boardId}/like")
     public ResponseEntity<ResponseBody<Void>> like(Long userId,@PathVariable Long boardId) {
         boardService.likeBoard(userId,boardId);
         return ResponseEntity.ok(createSuccessResponse());

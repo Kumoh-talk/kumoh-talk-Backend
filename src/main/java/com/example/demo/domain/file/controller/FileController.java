@@ -16,18 +16,18 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/file")
+@RequestMapping("/api")
 public class FileController {
 
     private final FileService fileService;
 
 
-    @PostMapping("/image/{boardId}")
+    @PostMapping("/v1/images/{boardId}")
     public ResponseBody<FileNameInfo> uploadImage(@PathVariable Long boardId,
                                MultipartFile multipartFile) throws IOException {
         return createSuccessResponse(fileService.upload(multipartFile, boardId));
     }
-    @PostMapping("/attach/{boardId}")
+    @PostMapping("/v1/attachs/{boardId}")
     public ResponseBody<FileNameInfo> uploadAttach(@PathVariable Long boardId,
                                MultipartFile multipartFile) throws IOException {
         return createSuccessResponse(fileService.upload(multipartFile, boardId));
