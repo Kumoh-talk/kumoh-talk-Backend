@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,15 @@ public class LikeController {
 		likeUseCase.likeBoard(userId,boardId);
 		return ResponseEntity.ok(createSuccessResponse());
 	}
+
+	@AssignUserId
+	@PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+	@DeleteMapping("/v1/boards/{boardId}/likes")
+	public ResponseEntity<ResponseBody<Void>> deleteLike(Long userId,@PathVariable Long boardId) {
+		likeUseCase.unlikeBoard(userId,boardId);
+		return ResponseEntity.ok(createSuccessResponse());
+	}
+
 
 	@AssignUserId
 	@PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")

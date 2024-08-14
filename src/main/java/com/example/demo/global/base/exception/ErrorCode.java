@@ -41,15 +41,16 @@ public enum ErrorCode {
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_0002", "존재하지 않는 게시물입니다." ),
     USER_ALREADY_LIKE_BOARD(HttpStatus.CONFLICT,"BOARD_0003", "이미 좋아요를 누른 게시물입니다."),
     LIKE_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_0004", "좋아요는 인증을 해야합니다."),
+    USER_NOT_LIKE_BOARD(HttpStatus.NOT_FOUND, "BOARD_0005", "좋아요를 누르지 않은 게시물입니다."),
 
     // FILE
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_0001", "파일의 용량이 너무 큽니다."),
 
     // Comment
     PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0001", "부모 댓글을 찾을 수 없습니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0002", "해당 id의 댓글을 찾을 수 없습니다.")
-    ;
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0002", "해당 id의 댓글을 찾을 수 없습니다."),
 
+    ;
     private final HttpStatus status;
     private final String code;
     private final String message;

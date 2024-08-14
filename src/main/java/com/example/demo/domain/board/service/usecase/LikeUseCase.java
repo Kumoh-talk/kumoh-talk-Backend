@@ -23,7 +23,22 @@ public class LikeUseCase {
 		likeService.increaseLike(userId, boardId);
 	}
 
+	/**
+	 * 좋아요한 게시물 목록 페이징 조회
+	 * @param userId
+	 * @param pageable
+	 * @return BoardPageResponse
+	 */
 	public BoardPageResponse getLikes(Long userId, Pageable pageable) {
 		return likeService.getLikes(userId, pageable);
+	}
+
+	/**
+	 * 게시물 좋아요 취소
+	 * @param userId
+	 * @param boardId
+	 */
+	public void unlikeBoard(Long userId, Long boardId) {
+		likeService.decreaseLike(userId, boardId);
 	}
 }

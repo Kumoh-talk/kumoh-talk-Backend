@@ -22,7 +22,7 @@ public class LikeService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
-    @Transactional //TODO : [Board] 좋아요 취소도 넣을건지 물어보기
+    @Transactional
     public void increaseLike(Long userId, Long boardId) {
         Board board = validateBoard(boardId);
         User user = validateUser(userId);
@@ -48,5 +48,16 @@ public class LikeService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         return board;
+    }
+
+    @Transactional
+    public void decreaseLike(Long userId, Long boardId) {
+        Board board = validateBoard(boardId);
+        User user = validateUser(userId);
+        Like like = likeRepository.findByBoardIdAndUserId(boardId, userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_LIKE_BOARD));
+        board.getLikes().remove(like);
+        user.getLikes().remove(like);
+        likeRepository.delete(like);
     }
 }
