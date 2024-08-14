@@ -3,11 +3,14 @@ package com.example.demo.domain.board.service.usecase;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.service.service.LikeService;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +20,6 @@ public class BoardUseCase {
     private final BoardCommandService boardCommandService;
     private final BoardQueryService boardQueryService;
     private final ViewIncreaseService viewIncreaseService;
-    private final LikeService likeService;
 
     /**
      * 게시물 임시 저장 무조건 초기 게시물 상태는 임시 저장 상태임
@@ -25,7 +27,6 @@ public class BoardUseCase {
      * @param boardCreateRequest
      * @return BoardInfoResponse
      */
-    @Transactional
     public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
         return boardCommandService.createBoard(userId, boardCreateRequest);
     }
@@ -47,7 +48,6 @@ public class BoardUseCase {
      * @param boardUpdateRequest
      * @return BoardInfoResponse
      */
-    @Transactional
     public BoardInfoResponse updateBoard(Long userId, BoardUpdateRequest boardUpdateRequest) {
         return boardCommandService.updateBoard(boardUpdateRequest, userId);
     }
@@ -57,19 +57,17 @@ public class BoardUseCase {
      * @param userId
      * @param boardId
      */
-    @Transactional
     public void deleteBoard(Long userId, Long boardId) {
         boardCommandService.removeBoard(userId, boardId);
     }
 
     /**
-     * 게시물 좋아요
-     * @param userId
-     * @param boardId
+     * 게시물 리스트 페이징 조회
+     * @param pageable(페이지 번호, 페이지 사이즈,정렬 방향 ,정렬 기준)
+     * @return BoardPageResponse
      */
-    @Transactional
-    public void likeBoard(Long userId, Long boardId) {
-        likeService.increaseLike(userId, boardId);
-    }
-
+    @Transactional(readOnly = true)
+	public BoardPageResponse findBoardList(Pageable pageable) {
+        return boardQueryService.findBoardPageList(pageable);
+	}
 }

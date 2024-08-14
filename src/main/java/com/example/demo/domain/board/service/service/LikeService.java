@@ -2,6 +2,7 @@ package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.Repository.LikeRepository;
+import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.user.domain.User;
@@ -9,6 +10,8 @@ import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +22,7 @@ public class LikeService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
-    @Transactional //TODO : [Board] 좋아요 취소도 넣을건지 물어보기
+    @Transactional
     public void increaseLike(Long userId, Long boardId) {
         Board board = validateBoard(boardId);
         User user = validateUser(userId);
@@ -28,6 +31,11 @@ public class LikeService {
         }
         Like like = new Like(user, board);
         likeRepository.save(like);
+    }
+
+    @Transactional(readOnly = true)
+    public BoardPageResponse getLikes(Long userId, Pageable pageable) {
+        return BoardPageResponse.from(likeRepository.findBoardsByUserId(userId, pageable));
     }
 
     private User validateUser(Long userId) {
@@ -40,5 +48,16 @@ public class LikeService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         return board;
+    }
+
+    @Transactional
+    public void decreaseLike(Long userId, Long boardId) {
+        Board board = validateBoard(boardId);
+        User user = validateUser(userId);
+        Like like = likeRepository.findByBoardIdAndUserId(boardId, userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_LIKE_BOARD));
+        board.getLikes().remove(like);
+        user.getLikes().remove(like);
+        likeRepository.delete(like);
     }
 }

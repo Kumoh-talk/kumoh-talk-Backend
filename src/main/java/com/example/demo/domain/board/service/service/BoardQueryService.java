@@ -1,12 +1,17 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
+import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
+import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -33,6 +38,12 @@ public class BoardQueryService {
                 boardRepository.findCategoryNameByBoardId(boardId));
     }
 
+    @Transactional(readOnly = true)
+	public BoardPageResponse findBoardPageList(Pageable pageable) {
+        Page<BoardTitleInfoResponse> boardByPage = boardRepository.findBoardByPage(pageable);
+        return BoardPageResponse.from(boardByPage);
+    }
+
     private void validateReportedBoard(Board board) { //TODO : [Board]report 기능 추가 시 로직 추가
     }
 
@@ -45,24 +56,4 @@ public class BoardQueryService {
             }
         }
     }
-
-//    @Transactional(readOnly = true)
-//    public BoardPageResponse findPageList(int page, Track track, PageSort pageSort) {
-//        PageRequest pageRequest = (pageSort == PageSort.DESC) ? PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending()):
-//                PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").ascending());
-//
-//
-//        Page<Board> postPage = boardRepository.findAllByTrack(track, pageRequest);
-//
-//        PageInfo pageInfo = new PageInfo(postPage.getSize(), postPage.getNumber(), postPage.getTotalPages(), pageSort);
-//
-//        List<PageTitleInfo> pageTitleInfoList = new ArrayList<>();
-//        postPage.forEach(post -> {
-//            pageTitleInfoList.add(PageTitleInfo.from(post, post.getUser().getName()));
-//        });
-//
-//
-//        return new BoardPageResponse(pageTitleInfoList, pageInfo);
-//    }
-
 }
