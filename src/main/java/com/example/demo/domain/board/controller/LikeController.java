@@ -5,6 +5,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,11 +51,7 @@ public class LikeController {
 	@GetMapping("/v1/users/likes")
 	public ResponseEntity<ResponseBody<BoardPageResponse>> getLikes(
 		Long userId,
-		@RequestParam(defaultValue = "1") int pageNum,
-		@RequestParam(defaultValue = "10") int pageSize,
-		@RequestParam(defaultValue = "DESC") String sortDirection,
-		@RequestParam(defaultValue = "createdAt") String sortBy){
-		Pageable pageable = PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
+		@PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok(createSuccessResponse(likeUseCase.getLikes(userId,pageable)));
 	}
 }

@@ -27,6 +27,6 @@ public class CategoryQueryService {
 
 	@Transactional(readOnly = true)
 	public BoardPageResponse getBoardPageByCategoryName(String categoryName, Pageable pageable) {
-		return BoardPageResponse.from(categoryRepository.findBoardPageByCategoryName(categoryName,pageable));
+		return BoardPageResponse.from(categoryRepository.findBoardByPage(categoryName,pageable));
 	}
 }
