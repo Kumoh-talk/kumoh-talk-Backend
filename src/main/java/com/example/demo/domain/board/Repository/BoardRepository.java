@@ -31,11 +31,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<String> findCategoryNameByBoardId(@Param("id") Long id);
 
     @Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
-        + "(b.id, b.title,b.user.nickname,b.tag,count(v) ,count(l), b.createdAt) "
+        + "(b.id, b.title, b.user.nickname, b.tag, COUNT(DISTINCT v), COUNT(DISTINCT l), b.createdAt) "
         + "FROM Board b "
-        + "left join Like l on b.id = l.board.id "
-        + "left join View v on b.id = v.board.id ")
-    Page<BoardTitleInfoResponse> findBoardByPage(Pageable pageable); //TODO : 추후 QueryDSL로 변경
+        + "LEFT JOIN b.likes l "
+        + "LEFT JOIN b.views v "
+        + "GROUP BY b.id, b.title, b.user.nickname, b.tag, b.createdAt")
+    Page<BoardTitleInfoResponse> findBoardByPage(Pageable pageable);//TODO : 추후 QueryDSL로 변경
 
     @Transactional
     @Modifying

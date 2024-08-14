@@ -16,12 +16,13 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     Optional<Category> findByName(String name);
 
     @Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
-        + "(b.id, b.title,b.user.nickname,b.tag,count(v) ,count(l), b.createdAt) "
+        + "(b.id, b.title, b.user.nickname, b.tag, COUNT(DISTINCT v), COUNT(DISTINCT l), b.createdAt) "
         + "FROM Board b "
-        + "left join Like l on b.id = l.board.id "
-        + "left join View v on b.id = v.board.id "
-        + "left join BoardCategory bc on b.id = bc.board.id "
-        + "left join Category c on bc.category.id = c.id "
-        + "where c.name = :categoryName")
-    Page<BoardTitleInfoResponse> findBoardPageByCategoryName(String categoryName, Pageable pageable); //TODO : 추후 QueryDSL로 변경
+        + "LEFT JOIN b.likes l "
+        + "LEFT JOIN b.views v "
+        + "LEFT JOIN BoardCategory bc ON b.id = bc.board.id "
+        + "LEFT JOIN Category c ON bc.category.id = c.id "
+        + "WHERE c.name = :categoryName "
+        + "GROUP BY b.id, b.title, b.user.nickname, b.tag, b.createdAt")
+    Page<BoardTitleInfoResponse> findBoardByPage(String categoryName, Pageable pageable);//TODO : 추후 QueryDSL로 변경
 }
