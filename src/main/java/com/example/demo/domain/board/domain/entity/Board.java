@@ -45,7 +45,7 @@ public class Board extends BaseEntity {
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
     @NotNull(message = "게시물 분류는 빈 값일 수 없습니다")
-    private Tag tag;
+    private Tag tag; //TODO : 각 종 조회에 세미나 와 공지사항 분리하도록 쿼리 추가해야하는지 확인 필요
 
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)

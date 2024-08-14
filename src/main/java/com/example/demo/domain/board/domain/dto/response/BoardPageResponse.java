@@ -16,7 +16,7 @@ public class BoardPageResponse {
     private final String pageSort; // 정렬 ( 내림 or 오름)
     private final List<BoardTitleInfoResponse> boardTitleInfoResponses; // 페이지 제목 관련
 
-    public BoardPageResponse(int pageNum, int pageSize, int totalPage,String pageSort ,List<BoardTitleInfoResponse> boardTitleInfoResponseList) {
+    private BoardPageResponse(int pageNum, int pageSize, int totalPage,String pageSort ,List<BoardTitleInfoResponse> boardTitleInfoResponseList) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
         this.totalPage = totalPage;
