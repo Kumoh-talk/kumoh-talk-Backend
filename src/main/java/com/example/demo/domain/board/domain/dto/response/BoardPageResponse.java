@@ -26,7 +26,7 @@ public class BoardPageResponse {
 
     public static BoardPageResponse from(Page<BoardTitleInfoResponse> boardTitleInfoResponsePage) {
         return new BoardPageResponse(
-                boardTitleInfoResponsePage.getNumber(),
+                boardTitleInfoResponsePage.getNumber()+1,
                 boardTitleInfoResponsePage.getSize(),
                 boardTitleInfoResponsePage.getTotalPages(),
                 boardTitleInfoResponsePage.getSort().toString(),
