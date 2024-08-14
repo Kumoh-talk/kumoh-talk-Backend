@@ -35,7 +35,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         + "FROM Board b "
         + "left join Like l on b.id = l.board.id "
         + "left join View v on b.id = v.board.id ")
-    Page<BoardTitleInfoResponse> findBoardByPage(Pageable pageable);
+    Page<BoardTitleInfoResponse> findBoardByPage(Pageable pageable); //TODO : 추후 QueryDSL로 변경
 
     @Transactional
     @Modifying

@@ -2,9 +2,10 @@ package com.example.demo.domain.board.service.usecase;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.service.service.CategoryQueryService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,10 @@ public class CategoryUseCase {
 	 */
 	public List<String> getCategories() {
 		return categoryQueryService.getCategories();
+	}
+
+	public BoardPageResponse getBoardsByCategoryName(String categoryName, Pageable pageable) {
+		return categoryQueryService.getBoardPageByCategoryName(categoryName,pageable);
+
 	}
 }
