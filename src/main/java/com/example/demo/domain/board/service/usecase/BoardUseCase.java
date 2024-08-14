@@ -3,11 +3,14 @@ package com.example.demo.domain.board.service.usecase;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.service.service.LikeService;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,4 +75,13 @@ public class BoardUseCase {
         likeService.increaseLike(userId, boardId);
     }
 
+    /**
+     * 게시물 리스트 페이징 조회
+     * @param pageable(페이지 번호, 페이지 사이즈,정렬 방향 ,정렬 기준)
+     * @return BoardPageResponse
+     */
+    @Transactional(readOnly = true)
+	public BoardPageResponse findBoardList(Pageable pageable) {
+        return boardQueryService.findBoardPageList(pageable);
+	}
 }

@@ -1,6 +1,10 @@
 package com.example.demo.domain.board.Repository;
 
+import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.domain.entity.Board;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,6 +29,13 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "left join bc.category c on bc.category.id = c.id " +
             "where b.id = :id")
     List<String> findCategoryNameByBoardId(@Param("id") Long id);
+
+    @Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
+        + "(b.id, b.title,b.user.nickname,count(v) ,count(l), b.createdAt) "
+        + "FROM Board b "
+        + "left join Like l on b.id = l.board.id "
+        + "left join View v on b.id = v.board.id ")
+    Page<BoardTitleInfoResponse> findBoardByPage(Pageable pageable);
 
     @Transactional
     @Modifying

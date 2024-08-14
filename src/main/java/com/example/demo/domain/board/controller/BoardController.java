@@ -6,12 +6,18 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +65,16 @@ public class BoardController {
     public ResponseEntity<ResponseBody<Void>> like(Long userId,@PathVariable Long boardId) {
         boardService.likeBoard(userId,boardId);
         return ResponseEntity.ok(createSuccessResponse());
+    }
+
+    @GetMapping("/v1/boards")
+    public ResponseEntity<ResponseBody<BoardPageResponse>> findBoardPageList(
+        @RequestParam(defaultValue = "1", required = false) int pageNum,
+        @RequestParam(defaultValue = "10", required = false) int pageSize,
+        @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
+        @RequestParam(defaultValue = "DESC", required = false) String pageSort) {
+        Pageable pageable = PageRequest.of(pageNum-1, pageSize, Sort.Direction.fromString(pageSort), sortBy);
+        return ResponseEntity.ok(createSuccessResponse(boardService.findBoardList(pageable)));
     }
 
 //    @GetMapping("/list")
