@@ -23,6 +23,10 @@ public enum ErrorCode {
     JWT_INVALID(HttpStatus.UNAUTHORIZED, "SECURITY_0004", "JWT 토큰이 올바르지 않습니다."),
     JWT_NOT_EXIST(HttpStatus.UNAUTHORIZED, "SECURITY_0005", "JWT 토큰이 존재하지 않습니다."),
 
+    // Token
+    REFRESH_TOKEN_NOT_EXIST(HttpStatus.NOT_FOUND, "TOKEN_0001", "REFRESH 토큰이 존재하지 않습니다."),
+    USER_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "TOKEN_0002", "일치하지 않는 사용자입니다."),
+
     // Auth
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_0002", "비밀번호가 일치하지 않습니다."),
     USERID_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_0003", "존재하지 않는 아이디입니다."),
@@ -35,15 +39,18 @@ public enum ErrorCode {
     // Board
     NOT_ACCESS_USER(HttpStatus.UNAUTHORIZED, "BOARD_0001", "해당 유저가 접근할 수 없는 게시물입니다."),
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_0002", "존재하지 않는 게시물입니다." ),
+    USER_ALREADY_LIKE_BOARD(HttpStatus.CONFLICT,"BOARD_0003", "이미 좋아요를 누른 게시물입니다."),
+    LIKE_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_0004", "좋아요는 인증을 해야합니다."),
+    USER_NOT_LIKE_BOARD(HttpStatus.NOT_FOUND, "BOARD_0005", "좋아요를 누르지 않은 게시물입니다."),
 
     // FILE
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_0001", "파일의 용량이 너무 큽니다."),
 
     // Comment
     PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0001", "부모 댓글을 찾을 수 없습니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0002", "해당 id의 댓글을 찾을 수 없습니다.")
-    ;
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0002", "해당 id의 댓글을 찾을 수 없습니다."),
 
+    ;
     private final HttpStatus status;
     private final String code;
     private final String message;

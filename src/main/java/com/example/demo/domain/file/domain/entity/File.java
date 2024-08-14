@@ -1,21 +1,24 @@
 package com.example.demo.domain.file.domain.entity;
 
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.file.domain.FileType;
+import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name ="file")
+@Table(name ="files")
 @NoArgsConstructor
 @Getter
-@Setter
-public class File {
+@SQLDelete(sql = "UPDATE files SET deleted_at = NOW() where id=?")
+@SQLRestriction(value = "deleted_at is NULL")
+public class File extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

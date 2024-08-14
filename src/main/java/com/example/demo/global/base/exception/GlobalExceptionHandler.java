@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestValueException;
@@ -98,6 +99,13 @@ public class GlobalExceptionHandler {
         log.error("MaxUploadSizeExceededException : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 .body(createFailureResponse(ErrorCode.FILE_TOO_LARGE));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class) // 403 권한 관련 예외
+    public ResponseEntity<ResponseBody<Void>> handleAccessDeniedException(AccessDeniedException e) {
+        log.error("AccessDeniedException : {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(createFailureResponse(ErrorCode.ACCESS_DENIED));
     }
 
     @ExceptionHandler(Exception.class)

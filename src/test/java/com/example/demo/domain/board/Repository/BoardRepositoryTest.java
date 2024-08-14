@@ -1,145 +1,149 @@
-//package com.example.demo.domain.board.Repository;
+// package com.example.demo.domain.board.Repository;
 //
-//import com.example.demo.base.RepositoryTest;
-//import com.example.demo.domain.board.domain.BoardStatus;
-//import com.example.demo.domain.board.domain.entity.Board;
-//import com.example.demo.domain.board.domain.entity.View;
-//import com.example.demo.domain.board.domain.entity.BoardCategory;
-//import com.example.demo.domain.board.domain.entity.Category;
-//import com.example.demo.domain.board.Repository.CategoryRepository;
-//import com.example.demo.domain.file.domain.FileType;
-//import com.example.demo.domain.file.domain.entity.File;
-//import com.example.demo.domain.user.domain.User;
-//import com.example.demo.domain.user.domain.vo.Role;
-//import com.example.demo.domain.user.domain.vo.Status;
-//import com.example.demo.domain.user.repository.UserRepository;
-//import org.assertj.core.api.Assertions;
-//import org.junit.jupiter.api.*;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-//import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-//import org.springframework.transaction.annotation.Transactional;
+// import com.example.demo.base.RepositoryTest;
+// import com.example.demo.domain.board.domain.entity.*;
+// import com.example.demo.domain.board.domain.dto.vo.Status;
+// import com.example.demo.domain.board.domain.dto.vo.Tag;
+// import com.example.demo.domain.user.domain.User;
+// import com.example.demo.domain.user.domain.vo.Role;
+// import com.example.demo.domain.user.repository.UserRepository;
+// import com.example.demo.global.oauth.user.OAuth2Provider;
+// import jakarta.persistence.EntityManager;
 //
-//import static org.assertj.core.api.Assertions.*;
-//import static org.junit.jupiter.api.Assertions.*;
+// import org.junit.jupiter.api.*;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 //
+// import static org.assertj.core.api.Assertions.*;
 //
-//class BoardRepositoryTest extends RepositoryTest{
-//
-//    @Autowired
-//    private BoardRepository boardRepository;
-//    @Autowired
-//    private UserRepository userRepository;
-//    @Autowired
-//    private CategoryRepository categoryRepository;
-//    @Autowired
-//    private ViewRepository viewRepository;
-//
-//    private User user;
-//
-//    @BeforeEach
-//    void setUp() {
-//        user = User.builder()
-//                .email("20200013@kumoh.ac.kr")
-//                .name("name")
-//                .nickname("nickname")
-//                .password("password")
-//                .role(Role.USER)
-//                .department("department")
-//                .status(Status.ATTENDING)
-//                .field("field")
-//                .build();
-//        userRepository.save(user);
-//
-//    }
-//
-//    @AfterEach
-//    public void clear() {
-//        user = null;
-//    }
-//
-//    @Test
-//    @DisplayName("단독 Board 저장")
-//    void 저장() {
-//        //given
-//        Board board = Board.builder()
-//                .title("제목")
-//                .content("내용")
-//                .status(BoardStatus.FAKE)
-//                .user(user)
-//                .build();
-//        //when
-//        Board save = boardRepository.save(board);
-//
-//        // then
-//        Board board1 = boardRepository.findById(save.getId()).get();
-//        assertThat(board1.getTitle()).isEqualTo(board.getTitle());
-//        assertThat(board1.getContent()).isEqualTo(board.getContent());
-//        assertThat(board1.getStatus()).isEqualTo(board.getStatus());
-//    }
-//
-//    @Test
-//    @DisplayName("view 숫자 조회 쿼리 테스트")
-//    void viewCount() {
-//        //given
-//        Board board = Board.builder()
-//                .title("제목")
-//                .content("내용")
-//                .status(BoardStatus.FAKE)
-//                .user(user)
-//                .build();
-//
-//        View view = new View(board);
-//        View view1 = new View(board);
-//
-//        //when
-//        Board save = boardRepository.save(board);
-//        viewRepository.save(view);
-//        viewRepository.save(view1);
+// class BoardRepositoryTest extends RepositoryTest{
 //
 //
 //
-//        //then
-//        assertThat(boardRepository.countViewsByBoardId(save.getId())).isEqualTo(2);
+//     @Autowired
+//     private BoardRepository boardRepository;
+//     @Autowired
+//     private UserRepository userRepository;
+//     @Autowired
+//     private CategoryRepository categoryRepository;
+//     @Autowired
+//     private ViewRepository viewRepository;
 //
-//    }
+//     @Autowired
+//     private TestEntityManager testEntityManager;
 //
-//    @Nested
-//    @DisplayName("Board 와 Category 영속성 전이 확인")
-//    class BoardCategory{
-//        @Test
-//        @DisplayName("Board 카테고리 영속성 전이 저장 성공")
-//        void cascadeTest() {
-//            //given
-//            Board board = Board.builder()
-//                    .title("제목")
-//                    .content("내용")
-//                    .status(BoardStatus.FAKE)
-//                    .user(user)
-//                    .build();
-//
-//            String categoryName = "category1";
+//     private EntityManager em;
+//     @BeforeEach
+//     void Init() {
+//         em = testEntityManager.getEntityManager();
+//     }
 //
 //
-//            //when
-//            categoryRepository.findByName(categoryName).stream().findAny()
-//                    .ifPresentOrElse(category -> {
-//                        board.getBoardCategories().add(new com.example.demo.domain.board.domain.entity.BoardCategory(board,category));
-//                    },()->{
-//                        board.getBoardCategories().add(new com.example.demo.domain.board.domain.entity.BoardCategory(board,new Category(categoryName)));
-//                    });
-//            Board savedBoard = boardRepository.save(board);
-//            //then
-//            Category category = categoryRepository.findByName(categoryName).stream().findAny().get();
+//     private User createUser() {
+//          return User.builder()
+//                 .provider(OAuth2Provider.GOOGLE)
+//                 .providerId("123456789")
+//                 .nickname("exampleNickname")
+//                 .role(Role.ROLE_USER)
+//                 .build();
+//     }
 //
-//            assertThat(category.getName()).isEqualTo(categoryName);
+//     private Board createBoard(User user) {
+//         return Board.builder()
+//                 .title("제목")
+//                 .content("내용")
+//                 .status(Status.DRAFT)
+//                 .tag(Tag.notice)
+//                 .user(user)
+//                 .build();
+//     }
 //
-//        }
+//     @Test
+//     @DisplayName("단독 Board 저장")
+//     void 저장() {
+//         //given
+//         User user = createUser();
+//         Board board = createBoard(user);
+//         userRepository.save(user);
 //
+//         //when
+//         Board save = boardRepository.save(board);
+//         em.flush();
 //
-//    }
+//         // then
+//         Board savedBoard = boardRepository.findById(board.getId()).get();
 //
+//         assertThat(savedBoard.getId()).isEqualTo(save.getId());
+//         assertThat(savedBoard.getTitle()).isEqualTo(save.getTitle());
+//         assertThat(savedBoard.getContent()).isEqualTo(save.getContent());
+//         assertThat(savedBoard.getStatus()).isEqualTo(save.getStatus());
+//         assertThat(savedBoard.getTag()).isEqualTo(save.getTag());
+//         assertThat(savedBoard.getUser().getId()).isEqualTo(save.getUser().getId());
 //
+//     }
 //
+//     @Test
+//     @DisplayName("view 숫자 조회 쿼리 테스트")
+//     void viewCount() {
+//         //given
+//         User user = createUser();
+//         Board board = createBoard(user);
+//         userRepository.save(user);
 //
-//}
+//         View view = new View(board);
+//         View view1 = new View(board);
+//
+//         //when
+//         Board save = boardRepository.save(board);
+//         viewRepository.save(view);
+//         viewRepository.save(view1);
+//         em.flush();
+//
+//         //then
+//         assertThat(boardRepository.countViewsByBoardId(save.getId())).isEqualTo(2L);
+//     }
+//
+//     @Test
+//     @DisplayName("like 숫자 조회 쿼리 테스트")
+//     void likeCount() {
+//         //given
+//         User user = createUser();
+//         Board board = createBoard(user);
+//         userRepository.save(user);
+//
+//         Like like = new Like(user, board);
+//         Like like1 = new Like(user, board);
+//
+//         //when
+//         Board save = boardRepository.save(board);
+//         em.flush();
+//
+//         //then
+//         assertThat(boardRepository.countLikesByBoardId(save.getId())).isEqualTo(2L);
+//     }
+//
+//     @Test
+//     @DisplayName("게시물 id 로 카테고리 이름 list 조회")
+//     void findCategoryNameByBoardId() {
+//         //given
+//         User user = createUser();
+//         Board board = createBoard(user);
+//         userRepository.save(user);
+//
+//         Category category = new Category("카테고리");
+//         Category category1 = new Category("카테고리1");
+//         categoryRepository.save(category);
+//         categoryRepository.save(category1);
+//
+//         BoardCategory boardCategory = new BoardCategory(board, category);
+//         BoardCategory boardCategory1 = new BoardCategory(board, category1);
+//
+//         //when
+//         Board save = boardRepository.save(board);
+//         em.flush();
+//
+//         //then
+//         assertThat(boardRepository.findCategoryNameByBoardId(save.getId()).get(0)).isEqualTo("카테고리");
+//         assertThat(boardRepository.findCategoryNameByBoardId(save.getId()).get(1)).isEqualTo("카테고리1");
+//     }
+// }

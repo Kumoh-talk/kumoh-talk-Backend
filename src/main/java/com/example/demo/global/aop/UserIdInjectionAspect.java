@@ -21,7 +21,7 @@ import java.util.Optional;
 @Aspect
 @Component
 public class UserIdInjectionAspect {
-	@Pointcut("@annotation(com.example.demo.global.aop.AssignUserId) && args(userId, ..)")
+	@Pointcut("@annotation(com.example.demo.global.aop.AssignUserId) && (args(userId, ..) || args(.., userId))")
 	public void userIdAnnotatedMethod(Long userId) {}
 
 	@Around(value = "userIdAnnotatedMethod(userId)", argNames = "joinPoint,userId")
