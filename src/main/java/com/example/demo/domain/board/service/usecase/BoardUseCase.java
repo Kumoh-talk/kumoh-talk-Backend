@@ -27,7 +27,6 @@ public class BoardUseCase {
      * @param boardCreateRequest
      * @return BoardInfoResponse
      */
-    @Transactional
     public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
         return boardCommandService.createBoard(userId, boardCreateRequest);
     }
@@ -49,7 +48,6 @@ public class BoardUseCase {
      * @param boardUpdateRequest
      * @return BoardInfoResponse
      */
-    @Transactional
     public BoardInfoResponse updateBoard(Long userId, BoardUpdateRequest boardUpdateRequest) {
         return boardCommandService.updateBoard(boardUpdateRequest, userId);
     }
@@ -59,7 +57,6 @@ public class BoardUseCase {
      * @param userId
      * @param boardId
      */
-    @Transactional
     public void deleteBoard(Long userId, Long boardId) {
         boardCommandService.removeBoard(userId, boardId);
     }
