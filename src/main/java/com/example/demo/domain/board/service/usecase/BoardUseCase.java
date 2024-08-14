@@ -20,7 +20,6 @@ public class BoardUseCase {
     private final BoardCommandService boardCommandService;
     private final BoardQueryService boardQueryService;
     private final ViewIncreaseService viewIncreaseService;
-    private final LikeService likeService;
 
     /**
      * 게시물 임시 저장 무조건 초기 게시물 상태는 임시 저장 상태임
@@ -63,16 +62,6 @@ public class BoardUseCase {
     @Transactional
     public void deleteBoard(Long userId, Long boardId) {
         boardCommandService.removeBoard(userId, boardId);
-    }
-
-    /**
-     * 게시물 좋아요
-     * @param userId
-     * @param boardId
-     */
-    @Transactional
-    public void likeBoard(Long userId, Long boardId) {
-        likeService.increaseLike(userId, boardId);
     }
 
     /**

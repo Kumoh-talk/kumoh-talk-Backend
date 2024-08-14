@@ -14,7 +14,6 @@ import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardController {
-    private final BoardUseCase boardService;
+    private final BoardUseCase boardUsecase;
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
@@ -34,12 +33,12 @@ public class BoardController {
     public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraft(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
 
-            return ResponseEntity.ok(createSuccessResponse(boardService.saveDraftBoard(userId, boardCreateRequest)));
+            return ResponseEntity.ok(createSuccessResponse(boardUsecase.saveDraftBoard(userId, boardCreateRequest)));
     }
 
     @GetMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) {
-        return ResponseEntity.ok(createSuccessResponse(boardService.searchSingleBoard(boardId)));
+        return ResponseEntity.ok(createSuccessResponse(boardUsecase.searchSingleBoard(boardId)));
     }
 
 
@@ -48,24 +47,17 @@ public class BoardController {
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
-        return ResponseEntity.ok(createSuccessResponse(boardService.updateBoard(userId,boardUpdateRequest)));
+        return ResponseEntity.ok(createSuccessResponse(boardUsecase.updateBoard(userId,boardUpdateRequest)));
     }
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
     @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
-        boardService.deleteBoard(userId,boardId);
+        boardUsecase.deleteBoard(userId,boardId);
         return ResponseEntity.ok(createSuccessResponse());
     }
 
-    @AssignUserId
-    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
-    @PostMapping("/v1/boards/{boardId}/like")
-    public ResponseEntity<ResponseBody<Void>> like(Long userId,@PathVariable Long boardId) {
-        boardService.likeBoard(userId,boardId);
-        return ResponseEntity.ok(createSuccessResponse());
-    }
 
     @GetMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardPageResponse>> findBoardPageList(
@@ -74,18 +66,7 @@ public class BoardController {
         @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
         @RequestParam(defaultValue = "DESC", required = false) String pageSort) {
         Pageable pageable = PageRequest.of(pageNum-1, pageSize, Sort.Direction.fromString(pageSort), sortBy);
-        return ResponseEntity.ok(createSuccessResponse(boardService.findBoardList(pageable)));
+        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findBoardList(pageable)));
     }
-
-//    @GetMapping("/list")
-//    public ResponseEntity<BoardPageResponse> findPageList(
-//                                                         @RequestParam(defaultValue = "1", required = false) int page,
-//                                                         @RequestParam(required = true) Track track,
-//                                                         @RequestParam(defaultValue = "DESC", required = false ) PageSort pageSort) {
-//
-//        return ResponseEntity.ok(boardService.findPageList(page,track,pageSort));
-//    }
-
-
 
 }

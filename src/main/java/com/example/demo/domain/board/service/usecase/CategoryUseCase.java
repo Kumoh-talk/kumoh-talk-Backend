@@ -23,6 +23,12 @@ public class CategoryUseCase {
 		return categoryQueryService.getCategories();
 	}
 
+	/**
+	 * 카테고리 이름으로 게시물 목록 페이징 조회
+	 * @param categoryName
+	 * @param pageable
+	 * @return BoardPageResponse
+	 */
 	public BoardPageResponse getBoardsByCategoryName(String categoryName, Pageable pageable) {
 		return categoryQueryService.getBoardPageByCategoryName(categoryName,pageable);
 
