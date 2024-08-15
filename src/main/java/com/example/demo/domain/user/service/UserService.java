@@ -1,6 +1,7 @@
 package com.example.demo.domain.user.service;
 
 import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtHandler jwtHandler;
 
     public void checkNicknameDuplicate(String nickname) {
@@ -34,5 +36,10 @@ public class UserService {
         }
         user.setInitialInfo(request.nickname());
         return jwtHandler.createTokens(JwtUserClaim.create(user));
+    }
+
+    public void logout(Long userId) {
+        refreshTokenRepository.deleteById(userId);
+        // TODO. blacklist access token?
     }
 }
