@@ -43,6 +43,7 @@ public class UserService {
         refreshTokenRepository.deleteById(userId);
         // TODO. blacklist access token?
     }
+
     @Transactional(readOnly = true)
     public User validateUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
