@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum FileType {
 	IMAGE,
-	ATTACH
-	;
+	ATTACH;
+
 	@JsonCreator
 	public static Status fromString(String value) {
 		for(Status status : Status.values()) {
@@ -13,6 +13,6 @@ public enum FileType {
 				return status;
 			}
 		}
-		throw new IllegalArgumentException("파일 형식에 해당하는 값이 없습니다.");
+		throw new IllegalArgumentException("파일 유형에 해당하는 값이 없습니다.");
 	}
 }

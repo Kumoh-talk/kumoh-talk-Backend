@@ -56,4 +56,10 @@ public class BoardQueryService {
             }
         }
     }
+
+    @Transactional(readOnly = true)
+    public Board validateBoard(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+    }
 }
