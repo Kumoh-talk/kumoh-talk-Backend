@@ -6,7 +6,6 @@ import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.file.domain.entity.File;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -41,6 +40,8 @@ public class Board extends BaseEntity {
     @NotBlank(message = "게시물은 빈 값일 수 없습니다.")
     private String content;
 
+    @Column(nullable = true)
+    private String attachFileUrl;
 
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
@@ -56,12 +57,11 @@ public class Board extends BaseEntity {
     private User user;
 
 
-
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<Comment> comments= new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
-    private List<File> files= new ArrayList<>();
+    private List<ImageFile> imageFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<Like> likes= new ArrayList<>();
@@ -103,5 +103,7 @@ public class Board extends BaseEntity {
         this.status = status;
     }
 
-
+    public void changeAttachFileUrl(String attachFileUrl){
+        this.attachFileUrl = attachFileUrl;
+    }
 }
