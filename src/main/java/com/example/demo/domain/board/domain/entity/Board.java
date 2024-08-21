@@ -72,24 +72,21 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<View> views = new ArrayList<>();
 
-    @Builder
-    public Board(Long id, String title, String content, User user, Tag tag,Status status) {
-        this.id = id;
+    private Board(String title, String content, User user, Tag tag,Status status) {
         this.title = title;
         this.content = content;
         this.user = user;
         this.tag = tag;
         this.status = status;
+        this.attachFileUrl = null;
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
-        Board board = Board.builder()
-                .title(boardCreateRequest.getTitle())
-                .content(boardCreateRequest.getContents())
-                .user(user)
-                .tag(boardCreateRequest.getTag())
-                .status(Status.DRAFT)
-                .build();
+        Board board = new Board(boardCreateRequest.getTitle(),
+            boardCreateRequest.getContents(),
+            user,
+            boardCreateRequest.getTag(),
+            Status.DRAFT);
         user.getBoards().add(board);
         return board;
     }

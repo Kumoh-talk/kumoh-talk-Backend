@@ -38,8 +38,13 @@ public class UserService {
         return jwtHandler.createTokens(JwtUserClaim.create(user));
     }
 
+
     public void logout(Long userId) {
         refreshTokenRepository.deleteById(userId);
         // TODO. blacklist access token?
+    }
+    @Transactional(readOnly = true)
+    public User ValidateUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
     }
 }
