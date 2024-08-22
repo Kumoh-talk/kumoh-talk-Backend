@@ -45,6 +45,8 @@ public enum ErrorCode {
 
     // FILE
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_0001", "파일의 용량이 너무 큽니다."),
+    FILE_URL_NOT_MATCHED(HttpStatus.BAD_REQUEST, "FILE_0002", "파일 url 형식이 일치하지 않습니다."),
+    NOT_FOUND_IMAGE_FILE(HttpStatus.NOT_FOUND, "FILE_0003", "해당 이미지 파일을 찾을 수 없습니다."),
 
     // Comment
     PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0001", "부모 댓글을 찾을 수 없습니다."),

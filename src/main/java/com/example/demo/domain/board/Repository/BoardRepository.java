@@ -40,7 +40,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE File f SET f.deletedAt = NOW() WHERE f.board.id = :boardId")
+    @Query("UPDATE ImageFile f SET f.deletedAt = NOW() WHERE f.board.id = :boardId")
     void deleteFileByBoardId(Long boardId);
 
     @Transactional

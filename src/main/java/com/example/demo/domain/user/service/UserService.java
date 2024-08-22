@@ -35,4 +35,9 @@ public class UserService {
         user.setInitialInfo(request.nickname());
         return jwtHandler.createTokens(JwtUserClaim.create(user));
     }
+
+    @Transactional(readOnly = true)
+    public User validateUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+    }
 }
