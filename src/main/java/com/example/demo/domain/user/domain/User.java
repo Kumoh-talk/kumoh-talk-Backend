@@ -6,11 +6,10 @@ import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.vo.Role;
+import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
@@ -50,7 +49,8 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_additional_info_id")
     private UserAdditionalInfo userAdditionalInfo;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
@@ -89,5 +89,9 @@ public class User extends BaseEntity {
 
     public void updateProfileImage( String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public void mapAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
+        this.userAdditionalInfo = userAdditionalInfo;
     }
 }

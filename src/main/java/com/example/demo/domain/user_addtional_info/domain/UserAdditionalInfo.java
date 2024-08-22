@@ -1,15 +1,16 @@
-package com.example.demo.domain.user.domain;
+package com.example.demo.domain.user_addtional_info.domain;
 
-import com.example.demo.domain.user.domain.vo.StudentStatus;
+import com.example.demo.domain.user_addtional_info.domain.dto.request.CreateUserAdditionalInfoRequest;
+import com.example.demo.domain.user_addtional_info.domain.vo.StudentStatus;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "user_additional_infos")
@@ -27,7 +28,14 @@ public class UserAdditionalInfo extends BaseEntity {
     private StudentStatus studentStatus;
     private String phoneNumber;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    public static UserAdditionalInfo from(CreateUserAdditionalInfoRequest request) {
+        return UserAdditionalInfo.builder()
+                .email(request.email())
+                .department(request.department())
+                .studentId(request.studentId())
+                .grade(request.grade())
+                .studentStatus(request.studentStatus())
+                .phoneNumber(request.phoneNumber())
+                .build();
+    }
 }
