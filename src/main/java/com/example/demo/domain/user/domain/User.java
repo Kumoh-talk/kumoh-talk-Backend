@@ -10,6 +10,7 @@ import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
@@ -75,10 +76,18 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setInitialInfo(String nickname, @NotBlank String name) {
+    public void setInitialInfo(String nickname, String name) {
         this.nickname = nickname;
         this.name = name;
         this.profileImage = "기본이미지 url";
         this.role = Role.ROLE_USER;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImage( String profileImage) {
+        this.profileImage = profileImage;
     }
 }

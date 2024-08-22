@@ -4,11 +4,14 @@ import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
+import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
+import com.example.demo.domain.user.domain.dto.request.UpdateProfileImageRequest;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,5 +48,18 @@ public class UserService {
 
     public User validateUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void updateNickname(Long userId, @Valid UpdateNicknameRequest request) {
+        User user = this.validateUser(userId);
+        this.checkNicknameDuplicate(request.nickname());
+        user.updateNickname(request.nickname());
+    }
+
+    @Transactional
+    public void updateProfileImage(Long userId, @Valid UpdateProfileImageRequest request) {
+        User user = this.validateUser(userId);
+        user.updateProfileImage(request.profileImage());
     }
 }

@@ -5,6 +5,8 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 
 import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
+import com.example.demo.domain.user.domain.dto.request.UpdateProfileImageRequest;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.global.aop.AssignUserId;
@@ -46,6 +48,10 @@ public class UserController {
         return ResponseEntity.ok(createSuccessResponse(userService.completeRegistration(userId, request)));
     }
 
+    /**
+     * 로그아웃 api
+     * TODO. blacklist 고민
+     */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/logout")
@@ -53,4 +59,30 @@ public class UserController {
         userService.logout(userId);
         return ResponseEntity.ok(createSuccessResponse());
     }
+
+    /**
+     * 사용자 닉네임 수정 api
+     */
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PatchMapping("/me/nickname")
+    public ResponseEntity<ResponseBody<Void>> updateNickname(@RequestBody @Valid UpdateNicknameRequest request,
+                                                                      Long userId) {
+        userService.updateNickname(userId, request);
+        return ResponseEntity.ok(createSuccessResponse());
+    }
+
+    /**
+     * 사용자 프로필 이미지 수정 api
+     */
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PatchMapping("/me/profileImage")
+    public ResponseEntity<ResponseBody<Void>> updateProfileImage(@RequestBody @Valid UpdateProfileImageRequest request,
+                                                                 Long userId) {
+        userService.updateProfileImage(userId, request);
+        return ResponseEntity.ok(createSuccessResponse());
+    }
+
+
 }
