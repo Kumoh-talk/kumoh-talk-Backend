@@ -35,6 +35,8 @@ public enum ErrorCode {
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_0001", "해당 사용자는 존재하지 않는 사용자입니다."),
+    USER_ADDITIONAL_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_0002", "해당 사용자의 추가정보가 존재하지 않습니다."),
+    USER_ADDITIONAL_INFO_CONFLICT(HttpStatus.CONFLICT, "USER_0003", "해당 사용자의 추가정보는 이미 존재합니다."),
 
     // Board
     NOT_ACCESS_USER(HttpStatus.UNAUTHORIZED, "BOARD_0001", "해당 유저가 접근할 수 없는 게시물입니다."),
