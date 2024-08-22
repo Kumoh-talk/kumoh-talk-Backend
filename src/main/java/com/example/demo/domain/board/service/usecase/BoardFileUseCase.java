@@ -27,7 +27,7 @@ public class BoardFileUseCase {
 	@Transactional(readOnly = true)
 	public String getPresignedUrl(Long userId, PresignedUrlRequest presignedUrlRequest) {
 		Board board = boardQueryService.validateBoard(presignedUrlRequest.getBoardId());
-		User user = userService.ValidateUser(userId);
+		User user = userService.validateUser(userId);
 		if(!board.getUser().getId().equals(user.getId())) {
 			throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
 		}
@@ -63,7 +63,7 @@ public class BoardFileUseCase {
 	private Board validateUserAndBoardAndFileUrl(Long userId, FileRequest fileRequest) {
 		s3UrlUtil.validateBoardS3Url(fileRequest.getUrl());
 		Board board = boardQueryService.validateBoard(fileRequest.getBoardId());
-		User user = userService.ValidateUser(userId);
+		User user = userService.validateUser(userId);
 		if(!board.getUser().getId().equals(user.getId())) {
 			throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
 		}
