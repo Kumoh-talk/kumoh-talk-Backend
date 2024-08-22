@@ -7,6 +7,7 @@ import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
 import com.example.demo.domain.user.domain.dto.request.UpdateProfileImageRequest;
+import com.example.demo.domain.user.domain.dto.response.UserInfo;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.global.aop.AssignUserId;
@@ -84,5 +85,13 @@ public class UserController {
         return ResponseEntity.ok(createSuccessResponse());
     }
 
-
+    /**
+     * 기본 사용자 정보 확인 api
+     */
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @GetMapping("/me")
+    public ResponseEntity<ResponseBody<UserInfo>> getUserInfo(Long userId) {
+        return ResponseEntity.ok(createSuccessResponse(userService.getUserInfo(userId)));
+    }
 }
