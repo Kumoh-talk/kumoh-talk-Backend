@@ -30,21 +30,19 @@ public class UserService {
 
     @Transactional
     public TokenResponse completeRegistration(Long userId, CompleteRegistrationRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        User user = this.validateUser(userId);
         if(userRepository.existsByNickname(request.nickname())){
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
         }
-        user.setInitialInfo(request.nickname());
+        user.setInitialInfo(request.nickname(), request.name());
         return jwtHandler.createTokens(JwtUserClaim.create(user));
     }
-
 
     public void logout(Long userId) {
         refreshTokenRepository.deleteById(userId);
         // TODO. blacklist access token?
     }
 
-    @Transactional(readOnly = true)
     public User validateUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
     }

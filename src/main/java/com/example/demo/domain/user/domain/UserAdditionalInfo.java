@@ -21,7 +21,6 @@ public class UserAdditionalInfo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
-    private String name;
     private String department; // 정해져있음.
     private int studentId;
     private int grade;

@@ -14,7 +14,6 @@ import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,6 @@ public class UserController {
 
     /**
      * GUEST 사용자에 한해서 닉네임 중복 여/부를 확인하는 api
-     * TODO. 닉네임 변경에서 사용하게 된다면 USER 권한도 추가할 것.
      */
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_GUEST')")
     @GetMapping("/check-nickname")
@@ -49,7 +47,7 @@ public class UserController {
     }
 
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/logout")
     public ResponseEntity<ResponseBody<Void>> logout(Long userId) {
         userService.logout(userId);

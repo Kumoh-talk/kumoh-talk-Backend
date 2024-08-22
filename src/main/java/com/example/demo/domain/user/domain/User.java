@@ -7,10 +7,9 @@ import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.domain.BaseEntity;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
@@ -41,6 +40,8 @@ public class User extends BaseEntity {
 
     @Column(unique = true)
     private String nickname;
+
+    private String name;
 
     private String profileImage;
 
@@ -74,8 +75,9 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setInitialInfo(String nickname) {
+    public void setInitialInfo(String nickname, @NotBlank String name) {
         this.nickname = nickname;
+        this.name = name;
         this.profileImage = "기본이미지 url";
         this.role = Role.ROLE_USER;
     }
