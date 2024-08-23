@@ -6,9 +6,8 @@ import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.vo.Role;
+import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,13 +41,16 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String nickname;
 
+    private String name;
+
     private String profileImage;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_additional_info_id")
     private UserAdditionalInfo userAdditionalInfo;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
@@ -74,9 +76,22 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setInitialInfo(String nickname) {
+    public void setInitialInfo(String nickname, String name) {
         this.nickname = nickname;
+        this.name = name;
         this.profileImage = "기본이미지 url";
         this.role = Role.ROLE_USER;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImage( String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void mapAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
+        this.userAdditionalInfo = userAdditionalInfo;
     }
 }

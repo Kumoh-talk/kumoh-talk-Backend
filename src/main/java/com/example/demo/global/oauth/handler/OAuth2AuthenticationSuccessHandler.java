@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -40,6 +41,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtHandler jwtHandler;
 
     @Override
@@ -130,12 +132,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     private String handleUnlink(OAuth2UserPrincipal principal, String targetUrl) {
-        // TODO: DB 삭제
-        // TODO: 리프레시 토큰 삭제
-
-        String accessToken = principal.getUserInfo().getAccessToken();
         OAuth2Provider provider = principal.getUserInfo().getProvider();
-        oAuth2UserUnlinkManager.unlink(provider, accessToken);
+
+        oAuth2UserUnlinkManager.unlink(provider, principal.getUserInfo().getAccessToken());
+
+        userRepository.findByProviderAndProviderId(provider, principal.getUserInfo().getId())
+                .ifPresent(user -> {
+                    userRepository.delete(user);
+                    refreshTokenRepository.deleteById(user.getId());
+                });
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .build().toUriString();

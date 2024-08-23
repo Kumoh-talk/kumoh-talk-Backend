@@ -10,7 +10,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByProviderAndProviderId(OAuth2Provider provider, String providerId);
 
-    Optional<User> findByNickname(String nickname);
-
     boolean existsByNickname(String nickname);
 }

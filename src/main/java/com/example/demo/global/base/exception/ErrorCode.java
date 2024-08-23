@@ -25,7 +25,7 @@ public enum ErrorCode {
 
     // Token
     REFRESH_TOKEN_NOT_EXIST(HttpStatus.NOT_FOUND, "TOKEN_0001", "REFRESH 토큰이 존재하지 않습니다."),
-    USER_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "TOKEN_0002", "일치하지 않는 사용자입니다."),
+    TOKEN_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "TOKEN_0002", "일치하지 않는 토큰입니다."),
 
     // Auth
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_0002", "비밀번호가 일치하지 않습니다."),
@@ -35,6 +35,8 @@ public enum ErrorCode {
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_0001", "해당 사용자는 존재하지 않는 사용자입니다."),
+    USER_ADDITIONAL_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_0002", "해당 사용자의 추가정보가 존재하지 않습니다."),
+    USER_ADDITIONAL_INFO_CONFLICT(HttpStatus.CONFLICT, "USER_0003", "해당 사용자의 추가정보는 이미 존재합니다."),
 
     // Board
     NOT_ACCESS_USER(HttpStatus.UNAUTHORIZED, "BOARD_0001", "해당 유저가 접근할 수 없는 게시물입니다."),
