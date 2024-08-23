@@ -54,6 +54,9 @@ public enum ErrorCode {
     PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0001", "부모 댓글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0002", "해당 id의 댓글을 찾을 수 없습니다."),
 
+    // Newsletter
+    SUBSCRIBE_EMAIL_CONFLICT(HttpStatus.CONFLICT, "NEWSLETTER_0001", "이미 구독되어있는 이메일입니다."),
+    SUBSCRIBE_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWSLETTER_0002", "구독 정보가 존재하지 않습니다."),
     ;
     private final HttpStatus status;
     private final String code;

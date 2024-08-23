@@ -1,5 +1,6 @@
 package com.example.demo.domain.newsletter.domain;
 
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -13,8 +14,8 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "news_letters")
-@SQLDelete(sql = "UPDATE news_letters SET deleted_at = NOW() where id=?")
+@Table(name = "newsletters")
+@SQLDelete(sql = "UPDATE newsletters SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class Newsletter extends BaseEntity {
 
@@ -32,17 +33,21 @@ public class Newsletter extends BaseEntity {
     @Column(nullable = false)
     private Boolean isProjectUpdated;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Builder
-    public Newsletter(String email, Boolean isSeminarContentUpdated, Boolean isStudyUpdated, Boolean isProjectUpdated, User user) {
+    public Newsletter(String email, Boolean isSeminarContentUpdated, Boolean isStudyUpdated, Boolean isProjectUpdated) {
         this.email = email;
         this.isSeminarAnnouncementRequired = true; // 기획상 세미나 활동 공지에 대한 알림은 필수
         this.isSeminarContentUpdated = isSeminarContentUpdated;
         this.isStudyUpdated = isStudyUpdated;
         this.isProjectUpdated = isProjectUpdated;
-        this.user = user;
+    }
+
+    public static Newsletter from(NewsletterSubscribeRequest request) {
+        return Newsletter.builder()
+                .email(request.email())
+                .isSeminarContentUpdated(request.isSeminarContentUpdated())
+                .isStudyUpdated(request.isStudyUpdated())
+                .isProjectUpdated(request.isProjectUpdated())
+                .build();
     }
 }

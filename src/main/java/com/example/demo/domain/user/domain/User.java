@@ -53,7 +53,8 @@ public class User extends BaseEntity {
     @JoinColumn(name = "user_additional_info_id")
     private UserAdditionalInfo userAdditionalInfo;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "news_letter_id")
     private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
@@ -93,5 +94,9 @@ public class User extends BaseEntity {
 
     public void mapAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
         this.userAdditionalInfo = userAdditionalInfo;
+    }
+
+    public void mapNewsletter(Newsletter newsletter) {
+        this.newsletter = newsletter;
     }
 }
