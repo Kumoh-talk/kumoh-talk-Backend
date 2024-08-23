@@ -2,6 +2,7 @@ package com.example.demo.domain.newsletter.service;
 
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateRequest;
 import com.example.demo.domain.newsletter.domain.dto.response.NewsletterInfo;
 import com.example.demo.domain.newsletter.repository.NewsletterRepository;
 import com.example.demo.domain.user.domain.User;
@@ -42,5 +43,21 @@ public class NewsletterService {
             throw new ServiceException(SUBSCRIBE_NOT_FOUND);
         }
         return NewsletterInfo.from(user.getNewsletter());
+    }
+
+    @Transactional
+    public void updateNewsletterInfo(Long userId, @Valid NewsletterUpdateRequest request) {
+        User user = userService.validateUser(userId);
+        this.validateSubscribe(request.email());
+        user.getNewsletter().updateNewsletterInfo(request);
+    }
+
+    @Transactional
+    public void deleteNewsletterInfo(Long userId) {
+        User user = userService.validateUser(userId);
+        Newsletter newsletter = user.getNewsletter();
+        if (newsletter != null) {
+            user.mapNewsletter(null);
+        }
     }
 }

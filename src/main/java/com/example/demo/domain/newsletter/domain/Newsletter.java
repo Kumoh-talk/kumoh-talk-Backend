@@ -1,9 +1,11 @@
 package com.example.demo.domain.newsletter.domain;
 
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateRequest;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +24,7 @@ public class Newsletter extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
     private Boolean isSeminarAnnouncementRequired;
@@ -49,5 +51,12 @@ public class Newsletter extends BaseEntity {
                 .isStudyUpdated(request.isStudyUpdated())
                 .isProjectUpdated(request.isProjectUpdated())
                 .build();
+    }
+
+    public void updateNewsletterInfo(@Valid NewsletterUpdateRequest request) {
+        this.email = request.email();
+        this.isSeminarContentUpdated = request.isSeminarContentUpdated();
+        this.isStudyUpdated = request.isStudyUpdated();
+        this.isProjectUpdated = request.isProjectUpdated();
     }
 }

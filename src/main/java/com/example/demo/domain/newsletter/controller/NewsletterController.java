@@ -1,6 +1,7 @@
 package com.example.demo.domain.newsletter.controller;
 
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateRequest;
 import com.example.demo.domain.newsletter.domain.dto.response.NewsletterInfo;
 import com.example.demo.domain.newsletter.service.NewsletterService;
 import com.example.demo.global.aop.AssignUserId;
@@ -34,5 +35,22 @@ public class NewsletterController {
     @GetMapping ("/subscribe")
     public ResponseEntity<ResponseBody<NewsletterInfo>> getNewsletterInfo(Long userId) {
         return ResponseEntity.ok(createSuccessResponse(newsletterService.getNewsletterInfo(userId)));
+    }
+
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PatchMapping("/subscribe")
+    public ResponseEntity<ResponseBody<Void>> updateNewsletterInfo(Long userId,
+                                                                   @RequestBody @Valid NewsletterUpdateRequest request) {
+        newsletterService.updateNewsletterInfo(userId, request);
+        return ResponseEntity.ok(createSuccessResponse());
+    }
+
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @DeleteMapping("/subscribe")
+    public ResponseEntity<ResponseBody<Void>> deleteNewsletterInfo(Long userId) {
+        newsletterService.deleteNewsletterInfo(userId);
+        return ResponseEntity.ok(createSuccessResponse());
     }
 }

@@ -53,7 +53,7 @@ public class User extends BaseEntity {
     @JoinColumn(name = "user_additional_info_id")
     private UserAdditionalInfo userAdditionalInfo;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "news_letter_id")
     private Newsletter newsletter;
 
