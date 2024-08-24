@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 public record NewsletterInfo(
         Long id,
         String email,
-        Boolean isSeminarAnnouncementRequired,
         Boolean isSeminarContentUpdated,
         Boolean isStudyUpdated,
         Boolean isProjectUpdated,
@@ -21,7 +20,6 @@ public record NewsletterInfo(
         return new NewsletterInfo(
                 newsletter.getId(),
                 newsletter.getEmail(),
-                newsletter.getIsSeminarAnnouncementRequired(),
                 newsletter.getIsSeminarContentUpdated(),
                 newsletter.getIsStudyUpdated(),
                 newsletter.getIsProjectUpdated(),

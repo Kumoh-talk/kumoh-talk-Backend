@@ -27,8 +27,6 @@ public class Newsletter extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
-    private Boolean isSeminarAnnouncementRequired;
-    @Column(nullable = false)
     private Boolean isSeminarContentUpdated;
     @Column(nullable = false)
     private Boolean isStudyUpdated;
@@ -38,7 +36,6 @@ public class Newsletter extends BaseEntity {
     @Builder
     public Newsletter(String email, Boolean isSeminarContentUpdated, Boolean isStudyUpdated, Boolean isProjectUpdated) {
         this.email = email;
-        this.isSeminarAnnouncementRequired = true; // 기획상 세미나 활동 공지에 대한 알림은 필수
         this.isSeminarContentUpdated = isSeminarContentUpdated;
         this.isStudyUpdated = isStudyUpdated;
         this.isProjectUpdated = isProjectUpdated;
