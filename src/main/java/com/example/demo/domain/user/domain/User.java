@@ -49,7 +49,7 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_additional_info_id")
     private UserAdditionalInfo userAdditionalInfo;
 
@@ -66,7 +66,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Like> likes= new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SeminarApplication> seminarApplications = new ArrayList<>();
 
     @Builder
@@ -98,5 +98,9 @@ public class User extends BaseEntity {
 
     public void mapNewsletter(Newsletter newsletter) {
         this.newsletter = newsletter;
+    }
+
+    public void addSeminarApplications(SeminarApplication seminarApplication) {
+        this.seminarApplications.add(seminarApplication);
     }
 }
