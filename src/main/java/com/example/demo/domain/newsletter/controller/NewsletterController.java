@@ -1,7 +1,8 @@
 package com.example.demo.domain.newsletter.controller;
 
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateEmailRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
 import com.example.demo.domain.newsletter.domain.dto.response.NewsletterInfo;
 import com.example.demo.domain.newsletter.service.NewsletterService;
 import com.example.demo.global.aop.AssignUserId;
@@ -39,10 +40,19 @@ public class NewsletterController {
 
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @PatchMapping("/subscribe")
-    public ResponseEntity<ResponseBody<Void>> updateNewsletterInfo(Long userId,
-                                                                   @RequestBody @Valid NewsletterUpdateRequest request) {
-        newsletterService.updateNewsletterInfo(userId, request);
+    @PatchMapping("/subscribe/email")
+    public ResponseEntity<ResponseBody<Void>> updateNewsletterEmail(Long userId,
+                                                                    @RequestBody @Valid NewsletterUpdateEmailRequest request) {
+        newsletterService.updateNewsletterEmail(userId, request);
+        return ResponseEntity.ok(createSuccessResponse());
+    }
+
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PatchMapping("/subscribe/notify")
+    public ResponseEntity<ResponseBody<Void>> updateNewsletterNotify(Long userId,
+                                                                   @RequestBody @Valid NewsletterUpdateNotifyRequest request) {
+        newsletterService.updateNewsletterNotify(userId, request);
         return ResponseEntity.ok(createSuccessResponse());
     }
 

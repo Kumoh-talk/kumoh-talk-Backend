@@ -2,7 +2,8 @@ package com.example.demo.domain.newsletter.service;
 
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateEmailRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
 import com.example.demo.domain.newsletter.domain.dto.response.NewsletterInfo;
 import com.example.demo.domain.newsletter.repository.NewsletterRepository;
 import com.example.demo.domain.user.domain.User;
@@ -46,10 +47,16 @@ public class NewsletterService {
     }
 
     @Transactional
-    public void updateNewsletterInfo(Long userId, @Valid NewsletterUpdateRequest request) {
+    public void updateNewsletterEmail(Long userId, @Valid NewsletterUpdateEmailRequest request) {
         User user = userService.validateUser(userId);
         this.validateSubscribe(request.email());
-        user.getNewsletter().updateNewsletterInfo(request);
+        user.getNewsletter().updateNewsletterEmail(request);
+    }
+
+    @Transactional
+    public void updateNewsletterNotify(Long userId, @Valid NewsletterUpdateNotifyRequest request) {
+        User user = userService.validateUser(userId);
+        user.getNewsletter().updateNewsletterNotify(request);
     }
 
     @Transactional

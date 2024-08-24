@@ -1,8 +1,8 @@
 package com.example.demo.domain.newsletter.domain;
 
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateRequest;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateEmailRequest;
+import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -50,8 +50,11 @@ public class Newsletter extends BaseEntity {
                 .build();
     }
 
-    public void updateNewsletterInfo(@Valid NewsletterUpdateRequest request) {
+    public void updateNewsletterEmail(@Valid NewsletterUpdateEmailRequest request) {
         this.email = request.email();
+    }
+
+    public void updateNewsletterNotify(@Valid NewsletterUpdateNotifyRequest request) {
         this.isSeminarContentUpdated = request.isSeminarContentUpdated();
         this.isStudyUpdated = request.isStudyUpdated();
         this.isProjectUpdated = request.isProjectUpdated();
