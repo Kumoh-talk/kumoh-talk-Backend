@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .oauth2Login(configure -> configure
                         .authorizationEndpoint(config -> config
                             .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
-                            .baseUri("/api/users/login/oauth2"))
+                            .baseUri("/api/users/oauth2"))
                         .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
                         .successHandler(oAuth2AuthenticationSuccessHandler)
                         .failureHandler(oAuth2AuthenticationFailureHandler))
