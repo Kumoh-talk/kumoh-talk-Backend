@@ -9,7 +9,7 @@ import com.example.demo.domain.comment.domain.response.CommentInfo;
 import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardCategory;
+import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
 import com.example.demo.domain.study_project_board.repository.StudyProjectBoardRepository;
 import com.example.demo.domain.user.domain.User;
@@ -33,8 +33,8 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public CommentResponse findCommentsByBoardId(Long boardId, BoardCategory boardCategory) {
-        validateBoard(boardId, boardCategory);
+    public CommentResponse findCommentsByBoardId(Long boardId, BoardType boardType) {
+        validateBoard(boardId, boardType);
 
         List<Comment> commentList = commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
 
@@ -42,13 +42,13 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentPageResponse findCommentsByUserId(Long userId, BoardCategory boardCategory, Pageable pageable) {
-        Page<Comment> commentPage = commentRepository.findCommentByUser_idOrderByCreatedAtDsc(pageable, userId, boardCategory);
-        return CommentPageResponse.from(commentPage, boardCategory);
+    public CommentPageResponse findCommentsByUserId(Long userId, BoardType boardType, Pageable pageable) {
+        Page<Comment> commentPage = commentRepository.findCommentByUser_idOrderByCreatedAtDsc(pageable, userId, boardType);
+        return CommentPageResponse.from(commentPage, boardType);
     }
 
     @Transactional
-    public CommentInfo saveComment(CommentRequest commentRequest, Long userId, Long boardId, BoardCategory boardCategory) {
+    public CommentInfo saveComment(CommentRequest commentRequest, Long userId, Long boardId, BoardType boardType) {
         User commentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
@@ -63,7 +63,7 @@ public class CommentService {
         Board commentBoard;
         StudyProjectBoard studyProjectBoard;
         Comment requestComment = null;
-        switch (boardCategory) {
+        switch (boardType) {
             case SEMINAR -> {
                 commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
@@ -120,8 +120,8 @@ public class CommentService {
         }
     }
 
-    public void validateBoard(Long boardId, BoardCategory boardCategory) {
-        switch (boardCategory) {
+    public void validateBoard(Long boardId, BoardType boardType) {
+        switch (boardType) {
             case SEMINAR -> boardRepository.findById(boardId).orElseThrow(() ->
                     new ServiceException(ErrorCode.BOARD_NOT_FOUND)
             );

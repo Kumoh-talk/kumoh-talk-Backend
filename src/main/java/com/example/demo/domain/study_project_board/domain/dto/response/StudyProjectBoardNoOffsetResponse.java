@@ -1,7 +1,7 @@
 package com.example.demo.domain.study_project_board.domain.dto.response;
 
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardTag;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -55,7 +55,7 @@ public class StudyProjectBoardNoOffsetResponse {
 
         private String summary;
 
-        private StudyProjectBoardCategory category;
+        private StudyProjectBoardType type;
 
         private StudyProjectBoardTag tag;
 
@@ -72,7 +72,7 @@ public class StudyProjectBoardNoOffsetResponse {
                     .boardId(studyProjectBoardEntity.getId())
                     .title(studyProjectBoardEntity.getTitle())
                     .summary(studyProjectBoardEntity.getSummary())
-                    .category(studyProjectBoardEntity.getCategory())
+                    .type(studyProjectBoardEntity.getType())
                     .tag(studyProjectBoardEntity.getTag())
                     .recruitmentTarget(studyProjectBoardEntity.getRecruitmentTarget())
                     .recruitmentNum(studyProjectBoardEntity.getRecruitmentNum())

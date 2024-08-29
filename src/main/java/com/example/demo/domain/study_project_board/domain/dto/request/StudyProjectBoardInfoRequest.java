@@ -1,7 +1,7 @@
 package com.example.demo.domain.study_project_board.domain.dto.request;
 
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardTag;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class StudyProjectBoardInfoRequest {
     private String content;
 
     @NotNull(message = "카테고리를 선택해야합니다.")
-    private StudyProjectBoardCategory category;
+    private StudyProjectBoardType type;
 
     @NotNull(message = "태그를 선택해야합니다.")
     private StudyProjectBoardTag tag;

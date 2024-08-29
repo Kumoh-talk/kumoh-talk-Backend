@@ -3,7 +3,7 @@ package com.example.demo.domain.study_project_board.service;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectBoardInfoAndFormRequest;
 import com.example.demo.domain.study_project_board.domain.dto.response.*;
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectFormChoiceAnswer;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectFormQuestion;
@@ -54,7 +54,7 @@ public class StudyProjectBoardService {
     }
 
     @Transactional(readOnly = true)
-    public StudyProjectBoardNoOffsetResponse getPublishedBoardListByNoOffset(int size, Long lastBoardId, StudyProjectBoardCategory category) {
+    public StudyProjectBoardNoOffsetResponse getPublishedBoardListByNoOffset(int size, Long lastBoardId, StudyProjectBoardType boardType) {
         List<StudyProjectBoard> studyProjectBoardList;
 
         // 최근 게시물 Id를 알 수 없을 때(첫 페이지를 조회할 때) -> 쿼리를 통해 첫 게시물 id를 가져온다.
@@ -62,7 +62,7 @@ public class StudyProjectBoardService {
             List<Long> boardIdList;
             Long firstId;
             try {
-                boardIdList = studyProjectBoardRepository.findPublishedId(category)
+                boardIdList = studyProjectBoardRepository.findPublishedId(boardType)
                         .orElseThrow(() -> new NullPointerException("can't find any Board"));
                 firstId = boardIdList.get(0);
             } catch (NullPointerException e) {
@@ -72,20 +72,20 @@ public class StudyProjectBoardService {
             StudyProjectBoard firstBoard = studyProjectBoardRepository.findById(firstId)
                     .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
             // firstId 이하 게시물을 찾기
-            studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByNoOffset(size, firstBoard, category, true);
+            studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByNoOffset(size, firstBoard, boardType, true);
         } else {
             StudyProjectBoard lastBoard = studyProjectBoardRepository.findById(lastBoardId)
                     .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
             // lastBoardId 미만 게시물을 찾기
-            studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByNoOffset(size, lastBoard, category, false);
+            studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByNoOffset(size, lastBoard, boardType, false);
         }
 
         return StudyProjectBoardNoOffsetResponse.newInstance(size, studyProjectBoardList);
     }
 
     @Transactional(readOnly = true)
-    public StudyProjectBoardPageNumResponse getPublishedBoardListByPageNum(Pageable pageable, StudyProjectBoardCategory category) {
-        Page<StudyProjectBoard> studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByPageNum(pageable, category);
+    public StudyProjectBoardPageNumResponse getPublishedBoardListByPageNum(Pageable pageable, StudyProjectBoardType boardType) {
+        Page<StudyProjectBoard> studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByPageNum(pageable, boardType);
 
         return StudyProjectBoardPageNumResponse.newInstance(studyProjectBoardList);
     }
@@ -110,8 +110,8 @@ public class StudyProjectBoardService {
     }
 
     @Transactional(readOnly = true)
-    public StudyProjectBoardPageNumResponse getPublishedBoardListByUserId(Long userId, Pageable pageable, StudyProjectBoardCategory category) {
-        Page<StudyProjectBoard> studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByUserIdByPageNum(userId, pageable, category);
+    public StudyProjectBoardPageNumResponse getPublishedBoardListByUserId(Long userId, Pageable pageable, StudyProjectBoardType boardType) {
+        Page<StudyProjectBoard> studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByUserIdByPageNum(userId, pageable, boardType);
 
         return StudyProjectBoardPageNumResponse.newInstance(studyProjectBoardList);
     }

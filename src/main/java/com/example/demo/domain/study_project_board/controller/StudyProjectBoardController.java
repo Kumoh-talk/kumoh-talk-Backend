@@ -3,7 +3,7 @@ package com.example.demo.domain.study_project_board.controller;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectBoardInfoAndFormRequest;
 import com.example.demo.domain.study_project_board.domain.dto.response.*;
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.example.demo.domain.study_project_board.service.StudyProjectBoardService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -58,29 +58,29 @@ public class StudyProjectBoardController {
     /**
      * 홈 화면 스터디, 프로젝트 Published 게시물 리스트 조회 API(No-Offset)
      *
-     * @param : size(페이징 사이즈), lastBoardId(전 페이지 마지막 게시물 Id), boardCategory[study, project]
+     * @param : size(페이징 사이즈), lastBoardId(전 페이지 마지막 게시물 Id), boardType[study, project]
      */
     @GetMapping("/no-offset")
     public ResponseEntity<ResponseBody<StudyProjectBoardNoOffsetResponse>> getStudyProjectBoardListByNoOffset(
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long lastBoardId,
-            @RequestParam String boardCategory
+            @RequestParam String boardType
     ) {
         // TODO : 차단 기능 추가
-        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, StudyProjectBoardCategory.valueOf(boardCategory.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));
     }
 
     /**
      * 더보기 스터디, 프로젝트 Published 게시물 리스트 조회 API(PageNum)
      *
-     * @param : size, page, boardCategory[study, project]
+     * @param : size, page, boardType[study, project]
      */
     @GetMapping("/page-num")
     public ResponseEntity<ResponseBody<StudyProjectBoardPageNumResponse>> getStudyProjectBoardListByPageNum(
             @PageableDefault(page = 1, size = 10, sort = "recruitmentDeadline", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam String boardCategory
+            @RequestParam String boardType
     ) {
-        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByPageNum(pageable, StudyProjectBoardCategory.valueOf(boardCategory.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByPageNum(pageable, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));
     }
 
     /**
@@ -161,7 +161,7 @@ public class StudyProjectBoardController {
     /**
      * 사용자가 작성한 글 리스트 조회(PageNum)
      *
-     * @param : size, page, boardCategory[study, project]
+     * @param : size, page, boardType[study, project]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
@@ -169,9 +169,9 @@ public class StudyProjectBoardController {
     public ResponseEntity<ResponseBody<StudyProjectBoardPageNumResponse>> getPublishedUserStudyProjectBoardList(
             Long userId,
             @PageableDefault(page = 1, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam String boardCategory) {
+            @RequestParam String boardType) {
         return ResponseEntity.ok(createSuccessResponse(
-                studyProjectBoardService.getPublishedBoardListByUserId(userId, pageable, StudyProjectBoardCategory.valueOf(boardCategory.toUpperCase()))));
+                studyProjectBoardService.getPublishedBoardListByUserId(userId, pageable, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));
     }
 
     // Valid 검사 메서드

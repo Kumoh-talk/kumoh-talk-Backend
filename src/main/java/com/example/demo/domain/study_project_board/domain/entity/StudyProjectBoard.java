@@ -5,8 +5,8 @@ import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectBoardInfoAndFormRequest;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectFormChoiceAnswerRequest;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectFormQuestionRequest;
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardTag;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormChoiceAnswerRepository;
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
@@ -44,7 +44,7 @@ public class StudyProjectBoard extends BaseEntity {
     private String content;
 
     @Enumerated(value = EnumType.STRING)
-    private StudyProjectBoardCategory category;
+    private StudyProjectBoardType type;
 
     @Enumerated(value = EnumType.STRING)
     private StudyProjectBoardTag tag;
@@ -82,13 +82,13 @@ public class StudyProjectBoard extends BaseEntity {
     }
 
     @Builder
-    public StudyProjectBoard(String title, String summary, String content, StudyProjectBoardCategory category, StudyProjectBoardTag tag, Status status,
+    public StudyProjectBoard(String title, String summary, String content, StudyProjectBoardType type, StudyProjectBoardTag tag, Status status,
                              String recruitmentTarget, String recruitmentNum, LocalDateTime recruitmentDeadline, LocalDateTime activityStart, LocalDateTime activityFinish,
                              String activityCycle, User user) {
         this.title = title;
         this.summary = summary;
         this.content = content;
-        this.category = category;
+        this.type = type;
         this.tag = tag;
         this.status = status;
         this.recruitmentTarget = recruitmentTarget;
@@ -105,7 +105,7 @@ public class StudyProjectBoard extends BaseEntity {
                 .title(request.getBoard().getTitle())
                 .summary(request.getBoard().getSummary())
                 .content(request.getBoard().getContent())
-                .category(request.getBoard().getCategory())
+                .type(request.getBoard().getType())
                 .tag(request.getBoard().getTag())
                 .status(status)
                 .recruitmentTarget(request.getBoard().getRecruitmentTarget())
@@ -143,7 +143,7 @@ public class StudyProjectBoard extends BaseEntity {
         this.title = request.getBoard().getTitle();
         this.summary = request.getBoard().getSummary();
         this.content = request.getBoard().getContent();
-        this.category = request.getBoard().getCategory();
+        this.type = request.getBoard().getType();
         this.tag = request.getBoard().getTag();
         this.status = status;
         this.recruitmentTarget = request.getBoard().getRecruitmentTarget();

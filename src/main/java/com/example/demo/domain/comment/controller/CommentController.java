@@ -6,7 +6,7 @@ import com.example.demo.domain.comment.domain.response.CommentInfo;
 import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.service.CommentService;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardCategory;
+import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
@@ -30,20 +30,20 @@ public class CommentController {
     /**
      * 게시물 별 댓글 조회
      *
-     * @param : boardCategory[study, project, seminar]
+     * @param : boardType[study, project, seminar]
      */
     @GetMapping("/{boardId}")
     public ResponseEntity<ResponseBody<CommentResponse>> getBoardComments(
             @PathVariable Long boardId,
-            @RequestParam String boardCategory) {
+            @RequestParam String boardType) {
         // TODO : 내가 차단한 사용자 댓글은 보이지 않도록(로그인했을 시)
-        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByBoardId(boardId, BoardCategory.valueOf(boardCategory.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByBoardId(boardId, BoardType.valueOf(boardType.toUpperCase()))));
     }
 
     /**
      * 사용자 작성 댓글 조회
      *
-     * @param : boardCategory[study, project, seminar]
+     * @param : boardType[study, project, seminar]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated()")
@@ -51,22 +51,22 @@ public class CommentController {
     public ResponseEntity<ResponseBody<CommentPageResponse>> getUserComments(
             Long userId,
             @PageableDefault(page = 1, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam String boardCategory) {
-        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByUserId(userId, BoardCategory.valueOf(boardCategory.toUpperCase()), pageable)));
+            @RequestParam String boardType) {
+        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByUserId(userId, BoardType.valueOf(boardType.toUpperCase()), pageable)));
     }
 
     /**
      * 댓글 저장
      *
-     * @param : boardCategory[study, project, seminar]
+     * @param : boardType[study, project, seminar]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{boardId}")
     public ResponseEntity<ResponseBody<CommentInfo>> createComment(Long userId, @RequestBody @Valid CommentRequest commentRequest,
-                                                                   @PathVariable Long boardId, @RequestParam String boardCategory) {
+                                                                   @PathVariable Long boardId, @RequestParam String boardType) {
         // 댓글 작성시 사용자 권한 확인
-        return ResponseEntity.ok(createSuccessResponse(commentService.saveComment(commentRequest, userId, boardId, BoardCategory.valueOf(boardCategory.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(commentService.saveComment(commentRequest, userId, boardId, BoardType.valueOf(boardType.toUpperCase()))));
     }
 
     /**

@@ -1,8 +1,8 @@
 package com.example.demo.domain.comment.repository;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardCategory;
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
+import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,13 +33,13 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     }
 
     @Override
-    public Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardCategory category) {
+    public Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardType boardType) {
         List<Comment> content = null;
         Long totalCount = null;
-        if (category == BoardCategory.SEMINAR) {
+        if (boardType == BoardType.SEMINAR) {
             findSeminarComment(content, totalCount, pageable, userId);
         } else {
-            findStudyAndProjectComment(content, totalCount, pageable, userId, category);
+            findStudyAndProjectComment(content, totalCount, pageable, userId, boardType);
         }
 
         return new PageImpl<>(content, pageable, totalCount);
@@ -65,12 +65,12 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 .fetchOne();
     }
 
-    public void findStudyAndProjectComment(List<Comment> content, Long totalCount, Pageable pageable, Long userId, BoardCategory category) {
+    public void findStudyAndProjectComment(List<Comment> content, Long totalCount, Pageable pageable, Long userId, BoardType boardType) {
         content = jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.studyProjectBoard, studyProjectBoard).fetchJoin()
                 .where(comment.studyProjectBoard.isNotNull(),
-                        comment.studyProjectBoard.category.eq(StudyProjectBoardCategory.valueOf(category.toString())),
+                        comment.studyProjectBoard.type.eq(StudyProjectBoardType.valueOf(boardType.toString())),
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .orderBy(comment.createdAt.desc())
@@ -81,7 +81,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 .select(comment.count())
                 .from(comment)
                 .where(comment.studyProjectBoard.isNotNull(),
-                        comment.studyProjectBoard.category.eq(StudyProjectBoardCategory.valueOf(category.toString())),
+                        comment.studyProjectBoard.type.eq(StudyProjectBoardType.valueOf(boardType.toString())),
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .fetchOne();

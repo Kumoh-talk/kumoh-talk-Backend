@@ -1,8 +1,8 @@
 package com.example.demo.domain.study_project_board.domain.dto.response;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardTag;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class StudyProjectBoardInfoResponse {
 
     private String content;
 
-    private StudyProjectBoardCategory category;
+    private StudyProjectBoardType type;
 
     private StudyProjectBoardTag tag;
 
@@ -57,7 +57,7 @@ public class StudyProjectBoardInfoResponse {
                 .title(studyProjectBoardEntity.getTitle())
                 .summary(studyProjectBoardEntity.getSummary())
                 .content(studyProjectBoardEntity.getContent())
-                .category(studyProjectBoardEntity.getCategory())
+                .type(studyProjectBoardEntity.getType())
                 .tag(studyProjectBoardEntity.getTag())
                 .status(studyProjectBoardEntity.getStatus())
                 .recruitmentTarget(studyProjectBoardEntity.getRecruitmentTarget())

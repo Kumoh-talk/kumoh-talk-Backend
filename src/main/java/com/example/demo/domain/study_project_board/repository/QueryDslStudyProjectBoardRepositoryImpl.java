@@ -1,7 +1,7 @@
 package com.example.demo.domain.study_project_board.repository;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardCategory;
+import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
     // TODO : pageNum 방식 페이징에 정렬 부분 하드코딩 제거
 
     @Override
-    public List<StudyProjectBoard> findPublishedPageByNoOffset(int size, StudyProjectBoard lastBoard, StudyProjectBoardCategory category, boolean isFirst) {
+    public List<StudyProjectBoard> findPublishedPageByNoOffset(int size, StudyProjectBoard lastBoard, StudyProjectBoardType boardType, boolean isFirst) {
         // TODO : 차단 유저 ID에 해당하는 게시물은 가져오지 않게 수정
         // 처음 페이지는 lastBoardId 이하 게시물을 가져온다.
         // 처음이 아닌 페이지는 lastBoardId 미만 게시물을 가져온다.
@@ -33,7 +33,7 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
                     .join(studyProjectBoard.user, user).fetchJoin()
                     .where(studyProjectBoard.recruitmentDeadline.goe(LocalDateTime.now()),
                             studyProjectBoard.recruitmentDeadline.goe(lastBoard.getRecruitmentDeadline()),
-                            studyProjectBoard.category.eq(category),
+                            studyProjectBoard.type.eq(boardType),
                             studyProjectBoard.status.eq(Status.PUBLISHED))
 //                .where(studyProjectBoard.user.id.ne(userId))
                     .orderBy(studyProjectBoard.recruitmentDeadline.asc())
@@ -46,7 +46,7 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
                     .where(studyProjectBoard.recruitmentDeadline.goe(LocalDateTime.now()),
                             studyProjectBoard.recruitmentDeadline.goe(lastBoard.getRecruitmentDeadline()),
                             studyProjectBoard.id.ne(lastBoard.getId()),
-                            studyProjectBoard.category.eq(category),
+                            studyProjectBoard.type.eq(boardType),
                             studyProjectBoard.status.eq(Status.PUBLISHED))
 //                .where(studyProjectBoard.user.id.ne(userId))
                     .orderBy(studyProjectBoard.recruitmentDeadline.asc())
@@ -57,11 +57,11 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
     }
 
     @Override
-    public Page<StudyProjectBoard> findPublishedPageByPageNum(Pageable pageable, StudyProjectBoardCategory category) {
+    public Page<StudyProjectBoard> findPublishedPageByPageNum(Pageable pageable, StudyProjectBoardType boardType) {
         List<StudyProjectBoard> content = jpaQueryFactory
                 .selectFrom(studyProjectBoard)
                 .join(studyProjectBoard.user, user).fetchJoin()
-                .where(studyProjectBoard.category.eq(category),
+                .where(studyProjectBoard.type.eq(boardType),
                         studyProjectBoard.status.eq(Status.PUBLISHED),
                         studyProjectBoard.recruitmentDeadline.goe(LocalDateTime.now()))
                 .orderBy(studyProjectBoard.recruitmentDeadline.asc())
@@ -71,7 +71,7 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
         Long totalCount = jpaQueryFactory
                 .select(studyProjectBoard.count())
                 .from(studyProjectBoard)
-                .where(studyProjectBoard.category.eq(category),
+                .where(studyProjectBoard.type.eq(boardType),
                         studyProjectBoard.status.eq(Status.PUBLISHED),
                         studyProjectBoard.recruitmentDeadline.goe(LocalDateTime.now()))
                 .fetchOne();
@@ -80,11 +80,11 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
     }
 
     @Override
-    public Page<StudyProjectBoard> findPublishedPageByUserIdByPageNum(Long userId, Pageable pageable, StudyProjectBoardCategory category) {
+    public Page<StudyProjectBoard> findPublishedPageByUserIdByPageNum(Long userId, Pageable pageable, StudyProjectBoardType boardType) {
         List<StudyProjectBoard> content = jpaQueryFactory
                 .selectFrom(studyProjectBoard)
                 .join(studyProjectBoard.user, user).fetchJoin()
-                .where(studyProjectBoard.category.eq(category),
+                .where(studyProjectBoard.type.eq(boardType),
                         studyProjectBoard.status.eq(Status.PUBLISHED),
                         studyProjectBoard.user.id.eq(userId))
                 .orderBy(studyProjectBoard.createdAt.desc())
@@ -94,7 +94,7 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
         Long totalCount = jpaQueryFactory
                 .select(studyProjectBoard.count())
                 .from(studyProjectBoard)
-                .where(studyProjectBoard.category.eq(category),
+                .where(studyProjectBoard.type.eq(boardType),
                         studyProjectBoard.status.eq(Status.PUBLISHED),
                         studyProjectBoard.user.id.eq(userId))
                 .fetchOne();
