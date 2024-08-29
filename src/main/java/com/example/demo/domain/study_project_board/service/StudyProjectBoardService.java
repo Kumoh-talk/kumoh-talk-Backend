@@ -11,8 +11,8 @@ import com.example.demo.domain.study_project_board.repository.StudyProjectBoardR
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormChoiceAnswerRepository;
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.UserAdditionalInfo;
 import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
