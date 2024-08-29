@@ -23,10 +23,14 @@ public class UserAdditionalInfoService {
 
     public UserAdditionalInfoResponse getUserAdditionalInfo(Long userId) {
         User user = userService.validateUser(userId);
-        if (user.getUserAdditionalInfo() == null) {
+        this.validateUserAdditionalInfo(user.getUserAdditionalInfo());
+        return UserAdditionalInfoResponse.from(user.getUserAdditionalInfo());
+    }
+
+    public void validateUserAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
+        if (userAdditionalInfo == null) {
             throw new ServiceException(USER_ADDITIONAL_INFO_NOT_FOUND);
         }
-        return UserAdditionalInfoResponse.from(user.getUserAdditionalInfo());
     }
 
     @Transactional

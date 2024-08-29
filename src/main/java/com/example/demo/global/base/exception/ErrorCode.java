@@ -54,6 +54,14 @@ public enum ErrorCode {
     PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0001", "부모 댓글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0002", "해당 id의 댓글을 찾을 수 없습니다."),
 
+    // Newsletter
+    SUBSCRIBE_EMAIL_CONFLICT(HttpStatus.CONFLICT, "NEWSLETTER_0001", "이미 구독되어있는 이메일입니다."),
+    SUBSCRIBE_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWSLETTER_0002", "구독 정보가 존재하지 않습니다."),
+
+    // SeminarApplication
+    SEMINAR_APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "SEMINAR_0001", "해당 세미나 신청폼 정보가 존재하지 않습니다."),
+    SEMINAR_APPLICATION_ACCESS_DENIED(HttpStatus.FORBIDDEN, "SEMINAR_0002", "해당 세미나 신청폼에 접근할 권한이 없습니다."),
+    SEMINAR_APPLICATION_CANNOT_EDIT_OR_DELETE(HttpStatus.FORBIDDEN, "SEMINAR_0003", "해당 세미나 신청폼을 수정/삭제할 수 있는 기간이 아닙니다."),
     ;
     private final HttpStatus status;
     private final String code;

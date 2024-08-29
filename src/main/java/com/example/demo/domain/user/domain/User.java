@@ -49,11 +49,12 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_additional_info_id")
     private UserAdditionalInfo userAdditionalInfo;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.PERSIST) // TODO. OneToOne 관계 추후 수정
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "news_letter_id")
     private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
@@ -65,7 +66,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Like> likes= new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SeminarApplication> seminarApplications = new ArrayList<>();
 
     @Builder
@@ -93,5 +94,13 @@ public class User extends BaseEntity {
 
     public void mapAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
         this.userAdditionalInfo = userAdditionalInfo;
+    }
+
+    public void mapNewsletter(Newsletter newsletter) {
+        this.newsletter = newsletter;
+    }
+
+    public void addSeminarApplications(SeminarApplication seminarApplication) {
+        this.seminarApplications.add(seminarApplication);
     }
 }
