@@ -5,6 +5,8 @@ import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,8 @@ public class FakeLoginController {
                 .body(createSuccessResponse(response));
     }
 
+    @Getter
+    @NoArgsConstructor
     public static class LoginResponse {
         private String token;
 
