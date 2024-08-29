@@ -1,4 +1,4 @@
-package com.example.demo.domain.user.api;
+package com.example.demo.domain.user.controller;
 
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
