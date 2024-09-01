@@ -18,16 +18,16 @@ public class CommentPageResponse {
     private final int pageNum;
     private final int totalPage;
     private final String pageSort;
-    private final List<MyCommentInfo> myCommentInfoList;
+    private final List<MyCommentResponse> myCommentResponseList;
 
     public static CommentPageResponse from(Page<Comment> commentEntityPage, BoardType boardType) {
-        List<MyCommentInfo> myCommentInfoList;
+        List<MyCommentResponse> myCommentResponseList;
         switch (boardType) {
-            case SEMINAR -> myCommentInfoList = commentEntityPage.stream()
-                    .map(MyCommentInfo::fromSeminarComment)
+            case SEMINAR -> myCommentResponseList = commentEntityPage.stream()
+                    .map(MyCommentResponse::fromSeminarComment)
                     .collect(Collectors.toList());
-            case STUDY, PROJECT -> myCommentInfoList = commentEntityPage.stream()
-                    .map(MyCommentInfo::fromStudyProjectComment)
+            case STUDY, PROJECT -> myCommentResponseList = commentEntityPage.stream()
+                    .map(MyCommentResponse::fromStudyProjectComment)
                     .collect(Collectors.toList());
             default -> throw new IllegalArgumentException("게시판 종류에 해당하는 값이 아닙니다.");
         }
@@ -37,7 +37,7 @@ public class CommentPageResponse {
                 .pageNum(commentEntityPage.getNumber() + 1)
                 .totalPage(commentEntityPage.getTotalPages())
                 .pageSort(commentEntityPage.getSort().toString())
-                .myCommentInfoList(myCommentInfoList)
+                .myCommentResponseList(myCommentResponseList)
                 .build();
     }
 }

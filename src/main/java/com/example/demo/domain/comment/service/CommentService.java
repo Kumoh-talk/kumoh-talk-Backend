@@ -5,7 +5,7 @@ import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
-import com.example.demo.domain.comment.domain.response.CommentInfo;
+import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
@@ -13,7 +13,7 @@ import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
 import com.example.demo.domain.study_project_board.repository.StudyProjectBoardRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -27,30 +27,29 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+    private final UserService userService;
+
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final StudyProjectBoardRepository studyProjectBoardRepository;
-    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public CommentResponse findCommentsByBoardId(Long boardId, BoardType boardType) {
-        validateBoard(boardId, boardType);
-
-        List<Comment> commentList = commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
+        List<Comment> commentList = validateBoard(boardId, boardType);
 
         return CommentResponse.from(commentList);
     }
 
     @Transactional(readOnly = true)
     public CommentPageResponse findCommentsByUserId(Long userId, BoardType boardType, Pageable pageable) {
+        userService.validateUser(userId);
         Page<Comment> commentPage = commentRepository.findCommentByUser_idOrderByCreatedAtDsc(pageable, userId, boardType);
         return CommentPageResponse.from(commentPage, boardType);
     }
 
     @Transactional
-    public CommentInfo saveComment(CommentRequest commentRequest, Long userId, Long boardId, BoardType boardType) {
-        User commentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+    public CommentInfoResponse saveComment(CommentRequest commentRequest, Long userId, Long boardId, BoardType boardType) {
+        User commentUser = userService.validateUser(userId);
 
         Comment parentComment;
         if (commentRequest.getGroupId() != null) {
@@ -80,13 +79,13 @@ public class CommentService {
 
         Comment saved = commentRepository.save(requestComment);
 
-        return CommentInfo.from(saved);
+        return CommentInfoResponse.from(saved);
     }
 
     @Transactional
-    public CommentInfo updateComment(CommentRequest commentRequest,
-                                     Long commentId,
-                                     Long userId) {
+    public CommentInfoResponse updateComment(CommentRequest commentRequest,
+                                             Long commentId,
+                                             Long userId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
@@ -97,7 +96,7 @@ public class CommentService {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
 
-        return CommentInfo.from(comment);
+        return CommentInfoResponse.from(comment);
     }
 
     @Transactional
@@ -107,27 +106,27 @@ public class CommentService {
         );
 
         if (userId.equals(comment.getUser().getId())) {
+            commentRepository.replyCommentsDeleteById(commentId);
             commentRepository.delete(comment);
-            deleteReplyComments(comment);
         } else {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
     }
 
-    public void deleteReplyComments(Comment parentComment) {
-        for (Comment replyComment : parentComment.getReplyComments()) {
-            commentRepository.delete(replyComment);
-        }
-    }
-
-    public void validateBoard(Long boardId, BoardType boardType) {
+    public List<Comment> validateBoard(Long boardId, BoardType boardType) {
         switch (boardType) {
-            case SEMINAR -> boardRepository.findById(boardId).orElseThrow(() ->
-                    new ServiceException(ErrorCode.BOARD_NOT_FOUND)
-            );
-            case STUDY, PROJECT -> studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
-                    new ServiceException(ErrorCode.BOARD_NOT_FOUND)
-            );
+            case SEMINAR -> {
+                boardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                return commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
+            }
+            default -> {
+                studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                return commentRepository.findByStudyProjectBoard_idOrderByCreatedAtAsc(boardId);
+            }
         }
     }
 }

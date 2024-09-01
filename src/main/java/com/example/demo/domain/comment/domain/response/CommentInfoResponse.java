@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentInfo {
+public class CommentInfoResponse {
     private Long commentId;
     private Long groupId;
     private String userNickname;
@@ -26,10 +26,10 @@ public class CommentInfo {
     private LocalDateTime updatedAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deletedAt;
-    private List<CommentInfo> replyComments;
+    private List<CommentInfoResponse> replyComments;
 
-    protected CommentInfo(Long commentId, String userNickname, String content,
-                          LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
+    protected CommentInfoResponse(Long commentId, String userNickname, String content,
+                                  LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.commentId = commentId;
         this.userNickname = userNickname;
         this.content = content;
@@ -38,8 +38,8 @@ public class CommentInfo {
         this.deletedAt = deletedAt;
     }
 
-    public static CommentInfo from(Comment commentEntity) {
-        CommentInfo commentInfo = new CommentInfo(commentEntity.getId(),
+    public static CommentInfoResponse from(Comment commentEntity) {
+        CommentInfoResponse commentInfoResponse = new CommentInfoResponse(commentEntity.getId(),
                 commentEntity.getUser().getNickname(),
                 commentEntity.getContent(),
                 commentEntity.getCreatedAt(),
@@ -47,10 +47,10 @@ public class CommentInfo {
                 commentEntity.getDeletedAt()
         );
         if (commentEntity.getParentComment() != null) {
-            commentInfo.setGroupId(commentEntity.getParentComment().getId());
+            commentInfoResponse.setGroupId(commentEntity.getParentComment().getId());
         }
-        commentInfo.setReplyComments(new ArrayList<>(commentEntity.getReplyComments().stream()
-                .map(CommentInfo::from).collect(Collectors.toList())));
-        return commentInfo;
+        commentInfoResponse.setReplyComments(new ArrayList<>(commentEntity.getReplyComments().stream()
+                .map(CommentInfoResponse::from).collect(Collectors.toList())));
+        return commentInfoResponse;
     }
 }

@@ -10,20 +10,20 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @Builder
-public class MyCommentInfo {
+public class MyCommentResponse {
 
-    private Comment comment;
-    private Board board;
+    private MyCommentInfoResponse comment;
+    private CommentBoardInfoResponse board;
 
-    public static MyCommentInfo fromSeminarComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
-        return MyCommentInfo.builder()
-                .comment(Comment.builder()
+    public static MyCommentResponse fromSeminarComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
+        return MyCommentResponse.builder()
+                .comment(MyCommentInfoResponse.builder()
                         .id(commentEntity.getId())
                         .content(commentEntity.getContent())
                         .createdAt(commentEntity.getCreatedAt())
                         .updatedAt(commentEntity.getUpdatedAt())
                         .build())
-                .board(Board.builder()
+                .board(CommentBoardInfoResponse.builder()
                         .id(commentEntity.getBoard().getId())
                         .title(commentEntity.getBoard().getTitle())
                         .createdAt(commentEntity.getBoard().getCreatedAt())
@@ -32,15 +32,15 @@ public class MyCommentInfo {
                 .build();
     }
 
-    public static MyCommentInfo fromStudyProjectComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
-        return MyCommentInfo.builder()
-                .comment(Comment.builder()
+    public static MyCommentResponse fromStudyProjectComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
+        return MyCommentResponse.builder()
+                .comment(MyCommentInfoResponse.builder()
                         .id(commentEntity.getId())
                         .content(commentEntity.getContent())
                         .createdAt(commentEntity.getCreatedAt())
                         .updatedAt(commentEntity.getUpdatedAt())
                         .build())
-                .board(Board.builder()
+                .board(CommentBoardInfoResponse.builder()
                         .id(commentEntity.getStudyProjectBoard().getId())
                         .createdAt(commentEntity.getStudyProjectBoard().getCreatedAt())
                         .updatedAt(commentEntity.getStudyProjectBoard().getUpdatedAt())
@@ -51,7 +51,7 @@ public class MyCommentInfo {
     @Getter
     @AllArgsConstructor
     @Builder
-    public static class Comment {
+    public static class MyCommentInfoResponse {
         private Long id;
         private String content;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -63,7 +63,7 @@ public class MyCommentInfo {
     @Getter
     @AllArgsConstructor
     @Builder
-    public static class Board {
+    public static class CommentBoardInfoResponse {
         private Long id;
         private String title;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CommentResponse {
     private int commentsCount;
-    private List<CommentInfo> commentInfoList;
+    private List<CommentInfoResponse> commentInfoResponseList;
 
     public static CommentResponse from(List<Comment> commentEntityList) {
-        List<CommentInfo> commentInfoList = commentEntityList.stream()
-                .map(CommentInfo::from)
+        List<CommentInfoResponse> commentInfoResponseList = commentEntityList.stream()
+                .map(CommentInfoResponse::from)
                 .collect(Collectors.toList());
 
         int replyCommentsCount = 0;
-        for (CommentInfo commentInfo : commentInfoList) {
-            replyCommentsCount += commentInfo.getReplyComments().size();
+        for (CommentInfoResponse commentInfoResponse : commentInfoResponseList) {
+            replyCommentsCount += commentInfoResponse.getReplyComments().size();
         }
-        return new CommentResponse(replyCommentsCount + commentInfoList.size(), commentInfoList);
+        return new CommentResponse(replyCommentsCount + commentInfoResponseList.size(), commentInfoResponseList);
     }
 }

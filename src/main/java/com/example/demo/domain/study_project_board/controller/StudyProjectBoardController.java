@@ -35,8 +35,10 @@ public class StudyProjectBoardController {
     private final Validator validator;
 
     // TODO : 스터디, 프로젝트 게시물 작성 권한 수정 -> 유저 인적사항 작성 시 작성 권한 획득
-    // TODO : 스터디, 프로젝트 게시물 태그는 여러 개 지정될 수 있는가? -> 태그 종류 추가
+
     // TODO : 마감기한이 지한 게시물은 삭제 처리?
+    // TODO : 게시물이 수정되어 질문이 변경된다면, 이미 신청한 신청자들은 어떻게 되는가? -> 신청자들에게 알림을 주는 서비스?
+    // TODO : 신청을 눌렀을 때, 질문말고 사용자가 입력할 소요가 있나? -> 인적사항이 그대로 기입되는가? 변경은 불가능한가? -> 그러면 인적사항을 보여주는 창이 굳이 필요한가?
 
     /**
      * 게시물 저장 및 임시저장 API
@@ -77,7 +79,7 @@ public class StudyProjectBoardController {
      */
     @GetMapping("/page-num")
     public ResponseEntity<ResponseBody<StudyProjectBoardPageNumResponse>> getStudyProjectBoardListByPageNum(
-            @PageableDefault(page = 1, size = 10, sort = "recruitmentDeadline", direction = Sort.Direction.ASC) Pageable pageable,
+            @PageableDefault(page = 0, size = 10, sort = "recruitmentDeadline", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam String boardType
     ) {
         return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByPageNum(pageable, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));
@@ -86,7 +88,6 @@ public class StudyProjectBoardController {
     /**
      * 스터디, 프로젝트 게시물 상세조회 API
      */
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{studyProjectBoardId}/board")
     public ResponseEntity<ResponseBody<StudyProjectBoardInfoResponse>> getStudyProjectBoardInfo(@PathVariable Long studyProjectBoardId) {
         return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getBoardInfo(studyProjectBoardId)));
@@ -168,7 +169,7 @@ public class StudyProjectBoardController {
     @GetMapping("/my-boards")
     public ResponseEntity<ResponseBody<StudyProjectBoardPageNumResponse>> getPublishedUserStudyProjectBoardList(
             Long userId,
-            @PageableDefault(page = 1, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam String boardType) {
         return ResponseEntity.ok(createSuccessResponse(
                 studyProjectBoardService.getPublishedBoardListByUserId(userId, pageable, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));

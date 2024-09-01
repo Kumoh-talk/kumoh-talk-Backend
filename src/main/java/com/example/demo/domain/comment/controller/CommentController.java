@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.controller;
 
 
 import com.example.demo.domain.comment.domain.request.CommentRequest;
-import com.example.demo.domain.comment.domain.response.CommentInfo;
+import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.service.CommentService;
@@ -50,7 +50,7 @@ public class CommentController {
     @GetMapping("/my-comments")
     public ResponseEntity<ResponseBody<CommentPageResponse>> getUserComments(
             Long userId,
-            @PageableDefault(page = 1, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam String boardType) {
         return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByUserId(userId, BoardType.valueOf(boardType.toUpperCase()), pageable)));
     }
@@ -63,8 +63,8 @@ public class CommentController {
     @AssignUserId
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{boardId}")
-    public ResponseEntity<ResponseBody<CommentInfo>> createComment(Long userId, @RequestBody @Valid CommentRequest commentRequest,
-                                                                   @PathVariable Long boardId, @RequestParam String boardType) {
+    public ResponseEntity<ResponseBody<CommentInfoResponse>> createComment(Long userId, @RequestBody @Valid CommentRequest commentRequest,
+                                                                           @PathVariable Long boardId, @RequestParam String boardType) {
         // 댓글 작성시 사용자 권한 확인
         return ResponseEntity.ok(createSuccessResponse(commentService.saveComment(commentRequest, userId, boardId, BoardType.valueOf(boardType.toUpperCase()))));
     }
@@ -75,9 +75,9 @@ public class CommentController {
     @AssignUserId
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/{commentId}")
-    public ResponseEntity<ResponseBody<CommentInfo>> updateComment(Long userId,
-                                                                   @RequestBody @Valid CommentRequest commentRequest,
-                                                                   @PathVariable Long commentId) {
+    public ResponseEntity<ResponseBody<CommentInfoResponse>> updateComment(Long userId,
+                                                                           @RequestBody @Valid CommentRequest commentRequest,
+                                                                           @PathVariable Long commentId) {
         return ResponseEntity.ok(createSuccessResponse(commentService.updateComment(commentRequest, commentId, userId)));
     }
 
