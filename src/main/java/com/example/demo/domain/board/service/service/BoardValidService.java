@@ -21,7 +21,7 @@ public class BoardValidService {
 	@Transactional(readOnly = true)
 	public void validateSeminarRole(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-		if(user.getRole().equals("ROLE_USER")) { // TODO : 현재는 ROLE_USER가 세미나 신청을 한적이 있는지로 판단하고 있음 권한 세분화하면 변경 필요
+		if(user.getRole().equals("ROLE_USER") || user.getRole().equals("ROLE_ADMIN")) { // TODO : 현재는 ROLE_USER가 세미나 신청을 한적이 있는지로 판단하고 있음 권한 세분화하면 변경 필요
 			throw new ServiceException(ErrorCode.NOT_SEMINAR_ROLE);
 		}
 	}
