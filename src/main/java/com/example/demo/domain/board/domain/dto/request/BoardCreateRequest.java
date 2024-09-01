@@ -12,7 +12,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Setter
 @Getter
 @NoArgsConstructor
 public class BoardCreateRequest {
@@ -36,5 +35,9 @@ public class BoardCreateRequest {
         this.contents = contents;
         this.categoryName = categoryName;
         this.tag = tag;
+    }
+
+    public boolean isSeminarBoard() {
+        return tag.equals(Tag.seminar);
     }
 }

@@ -60,7 +60,7 @@ public class BoardCommandService {
         Board board = validateBoard(boardUpdateRequest.getId());
         validateUserEqualBoardUser(userId, board);
 
-        updateBoard(board, boardUpdateRequest);
+        updateBoardInfo(board, boardUpdateRequest);
 
 
         Long viewNum = boardRepository.countViewsByBoardId(boardUpdateRequest.getId());
@@ -77,7 +77,7 @@ public class BoardCommandService {
                 categoryNames);
     }
 
-    private void updateBoard(Board board , BoardUpdateRequest boardUpdateRequest) {
+    private void updateBoardInfo(Board board , BoardUpdateRequest boardUpdateRequest) {
         board.changeBoardInfo(boardUpdateRequest);
         board.changeBoardStatus(boardUpdateRequest.getStatus());
         changeBoardCategories(board, boardUpdateRequest.getCategoryName());
