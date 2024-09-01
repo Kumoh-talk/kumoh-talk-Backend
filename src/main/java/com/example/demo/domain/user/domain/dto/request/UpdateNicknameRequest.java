@@ -1,14 +1,11 @@
 package com.example.demo.domain.user.domain.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 
-public record CompleteRegistrationRequest(
+public record UpdateNicknameRequest(
         @Pattern(regexp = NICKNAME_REGEXP)
-        String nickname,
-        @NotBlank
-        String name
+        String nickname
 ) {
 }

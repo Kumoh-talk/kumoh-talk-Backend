@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -40,7 +41,6 @@ public class JwtHandler {
         Map<String, Object> tokenClaims = this.createClaims(jwtUserClaim);
         Date now = new Date(System.currentTimeMillis());
         long accessTokenExpireIn = jwtProperties.getAccessTokenExpireIn();
-        long refreshTokenExpireIn = jwtProperties.getRefreshTokenExpireIn();
 
         String accessToken = Jwts.builder()
                 .claims(tokenClaims)
@@ -49,14 +49,9 @@ public class JwtHandler {
                 .signWith(secretKey)
                 .compact();
 
-        String refreshToken = Jwts.builder()
-                .claims(tokenClaims)
-                .issuedAt(now)
-                .expiration(new Date(now.getTime() + refreshTokenExpireIn * MILLI_SECOND))
-                .signWith(secretKey)
-                .compact();
+        String refreshToken = UUID.randomUUID().toString();
 
-        RefreshToken token = new RefreshToken(refreshToken, jwtUserClaim.userId());
+        RefreshToken token = new RefreshToken(jwtUserClaim.userId(), refreshToken);
         refreshTokenRepository.save(token);
 
         return TokenResponse.create(accessToken, refreshToken);
