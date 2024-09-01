@@ -45,7 +45,7 @@ public class BoardController {
 
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()") //TODO : 게시물 수정 로직 변경 필요
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {

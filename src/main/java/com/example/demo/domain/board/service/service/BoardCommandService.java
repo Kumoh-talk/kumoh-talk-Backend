@@ -94,9 +94,9 @@ public class BoardCommandService {
                 .filter(boardCategory -> !newCategoryNames.contains(boardCategory.getCategory().getName()))
                 .forEach(boardCategory -> {
                     Category category = boardCategory.getCategory();
-                    boardCategory.setAssociateNull();
                     category.getBoardCategories().remove(boardCategory);
                     board.getBoardCategories().remove(boardCategory);
+                    boardCategory.setAssociateNull();
                     boardCategoryRepository.delete(boardCategory);
                     deleteCategory(category);
                 });
@@ -123,12 +123,6 @@ public class BoardCommandService {
         List<Category> categories = board.getBoardCategories().stream()
                 .map(BoardCategory::getCategory)
                 .collect(Collectors.toList());
-
-
-        boardRepository.deleteBoardCategoryByBoardId(boardId);
-        boardRepository.deleteViewByBoardId(boardId);
-        boardRepository.deleteFileByBoardId(boardId);
-        boardRepository.deleteLikeByBoardId(boardId);
 
         boardRepository.delete(board);
         for (Category category : categories) {
