@@ -1,6 +1,7 @@
 package com.example.demo.domain.study_project_board.service;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.study_project_application.repository.StudyProjectApplicantAnswerRepository;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectBoardInfoAndFormRequest;
 import com.example.demo.domain.study_project_board.domain.dto.response.*;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
@@ -11,8 +12,8 @@ import com.example.demo.domain.study_project_board.repository.StudyProjectBoardR
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormChoiceAnswerRepository;
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
-import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
+import com.example.demo.domain.user.service.UserService;
+import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -28,24 +29,21 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class StudyProjectBoardService {
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final UserAdditionalInfoService userAdditionalInfoService;
+
     private final StudyProjectBoardRepository studyProjectBoardRepository;
     private final StudyProjectFormQuestionRepository studyProjectFormQuestionRepository;
     private final StudyProjectFormChoiceAnswerRepository studyProjectFormChoiceAnswerRepository;
+    private final StudyProjectApplicantAnswerRepository studyProjectApplicantAnswerRepository;
 
     @Transactional
     public StudyProjectBoardInfoAndFormResponse saveBoardAndForm(
             Long userId,
             StudyProjectBoardInfoAndFormRequest studyProjectBoardInfoAndFormRequest,
             Status status) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.NEED_AUTHORIZED));
-
-        // TODO : user 쪽 메서드로 변경
-        UserAdditionalInfo userAdditionalInfo = user.getUserAdditionalInfo();
-        if (userAdditionalInfo == null) {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
-        }
+        User user = userService.validateUser(userId);
+        userAdditionalInfoService.validateUserAdditionalInfo(user.getUserAdditionalInfo());
 
         StudyProjectBoard studyProjectBoard = StudyProjectBoard.from(studyProjectBoardInfoAndFormRequest, user, status);
         StudyProjectBoard savedBoard = studyProjectBoardRepository.save(studyProjectBoard);
@@ -69,29 +67,29 @@ public class StudyProjectBoardService {
                 return StudyProjectBoardNoOffsetResponse.newEmptyListInstance(size);
             }
 
-            StudyProjectBoard firstBoard = studyProjectBoardRepository.findById(firstId)
-                    .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+            StudyProjectBoard firstBoard = validateStudyProjectBoard(firstId);
             // firstId 이하 게시물을 찾기
             studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByNoOffset(size, firstBoard, boardType, true);
         } else {
-            StudyProjectBoard lastBoard = studyProjectBoardRepository.findById(lastBoardId)
-                    .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+            StudyProjectBoard lastBoard = validateStudyProjectBoard(lastBoardId);
             // lastBoardId 미만 게시물을 찾기
             studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByNoOffset(size, lastBoard, boardType, false);
         }
 
-        return StudyProjectBoardNoOffsetResponse.newInstance(size, studyProjectBoardList);
+        return StudyProjectBoardNoOffsetResponse.from(size, studyProjectBoardList);
     }
 
     @Transactional(readOnly = true)
     public StudyProjectBoardPageNumResponse getPublishedBoardListByPageNum(Pageable pageable, StudyProjectBoardType boardType) {
         Page<StudyProjectBoard> studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByPageNum(pageable, boardType);
 
-        return StudyProjectBoardPageNumResponse.newInstance(studyProjectBoardList);
+        return StudyProjectBoardPageNumResponse.from(studyProjectBoardList);
     }
 
     @Transactional(readOnly = true)
     public StudyProjectBoardNoOffsetResponse getDraftBoardListByUserId(Long userId, int size, Long lastBoardId) {
+        userService.validateUser(userId);
+
         List<StudyProjectBoard> studyProjectBoardList;
         if (lastBoardId == null) {
             Long firstId;
@@ -106,20 +104,20 @@ public class StudyProjectBoardService {
             studyProjectBoardList = studyProjectBoardRepository.findDraftPageByUserIdByNoOffset(userId, size, lastBoardId, false);
         }
 
-        return StudyProjectBoardNoOffsetResponse.newInstance(size, studyProjectBoardList);
+        return StudyProjectBoardNoOffsetResponse.from(size, studyProjectBoardList);
     }
 
     @Transactional(readOnly = true)
     public StudyProjectBoardPageNumResponse getPublishedBoardListByUserId(Long userId, Pageable pageable, StudyProjectBoardType boardType) {
+        userService.validateUser(userId);
         Page<StudyProjectBoard> studyProjectBoardList = studyProjectBoardRepository.findPublishedPageByUserIdByPageNum(userId, pageable, boardType);
 
-        return StudyProjectBoardPageNumResponse.newInstance(studyProjectBoardList);
+        return StudyProjectBoardPageNumResponse.from(studyProjectBoardList);
     }
 
     @Transactional(readOnly = true)
     public StudyProjectBoardInfoResponse getBoardInfo(Long studyProjectBoardId) {
-        StudyProjectBoard studyProjectBoard = studyProjectBoardRepository.findByIdByFetchingUser(studyProjectBoardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        StudyProjectBoard studyProjectBoard = validateStudyProjectBoard(studyProjectBoardId);
 
         return StudyProjectBoardInfoResponse.from(studyProjectBoard);
     }
@@ -144,7 +142,7 @@ public class StudyProjectBoardService {
             Long studyProjectBoardId,
             StudyProjectBoardInfoAndFormRequest studyProjectBoardInfoAndFormRequest,
             Status status) {
-        StudyProjectBoard studyProjectBoard = studyProjectBoardRepository.findByIdByFetchingUser(studyProjectBoardId)
+        StudyProjectBoard studyProjectBoard = studyProjectBoardRepository.findByIdByFetchingChoiceAnswerListAndApplicant(studyProjectBoardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         if (!userId.equals(studyProjectBoard.getUser().getId())) {
@@ -152,22 +150,17 @@ public class StudyProjectBoardService {
         }
 
         // 게시물 업데이트
-        studyProjectBoard.updateFromRequest(studyProjectBoardInfoAndFormRequest, status, studyProjectFormQuestionRepository, studyProjectFormChoiceAnswerRepository);
+        studyProjectBoard.updateFromRequest(studyProjectBoardInfoAndFormRequest, status,
+                studyProjectFormQuestionRepository, studyProjectFormChoiceAnswerRepository, studyProjectApplicantAnswerRepository);
 
-        return StudyProjectBoardInfoAndFormResponse.builder()
-                .board(StudyProjectBoardInfoResponse.from(studyProjectBoard))
-                .form(studyProjectBoard.getStudyProjectFormQuestionList().stream()
-                        .map(StudyProjectFormQuestionResponse::from)
-                        .collect(Collectors.toList()))
-                .build();
+        return StudyProjectBoardInfoAndFormResponse.from(studyProjectBoard);
     }
 
     @Transactional
     public void deleteBoardAndForm(
             Long userId,
             Long studyProjectBoardId) {
-        StudyProjectBoard studyProjectBoard = studyProjectBoardRepository.findById(studyProjectBoardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        StudyProjectBoard studyProjectBoard = validateStudyProjectBoard(studyProjectBoardId);
 
         if (!userId.equals(studyProjectBoard.getUser().getId()))
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
@@ -192,6 +185,8 @@ public class StudyProjectBoardService {
 
     @Transactional(readOnly = true)
     public StudyProjectBoardInfoAndFormResponse getLatestDraftBoardAndForm(Long userId) {
+        userService.validateUser(userId);
+
         Long studyProjectBoardId = studyProjectBoardRepository.findFirstDraftIdByUserId(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -200,5 +195,9 @@ public class StudyProjectBoardService {
                 .board(getBoardInfo(studyProjectBoardId))
                 .form(getFormInfoList(studyProjectBoardId))
                 .build();
+    }
+
+    public StudyProjectBoard validateStudyProjectBoard(Long studyProjectBoardId) {
+        return studyProjectBoardRepository.findById(studyProjectBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
     }
 }

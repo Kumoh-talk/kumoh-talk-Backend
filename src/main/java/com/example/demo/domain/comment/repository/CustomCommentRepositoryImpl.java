@@ -1,6 +1,7 @@
 package com.example.demo.domain.comment.repository;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.comment.domain.entity.QComment;
 import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,30 +24,41 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     @Override
     public List<Comment> findByBoard_idOrderByCreatedAtAsc(Long boardId) {
+        QComment replyComment = new QComment("replyComment");
+
         return jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.user, user).fetchJoin()
-                .leftJoin(comment.replyComments).fetchJoin()
+                .leftJoin(comment.replyComments, replyComment).fetchJoin()
                 .where(comment.board.id.eq(boardId), comment.parentComment.isNull())
                 .orderBy(comment.createdAt.asc())
                 .fetch();
     }
 
     @Override
-    public Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardType boardType) {
-        List<Comment> content = null;
-        Long totalCount = null;
-        if (boardType == BoardType.SEMINAR) {
-            findSeminarComment(content, totalCount, pageable, userId);
-        } else {
-            findStudyAndProjectComment(content, totalCount, pageable, userId, boardType);
-        }
+    public List<Comment> findByStudyProjectBoard_idOrderByCreatedAtAsc(Long boardId) {
+        QComment replyComment = new QComment("replyComment");
 
-        return new PageImpl<>(content, pageable, totalCount);
+        return jpaQueryFactory
+                .selectFrom(comment)
+                .join(comment.user, user).fetchJoin()
+                .leftJoin(comment.replyComments, replyComment).fetchJoin()
+                .where(comment.studyProjectBoard.id.eq(boardId), comment.parentComment.isNull())
+                .orderBy(comment.createdAt.asc())
+                .fetch();
     }
 
-    public void findSeminarComment(List<Comment> content, Long totalCount, Pageable pageable, Long userId) {
-        content = jpaQueryFactory
+    @Override
+    public Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardType boardType) {
+        if (boardType == BoardType.SEMINAR) {
+            return findSeminarComment(pageable, userId);
+        } else {
+            return findStudyAndProjectComment(pageable, userId, boardType);
+        }
+    }
+
+    public Page<Comment> findSeminarComment(Pageable pageable, Long userId) {
+        List<Comment> content = jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.board, board).fetchJoin()
                 .where(comment.board.isNotNull(),
@@ -56,17 +68,20 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        totalCount = jpaQueryFactory
+        
+        Long totalCount = jpaQueryFactory
                 .select(comment.count())
                 .from(comment)
                 .where(comment.board.isNotNull(),
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .fetchOne();
+
+        return new PageImpl<>(content, pageable, totalCount);
     }
 
-    public void findStudyAndProjectComment(List<Comment> content, Long totalCount, Pageable pageable, Long userId, BoardType boardType) {
-        content = jpaQueryFactory
+    public Page<Comment> findStudyAndProjectComment(Pageable pageable, Long userId, BoardType boardType) {
+        List<Comment> content = jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.studyProjectBoard, studyProjectBoard).fetchJoin()
                 .where(comment.studyProjectBoard.isNotNull(),
@@ -77,7 +92,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        totalCount = jpaQueryFactory
+        Long totalCount = jpaQueryFactory
                 .select(comment.count())
                 .from(comment)
                 .where(comment.studyProjectBoard.isNotNull(),
@@ -85,5 +100,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .fetchOne();
+
+        return new PageImpl<>(content, pageable, totalCount);
     }
 }

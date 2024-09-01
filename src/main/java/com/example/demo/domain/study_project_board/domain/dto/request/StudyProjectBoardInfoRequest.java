@@ -21,7 +21,7 @@ public class StudyProjectBoardInfoRequest {
     @NotBlank(message = "내용을 작성해야합니다.")
     private String content;
 
-    @NotNull(message = "카테고리를 선택해야합니다.")
+    @NotNull(message = "타입을 선택해야합니다.")
     private StudyProjectBoardType type;
 
     @NotNull(message = "태그를 선택해야합니다.")

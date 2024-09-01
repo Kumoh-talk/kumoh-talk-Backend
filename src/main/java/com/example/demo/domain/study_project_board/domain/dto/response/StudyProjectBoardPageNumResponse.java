@@ -19,7 +19,7 @@ public class StudyProjectBoardPageNumResponse {
     private String pageSort;
     private List<StudyProjectBoardNoOffsetResponse.StudyProjectBoardSummaryInfo> boardInfo;
 
-    public static StudyProjectBoardPageNumResponse newInstance(Page<StudyProjectBoard> studyProjectBoardList) {
+    public static StudyProjectBoardPageNumResponse from(Page<StudyProjectBoard> studyProjectBoardList) {
 
         return StudyProjectBoardPageNumResponse.builder()
                 .pageSize(studyProjectBoardList.getSize())

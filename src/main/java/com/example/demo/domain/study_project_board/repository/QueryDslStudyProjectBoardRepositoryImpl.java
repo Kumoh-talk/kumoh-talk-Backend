@@ -13,7 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.demo.domain.study_project_application.domain.entity.QStudyProjectApplicant.studyProjectApplicant;
 import static com.example.demo.domain.study_project_board.domain.entity.QStudyProjectBoard.studyProjectBoard;
+import static com.example.demo.domain.study_project_board.domain.entity.QStudyProjectFormChoiceAnswer.studyProjectFormChoiceAnswer;
+import static com.example.demo.domain.study_project_board.domain.entity.QStudyProjectFormQuestion.studyProjectFormQuestion;
 import static com.example.demo.domain.user.domain.QUser.user;
 
 @RequiredArgsConstructor
@@ -132,13 +135,27 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
     }
 
     @Override
-    public Optional<StudyProjectBoard> findByIdByFetchingUser(Long ApplicationBoardId) {
+    public Optional<StudyProjectBoard> findByIdByFetchingChoiceAnswerListAndApplicant(Long ApplicationBoardId) {
         StudyProjectBoard result = jpaQueryFactory
                 .selectFrom(studyProjectBoard)
-                .join(studyProjectBoard.user, user).fetchJoin()
-                .leftJoin(studyProjectBoard.studyProjectFormQuestionList).fetchJoin()
+                .leftJoin(studyProjectBoard.studyProjectFormQuestionList, studyProjectFormQuestion).fetchJoin()
                 .where(studyProjectBoard.id.eq(ApplicationBoardId))
                 .fetchOne();
-        return Optional.ofNullable(result);
+
+        Long selectedId = result.getId();
+
+        jpaQueryFactory
+                .selectFrom(studyProjectFormQuestion)
+                .leftJoin(studyProjectFormQuestion.studyProjectFormChoiceAnswerList, studyProjectFormChoiceAnswer).fetchJoin()
+                .where(studyProjectFormQuestion.studyProjectBoard.id.eq(selectedId))
+                .fetch();
+
+        jpaQueryFactory
+                .selectFrom(studyProjectBoard)
+                .leftJoin(studyProjectBoard.applicantList, studyProjectApplicant).fetchJoin()
+                .where(studyProjectBoard.id.eq(selectedId))
+                .fetch();
+
+        return Optional.of(result);
     }
 }

@@ -29,7 +29,7 @@ public class StudyProjectBoardNoOffsetResponse {
                 .build();
     }
 
-    public static StudyProjectBoardNoOffsetResponse newInstance(int pageSize, List<StudyProjectBoard> studyProjectBoardList) {
+    public static StudyProjectBoardNoOffsetResponse from(int pageSize, List<StudyProjectBoard> studyProjectBoardList) {
         boolean nextPage = false;
         if (studyProjectBoardList.size() > pageSize) {
             nextPage = true;

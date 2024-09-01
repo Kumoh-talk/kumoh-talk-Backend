@@ -10,5 +10,7 @@ import java.util.List;
 public interface CustomCommentRepository {
     List<Comment> findByBoard_idOrderByCreatedAtAsc(Long boardId);
 
+    List<Comment> findByStudyProjectBoard_idOrderByCreatedAtAsc(Long boardId);
+
     Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardType boardType);
 }

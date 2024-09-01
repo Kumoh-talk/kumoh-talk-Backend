@@ -2,8 +2,10 @@ package com.example.demo.domain.study_project_board.domain.entity;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.study_project_application.domain.entity.StudyProjectApplicant;
+import com.example.demo.domain.study_project_application.domain.entity.StudyProjectApplicantAnswer;
+import com.example.demo.domain.study_project_application.repository.StudyProjectApplicantAnswerRepository;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectBoardInfoAndFormRequest;
-import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectFormChoiceAnswerRequest;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectFormQuestionRequest;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardTag;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
@@ -77,6 +79,9 @@ public class StudyProjectBoard extends BaseEntity {
     @OneToMany(mappedBy = "studyProjectBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "studyProjectBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<StudyProjectApplicant> applicantList = new ArrayList<>();
+
     public void updateStudyProjectFormQuestionList(List<StudyProjectFormQuestion> studyProjectFormQuestionList) {
         this.studyProjectFormQuestionList = studyProjectFormQuestionList;
     }
@@ -122,14 +127,6 @@ public class StudyProjectBoard extends BaseEntity {
                 StudyProjectFormQuestion question =
                         StudyProjectFormQuestion.from(questionRequest, studyProjectBoard);
                 studyProjectBoard.getStudyProjectFormQuestionList().add(question);
-
-                if (questionRequest.getAnswerList() != null) {
-                    for (StudyProjectFormChoiceAnswerRequest choiceAnswerRequest : questionRequest.getAnswerList()) {
-                        StudyProjectFormChoiceAnswer answer =
-                                StudyProjectFormChoiceAnswer.from(choiceAnswerRequest, question);
-                        question.getStudyProjectFormChoiceAnswerList().add(answer);
-                    }
-                }
             }
         }
         return studyProjectBoard;
@@ -138,7 +135,8 @@ public class StudyProjectBoard extends BaseEntity {
     public void updateFromRequest(StudyProjectBoardInfoAndFormRequest request,
                                   Status status,
                                   StudyProjectFormQuestionRepository studyProjectFormQuestionRepository,
-                                  StudyProjectFormChoiceAnswerRepository studyProjectFormChoiceAnswerRepository) {
+                                  StudyProjectFormChoiceAnswerRepository studyProjectFormChoiceAnswerRepository,
+                                  StudyProjectApplicantAnswerRepository studyProjectApplicantAnswerRepository) {
         // 게시물 업데이트
         this.title = request.getBoard().getTitle();
         this.summary = request.getBoard().getSummary();
@@ -169,7 +167,7 @@ public class StudyProjectBoard extends BaseEntity {
                     StudyProjectFormQuestion delete = studyProjectFormQuestionList.remove(i);
                     deleteIdList.add(delete.getId());
                 }
-                // TODO : hardDelete는 명시 삭제 X?
+                // TODO : 질문이 삭제되면, 신청자의 답변도 hard delete 될까?
                 studyProjectFormQuestionRepository.hardDeleteQuestionsByIds(deleteIdList);
                 return;
             }
@@ -177,8 +175,11 @@ public class StudyProjectBoard extends BaseEntity {
         // 수정 질문 수 > 기존 질문 수 -> 넘치는 수정 질문들 추가
         int size = request.getForm() != null ? request.getForm().size() : 0;
         while (questionIdx < size) {
-            studyProjectFormQuestionList.add(
-                    StudyProjectFormQuestion.from(request.getForm().get(questionIdx++), this));
+            StudyProjectFormQuestion studyProjectFormQuestion = StudyProjectFormQuestion.from(request.getForm().get(questionIdx++), this);
+            studyProjectFormQuestionList.add(studyProjectFormQuestion);
+            for (StudyProjectApplicant studyProjectApplicant : applicantList) {
+                studyProjectApplicantAnswerRepository.save(StudyProjectApplicantAnswer.newEmptyAnswerInstance(studyProjectFormQuestion, studyProjectApplicant));
+            }
         }
     }
 }
