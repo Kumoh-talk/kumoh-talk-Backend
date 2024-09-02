@@ -3,8 +3,6 @@ package com.example.demo.domain.study_project_board.domain.entity;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.study_project_application.domain.entity.StudyProjectApplicant;
-import com.example.demo.domain.study_project_application.domain.entity.StudyProjectApplicantAnswer;
-import com.example.demo.domain.study_project_application.repository.StudyProjectApplicantAnswerRepository;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectBoardInfoAndFormRequest;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectFormQuestionRequest;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardTag;
@@ -135,8 +133,7 @@ public class StudyProjectBoard extends BaseEntity {
     public void updateFromRequest(StudyProjectBoardInfoAndFormRequest request,
                                   Status status,
                                   StudyProjectFormQuestionRepository studyProjectFormQuestionRepository,
-                                  StudyProjectFormChoiceAnswerRepository studyProjectFormChoiceAnswerRepository,
-                                  StudyProjectApplicantAnswerRepository studyProjectApplicantAnswerRepository) {
+                                  StudyProjectFormChoiceAnswerRepository studyProjectFormChoiceAnswerRepository) {
         // 게시물 업데이트
         this.title = request.getBoard().getTitle();
         this.summary = request.getBoard().getSummary();
@@ -177,9 +174,6 @@ public class StudyProjectBoard extends BaseEntity {
         while (questionIdx < size) {
             StudyProjectFormQuestion studyProjectFormQuestion = StudyProjectFormQuestion.from(request.getForm().get(questionIdx++), this);
             studyProjectFormQuestionList.add(studyProjectFormQuestion);
-            for (StudyProjectApplicant studyProjectApplicant : applicantList) {
-                studyProjectApplicantAnswerRepository.save(StudyProjectApplicantAnswer.newEmptyAnswerInstance(studyProjectFormQuestion, studyProjectApplicant));
-            }
         }
     }
 }
