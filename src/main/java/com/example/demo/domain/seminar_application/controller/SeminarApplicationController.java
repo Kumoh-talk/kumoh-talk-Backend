@@ -18,30 +18,39 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/seminar-application")
+@RequestMapping("/api/v1/seminar-applications")
 public class SeminarApplicationController {
 
     private final SeminarApplicationService seminarApplicationService;
 
+    /**
+     * 세미나 신청서 작성
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @PostMapping("/apply")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
+    @PostMapping
     public ResponseEntity<ResponseBody<Void>> applyForSeminar(Long userId,
                                                               @RequestBody @Valid SeminarApplicationRequest request) {
         seminarApplicationService.applyForSeminar(userId, request);
         return ResponseEntity.ok(createSuccessResponse());
     }
 
+    /**
+     * 내가 쓴 모든 세미나 신청서 목록 조회
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @GetMapping("/apply")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
+    @GetMapping
     public ResponseEntity<ResponseBody<Page<SeminarApplicationInfo>>> getSeminarApplicationByUserId(Long userId,
                                                                                                     Pageable pageable) {
         return ResponseEntity.ok(createSuccessResponse(seminarApplicationService.getSeminarApplicationByUserId(userId, pageable)));
     }
 
+    /**
+     * 내가 쓴 신청서 내용 수정
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
     @PutMapping("/apply/{seminarApplicationId}")
     public ResponseEntity<ResponseBody<Void>> updateSeminarApplication(Long userId,
                                                                        @PathVariable Long seminarApplicationId,
@@ -50,8 +59,11 @@ public class SeminarApplicationController {
         return ResponseEntity.ok(createSuccessResponse());
     }
 
+    /**
+     * 내가 쓴 신청서 삭제
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
     @DeleteMapping("/apply/{seminarApplicationId}")
     public ResponseEntity<ResponseBody<Void>> deleteSeminarApplication(Long userId,
                                                                        @PathVariable Long seminarApplicationId) {

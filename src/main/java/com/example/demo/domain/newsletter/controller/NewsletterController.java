@@ -23,7 +23,7 @@ public class NewsletterController {
     private final NewsletterService newsletterService;
 
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PostMapping("/subscribe")
     public ResponseEntity<ResponseBody<Void>> subscribe(Long userId,
                                                         @RequestBody @Valid NewsletterSubscribeRequest request) {
@@ -32,14 +32,14 @@ public class NewsletterController {
     }
 
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @GetMapping ("/subscribe")
     public ResponseEntity<ResponseBody<NewsletterInfo>> getNewsletterInfo(Long userId) {
         return ResponseEntity.ok(createSuccessResponse(newsletterService.getNewsletterInfo(userId)));
     }
 
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PatchMapping("/subscribe/email")
     public ResponseEntity<ResponseBody<Void>> updateNewsletterEmail(Long userId,
                                                                     @RequestBody @Valid NewsletterUpdateEmailRequest request) {
@@ -48,7 +48,7 @@ public class NewsletterController {
     }
 
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PatchMapping("/subscribe/notify")
     public ResponseEntity<ResponseBody<Void>> updateNewsletterNotify(Long userId,
                                                                    @RequestBody @Valid NewsletterUpdateNotifyRequest request) {
@@ -57,7 +57,7 @@ public class NewsletterController {
     }
 
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @DeleteMapping("/subscribe")
     public ResponseEntity<ResponseBody<Void>> deleteNewsletterInfo(Long userId) {
         newsletterService.deleteNewsletterInfo(userId);

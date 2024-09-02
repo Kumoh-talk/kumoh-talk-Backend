@@ -26,7 +26,7 @@ public class UserAdditionalInfoController {
      * 존재하면 UserAdditionalInfoResponse
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @GetMapping("/me")
     public ResponseEntity<ResponseBody<UserAdditionalInfoResponse>> getUserAdditionalInfo(Long userId) {
         return ResponseEntity.ok(createSuccessResponse(userAdditionalInfoService.getUserAdditionalInfo(userId)));
@@ -37,7 +37,7 @@ public class UserAdditionalInfoController {
      * 존재하면 404
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PostMapping("/me")
     public ResponseEntity<ResponseBody<Void>> createUserAdditionalInfo(Long userId,
                                                                        @RequestBody @Valid CreateUserAdditionalInfoRequest request) {
