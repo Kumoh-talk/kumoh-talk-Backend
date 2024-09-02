@@ -5,8 +5,8 @@ import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -35,8 +35,8 @@ public class FakeLoginController {
     }
 
     @Getter
-    @Setter
-    public class LoginResponse {
+    @NoArgsConstructor
+    public static class LoginResponse {
         private String token;
 
         // 기본 생성자

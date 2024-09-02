@@ -1,22 +1,29 @@
 package com.example.demo.domain.comment.domain.response;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class CommentResponse {
     private int commentsCount;
-    private List<CommentInfo> commentInfoList;
+    private List<CommentInfoResponse> commentInfoResponseList;
 
-    public static CommentResponse from(List<CommentInfo> commentInfoList){
+    public static CommentResponse from(List<Comment> commentEntityList) {
+        List<CommentInfoResponse> commentInfoResponseList = commentEntityList.stream()
+                .map(CommentInfoResponse::from)
+                .collect(Collectors.toList());
+
         int replyCommentsCount = 0;
-        for (CommentInfo commentInfo : commentInfoList){
-            replyCommentsCount += commentInfo.getReplyComments().size();
+        for (CommentInfoResponse commentInfoResponse : commentInfoResponseList) {
+            replyCommentsCount += commentInfoResponse.getReplyComments().size();
         }
-        return new CommentResponse(replyCommentsCount+commentInfoList.size(), commentInfoList);
+        return new CommentResponse(replyCommentsCount + commentInfoResponseList.size(), commentInfoResponseList);
     }
 }
