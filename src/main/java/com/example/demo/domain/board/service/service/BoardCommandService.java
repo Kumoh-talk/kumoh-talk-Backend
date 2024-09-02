@@ -13,6 +13,8 @@ import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,17 +65,14 @@ public class BoardCommandService {
         updateBoardInfo(board, boardUpdateRequest);
 
 
-        Long viewNum = boardRepository.countViewsByBoardId(boardUpdateRequest.getId());
-        Long likeNum = boardRepository.countLikesByBoardId(boardUpdateRequest.getId());
-
         List<String> categoryNames = board.getBoardCategories().stream()
                 .map(boardCategory -> boardCategory.getCategory().getName())
                 .collect(Collectors.toList());
 
         return BoardInfoResponse.from(board,
                 board.getUser().getNickname(),
-                viewNum,
-                likeNum,
+                boardRepository.countViewsByBoardId(boardUpdateRequest.getId()),
+                boardRepository.countLikesByBoardId(boardUpdateRequest.getId()),
                 categoryNames);
     }
 
@@ -87,18 +86,18 @@ public class BoardCommandService {
         List<BoardCategory> existingBoardCategories = board.getBoardCategories();
         List<String> existingCategoryNames = existingBoardCategories.stream()
                 .map(boardCategory -> boardCategory.getCategory().getName())
-                .collect(Collectors.toList());
+                .toList();
 
         // 삭제할 카테고리 처리
-        existingBoardCategories.stream()
-                .filter(boardCategory -> !newCategoryNames.contains(boardCategory.getCategory().getName()))
-                .forEach(boardCategory -> {
-                    Category category = boardCategory.getCategory();
-                    category.getBoardCategories().remove(boardCategory);
-                    board.getBoardCategories().remove(boardCategory);
-                    boardCategory.setAssociateNull();
-                    boardCategoryRepository.delete(boardCategory);
-                    deleteCategory(category);
+        existingCategoryNames.stream()
+                .filter(categoryName -> !newCategoryNames.contains(categoryName))
+                .forEach(categoryName -> {
+                    Category category = categoryRepository.findByName(categoryName).get();
+                    BoardCategory boardCategory = boardCategoryRepository.findByName(categoryName).get();
+                    if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 1) {
+                        board.getBoardCategories().remove(boardCategory);
+                        categoryRepository.delete(category);
+                    }
                 });
 
         // 추가할 카테고리 처리
@@ -109,25 +108,27 @@ public class BoardCommandService {
                 });
     }
 
-    private void deleteCategory(Category category) {
-        if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 0) {
-            categoryRepository.delete(category);
-        }
-    }
-
     @Transactional
     public void removeBoard(Long userId,Long boardId) {
         Board board = validateBoard(boardId);
         validateUserEqualBoardUser(userId, board);
 
-        List<Category> categories = board.getBoardCategories().stream()
-                .map(BoardCategory::getCategory)
-                .collect(Collectors.toList());
+        List<BoardCategory> existingBoardCategories = board.getBoardCategories();
+        List<String> existingCategoryNames = existingBoardCategories.stream()
+            .map(boardCategory -> boardCategory.getCategory().getName())
+            .toList();
 
+        // 삭제할 카테고리 처리
+        existingCategoryNames.stream()
+            .forEach(categoryName -> {
+                Category category = categoryRepository.findByName(categoryName).get();
+                BoardCategory boardCategory = boardCategoryRepository.findByName(categoryName).get();
+                if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 1) {
+                    board.getBoardCategories().remove(boardCategory);
+                    categoryRepository.delete(category);
+                }
+            });
         boardRepository.delete(board);
-        for (Category category : categories) {
-            deleteCategory(category);
-        }
     }
 
     private Board validateBoard(Long boardId) {
@@ -136,7 +137,7 @@ public class BoardCommandService {
         return board;
     }
 
-    private static void validateUserEqualBoardUser(Long userId, Board board) {
+    private void validateUserEqualBoardUser(Long userId, Board board) {
         if(!board.getUser().getId().equals(userId)) {
             throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
