@@ -3,27 +3,30 @@ package com.example.demo.domain.study_project_board.repository;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
+import com.example.demo.global.utils.QueryDslUtils;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.demo.domain.study_project_application.domain.entity.QStudyProjectApplicant.studyProjectApplicant;
 import static com.example.demo.domain.study_project_board.domain.entity.QStudyProjectBoard.studyProjectBoard;
 import static com.example.demo.domain.study_project_board.domain.entity.QStudyProjectFormChoiceAnswer.studyProjectFormChoiceAnswer;
 import static com.example.demo.domain.study_project_board.domain.entity.QStudyProjectFormQuestion.studyProjectFormQuestion;
 import static com.example.demo.domain.user.domain.QUser.user;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor
 public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyProjectBoardRepository {
     private final JPAQueryFactory jpaQueryFactory;
-
-    // TODO : pageNum 방식 페이징에 정렬 부분 하드코딩 제거
 
     @Override
     public List<StudyProjectBoard> findPublishedPageByNoOffset(int size, StudyProjectBoard lastBoard, StudyProjectBoardType boardType, boolean isFirst) {
@@ -61,13 +64,15 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
 
     @Override
     public Page<StudyProjectBoard> findPublishedPageByPageNum(Pageable pageable, StudyProjectBoardType boardType) {
+        List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
+
         List<StudyProjectBoard> content = jpaQueryFactory
                 .selectFrom(studyProjectBoard)
                 .join(studyProjectBoard.user, user).fetchJoin()
                 .where(studyProjectBoard.type.eq(boardType),
                         studyProjectBoard.status.eq(Status.PUBLISHED),
                         studyProjectBoard.recruitmentDeadline.goe(LocalDateTime.now()))
-                .orderBy(studyProjectBoard.recruitmentDeadline.asc())
+                .orderBy(ORDERS.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -84,13 +89,15 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
 
     @Override
     public Page<StudyProjectBoard> findPublishedPageByUserIdByPageNum(Long userId, Pageable pageable, StudyProjectBoardType boardType) {
+        List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
+
         List<StudyProjectBoard> content = jpaQueryFactory
                 .selectFrom(studyProjectBoard)
                 .join(studyProjectBoard.user, user).fetchJoin()
                 .where(studyProjectBoard.type.eq(boardType),
                         studyProjectBoard.status.eq(Status.PUBLISHED),
                         studyProjectBoard.user.id.eq(userId))
-                .orderBy(studyProjectBoard.createdAt.desc())
+                .orderBy(ORDERS.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -135,7 +142,7 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
     }
 
     @Override
-    public Optional<StudyProjectBoard> findByIdByFetchingChoiceAnswerListAndApplicant(Long ApplicationBoardId) {
+    public Optional<StudyProjectBoard> findByIdByFetchingChoiceAnswerList(Long ApplicationBoardId) {
         StudyProjectBoard result = jpaQueryFactory
                 .selectFrom(studyProjectBoard)
                 .leftJoin(studyProjectBoard.studyProjectFormQuestionList, studyProjectFormQuestion).fetchJoin()
@@ -150,12 +157,30 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
                 .where(studyProjectFormQuestion.studyProjectBoard.id.eq(selectedId))
                 .fetch();
 
-        jpaQueryFactory
-                .selectFrom(studyProjectBoard)
-                .leftJoin(studyProjectBoard.applicantList, studyProjectApplicant).fetchJoin()
-                .where(studyProjectBoard.id.eq(selectedId))
-                .fetch();
-
         return Optional.of(result);
+    }
+
+    private List<OrderSpecifier> getAllOrderSpecifiers(Pageable pageable) {
+        List<OrderSpecifier> orderSpecifierList = new ArrayList<>();
+
+        if (!isEmpty(pageable.getSort())) {
+            for (Sort.Order order : pageable.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+                switch (order.getProperty()) {
+                    case "createdAt":
+                        OrderSpecifier<?> orderId = QueryDslUtils.getSortedColumn(direction, studyProjectBoard, "createdAt");
+                        orderSpecifierList.add(orderId);
+                        break;
+                    case "recruitmentDeadline":
+                        OrderSpecifier<?> orderUser = QueryDslUtils.getSortedColumn(direction, studyProjectBoard, "recruitmentDeadline");
+                        orderSpecifierList.add(orderUser);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return orderSpecifierList;
     }
 }

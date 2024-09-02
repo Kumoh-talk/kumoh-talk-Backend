@@ -17,5 +17,5 @@ public interface QueryDslStudyProjectBoardRepository {
 
     List<StudyProjectBoard> findDraftPageByUserIdByNoOffset(Long userId, int size, Long lastBoardId, boolean isFirst);
 
-    Optional<StudyProjectBoard> findByIdByFetchingChoiceAnswerListAndApplicant(Long ApplicationBoardId);
+    Optional<StudyProjectBoard> findByIdByFetchingChoiceAnswerList(Long ApplicationBoardId);
 }
