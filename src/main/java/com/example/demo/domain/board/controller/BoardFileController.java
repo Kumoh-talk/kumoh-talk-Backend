@@ -29,7 +29,7 @@ public class BoardFileController {
 	private final BoardFileUseCase boardFileUseCase;
 
 	@AssignUserId
-	@PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
 	@PostMapping("/v1/boards/files/presigned-url")
 	public ResponseEntity<ResponseBody<String>> getPresignedUrl(Long userId,
 		@RequestBody @Valid PresignedUrlRequest presignedUrlRequest) {
@@ -37,7 +37,7 @@ public class BoardFileController {
 	}
 
 	@AssignUserId
-	@PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
 	@PostMapping("/v1/boards/files/images")
 	public ResponseEntity<ResponseBody<Void>> saveImageFileUrl(Long userId,@RequestBody @Valid FileRequest fileRequest) {
 		boardFileUseCase.saveImageFileUrl(userId, fileRequest);
@@ -45,7 +45,7 @@ public class BoardFileController {
 	}
 
 	@AssignUserId
-	@PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
 	@PatchMapping("/v1/boards/files/attach")
 	public ResponseEntity<ResponseBody<Void>> changeAttachFileUrl(Long userId,@RequestBody @Valid FileRequest fileRequest) {
 		boardFileUseCase.changeAttachFileUrl(userId, fileRequest);
@@ -58,7 +58,7 @@ public class BoardFileController {
 	}
 
 	@AssignUserId
-	@PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
 	@DeleteMapping("/v1/boards/files/images")
 	public ResponseEntity<ResponseBody<Void>> deleteImageFileUrl(Long userId,@RequestBody @Valid FileRequest fileRequest) {
 		boardFileUseCase.deleteImageFileUrl(userId, fileRequest);
