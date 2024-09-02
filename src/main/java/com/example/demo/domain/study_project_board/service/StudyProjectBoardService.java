@@ -1,7 +1,7 @@
 package com.example.demo.domain.study_project_board.service;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.study_project_application.repository.StudyProjectApplicantAnswerRepository;
+import com.example.demo.domain.study_project_application.repository.StudyProjectApplicantRepository;
 import com.example.demo.domain.study_project_board.domain.dto.request.StudyProjectBoardInfoAndFormRequest;
 import com.example.demo.domain.study_project_board.domain.dto.response.*;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
@@ -35,7 +35,7 @@ public class StudyProjectBoardService {
     private final StudyProjectBoardRepository studyProjectBoardRepository;
     private final StudyProjectFormQuestionRepository studyProjectFormQuestionRepository;
     private final StudyProjectFormChoiceAnswerRepository studyProjectFormChoiceAnswerRepository;
-    private final StudyProjectApplicantAnswerRepository studyProjectApplicantAnswerRepository;
+    private final StudyProjectApplicantRepository studyProjectApplicantRepository;
 
     @Transactional
     public StudyProjectBoardInfoAndFormResponse saveBoardAndForm(
@@ -142,16 +142,21 @@ public class StudyProjectBoardService {
             Long studyProjectBoardId,
             StudyProjectBoardInfoAndFormRequest studyProjectBoardInfoAndFormRequest,
             Status status) {
-        StudyProjectBoard studyProjectBoard = studyProjectBoardRepository.findByIdByFetchingChoiceAnswerListAndApplicant(studyProjectBoardId)
+        StudyProjectBoard studyProjectBoard = studyProjectBoardRepository.findByIdByFetchingChoiceAnswerList(studyProjectBoardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         if (!userId.equals(studyProjectBoard.getUser().getId())) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
 
+        // 신청자가 존재하면 수정 불가
+        if (studyProjectApplicantRepository.findByStudyProjectBoard_Id(studyProjectBoardId).isPresent()) {
+            throw new ServiceException(ErrorCode.STUDYPROJECT_APPLICATION_EXIST);
+        }
+
         // 게시물 업데이트
         studyProjectBoard.updateFromRequest(studyProjectBoardInfoAndFormRequest, status,
-                studyProjectFormQuestionRepository, studyProjectFormChoiceAnswerRepository, studyProjectApplicantAnswerRepository);
+                studyProjectFormQuestionRepository, studyProjectFormChoiceAnswerRepository);
 
         return StudyProjectBoardInfoAndFormResponse.from(studyProjectBoard);
     }

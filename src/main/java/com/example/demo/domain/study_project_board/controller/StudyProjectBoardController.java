@@ -108,6 +108,7 @@ public class StudyProjectBoardController {
      * @param : status[published, draft]
      */
     // 게시물 작성 전 임시저장 게시물을 불러온 후 저장하면 해당 API 요청
+    // TODO : 신청이 들어오면 수정못하도록
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PatchMapping("/{studyProjectBoardId}")
