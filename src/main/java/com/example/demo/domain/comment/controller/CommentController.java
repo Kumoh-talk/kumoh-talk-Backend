@@ -26,11 +26,12 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 public class CommentController {
     private final CommentService commentService;
 
+    // TODO : enum validation 수정
 
     /**
      * 게시물 별 댓글 조회
      *
-     * @param : boardType[study, project, seminar]
+     * @param : boardType[study, project, seminar_notice, seminar_summary]
      */
     @GetMapping("/{boardId}")
     public ResponseEntity<ResponseBody<CommentResponse>> getBoardComments(
@@ -43,7 +44,7 @@ public class CommentController {
     /**
      * 사용자 작성 댓글 조회
      *
-     * @param : boardType[study, project, seminar]
+     * @param : boardType[study, project, seminar_notice, seminar_summary]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated()")
@@ -58,7 +59,7 @@ public class CommentController {
     /**
      * 댓글 저장
      *
-     * @param : boardType[study, project, seminar]
+     * @param : boardType[study, project, seminar_notice, seminar_summary]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated()")

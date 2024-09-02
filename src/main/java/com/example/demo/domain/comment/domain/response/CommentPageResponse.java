@@ -23,7 +23,7 @@ public class CommentPageResponse {
     public static CommentPageResponse from(Page<Comment> commentEntityPage, BoardType boardType) {
         List<MyCommentResponse> myCommentResponseList;
         switch (boardType) {
-            case SEMINAR -> myCommentResponseList = commentEntityPage.stream()
+            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> myCommentResponseList = commentEntityPage.stream()
                     .map(MyCommentResponse::fromSeminarComment)
                     .collect(Collectors.toList());
             case STUDY, PROJECT -> myCommentResponseList = commentEntityPage.stream()

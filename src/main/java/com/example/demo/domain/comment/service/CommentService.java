@@ -63,7 +63,7 @@ public class CommentService {
         StudyProjectBoard studyProjectBoard;
         Comment requestComment = null;
         switch (boardType) {
-            case SEMINAR -> {
+            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
                 commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
@@ -115,7 +115,7 @@ public class CommentService {
 
     public List<Comment> validateBoard(Long boardId, BoardType boardType) {
         switch (boardType) {
-            case SEMINAR -> {
+            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
                 boardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );

@@ -50,7 +50,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     @Override
     public Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardType boardType) {
-        if (boardType == BoardType.SEMINAR) {
+        if (boardType == BoardType.SEMINAR_NOTICE || boardType == BoardType.SEMINAR_SUMMARY) {
             return findSeminarComment(pageable, userId);
         } else {
             return findStudyAndProjectComment(pageable, userId, boardType);
@@ -68,7 +68,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        
+
         Long totalCount = jpaQueryFactory
                 .select(comment.count())
                 .from(comment)
