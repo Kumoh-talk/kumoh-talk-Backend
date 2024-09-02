@@ -35,7 +35,6 @@ public class FakeLoginController {
     }
 
     @Getter
-    @NoArgsConstructor
     public static class LoginResponse {
         private String token;
 
