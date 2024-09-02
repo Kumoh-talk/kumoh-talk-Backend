@@ -4,6 +4,7 @@ import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApp
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationUpdateRequest;
 import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
 import com.example.demo.domain.seminar_application.service.SeminarApplicationService;
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
@@ -29,10 +30,11 @@ public class SeminarApplicationController {
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
     @PostMapping
-    public ResponseEntity<ResponseBody<Void>> applyForSeminar(Long userId,
-                                                              @RequestBody @Valid SeminarApplicationRequest request) {
-        seminarApplicationService.applyForSeminar(userId, request);
-        return ResponseEntity.ok(createSuccessResponse());
+    public ResponseEntity<ResponseBody<TokenResponse>> applyForSeminar(Long userId,
+                                                                       @RequestBody @Valid SeminarApplicationRequest request) {
+        return seminarApplicationService.applyForSeminar(userId, request)
+                .map(token -> ResponseEntity.ok(createSuccessResponse(token))) // 200 OK
+                .orElseGet(() -> ResponseEntity.noContent().build()); // 204 No Content
     }
 
     /**
@@ -51,7 +53,7 @@ public class SeminarApplicationController {
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
-    @PutMapping("/apply/{seminarApplicationId}")
+    @PutMapping("/{seminarApplicationId}")
     public ResponseEntity<ResponseBody<Void>> updateSeminarApplication(Long userId,
                                                                        @PathVariable Long seminarApplicationId,
                                                                        @RequestBody @Valid SeminarApplicationUpdateRequest request) {
@@ -64,7 +66,7 @@ public class SeminarApplicationController {
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
-    @DeleteMapping("/apply/{seminarApplicationId}")
+    @DeleteMapping("/{seminarApplicationId}")
     public ResponseEntity<ResponseBody<Void>> deleteSeminarApplication(Long userId,
                                                                        @PathVariable Long seminarApplicationId) {
         seminarApplicationService.deleteSeminarApplication(userId, seminarApplicationId);
