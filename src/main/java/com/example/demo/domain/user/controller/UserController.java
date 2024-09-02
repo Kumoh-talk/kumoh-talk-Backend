@@ -30,10 +30,12 @@ public class UserController {
 
     /**
      * GUEST 사용자에 한해서 닉네임 중복 여/부를 확인하는 api
+     * TODO. 현재는 중복 체크는 GUEST 유저에게만 허용
      */
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_GUEST')")
     @GetMapping("/check-nickname")
-    public ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(@Param("nickname") @Pattern(regexp = NICKNAME_REGEXP) String nickname) {
+    public ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(
+            @Param("nickname") @Pattern(regexp = NICKNAME_REGEXP, message = "닉네임 정규식을 맞춰주세요.") String nickname) {
         userService.checkNicknameDuplicate(nickname);
         return ResponseEntity.ok(createSuccessResponse());
     }
