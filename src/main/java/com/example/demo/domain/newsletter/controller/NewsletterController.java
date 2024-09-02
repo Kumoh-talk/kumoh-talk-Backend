@@ -17,7 +17,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/newsletters")
+@RequestMapping("/api/v1/newsletters")
 public class NewsletterController {
 
     private final NewsletterService newsletterService;

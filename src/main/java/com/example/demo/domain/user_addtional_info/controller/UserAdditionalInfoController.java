@@ -15,7 +15,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/userAdditionalInfos")
+@RequestMapping("/api/v1/userAdditionalInfos")
 public class UserAdditionalInfoController {
 
     private final UserAdditionalInfoService userAdditionalInfoService;

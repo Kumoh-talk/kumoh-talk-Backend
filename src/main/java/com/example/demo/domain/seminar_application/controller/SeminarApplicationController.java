@@ -18,7 +18,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/seminar-application")
+@RequestMapping("/api/v1/seminar-application")
 public class SeminarApplicationController {
 
     private final SeminarApplicationService seminarApplicationService;
