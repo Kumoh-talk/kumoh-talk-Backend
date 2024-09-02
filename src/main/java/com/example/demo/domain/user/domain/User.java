@@ -103,4 +103,12 @@ public class User extends BaseEntity {
     public void addSeminarApplications(SeminarApplication seminarApplication) {
         this.seminarApplications.add(seminarApplication);
     }
+
+    public void updateUserRoleToActiveUser() {
+        this.role = Role.ROLE_ACTIVE_USER;
+    }
+
+    public void updateUserRoleToSeminarWriter() {
+        this.role = Role.ROLE_SEMINAR_WRITER;
+    }
 }
