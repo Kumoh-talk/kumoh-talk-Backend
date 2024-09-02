@@ -2,93 +2,131 @@ package com.example.demo.domain.comment.service;
 
 
 import com.example.demo.domain.board.Repository.BoardRepository;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
-import com.example.demo.domain.comment.domain.response.CommentInfo;
+import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
+import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
+import com.example.demo.domain.study_project_board.repository.StudyProjectBoardRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+    private final UserService userService;
+
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
+    private final StudyProjectBoardRepository studyProjectBoardRepository;
 
     @Transactional(readOnly = true)
-    public CommentResponse findByBoardId(Long boardId) {
-        boardRepository.findById(boardId).orElseThrow(() ->
-                    new ServiceException(ErrorCode.BOARD_NOT_FOUND)
-            );
-        List<Comment> comments = commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
+    public CommentResponse findCommentsByBoardId(Long boardId, BoardType boardType) {
+        List<Comment> commentList = validateBoard(boardId, boardType);
 
-        return CommentResponse.from(comments.stream()
-                .map(CommentInfo::from)
-                .collect(Collectors.toList()));
+        return CommentResponse.from(commentList);
+    }
+
+    @Transactional(readOnly = true)
+    public CommentPageResponse findCommentsByUserId(Long userId, BoardType boardType, Pageable pageable) {
+        userService.validateUser(userId);
+        Page<Comment> commentPage = commentRepository.findCommentByUser_idOrderByCreatedAtDsc(pageable, userId, boardType);
+        return CommentPageResponse.from(commentPage, boardType);
     }
 
     @Transactional
-    public CommentInfo save(Long userId, CommentRequest commentRequest, Long boardId) {
-        Board findBoard = boardRepository.findById(boardId).orElseThrow(() ->
-                new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+    public CommentInfoResponse saveComment(CommentRequest commentRequest, Long userId, Long boardId, BoardType boardType) {
+        User commentUser = userService.validateUser(userId);
+
         Comment parentComment;
-        if (commentRequest.getGroupId() != null){
+        if (commentRequest.getGroupId() != null) {
             parentComment = commentRepository.findById(commentRequest.getGroupId()).orElseThrow(() ->
                     new ServiceException(ErrorCode.PARENT_NOT_FOUND));
-        } else{
+        } else {
             parentComment = null;
         }
 
-        Comment requestComment = new Comment(commentRequest.getContents(), findBoard, findUser, parentComment);
+        Board commentBoard;
+        StudyProjectBoard studyProjectBoard;
+        Comment requestComment = null;
+        switch (boardType) {
+            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
+                commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                requestComment = Comment.fromSeminarBoardRequest(commentRequest, commentBoard, commentUser, parentComment);
+            }
+            case STUDY, PROJECT -> {
+                studyProjectBoard = studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                requestComment = Comment.fromStudyProjectBoardRequest(commentRequest, studyProjectBoard, commentUser, parentComment);
+            }
+        }
+
         Comment saved = commentRepository.save(requestComment);
 
-        return CommentInfo.from(saved);
+        return CommentInfoResponse.from(saved);
     }
 
     @Transactional
-    public CommentInfo update(CommentRequest commentRequest,
-                              Long commentId,
-                              Long userId) {
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
+    public CommentInfoResponse updateComment(CommentRequest commentRequest,
+                                             Long commentId,
+                                             Long userId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
-        if (userId.equals(findComment.getUser().getId()))
-            findComment.changeContent(commentRequest.getContents());
-        else
+        if (userId.equals(comment.getUser().getId())) {
+            comment.changeContent(commentRequest.getContent());
+        } else {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
-        return CommentInfo.from(findComment);
-    }
-    @Transactional
-    public void delete(Long commentId, Long userId) {
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
-                new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
-        );
-
-        if (userId.equals(findComment.getUser().getId())){
-            commentRepository.delete(findComment);
-            deleteReplyComments(findComment);
         }
-        else
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+
+        return CommentInfoResponse.from(comment);
     }
-    public void deleteReplyComments(Comment parentComment){
-        for(Comment replyComment : parentComment.getReplyComments()){
-            commentRepository.delete(replyComment);
+
+    @Transactional
+    public void deleteComment(Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
+        );
+
+        if (userId.equals(comment.getUser().getId())) {
+            commentRepository.replyCommentsDeleteById(commentId);
+            commentRepository.delete(comment);
+        } else {
+            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+        }
+    }
+
+    public List<Comment> validateBoard(Long boardId, BoardType boardType) {
+        switch (boardType) {
+            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
+                boardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                return commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
+            }
+            default -> {
+                studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                return commentRepository.findByStudyProjectBoard_idOrderByCreatedAtAsc(boardId);
+            }
         }
     }
 }
