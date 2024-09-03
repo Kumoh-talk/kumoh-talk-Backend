@@ -29,6 +29,6 @@ public enum StudentStatus {
                 return studentStatus;
             }
         }
-        throw new IllegalArgumentException("학생 상태에 포함되는 값이 아닙니다.");
+        return null;
     }
 }

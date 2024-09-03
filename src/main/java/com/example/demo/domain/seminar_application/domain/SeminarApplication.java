@@ -72,7 +72,7 @@ public class SeminarApplication extends BaseEntity {
 
     public boolean canEditOrDelete() {
         LocalDate currentDate = LocalDate.now();
-        LocalDate cutoffDate = preferredDate.minusDays(1); // 하루 전날
+        LocalDate cutoffDate = preferredDate.minusDays(2); // 2일전까지는 편집/삭제 가능
         return currentDate.isBefore(cutoffDate) || currentDate.isEqual(cutoffDate);
     }
 
