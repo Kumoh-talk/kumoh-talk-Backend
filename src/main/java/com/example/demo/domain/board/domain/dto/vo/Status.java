@@ -14,6 +14,6 @@ public enum Status {
                 return status;
             }
         }
-        throw new IllegalArgumentException("Status에 해당하는 값이 없습니다.");
+        return null;
     }
 }

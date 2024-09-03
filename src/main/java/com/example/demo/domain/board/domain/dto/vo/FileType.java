@@ -7,12 +7,12 @@ public enum FileType {
 	ATTACH;
 
 	@JsonCreator
-	public static Status fromString(String value) {
-		for(Status status : Status.values()) {
-			if(status.toString().equalsIgnoreCase(value)) {
-				return status;
+	public static FileType fromString(String value) {
+		for(FileType fileType : FileType.values()) {
+			if(fileType.toString().equalsIgnoreCase(value)) {
+				return fileType;
 			}
 		}
-		throw new IllegalArgumentException("파일 유형에 해당하는 값이 없습니다.");
+		return null;
 	}
 }
