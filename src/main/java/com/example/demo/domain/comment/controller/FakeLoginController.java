@@ -8,6 +8,8 @@ import com.example.demo.global.jwt.JwtUserClaim;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,9 +35,12 @@ public class FakeLoginController {
     }
 
     @Getter
-    @NoArgsConstructor
     public static class LoginResponse {
         private String token;
+
+        // 기본 생성자
+        public LoginResponse() {
+        }
 
         public LoginResponse(String token) {
             this.token = token;
