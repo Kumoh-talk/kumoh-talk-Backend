@@ -1,6 +1,7 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.*;
+import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
@@ -30,10 +31,10 @@ public class BoardCommandService {
     private final BoardCategoryRepository boardCategoryRepository;
 
     @Transactional
-    public BoardInfoResponse createBoard(Long userId, BoardCreateRequest boardCreateRequest) {
+    public BoardInfoResponse createBoard(Long userId, BoardCreateRequest boardCreateRequest, Tag tag) {
         User user = validateUser(userId);
 
-        Board board = Board.fromBoardRequest(user,boardCreateRequest);
+        Board board = Board.fromBoardRequest(user,boardCreateRequest,tag);
         board.changeBoardStatus(Status.DRAFT);
 
         Board savedBoard = boardRepository.save(board);

@@ -4,8 +4,7 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
-import com.example.demo.domain.board.service.service.BoardValidService;
-import com.example.demo.domain.board.service.service.LikeService;
+import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
@@ -21,17 +20,15 @@ public class BoardUseCase {
     private final BoardCommandService boardCommandService;
     private final BoardQueryService boardQueryService;
     private final ViewIncreaseService viewIncreaseService;
-    private final BoardValidService boardValidService;
 
     @Transactional
-    public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
-        if(boardCreateRequest.isSeminarBoard()){
-            boardValidService.validateSeminarRole(userId);
-        }else{
-            boardValidService.validateNoticeRole(userId);
-        }
+    public BoardInfoResponse saveDraftSeminarBoard(Long userId, BoardCreateRequest boardCreateRequest) {
+        return boardCommandService.createBoard(userId, boardCreateRequest, Tag.seminar);
+    }
 
-        return boardCommandService.createBoard(userId, boardCreateRequest);
+    @Transactional
+    public BoardInfoResponse saveDraftNoticeBoard(Long userId, BoardCreateRequest boardCreateRequest) {
+        return boardCommandService.createBoard(userId, boardCreateRequest,Tag.notice);
     }
 
     @Transactional
@@ -52,4 +49,7 @@ public class BoardUseCase {
 	public BoardPageResponse findBoardList(Pageable pageable) {
         return boardQueryService.findBoardPageList(pageable);
 	}
+
+
+
 }
