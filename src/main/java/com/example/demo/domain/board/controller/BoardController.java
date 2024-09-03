@@ -31,7 +31,7 @@ public class BoardController {
     private final BoardUseCase boardUsecase;
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @PostMapping("/v1/boards/seminar")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraftSeminar(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
@@ -39,7 +39,7 @@ public class BoardController {
     }
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN') and isAuthenticated()")
     @PostMapping("/v1/boards/notice")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraftNotice(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
@@ -53,7 +53,7 @@ public class BoardController {
 
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
@@ -61,7 +61,7 @@ public class BoardController {
     }
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardUsecase.deleteBoard(userId,boardId);
