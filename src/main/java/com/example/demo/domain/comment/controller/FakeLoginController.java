@@ -6,10 +6,7 @@ import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +20,10 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RequiredArgsConstructor
 public class FakeLoginController {
     private final JwtHandler jwtHandler;
+
     @PostMapping
     public ResponseEntity<ResponseBody<LoginResponse>> fakeLogin() {
-        JwtUserClaim claim = new JwtUserClaim(1L, Role.ROLE_USER);
+        JwtUserClaim claim = new JwtUserClaim(1L, Role.ROLE_ADMIN);
         TokenResponse tokens = jwtHandler.createTokens(claim);
         LoginResponse response = new LoginResponse(tokens.accessToken());
 
