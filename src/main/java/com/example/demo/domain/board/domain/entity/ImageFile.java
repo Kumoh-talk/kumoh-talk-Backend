@@ -21,7 +21,7 @@ public class ImageFile extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 45)
+    @Column(nullable = false,length = 256)
     @NotBlank(message = "url이 누락되었습니다.")
     private String url;
 

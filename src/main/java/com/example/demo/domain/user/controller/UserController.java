@@ -23,17 +23,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
 
     /**
      * GUEST 사용자에 한해서 닉네임 중복 여/부를 확인하는 api
+     * TODO. 현재는 중복 체크는 GUEST 유저에게만 허용
      */
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_GUEST')")
     @GetMapping("/check-nickname")
-    public ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(@Param("nickname") @Pattern(regexp = NICKNAME_REGEXP) String nickname) {
+    public ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(
+            @Param("nickname") @Pattern(regexp = NICKNAME_REGEXP, message = "닉네임 정규식을 맞춰주세요.") String nickname) {
         userService.checkNicknameDuplicate(nickname);
         return ResponseEntity.ok(createSuccessResponse());
     }
@@ -54,7 +56,7 @@ public class UserController {
      * TODO. blacklist 고민
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @DeleteMapping("/logout")
     public ResponseEntity<ResponseBody<Void>> logout(Long userId) {
         userService.logout(userId);
@@ -65,7 +67,7 @@ public class UserController {
      * 사용자 닉네임 수정 api
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PatchMapping("/me/nickname")
     public ResponseEntity<ResponseBody<Void>> updateNickname(@RequestBody @Valid UpdateNicknameRequest request,
                                                                       Long userId) {
@@ -77,7 +79,7 @@ public class UserController {
      * 사용자 프로필 이미지 수정 api
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PatchMapping("/me/profileImage")
     public ResponseEntity<ResponseBody<Void>> updateProfileImage(@RequestBody @Valid UpdateProfileImageRequest request,
                                                                  Long userId) {
@@ -89,7 +91,7 @@ public class UserController {
      * 기본 사용자 정보 확인 api
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @GetMapping("/me")
     public ResponseEntity<ResponseBody<UserInfo>> getUserInfo(Long userId) {
         return ResponseEntity.ok(createSuccessResponse(userService.getUserInfo(userId)));

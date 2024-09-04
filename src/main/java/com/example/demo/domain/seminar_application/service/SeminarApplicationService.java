@@ -5,10 +5,12 @@ import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApp
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationUpdateRequest;
 import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
 import com.example.demo.domain.seminar_application.repository.SeminarApplicationRepository;
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
-import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.jwt.JwtHandler;
+import com.example.demo.global.jwt.JwtUserClaim;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.example.demo.global.base.exception.ErrorCode.*;
 
@@ -26,14 +29,23 @@ import static com.example.demo.global.base.exception.ErrorCode.*;
 public class SeminarApplicationService {
 
     private final UserService userService;
-    private final UserAdditionalInfoService userAdditionalInfoService;
     private final SeminarApplicationRepository seminarApplicationRepository;
+    private final JwtHandler jwtHandler;
 
     @Transactional
-    public void applyForSeminar(Long userId, @Valid SeminarApplicationRequest request) {
+    public Optional<TokenResponse> applyForSeminar(Long userId, @Valid SeminarApplicationRequest request) {
         User user = userService.validateUser(userId);
-        userAdditionalInfoService.validateUserAdditionalInfo(user.getUserAdditionalInfo());
+        boolean isFirstApplication = user.getSeminarApplications().isEmpty();
+
+        if (isFirstApplication) { // 사용자 역할 업데이트 (첫 생성)
+            user.updateUserRoleToSeminarWriter();
+        }
+
         user.addSeminarApplications(SeminarApplication.from(request, user));
+
+        return isFirstApplication
+                ? Optional.of(jwtHandler.createTokens(JwtUserClaim.create(user))) // 첫 생성 시 토큰 반환
+                : Optional.empty(); // 첫 생성이 아닐 경우 빈 Optional 반환
     }
 
     public Page<SeminarApplicationInfo> getSeminarApplicationByUserId(Long userId, Pageable pageable) {
