@@ -1,7 +1,6 @@
 package com.example.demo.global.base.exception;
 
 import com.example.demo.global.base.dto.ResponseBody;
-
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestValueException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
@@ -18,9 +18,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import static com.example.demo.global.base.dto.ResponseUtil.*;
-
 import java.util.Objects;
+
+import static com.example.demo.global.base.dto.ResponseUtil.createFailureResponse;
 
 @Slf4j
 @RestControllerAdvice
@@ -47,12 +47,12 @@ public class GlobalExceptionHandler {
         String errorMessage = (String) Objects.requireNonNull(e.getDetailMessageArguments())[0];
         log.error("HandlerMethodValidationException : {}", e.getMessage());
         return ResponseEntity.badRequest()
-            .body(createFailureResponse(ErrorCode.MISSING_INPUT_VALUE, errorMessage));
+                .body(createFailureResponse(ErrorCode.MISSING_INPUT_VALUE, errorMessage));
     }
 
     @ExceptionHandler(MissingRequestValueException.class) // 요청 데이터로 들어와야할 인자 부족
     public ResponseEntity<ResponseBody<Void>> handleMissingRequestValueException(HttpServletRequest request,
-                                                            MissingRequestValueException e) {
+                                                                                 MissingRequestValueException e) {
         log.error("MissingRequestValueException : {}", e.getMessage());
         return ResponseEntity.badRequest()
                 .body(createFailureResponse(ErrorCode.MISSING_INPUT_VALUE));
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class) // 해당 uri에 잘못된 HttpMethod
     public ResponseEntity<ResponseBody<Void>> handleHttpRequestMethodNotSupportedException(HttpServletRequest request,
-                                                                      HttpRequestMethodNotSupportedException e) {
+                                                                                           HttpRequestMethodNotSupportedException e) {
         log.error("HttpRequestMethodNotSupportedException : {}", e.getMessage());
         return ResponseEntity.badRequest()
                 .body(createFailureResponse(ErrorCode.METHOD_NOT_ALLOWED));
@@ -87,6 +87,13 @@ public class GlobalExceptionHandler {
                 .body(createFailureResponse(ErrorCode.INVALID_JSON));
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class) // 쿼리 파라미터 enum convert 실패 예외
+    public ResponseEntity<?> converterExceptionHandler(MissingServletRequestParameterException e) {
+        log.error("MissingServletRequestParameterException : {}", e.getMessage());
+        return ResponseEntity.badRequest()
+                .body(createFailureResponse(ErrorCode.REQUEST_PARAM_MISMATCH));
+    }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class) // 쿼리 파라미터 형식 매칭 실패 예외
     public ResponseEntity<ResponseBody<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("MethodArgumentTypeMismatchException : {}", e.getMessage());
@@ -105,7 +112,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseBody<Void>> handleAccessDeniedException(AccessDeniedException e) {
         log.error("AccessDeniedException : {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(createFailureResponse(ErrorCode.ACCESS_DENIED));
+                .body(createFailureResponse(ErrorCode.ACCESS_DENIED));
     }
 
     @ExceptionHandler(Exception.class)

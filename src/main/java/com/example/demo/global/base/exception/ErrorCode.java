@@ -15,6 +15,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_0005", "사용할 수 없는 메서드입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_0006", "서버 에러입니다."),
     INVALID_JSON(HttpStatus.BAD_REQUEST, "COMMON_0007", "JSON 파싱 오류입니다."),
+    REQUEST_PARAM_MISMATCH(HttpStatus.BAD_REQUEST, "COMMON_0008", "쿼리 파라미터 값이 형식에 맞지 않습니다."),
 
     // Security
     NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED, "SECURITY_0001", "인증이 필요합니다."),
@@ -46,7 +47,7 @@ public enum ErrorCode {
     USER_NOT_LIKE_BOARD(HttpStatus.NOT_FOUND, "BOARD_0005", "좋아요를 누르지 않은 게시물입니다."),
     DEADLINE_EXPIRED(HttpStatus.FORBIDDEN, "BOARD_0006", "신청 마감된 게시물입니다."),
     NOT_NOTICE_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_007", "해당 유저는 공지사항 작성 권한이 없습니다."),
-	NOT_SEMINAR_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_008", "해당 유저는 세미나 작성 권한이 없습니다."),
+    NOT_SEMINAR_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_008", "해당 유저는 세미나 작성 권한이 없습니다."),
 
     // FILE
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_0001", "파일의 용량이 너무 큽니다."),
