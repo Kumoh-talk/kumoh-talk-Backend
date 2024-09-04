@@ -30,7 +30,7 @@ public class LikeController {
 	private final LikeUseCase likeUseCase;
 
 	@AssignUserId
-	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
+	@PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
 	@PostMapping("/v1/boards/{boardId}/likes")
 	public ResponseEntity<ResponseBody<Void>> saveLike(Long userId,@PathVariable Long boardId) {
 		likeUseCase.likeBoard(userId,boardId);
@@ -38,7 +38,7 @@ public class LikeController {
 	}
 
 	@AssignUserId
-	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
+	@PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
 	@DeleteMapping("/v1/boards/{boardId}/likes")
 	public ResponseEntity<ResponseBody<Void>> deleteLike(Long userId,@PathVariable Long boardId) {
 		likeUseCase.unlikeBoard(userId,boardId);
@@ -47,7 +47,7 @@ public class LikeController {
 
 
 	@AssignUserId
-	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
+	@PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
 	@GetMapping("/v1/users/likes")
 	public ResponseEntity<ResponseBody<BoardPageResponse>> getLikes(
 		Long userId,

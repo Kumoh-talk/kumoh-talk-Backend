@@ -4,11 +4,15 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
-import com.example.demo.domain.board.service.service.BoardValidService;
-import com.example.demo.domain.board.service.service.LikeService;
+import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
+import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.service.UserService;
+import com.example.demo.global.base.exception.ErrorCode;
+import com.example.demo.global.base.exception.ServiceException;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -21,18 +25,17 @@ public class BoardUseCase {
     private final BoardCommandService boardCommandService;
     private final BoardQueryService boardQueryService;
     private final ViewIncreaseService viewIncreaseService;
-    private final BoardValidService boardValidService;
+    private final UserService userService;
 
     @Transactional
     public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
-        if(boardCreateRequest.isSeminarBoard()){
-            boardValidService.validateSeminarRole(userId);
-        }else{
-            boardValidService.validateNoticeRole(userId);
+        User user = userService.validateUser(userId);
+        if(boardCreateRequest.getTag().equals(Tag.notice) && !user.getRole().equals("ROLE_ADMIN")){
+            throw new ServiceException(ErrorCode.NOT_AUTHORIZED_WRITE_NOTICE);
         }
-
-        return boardCommandService.createBoard(userId, boardCreateRequest);
+        return boardCommandService.createBoard(user, boardCreateRequest);
     }
+
 
     @Transactional
     public BoardInfoResponse searchSingleBoard(Long boardId) {
@@ -52,4 +55,7 @@ public class BoardUseCase {
 	public BoardPageResponse findBoardList(Pageable pageable) {
         return boardQueryService.findBoardPageList(pageable);
 	}
+
+
+
 }
