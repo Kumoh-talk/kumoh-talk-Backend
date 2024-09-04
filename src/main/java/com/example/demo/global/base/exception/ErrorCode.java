@@ -72,7 +72,10 @@ public enum ErrorCode {
 
     // StudyProjectApplicant
     STUDYPROJECT_APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_0001", "신청자 정보가 존재하지 않습니다."),
-    STUDYPROJECT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다.");
+    STUDYPROJECT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다."),
+
+    // StudyProjectApplicantAnswer
+    OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "ANSWER_0001", "필수 답변을 입력해야합니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;
