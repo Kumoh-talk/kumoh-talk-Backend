@@ -76,12 +76,12 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long userId) {
+    public void deleteComment(Long commentId, Long userId, String userRole) {
         Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
-        if (userId.equals(comment.getUser().getId())) {
+        if (userId.equals(comment.getUser().getId()) || userRole.equals("ROLE_ADMIN")) {
             commentRepository.replyCommentsDeleteById(commentId);
             commentRepository.delete(comment);
         } else {

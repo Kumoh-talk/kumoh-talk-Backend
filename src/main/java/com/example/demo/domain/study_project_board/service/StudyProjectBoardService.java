@@ -165,11 +165,13 @@ public class StudyProjectBoardService {
     @Transactional
     public void deleteBoardAndForm(
             Long userId,
-            Long studyProjectBoardId) {
+            Long studyProjectBoardId,
+            String userRole) {
         StudyProjectBoard studyProjectBoard = validateStudyProjectBoard(studyProjectBoardId);
 
-        if (!userId.equals(studyProjectBoard.getUser().getId()))
+        if (!userId.equals(studyProjectBoard.getUser().getId()) && !userRole.equals("ROLE_ADMIN")) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
+        }
 
         // soft delete
         List<StudyProjectFormQuestion> questionList = studyProjectFormQuestionRepository.findByBoard_IdByFetchingAnswerList(studyProjectBoardId)

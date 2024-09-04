@@ -16,6 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.demo.global.base.dto.ResponseUtil.createSuccessResponse;
@@ -52,7 +55,14 @@ public class StudyProjectApplicationController {
             Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable Long studyProjectBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(studyProjectApplicationService.getApplicantList(userId, pageable, studyProjectBoardId)));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userRole = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()  // 첫 번째 역할을 가져옴 (필요에 따라 수정 가능)
+                .orElse(null);
+
+        return ResponseEntity.ok(createSuccessResponse(studyProjectApplicationService.getApplicantList(userId, pageable, studyProjectBoardId, userRole)));
     }
 
     /**
@@ -65,7 +75,14 @@ public class StudyProjectApplicationController {
             Long userId,
             @PathVariable Long studyProjectBoardId,
             @PathVariable Long applicantId) {
-        return ResponseEntity.ok(createSuccessResponse(studyProjectApplicationService.getApplicationInfo(userId, studyProjectBoardId, applicantId)));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userRole = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()  // 첫 번째 역할을 가져옴 (필요에 따라 수정 가능)
+                .orElse(null);
+
+        return ResponseEntity.ok(createSuccessResponse(studyProjectApplicationService.getApplicationInfo(userId, studyProjectBoardId, applicantId, userRole)));
     }
 
     /**

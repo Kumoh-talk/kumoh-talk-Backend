@@ -73,11 +73,12 @@ public class StudyProjectApplicationService {
     public StudyProjectApplicantPageResponse getApplicantList(
             Long userId,
             Pageable pageable,
-            Long studyProjectBoardId) {
+            Long studyProjectBoardId,
+            String userRole) {
         userService.validateUser(userId);
 
         StudyProjectBoard studyProjectBoard = studyProjectBoardService.validateStudyProjectBoard(studyProjectBoardId);
-        if (!studyProjectBoard.getUser().getId().equals(userId)) {
+        if (!studyProjectBoard.getUser().getId().equals(userId) && !userRole.equals("ROLE_ADMIN")) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
 
@@ -87,11 +88,11 @@ public class StudyProjectApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public StudyProjectApplicationResponse getApplicationInfo(Long userId, Long studyProjectBoardId, Long applicantId) {
+    public StudyProjectApplicationResponse getApplicationInfo(Long userId, Long studyProjectBoardId, Long applicantId, String userRole) {
         userService.validateUser(userId);
 
         StudyProjectBoard studyProjectBoard = studyProjectBoardService.validateStudyProjectBoard(studyProjectBoardId);
-        if (!studyProjectBoard.getUser().getId().equals(userId)) {
+        if (!studyProjectBoard.getUser().getId().equals(userId) && !userRole.equals("ROLE_ADMIN")) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
 
