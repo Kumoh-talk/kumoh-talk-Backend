@@ -1,6 +1,7 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.*;
+import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
@@ -13,7 +14,6 @@ import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +25,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardCommandService {
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
 
     @Transactional
-    public BoardInfoResponse createBoard(Long userId, BoardCreateRequest boardCreateRequest) {
-        User user = validateUser(userId);
-
+    public BoardInfoResponse createBoard(User user, BoardCreateRequest boardCreateRequest) {
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
 
@@ -132,21 +129,14 @@ public class BoardCommandService {
     }
 
     private Board validateBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId)
+		return boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        return board;
     }
 
     private void validateUserEqualBoardUser(Long userId, Board board) {
         if(!board.getUser().getId().equals(userId)) {
             throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-    }
-
-    private User validateUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-        return user;
     }
 
 }

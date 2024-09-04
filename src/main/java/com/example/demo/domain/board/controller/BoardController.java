@@ -31,9 +31,9 @@ public class BoardController {
     private final BoardUseCase boardUsecase;
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()") //TODO : 세미나 신청을 한적 있어야 세미나 게시물 작성 가능하도록 변경 현재는 도메인 로직 안에서 처리
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @PostMapping("/v1/boards")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraft(Long userId,
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraftSeminar(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
             return ResponseEntity.ok(createSuccessResponse(boardUsecase.saveDraftBoard(userId, boardCreateRequest)));
     }
@@ -45,7 +45,7 @@ public class BoardController {
 
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()") //TODO : 게시물 수정 로직 변경 필요
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
@@ -53,7 +53,7 @@ public class BoardController {
     }
 
     @AssignUserId
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardUsecase.deleteBoard(userId,boardId);

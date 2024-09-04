@@ -12,6 +12,7 @@ import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.utils.S3PresignedUrlUtil;
 import com.example.demo.global.utils.S3UrlUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class BoardFileUseCase {
 	private final BoardQueryService boardQueryService;
 	private final UserService userService;
 	private final S3UrlUtil s3UrlUtil;
+	private final S3PresignedUrlUtil s3PresignedUrlUtil;
 	private final FileUploadService fileUploadService;
 
 	@Transactional(readOnly = true)
@@ -33,7 +35,7 @@ public class BoardFileUseCase {
 		}
 		String s3Path = s3UrlUtil.generateBoardS3Path(presignedUrlRequest);
 
-		return fileUploadService.generatePresignedUrl(s3Path);
+		return s3PresignedUrlUtil.generatePresignedUrl(s3Path);
 	}
 
 	@Transactional

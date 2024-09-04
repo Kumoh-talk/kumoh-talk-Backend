@@ -25,42 +25,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class FileUploadService {
-	private static final Integer EXPIRATION_TIME = 1000 * 60 * 2;
-	@Value("${cloud.aws.s3.bucket}")
-	private String bucket;
-
-	private final AmazonS3Client amazonS3Client;
 	private final ImageFileRepository imageFileRepository;
 	private final BoardRepository boardRepository;
 
-	public String generatePresignedUrl(String s3Path) {
-		GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedUrlRequest(s3Path);
-
-		URL url = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
-
-		return url.toString();
-	}
-
-	private GeneratePresignedUrlRequest getGeneratePresignedUrlRequest(String s3Path) {
-		GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, s3Path)
-			.withMethod(HttpMethod.PUT)
-			.withExpiration(getPresignedUrlExpiration());
-
-		generatePresignedUrlRequest.addRequestParameter(
-			Headers.S3_CANNED_ACL,
-			CannedAccessControlList.PublicRead.toString()
-		);
-		return generatePresignedUrlRequest;
-	}
-
-	private Date getPresignedUrlExpiration() {
-		Date expiration = new Date();
-		long expTimeMillis = expiration.getTime();
-		expTimeMillis += EXPIRATION_TIME;
-		expiration.setTime(expTimeMillis);
-
-		return expiration;
-	}
 
 	@Transactional
 	public void changeAttachFileUrl(String url, Board board) {
