@@ -164,7 +164,6 @@ public class StudyProjectBoard extends BaseEntity {
                     StudyProjectFormQuestion delete = studyProjectFormQuestionList.remove(i);
                     deleteIdList.add(delete.getId());
                 }
-                // TODO : 질문이 삭제되면, 신청자의 답변도 hard delete 될까?
                 studyProjectFormQuestionRepository.hardDeleteQuestionsByIds(deleteIdList);
                 return;
             }
@@ -172,8 +171,8 @@ public class StudyProjectBoard extends BaseEntity {
         // 수정 질문 수 > 기존 질문 수 -> 넘치는 수정 질문들 추가
         int size = request.getForm() != null ? request.getForm().size() : 0;
         while (questionIdx < size) {
-            StudyProjectFormQuestion studyProjectFormQuestion = StudyProjectFormQuestion.from(request.getForm().get(questionIdx++), this);
-            studyProjectFormQuestionList.add(studyProjectFormQuestion);
+            StudyProjectFormQuestion savedStudyProjectFormQuestion = studyProjectFormQuestionRepository.save(StudyProjectFormQuestion.from(request.getForm().get(questionIdx++), this));
+            studyProjectFormQuestionList.add(savedStudyProjectFormQuestion);
         }
     }
 }

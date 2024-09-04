@@ -149,6 +149,9 @@ public class QueryDslStudyProjectBoardRepositoryImpl implements QueryDslStudyPro
                 .where(studyProjectBoard.id.eq(ApplicationBoardId))
                 .fetchOne();
 
+        if (result == null) {
+            return Optional.empty();
+        }
         Long selectedId = result.getId();
 
         jpaQueryFactory

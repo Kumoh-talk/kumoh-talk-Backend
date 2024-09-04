@@ -150,7 +150,7 @@ public class StudyProjectBoardService {
         }
 
         // 신청자가 존재하면 수정 불가
-        if (studyProjectApplicantRepository.findByStudyProjectBoard_Id(studyProjectBoardId).isPresent()) {
+        if (studyProjectApplicantRepository.existsByStudyProjectBoard_Id(studyProjectBoardId)) {
             throw new ServiceException(ErrorCode.STUDYPROJECT_APPLICATION_EXIST);
         }
 
@@ -158,6 +158,7 @@ public class StudyProjectBoardService {
         studyProjectBoard.updateFromRequest(studyProjectBoardInfoAndFormRequest, status,
                 studyProjectFormQuestionRepository, studyProjectFormChoiceAnswerRepository);
 
+        // TODO : Request enum valid 문제
         return StudyProjectBoardInfoAndFormResponse.from(studyProjectBoard);
     }
 
@@ -169,8 +170,6 @@ public class StudyProjectBoardService {
 
         if (!userId.equals(studyProjectBoard.getUser().getId()))
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
-
-        studyProjectBoardRepository.delete(studyProjectBoard);
 
         // soft delete
         List<StudyProjectFormQuestion> questionList = studyProjectFormQuestionRepository.findByBoard_IdByFetchingAnswerList(studyProjectBoardId)
@@ -186,6 +185,7 @@ public class StudyProjectBoardService {
             studyProjectFormChoiceAnswerRepository.softDeleteAnswersByIds(answerIds);
             studyProjectFormQuestionRepository.softDeleteQuestionsByIds(questionIds);
         }
+        studyProjectBoardRepository.delete(studyProjectBoard);
     }
 
     @Transactional(readOnly = true)
