@@ -14,7 +14,6 @@ import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardCommandService {
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
 
@@ -131,9 +129,8 @@ public class BoardCommandService {
     }
 
     private Board validateBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId)
+		return boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        return board;
     }
 
     private void validateUserEqualBoardUser(Long userId, Board board) {

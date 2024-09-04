@@ -7,10 +7,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.domain.board.domain.dto.request.FileRequest;
@@ -52,8 +52,8 @@ public class BoardFileController {
 		return ResponseEntity.ok(createSuccessResponse());
 	}
 
-	@GetMapping("/v1/boards/files/attach")
-	public ResponseEntity<ResponseBody<String>> getAttachFileUrl(@RequestParam Long boardId) {
+	@GetMapping("/v1/boards/files/attach/{boardId}")
+	public ResponseEntity<ResponseBody<String>> getAttachFileUrl(@PathVariable Long boardId) {
 		return ResponseEntity.ok(createSuccessResponse(boardFileUseCase.getAttachFileUrl(boardId)));
 	}
 

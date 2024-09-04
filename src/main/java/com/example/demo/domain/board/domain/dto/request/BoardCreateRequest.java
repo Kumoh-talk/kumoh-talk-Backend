@@ -25,7 +25,7 @@ public class BoardCreateRequest {
     private String contents;
 
     @Nullable
-    @Size(max = 5,message = "카테고리는 최대 3개까지 가능합니다.")
+    @Size(max = 5,message = "카테고리는 최대 5개까지 가능합니다.")
     private List<String> categoryName;
 
     @ValidEnum(enumClass = Tag.class,message = "태그는 'SEMINAR', 'NOTICE' 중 하나여야 합니다.")
