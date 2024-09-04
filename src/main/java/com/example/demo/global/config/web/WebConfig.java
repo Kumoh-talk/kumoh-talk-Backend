@@ -1,8 +1,8 @@
 package com.example.demo.global.config.web;
 
-import com.example.demo.domain.study_project_board.domain.dto.converter.BoardTypeConverter;
-import com.example.demo.domain.study_project_board.domain.dto.converter.StatusConverter;
-import com.example.demo.domain.study_project_board.domain.dto.converter.StudyProjectBoardTypeConverter;
+import com.example.demo.global.converter.BoardTypeConverter;
+import com.example.demo.global.converter.StatusConverter;
+import com.example.demo.global.converter.StudyProjectBoardTypeConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

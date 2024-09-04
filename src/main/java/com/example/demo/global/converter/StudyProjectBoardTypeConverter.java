@@ -1,4 +1,4 @@
-package com.example.demo.domain.study_project_board.domain.dto.converter;
+package com.example.demo.global.converter;
 
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
 import org.springframework.core.convert.converter.Converter;
