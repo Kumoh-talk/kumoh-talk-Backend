@@ -26,8 +26,6 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 public class StudyProjectApplicationController {
     private final StudyProjectApplicationService studyProjectApplicationService;
 
-    // TODO : 유저 ROLE 변경 소요 있음
-
     /**
      * 신청 추가
      */

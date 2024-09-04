@@ -26,8 +26,6 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 public class CommentController {
     private final CommentService commentService;
 
-    // TODO : enum validation 수정
-
     /**
      * 게시물 별 댓글 조회
      *
