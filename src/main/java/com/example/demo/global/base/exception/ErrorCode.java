@@ -47,6 +47,7 @@ public enum ErrorCode {
     DEADLINE_EXPIRED(HttpStatus.FORBIDDEN, "BOARD_0006", "신청 마감된 게시물입니다."),
     NOT_NOTICE_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_007", "해당 유저는 공지사항 작성 권한이 없습니다."),
 	NOT_SEMINAR_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_008", "해당 유저는 세미나 작성 권한이 없습니다."),
+    NOT_AUTHORIZED_WRITE_NOTICE(HttpStatus.UNAUTHORIZED, "BOARD_009", "공지사항 작성 권한이 없습니다."),
 
     // FILE
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_0001", "파일의 용량이 너무 큽니다."),

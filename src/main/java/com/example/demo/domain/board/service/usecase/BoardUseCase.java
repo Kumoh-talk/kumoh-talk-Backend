@@ -8,6 +8,11 @@ import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
+import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.service.UserService;
+import com.example.demo.global.base.exception.ErrorCode;
+import com.example.demo.global.base.exception.ServiceException;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -20,16 +25,17 @@ public class BoardUseCase {
     private final BoardCommandService boardCommandService;
     private final BoardQueryService boardQueryService;
     private final ViewIncreaseService viewIncreaseService;
+    private final UserService userService;
 
     @Transactional
-    public BoardInfoResponse saveDraftSeminarBoard(Long userId, BoardCreateRequest boardCreateRequest) {
-        return boardCommandService.createBoard(userId, boardCreateRequest, Tag.seminar);
+    public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
+        User user = userService.validateUser(userId);
+        if(boardCreateRequest.getTag().equals(Tag.NOTICE) && !user.getRole().equals("ROLE_ADMIN")){
+            throw new ServiceException(ErrorCode.NOT_AUTHORIZED_WRITE_NOTICE);
+        }
+        return boardCommandService.createBoard(user, boardCreateRequest);
     }
 
-    @Transactional
-    public BoardInfoResponse saveDraftNoticeBoard(Long userId, BoardCreateRequest boardCreateRequest) {
-        return boardCommandService.createBoard(userId, boardCreateRequest,Tag.notice);
-    }
 
     @Transactional
     public BoardInfoResponse searchSingleBoard(Long boardId) {

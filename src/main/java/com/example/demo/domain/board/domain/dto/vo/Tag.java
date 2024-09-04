@@ -3,8 +3,8 @@ package com.example.demo.domain.board.domain.dto.vo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Tag {
-    seminar,
-    notice
+    SEMINAR,
+    NOTICE
     ;
 
     @JsonCreator

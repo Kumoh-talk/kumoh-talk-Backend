@@ -32,18 +32,10 @@ public class BoardController {
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
-    @PostMapping("/v1/boards/seminar")
+    @PostMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraftSeminar(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
-            return ResponseEntity.ok(createSuccessResponse(boardUsecase.saveDraftSeminarBoard(userId, boardCreateRequest)));
-    }
-
-    @AssignUserId
-    @PreAuthorize("hasRole('ROLE_ADMIN') and isAuthenticated()")
-    @PostMapping("/v1/boards/notice")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraftNotice(Long userId,
-                                                  @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
-            return ResponseEntity.ok(createSuccessResponse(boardUsecase.saveDraftNoticeBoard(userId, boardCreateRequest)));
+            return ResponseEntity.ok(createSuccessResponse(boardUsecase.saveDraftBoard(userId, boardCreateRequest)));
     }
 
     @GetMapping("/v1/boards/{boardId}")

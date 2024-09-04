@@ -81,11 +81,11 @@ public class Board extends BaseEntity {
         this.attachFileUrl = null;
     }
 
-    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest,Tag tag){
+    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
         Board board = new Board(boardCreateRequest.getTitle(),
             boardCreateRequest.getContents(),
             user,
-            tag,
+            boardCreateRequest.getTag(),
             Status.DRAFT);
         user.getBoards().add(board);
         return board;

@@ -31,10 +31,8 @@ public class BoardCommandService {
     private final BoardCategoryRepository boardCategoryRepository;
 
     @Transactional
-    public BoardInfoResponse createBoard(Long userId, BoardCreateRequest boardCreateRequest, Tag tag) {
-        User user = validateUser(userId);
-
-        Board board = Board.fromBoardRequest(user,boardCreateRequest,tag);
+    public BoardInfoResponse createBoard(User user, BoardCreateRequest boardCreateRequest) {
+        Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
 
         Board savedBoard = boardRepository.save(board);
@@ -142,12 +140,6 @@ public class BoardCommandService {
         if(!board.getUser().getId().equals(userId)) {
             throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
         }
-    }
-
-    private User validateUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-        return user;
     }
 
 }
