@@ -15,6 +15,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_0005", "사용할 수 없는 메서드입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_0006", "서버 에러입니다."),
     INVALID_JSON(HttpStatus.BAD_REQUEST, "COMMON_0007", "JSON 파싱 오류입니다."),
+    REQUEST_PARAM_MISMATCH(HttpStatus.BAD_REQUEST, "COMMON_0008", "쿼리 파라미터 값이 형식에 맞지 않습니다."),
 
     // Security
     NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED, "SECURITY_0001", "인증이 필요합니다."),
@@ -75,7 +76,10 @@ public enum ErrorCode {
 
     // StudyProjectApplicant
     STUDYPROJECT_APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_0001", "신청자 정보가 존재하지 않습니다."),
-    STUDYPROJECT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다.");
+    STUDYPROJECT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다."),
+
+    // StudyProjectApplicantAnswer
+    OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "ANSWER_0001", "필수 답변을 입력해야합니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;

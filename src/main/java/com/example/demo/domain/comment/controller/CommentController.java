@@ -26,8 +26,6 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 public class CommentController {
     private final CommentService commentService;
 
-    // TODO : enum validation 수정
-
     /**
      * 게시물 별 댓글 조회
      *
@@ -36,9 +34,9 @@ public class CommentController {
     @GetMapping("/{boardId}")
     public ResponseEntity<ResponseBody<CommentResponse>> getBoardComments(
             @PathVariable Long boardId,
-            @RequestParam String boardType) {
+            @RequestParam BoardType boardType) {
         // TODO : 내가 차단한 사용자 댓글은 보이지 않도록(로그인했을 시)
-        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByBoardId(boardId, BoardType.valueOf(boardType.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByBoardId(boardId, boardType)));
     }
 
     /**
@@ -47,13 +45,13 @@ public class CommentController {
      * @param : boardType[study, project, seminar_notice, seminar_summary]
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @GetMapping("/my-comments")
     public ResponseEntity<ResponseBody<CommentPageResponse>> getUserComments(
             Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam String boardType) {
-        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByUserId(userId, BoardType.valueOf(boardType.toUpperCase()), pageable)));
+            @RequestParam BoardType boardType) {
+        return ResponseEntity.ok(createSuccessResponse(commentService.findCommentsByUserId(userId, boardType, pageable)));
     }
 
     /**
@@ -62,19 +60,19 @@ public class CommentController {
      * @param : boardType[study, project, seminar_notice, seminar_summary]
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @PostMapping("/{boardId}")
     public ResponseEntity<ResponseBody<CommentInfoResponse>> createComment(Long userId, @RequestBody @Valid CommentRequest commentRequest,
-                                                                           @PathVariable Long boardId, @RequestParam String boardType) {
+                                                                           @PathVariable Long boardId, @RequestParam BoardType boardType) {
         // 댓글 작성시 사용자 권한 확인
-        return ResponseEntity.ok(createSuccessResponse(commentService.saveComment(commentRequest, userId, boardId, BoardType.valueOf(boardType.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(commentService.saveComment(commentRequest, userId, boardId, boardType)));
     }
 
     /**
      * 댓글 수정
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @PatchMapping("/{commentId}")
     public ResponseEntity<ResponseBody<CommentInfoResponse>> updateComment(Long userId,
                                                                            @RequestBody @Valid CommentRequest commentRequest,
@@ -86,12 +84,10 @@ public class CommentController {
      * 댓글 삭제
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ResponseBody<Void>> deleteComment(Long userId, @PathVariable Long commentId) {
         commentService.deleteComment(commentId, userId);
         return ResponseEntity.ok().body(createSuccessResponse());
     }
-
-    // TODO : ADMIN 기능
 }

@@ -2,6 +2,7 @@ package com.example.demo.domain.study_project_board.domain.dto.request;
 
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardTag;
 import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
+import com.example.demo.global.aop.valid.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -21,10 +22,10 @@ public class StudyProjectBoardInfoRequest {
     @NotBlank(message = "내용을 작성해야합니다.")
     private String content;
 
-    @NotNull(message = "타입을 선택해야합니다.")
+    @ValidEnum(enumClass = StudyProjectBoardType.class, message = "게시물 타입은 STUDY, PROJECT 중 하나여야 합니다.")
     private StudyProjectBoardType type;
 
-    @NotNull(message = "태그를 선택해야합니다.")
+    @ValidEnum(enumClass = StudyProjectBoardTag.class, message = "태그는 FRONTEND, BACKEND, AI, MOBILE, SECURITY 중 하나여야 합니다.")
     private StudyProjectBoardTag tag;
 
     @NotBlank(message = "신청 대상을 작성해야합니다.")

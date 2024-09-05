@@ -12,6 +12,7 @@ import com.example.demo.domain.study_project_board.repository.StudyProjectBoardR
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormChoiceAnswerRepository;
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -43,7 +44,6 @@ public class StudyProjectBoardService {
             StudyProjectBoardInfoAndFormRequest studyProjectBoardInfoAndFormRequest,
             Status status) {
         User user = userService.validateUser(userId);
-        userAdditionalInfoService.validateUserAdditionalInfo(user.getUserAdditionalInfo());
 
         StudyProjectBoard studyProjectBoard = StudyProjectBoard.from(studyProjectBoardInfoAndFormRequest, user, status);
         StudyProjectBoard savedBoard = studyProjectBoardRepository.save(studyProjectBoard);
@@ -150,7 +150,7 @@ public class StudyProjectBoardService {
         }
 
         // 신청자가 존재하면 수정 불가
-        if (studyProjectApplicantRepository.findByStudyProjectBoard_Id(studyProjectBoardId).isPresent()) {
+        if (studyProjectApplicantRepository.existsByStudyProjectBoard_Id(studyProjectBoardId)) {
             throw new ServiceException(ErrorCode.STUDYPROJECT_APPLICATION_EXIST);
         }
 
@@ -158,6 +158,7 @@ public class StudyProjectBoardService {
         studyProjectBoard.updateFromRequest(studyProjectBoardInfoAndFormRequest, status,
                 studyProjectFormQuestionRepository, studyProjectFormChoiceAnswerRepository);
 
+        // TODO : Request enum valid 문제
         return StudyProjectBoardInfoAndFormResponse.from(studyProjectBoard);
     }
 
@@ -166,11 +167,11 @@ public class StudyProjectBoardService {
             Long userId,
             Long studyProjectBoardId) {
         StudyProjectBoard studyProjectBoard = validateStudyProjectBoard(studyProjectBoardId);
+        Role userRole = userService.validateUser(userId).getRole();
 
-        if (!userId.equals(studyProjectBoard.getUser().getId()))
+        if (!userId.equals(studyProjectBoard.getUser().getId()) && userRole != Role.ROLE_ADMIN) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
-
-        studyProjectBoardRepository.delete(studyProjectBoard);
+        }
 
         // soft delete
         List<StudyProjectFormQuestion> questionList = studyProjectFormQuestionRepository.findByBoard_IdByFetchingAnswerList(studyProjectBoardId)
@@ -186,6 +187,7 @@ public class StudyProjectBoardService {
             studyProjectFormChoiceAnswerRepository.softDeleteAnswersByIds(answerIds);
             studyProjectFormQuestionRepository.softDeleteQuestionsByIds(questionIds);
         }
+        studyProjectBoardRepository.delete(studyProjectBoard);
     }
 
     @Transactional(readOnly = true)

@@ -34,11 +34,8 @@ public class StudyProjectBoardController {
     private final StudyProjectBoardService studyProjectBoardService;
     private final Validator validator;
 
-    // TODO : 스터디, 프로젝트 게시물 작성 권한 수정 -> 유저 인적사항 작성 시 작성 권한 획득
-
     // TODO : 마감기한이 지한 게시물은 삭제 처리?
     // TODO : 게시물이 수정되어 질문이 변경된다면, 이미 신청한 신청자들은 어떻게 되는가? -> 신청자들에게 알림을 주는 서비스?
-    // TODO : 신청을 눌렀을 때, 질문말고 사용자가 입력할 소요가 있나? -> 인적사항이 그대로 기입되는가? 변경은 불가능한가? -> 그러면 인적사항을 보여주는 창이 굳이 필요한가?
 
     /**
      * 게시물 저장 및 임시저장 API
@@ -46,15 +43,14 @@ public class StudyProjectBoardController {
      * @param : status[published, draft]
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @PostMapping()
     public ResponseEntity<ResponseBody<StudyProjectBoardInfoAndFormResponse>> createStudyProjectBoardAndForm(
             Long userId,
-            @RequestParam String status,
+            @RequestParam Status status,
             @RequestBody StudyProjectBoardInfoAndFormRequest studyProjectBoardInfoAndFormRequest) throws MethodArgumentNotValidException {
-        Status bordStatus = Status.valueOf(status.toUpperCase());
-        validateStudyProjectBoardInfoAndFormRequest(bordStatus, studyProjectBoardInfoAndFormRequest);
-        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.saveBoardAndForm(userId, studyProjectBoardInfoAndFormRequest, bordStatus)));
+        validateStudyProjectBoardInfoAndFormRequest(status, studyProjectBoardInfoAndFormRequest);
+        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.saveBoardAndForm(userId, studyProjectBoardInfoAndFormRequest, status)));
     }
 
     /**
@@ -66,10 +62,10 @@ public class StudyProjectBoardController {
     public ResponseEntity<ResponseBody<StudyProjectBoardNoOffsetResponse>> getStudyProjectBoardListByNoOffset(
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long lastBoardId,
-            @RequestParam String boardType
+            @RequestParam StudyProjectBoardType boardType
     ) {
         // TODO : 차단 기능 추가
-        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, boardType)));
     }
 
     /**
@@ -80,9 +76,9 @@ public class StudyProjectBoardController {
     @GetMapping("/page-num")
     public ResponseEntity<ResponseBody<StudyProjectBoardPageNumResponse>> getStudyProjectBoardListByPageNum(
             @PageableDefault(page = 0, size = 10, sort = "recruitmentDeadline", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam String boardType
+            @RequestParam StudyProjectBoardType boardType
     ) {
-        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByPageNum(pageable, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));
+        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getPublishedBoardListByPageNum(pageable, boardType)));
     }
 
     /**
@@ -96,7 +92,7 @@ public class StudyProjectBoardController {
     /**
      * 스터디, 프로젝트 신청폼 상세조회 API
      */
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/{studyProjectBoardId}/form")
     public ResponseEntity<ResponseBody<List<StudyProjectFormQuestionResponse>>> getStudyProjectFormInfo(@PathVariable Long studyProjectBoardId) {
         return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.getFormInfoList(studyProjectBoardId)));
@@ -108,18 +104,16 @@ public class StudyProjectBoardController {
      * @param : status[published, draft]
      */
     // 게시물 작성 전 임시저장 게시물을 불러온 후 저장하면 해당 API 요청
-    // TODO : 신청이 들어오면 수정못하도록
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @PatchMapping("/{studyProjectBoardId}")
     public ResponseEntity<ResponseBody<StudyProjectBoardInfoAndFormResponse>> updateStudyProjectBoardAndForm(
             Long userId,
             @PathVariable Long studyProjectBoardId,
-            @RequestParam String status,
+            @RequestParam Status status,
             @RequestBody StudyProjectBoardInfoAndFormRequest studyProjectBoardInfoAndFormRequest) throws MethodArgumentNotValidException {
-        Status bordStatus = Status.valueOf(status.toUpperCase());
-        validateStudyProjectBoardInfoAndFormRequest(bordStatus, studyProjectBoardInfoAndFormRequest);
-        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.updateBoardAndForm(userId, studyProjectBoardId, studyProjectBoardInfoAndFormRequest, bordStatus)));
+        validateStudyProjectBoardInfoAndFormRequest(status, studyProjectBoardInfoAndFormRequest);
+        return ResponseEntity.ok(createSuccessResponse(studyProjectBoardService.updateBoardAndForm(userId, studyProjectBoardId, studyProjectBoardInfoAndFormRequest, status)));
 
     }
 
@@ -127,7 +121,7 @@ public class StudyProjectBoardController {
      * 스터디, 프로젝트 게시물 및 신청폼 삭제 API
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @DeleteMapping("/{studyProjectBoardId}")
     public ResponseEntity<ResponseBody<Void>> deleteStudyProjectBoardAndForm(
             Long userId,
@@ -140,7 +134,7 @@ public class StudyProjectBoardController {
      * 최근 임시저장 게시물 get
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/draft/latest")
     public ResponseEntity<ResponseBody<StudyProjectBoardInfoAndFormResponse>> getDraftStudyProjectBoard(
             Long userId) {
@@ -151,7 +145,7 @@ public class StudyProjectBoardController {
      * 사용자의 임시저장 게시물 목록 get(No-Offset)
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/draft")
     public ResponseEntity<ResponseBody<StudyProjectBoardNoOffsetResponse>> getDraftStudyProjectBoardList(
             Long userId,
@@ -166,14 +160,14 @@ public class StudyProjectBoardController {
      * @param : size, page, boardType[study, project]
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/my-boards")
     public ResponseEntity<ResponseBody<StudyProjectBoardPageNumResponse>> getPublishedUserStudyProjectBoardList(
             Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam String boardType) {
+            @RequestParam StudyProjectBoardType boardType) {
         return ResponseEntity.ok(createSuccessResponse(
-                studyProjectBoardService.getPublishedBoardListByUserId(userId, pageable, StudyProjectBoardType.valueOf(boardType.toUpperCase()))));
+                studyProjectBoardService.getPublishedBoardListByUserId(userId, pageable, boardType)));
     }
 
     // Valid 검사 메서드
