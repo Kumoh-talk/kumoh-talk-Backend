@@ -2,6 +2,8 @@ package com.example.demo.domain.report.application;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.repository.CommentRepository;
+import com.example.demo.domain.report.client.DiscordClient;
+import com.example.demo.domain.report.client.DiscordMessage;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.report.dto.ReportResponse;
 import com.example.demo.domain.report.repository.ReportRepository;
@@ -24,6 +26,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final DiscordClient discordClient;
 
     @Transactional
     public void report(Long commentId, Long userId) {
@@ -31,12 +34,13 @@ public class ReportService {
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        Report report = Report.builder()
-                .user(user)
-                .comment(comment)
-                .build();
-
+        Report report = Report.from(user, comment);
         reportRepository.save(report);
+        this.sendDiscordAlarm(user, comment);
+    }
+
+    private void sendDiscordAlarm(User user, Comment comment) {
+        discordClient.sendAlarm(DiscordMessage.createCommentReportMessage(user, comment));
     }
 
     public Page<ReportResponse> findAll(int page, int size) {
