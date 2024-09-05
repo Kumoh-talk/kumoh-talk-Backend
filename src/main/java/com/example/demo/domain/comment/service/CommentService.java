@@ -13,6 +13,7 @@ import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
 import com.example.demo.domain.study_project_board.repository.StudyProjectBoardRepository;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -76,12 +77,13 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long userId, String userRole) {
+    public void deleteComment(Long commentId, Long userId) {
         Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
-        if (userId.equals(comment.getUser().getId()) || userRole.equals("ROLE_ADMIN")) {
+        Role userRole = userService.validateUser(userId).getRole();
+        if (userId.equals(comment.getUser().getId()) || userRole == Role.ROLE_ADMIN) {
             commentRepository.replyCommentsDeleteById(commentId);
             commentRepository.delete(comment);
         } else {

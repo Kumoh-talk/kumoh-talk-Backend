@@ -14,6 +14,7 @@ import com.example.demo.domain.study_project_board.domain.entity.StudyProjectFor
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormQuestionRepository;
 import com.example.demo.domain.study_project_board.service.StudyProjectBoardService;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -43,7 +44,6 @@ public class StudyProjectApplicationService {
     @Transactional
     public StudyProjectApplicationResponse createApplication(Long userId, Long studyProjectBoardId, StudyProjectApplicationRequest request) {
         User user = userService.validateUser(userId);
-        userAdditionalInfoService.validateUserAdditionalInfo(user.getUserAdditionalInfo());
 
         StudyProjectBoard studyProjectBoard = studyProjectBoardService.validateStudyProjectBoard(studyProjectBoardId);
         validateDeadLine(studyProjectBoard);
@@ -73,12 +73,11 @@ public class StudyProjectApplicationService {
     public StudyProjectApplicantPageResponse getApplicantList(
             Long userId,
             Pageable pageable,
-            Long studyProjectBoardId,
-            String userRole) {
-        userService.validateUser(userId);
+            Long studyProjectBoardId) {
+        Role userRole = userService.validateUser(userId).getRole();
 
         StudyProjectBoard studyProjectBoard = studyProjectBoardService.validateStudyProjectBoard(studyProjectBoardId);
-        if (!studyProjectBoard.getUser().getId().equals(userId) && !userRole.equals("ROLE_ADMIN")) {
+        if (!studyProjectBoard.getUser().getId().equals(userId) && userRole != Role.ROLE_ADMIN) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
 
@@ -88,11 +87,11 @@ public class StudyProjectApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public StudyProjectApplicationResponse getApplicationInfo(Long userId, Long studyProjectBoardId, Long applicantId, String userRole) {
-        userService.validateUser(userId);
+    public StudyProjectApplicationResponse getApplicationInfo(Long userId, Long studyProjectBoardId, Long applicantId) {
+        Role userRole = userService.validateUser(userId).getRole();
 
         StudyProjectBoard studyProjectBoard = studyProjectBoardService.validateStudyProjectBoard(studyProjectBoardId);
-        if (!studyProjectBoard.getUser().getId().equals(userId) && !userRole.equals("ROLE_ADMIN")) {
+        if (!studyProjectBoard.getUser().getId().equals(userId) && userRole != Role.ROLE_ADMIN) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
 

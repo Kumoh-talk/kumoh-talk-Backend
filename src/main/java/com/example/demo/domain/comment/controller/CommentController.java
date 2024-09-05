@@ -16,9 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.demo.global.base.dto.ResponseUtil.createSuccessResponse;
@@ -90,14 +87,7 @@ public class CommentController {
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ResponseBody<Void>> deleteComment(Long userId, @PathVariable Long commentId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userRole = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()  // 첫 번째 역할을 가져옴 (필요에 따라 수정 가능)
-                .orElse(null);
-
-        commentService.deleteComment(commentId, userId, userRole);
+        commentService.deleteComment(commentId, userId);
         return ResponseEntity.ok().body(createSuccessResponse());
     }
 }

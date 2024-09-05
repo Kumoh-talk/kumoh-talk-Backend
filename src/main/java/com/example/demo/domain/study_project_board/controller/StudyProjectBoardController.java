@@ -16,9 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -129,14 +126,7 @@ public class StudyProjectBoardController {
     public ResponseEntity<ResponseBody<Void>> deleteStudyProjectBoardAndForm(
             Long userId,
             @PathVariable Long studyProjectBoardId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userRole = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()  // 첫 번째 역할을 가져옴 (필요에 따라 수정 가능)
-                .orElse(null);
-
-        studyProjectBoardService.deleteBoardAndForm(userId, studyProjectBoardId, userRole);
+        studyProjectBoardService.deleteBoardAndForm(userId, studyProjectBoardId);
         return ResponseEntity.ok(createSuccessResponse());
     }
 

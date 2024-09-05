@@ -12,6 +12,7 @@ import com.example.demo.domain.study_project_board.repository.StudyProjectBoardR
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormChoiceAnswerRepository;
 import com.example.demo.domain.study_project_board.repository.StudyProjectFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -43,7 +44,6 @@ public class StudyProjectBoardService {
             StudyProjectBoardInfoAndFormRequest studyProjectBoardInfoAndFormRequest,
             Status status) {
         User user = userService.validateUser(userId);
-        userAdditionalInfoService.validateUserAdditionalInfo(user.getUserAdditionalInfo());
 
         StudyProjectBoard studyProjectBoard = StudyProjectBoard.from(studyProjectBoardInfoAndFormRequest, user, status);
         StudyProjectBoard savedBoard = studyProjectBoardRepository.save(studyProjectBoard);
@@ -165,11 +165,11 @@ public class StudyProjectBoardService {
     @Transactional
     public void deleteBoardAndForm(
             Long userId,
-            Long studyProjectBoardId,
-            String userRole) {
+            Long studyProjectBoardId) {
         StudyProjectBoard studyProjectBoard = validateStudyProjectBoard(studyProjectBoardId);
+        Role userRole = userService.validateUser(userId).getRole();
 
-        if (!userId.equals(studyProjectBoard.getUser().getId()) && !userRole.equals("ROLE_ADMIN")) {
+        if (!userId.equals(studyProjectBoard.getUser().getId()) && userRole != Role.ROLE_ADMIN) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
 
