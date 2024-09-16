@@ -10,6 +10,8 @@ import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
@@ -43,7 +45,7 @@ public class User extends BaseEntity {
 
     private String name;
 
-    private String profileImage;
+    private String profileImageUrl;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -80,16 +82,12 @@ public class User extends BaseEntity {
     public void setInitialInfo(String nickname, String name) {
         this.nickname = nickname;
         this.name = name;
-        this.profileImage = "기본이미지 url";
+        this.profileImageUrl = "기본이미지 url";
         this.role = Role.ROLE_USER;
     }
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public void updateProfileImage( String profileImage) {
-        this.profileImage = profileImage;
     }
 
     public void mapAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
@@ -110,5 +108,9 @@ public class User extends BaseEntity {
 
     public void updateUserRoleToSeminarWriter() {
         this.role = Role.ROLE_SEMINAR_WRITER;
+    }
+
+    public void changeProfileUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

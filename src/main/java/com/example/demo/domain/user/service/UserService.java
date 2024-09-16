@@ -5,7 +5,6 @@ import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
-import com.example.demo.domain.user.domain.dto.request.UpdateProfileImageRequest;
 import com.example.demo.domain.user.domain.dto.response.UserInfo;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -56,12 +55,6 @@ public class UserService {
         User user = this.validateUser(userId);
         this.checkNicknameDuplicate(request.nickname());
         user.updateNickname(request.nickname());
-    }
-
-    @Transactional
-    public void updateProfileImage(Long userId, @Valid UpdateProfileImageRequest request) {
-        User user = this.validateUser(userId);
-        user.updateProfileImage(request.profileImage());
     }
 
     public UserInfo getUserInfo(Long userId) {
