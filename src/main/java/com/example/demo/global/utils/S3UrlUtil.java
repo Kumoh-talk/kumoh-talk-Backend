@@ -17,7 +17,7 @@ import jakarta.annotation.PostConstruct;
 public class S3UrlUtil {
 
 	@Value("${cloud.aws.s3.bucket}")
-	private String bucket;
+	public String bucket;
 
 	private static final String BOARD_S3_PATH_FORMAT = "board/%s/%s/%s/%s";
 	private static final String PROFILE_S3_PATH_FORMAT = "profile/%s/%s/%s/%s";

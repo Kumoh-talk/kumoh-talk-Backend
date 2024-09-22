@@ -11,6 +11,7 @@ import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
+import com.example.demo.global.utils.S3UrlUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtHandler jwtHandler;
+    private final S3UrlUtil s3UrlUtil;
 
     public void checkNicknameDuplicate(String nickname) {
         if(userRepository.existsByNickname(nickname)){
@@ -37,7 +39,7 @@ public class UserService {
         if(userRepository.existsByNickname(request.nickname())){
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
         }
-        user.setInitialInfo(request.nickname(), request.name());
+        user.setInitialInfo(request.nickname(), request.name(), s3UrlUtil.bucket);
         return jwtHandler.createTokens(JwtUserClaim.create(user));
     }
 

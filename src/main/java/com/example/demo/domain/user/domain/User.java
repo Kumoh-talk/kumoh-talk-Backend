@@ -10,8 +10,6 @@ import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
@@ -79,10 +77,10 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setInitialInfo(String nickname, String name) {
+    public void setInitialInfo(String nickname, String name, String bucket) {
         this.nickname = nickname;
         this.name = name;
-        this.profileImageUrl = "기본이미지 url";
+        this.profileImageUrl = String.format("https://%s.s3.ap-northeast-2.amazonaws.com/profile/default_profile.png", bucket);
         this.role = Role.ROLE_USER;
     }
 
