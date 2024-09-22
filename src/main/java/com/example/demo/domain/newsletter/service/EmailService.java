@@ -23,7 +23,7 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
-    
+    private final DiscordNewsletterClient discordNewsletterClient;
 
     @Async
     public void sendEmailNotice(List<String> subscriberEmails, EmailDeliveryStrategy emailStrategy) {
@@ -46,7 +46,7 @@ public class EmailService {
                 throw new RuntimeException(e);
             }
         }
-
+        this.sendDiscordNotification(emailStrategy); // 모든 이메일 전송이 끝나면 디스코드로 알림
     }
 
     private String generateHtmlContent(EmailDeliveryStrategy emailStrategy) {
@@ -55,4 +55,7 @@ public class EmailService {
         return templateEngine.process(emailStrategy.getTemplateName(), context);
     }
 
+    private void sendDiscordNotification(EmailDeliveryStrategy emailStrategy) {
+        discordNewsletterClient.sendNewsletter(DiscordMessage.createNewsletterMessage(emailStrategy));
+    }
 }

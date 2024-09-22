@@ -1,6 +1,7 @@
 package com.example.demo.domain.report.client;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.newsletter.strategy.EmailDeliveryStrategy;
 import com.example.demo.domain.user.domain.User;
 import lombok.*;
 
@@ -21,7 +22,6 @@ public class DiscordMessage {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @Getter
     public static class Embed {
-
         private String title;
         private String description;
     }
@@ -47,6 +47,26 @@ public class DiscordMessage {
                                                         + "댓글 정보 : " + comment.getContent() + ",\n"
                                                         + "댓글 생성 시간 : " + comment.getCreatedAt()
                                                         + "\n```")
+                                        .build()
+                        )
+                )
+                .build();
+    }
+
+    public static DiscordMessage createNewsletterMessage(EmailDeliveryStrategy emailDeliveryStrategy) {
+        return DiscordMessage.builder()
+                .content("# 📬 이메일 알림이 전송되었습니다!!!")
+                .embeds(
+                        List.of(
+                                Embed.builder()
+                                        .title("ℹ️ 알림 정보")
+                                        .description(
+                                                "### 🕖 발생 시간\n"
+                                                        + LocalDateTime.now()
+                                                        + "\n"
+                                                        + "### 🎈 알림 주제\n"
+                                                        + emailDeliveryStrategy.getSubject()
+                                                        + "\n")
                                         .build()
                         )
                 )
