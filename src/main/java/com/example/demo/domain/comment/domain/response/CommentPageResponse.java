@@ -1,7 +1,7 @@
 package com.example.demo.domain.comment.domain.response;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,8 +26,8 @@ public class CommentPageResponse {
             case SEMINAR_NOTICE, SEMINAR_SUMMARY -> myCommentResponseList = commentEntityPage.stream()
                     .map(MyCommentResponse::fromSeminarComment)
                     .collect(Collectors.toList());
-            case STUDY, PROJECT -> myCommentResponseList = commentEntityPage.stream()
-                    .map(MyCommentResponse::fromStudyProjectComment)
+            case STUDY, PROJECT, MENTORING -> myCommentResponseList = commentEntityPage.stream()
+                    .map(MyCommentResponse::fromRecruitmentComment)
                     .collect(Collectors.toList());
             default -> throw new IllegalArgumentException("게시판 종류에 해당하는 값이 아닙니다.");
         }

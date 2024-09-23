@@ -2,8 +2,8 @@ package com.example.demo.domain.comment.repository;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.domain.entity.QComment;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.example.demo.domain.board.domain.entity.QBoard.board;
 import static com.example.demo.domain.comment.domain.entity.QComment.comment;
-import static com.example.demo.domain.study_project_board.domain.entity.QStudyProjectBoard.studyProjectBoard;
+import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentBoard.recruitmentBoard;
 import static com.example.demo.domain.user.domain.QUser.user;
 
 
@@ -36,14 +36,14 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     }
 
     @Override
-    public List<Comment> findByStudyProjectBoard_idOrderByCreatedAtAsc(Long boardId) {
+    public List<Comment> findByRecruitmentBoard_idOrderByCreatedAtAsc(Long recruitmentBoardId) {
         QComment replyComment = new QComment("replyComment");
 
         return jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.user, user).fetchJoin()
                 .leftJoin(comment.replyComments, replyComment).fetchJoin()
-                .where(comment.studyProjectBoard.id.eq(boardId), comment.parentComment.isNull())
+                .where(comment.recruitmentBoard.id.eq(recruitmentBoardId), comment.parentComment.isNull())
                 .orderBy(comment.createdAt.asc())
                 .fetch();
     }
@@ -83,9 +83,9 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     public Page<Comment> findStudyAndProjectComment(Pageable pageable, Long userId, BoardType boardType) {
         List<Comment> content = jpaQueryFactory
                 .selectFrom(comment)
-                .join(comment.studyProjectBoard, studyProjectBoard).fetchJoin()
-                .where(comment.studyProjectBoard.isNotNull(),
-                        comment.studyProjectBoard.type.eq(StudyProjectBoardType.valueOf(boardType.toString())),
+                .join(comment.recruitmentBoard, recruitmentBoard).fetchJoin()
+                .where(comment.recruitmentBoard.isNotNull(),
+                        comment.recruitmentBoard.type.eq(RecruitmentBoardType.valueOf(boardType.toString())),
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .orderBy(comment.createdAt.desc())
@@ -95,8 +95,8 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
         Long totalCount = jpaQueryFactory
                 .select(comment.count())
                 .from(comment)
-                .where(comment.studyProjectBoard.isNotNull(),
-                        comment.studyProjectBoard.type.eq(StudyProjectBoardType.valueOf(boardType.toString())),
+                .where(comment.recruitmentBoard.isNotNull(),
+                        comment.recruitmentBoard.type.eq(RecruitmentBoardType.valueOf(boardType.toString())),
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .fetchOne();
