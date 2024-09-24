@@ -1,11 +1,9 @@
-package com.example.demo.domain.report.api;
+package com.example.demo.domain.report.controller;
 
-import com.example.demo.domain.report.application.ReportService;
-import com.example.demo.domain.report.dto.ReportResponse;
+import com.example.demo.domain.report.service.ReportService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -6,7 +6,6 @@ import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
-import com.example.demo.domain.user.domain.dto.request.UpdateProfileImageRequest;
 import com.example.demo.domain.user.domain.dto.response.UserInfo;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
@@ -72,18 +71,6 @@ public class UserController {
     public ResponseEntity<ResponseBody<Void>> updateNickname(@RequestBody @Valid UpdateNicknameRequest request,
                                                                       Long userId) {
         userService.updateNickname(userId, request);
-        return ResponseEntity.ok(createSuccessResponse());
-    }
-
-    /**
-     * 사용자 프로필 이미지 수정 api
-     */
-    @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
-    @PatchMapping("/me/profileImage")
-    public ResponseEntity<ResponseBody<Void>> updateProfileImage(@RequestBody @Valid UpdateProfileImageRequest request,
-                                                                 Long userId) {
-        userService.updateProfileImage(userId, request);
         return ResponseEntity.ok(createSuccessResponse());
     }
 

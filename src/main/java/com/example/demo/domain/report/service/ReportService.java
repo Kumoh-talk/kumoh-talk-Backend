@@ -1,11 +1,11 @@
-package com.example.demo.domain.report.application;
+package com.example.demo.domain.report.service;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.report.client.DiscordClient;
+import com.example.demo.domain.report.client.DiscordReportClient;
 import com.example.demo.domain.report.client.DiscordMessage;
 import com.example.demo.domain.report.domain.Report;
-import com.example.demo.domain.report.dto.ReportResponse;
+import com.example.demo.domain.report.domain.dto.ReportResponse;
 import com.example.demo.domain.report.repository.ReportRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -26,7 +26,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final DiscordClient discordClient;
+    private final DiscordReportClient discordReportClient;
 
     @Transactional
     public void report(Long commentId, Long userId) {
@@ -40,7 +40,7 @@ public class ReportService {
     }
 
     private void sendDiscordAlarm(User user, Comment comment) {
-        discordClient.sendAlarm(DiscordMessage.createCommentReportMessage(user, comment));
+        discordReportClient.sendReport(DiscordMessage.createCommentReportMessage(user, comment));
     }
 
     public Page<ReportResponse> findAll(int page, int size) {
