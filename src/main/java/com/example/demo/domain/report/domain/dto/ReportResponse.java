@@ -1,4 +1,4 @@
-package com.example.demo.domain.report.dto;
+package com.example.demo.domain.report.domain.dto;
 
 import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.report.domain.Report;

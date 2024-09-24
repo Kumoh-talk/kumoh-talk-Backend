@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
-        name = "discord-client",
-        url = "${discord.webhook.url}")
-public interface DiscordClient {
+        name = "discord-report-client",
+        url = "${discord.webhook.url.report}")
+public interface DiscordReportClient {
 
     @PostMapping
-    void sendAlarm(@RequestBody DiscordMessage message);
+    void sendReport(@RequestBody DiscordMessage message);
 }
