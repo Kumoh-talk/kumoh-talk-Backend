@@ -77,10 +77,10 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setInitialInfo(String nickname, String name, String bucket) {
+    public void setInitialInfo(String nickname, String name, String defaultImageUrl) {
         this.nickname = nickname;
         this.name = name;
-        this.profileImageUrl = String.format("https://%s.s3.ap-northeast-2.amazonaws.com/profile/default_profile.png", bucket);
+        this.profileImageUrl = defaultImageUrl;
         this.role = Role.ROLE_USER;
     }
 

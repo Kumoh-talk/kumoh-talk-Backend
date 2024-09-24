@@ -39,7 +39,7 @@ public class UserService {
         if(userRepository.existsByNickname(request.nickname())){
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
         }
-        user.setInitialInfo(request.nickname(), request.name(), s3UrlUtil.bucket);
+        user.setInitialInfo(request.nickname(), request.name(), s3UrlUtil.getDefaultImageUrl());
         return jwtHandler.createTokens(JwtUserClaim.create(user));
     }
 
