@@ -1,7 +1,7 @@
 package com.example.demo.domain.newsletter.strategy;
 
-import com.example.demo.domain.study_project_board.domain.dto.vo.StudyProjectBoardType;
-import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -39,15 +39,15 @@ public class ProjectNoticeEmailDeliveryStrategy implements EmailDeliveryStrategy
         return "[야밤의금오톡] '프로젝트 팀원 공고' 새 글 알림";
     }
 
-    public static ProjectNoticeEmailDeliveryStrategy create(StudyProjectBoard studyProjectBoard) {
-        if (!studyProjectBoard.getType().equals(StudyProjectBoardType.PROJECT)) {
+    public static ProjectNoticeEmailDeliveryStrategy create(RecruitmentBoard recruitmentBoard) {
+        if (!recruitmentBoard.getType().equals(RecruitmentBoardType.PROJECT)) {
             throw new IllegalArgumentException("스터디에 대한 이메일 알림만 허용합니다.");
         }
         return new ProjectNoticeEmailDeliveryStrategy(
-                studyProjectBoard.getType().name(),
-                studyProjectBoard.getTag().name(),
-                studyProjectBoard.getTitle(),
-                studyProjectBoard.getUser().getNickname(),
+                recruitmentBoard.getType().name(),
+                recruitmentBoard.getTag().name(),
+                recruitmentBoard.getTitle(),
+                recruitmentBoard.getUser().getNickname(),
                 "https://프론트도메인/~" // TODO. 수정 필요
         );
     }
