@@ -1,8 +1,8 @@
 package com.example.demo.global.config.web;
 
 import com.example.demo.global.converter.BoardTypeConverter;
+import com.example.demo.global.converter.RecruitmentBoardTypeConverter;
 import com.example.demo.global.converter.StatusConverter;
-import com.example.demo.global.converter.StudyProjectBoardTypeConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new BoardTypeConverter());
-        registry.addConverter(new StudyProjectBoardTypeConverter());
+        registry.addConverter(new RecruitmentBoardTypeConverter());
         registry.addConverter(new StatusConverter());
     }
 }

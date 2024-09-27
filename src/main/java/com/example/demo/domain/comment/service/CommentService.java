@@ -9,9 +9,9 @@ import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
-import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
-import com.example.demo.domain.study_project_board.repository.StudyProjectBoardRepository;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
+import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
@@ -32,7 +32,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
-    private final StudyProjectBoardRepository studyProjectBoardRepository;
+    private final RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Transactional(readOnly = true)
     public CommentResponse findCommentsByBoardId(Long boardId, BoardType boardType) {
@@ -100,10 +100,10 @@ public class CommentService {
                 return commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
             }
             default -> {
-                studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
+                recruitmentBoardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
-                return commentRepository.findByStudyProjectBoard_idOrderByCreatedAtAsc(boardId);
+                return commentRepository.findByRecruitmentBoard_idOrderByCreatedAtAsc(boardId);
             }
         }
     }
@@ -123,17 +123,17 @@ public class CommentService {
                 }
                 requestComment = Comment.fromSeminarBoardRequest(commentRequest, commentBoard, commentUser, parentComment);
             }
-            case STUDY, PROJECT -> {
-                StudyProjectBoard studyProjectBoard = studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
+            case STUDY, PROJECT, MENTORING -> {
+                RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
 
                 Comment parentComment = null;
                 if (commentRequest.getGroupId() != null) {
-                    parentComment = commentRepository.findByIdAndStudyProjectBoard_Id(commentRequest.getGroupId(), boardId).orElseThrow(() ->
+                    parentComment = commentRepository.findByIdAndRecruitmentBoard_Id(commentRequest.getGroupId(), boardId).orElseThrow(() ->
                             new ServiceException(ErrorCode.PARENT_NOT_FOUND));
                 }
-                requestComment = Comment.fromStudyProjectBoardRequest(commentRequest, studyProjectBoard, commentUser, parentComment);
+                requestComment = Comment.fromRecruitmentBoardRequest(commentRequest, recruitmentBoard, commentUser, parentComment);
             }
         }
         return requestComment;

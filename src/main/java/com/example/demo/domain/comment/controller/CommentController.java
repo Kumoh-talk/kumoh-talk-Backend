@@ -6,7 +6,7 @@ import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.service.CommentService;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class CommentController {
     /**
      * 게시물 별 댓글 조회
      *
-     * @param : boardType[study, project, seminar_notice, seminar_summary]
+     * @param : boardType[study, project, mentoring, seminar_notice, seminar_summary]
      */
     @GetMapping("/{boardId}")
     public ResponseEntity<ResponseBody<CommentResponse>> getBoardComments(
@@ -42,7 +42,7 @@ public class CommentController {
     /**
      * 사용자 작성 댓글 조회
      *
-     * @param : boardType[study, project, seminar_notice, seminar_summary]
+     * @param : boardType[study, project, mentoring, seminar_notice, seminar_summary]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
@@ -57,14 +57,13 @@ public class CommentController {
     /**
      * 댓글 저장
      *
-     * @param : boardType[study, project, seminar_notice, seminar_summary]
+     * @param : boardType[study, project, mentoring, seminar_notice, seminar_summary]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @PostMapping("/{boardId}")
     public ResponseEntity<ResponseBody<CommentInfoResponse>> createComment(Long userId, @RequestBody @Valid CommentRequest commentRequest,
                                                                            @PathVariable Long boardId, @RequestParam BoardType boardType) {
-        // 댓글 작성시 사용자 권한 확인
         return ResponseEntity.ok(createSuccessResponse(commentService.saveComment(commentRequest, userId, boardId, boardType)));
     }
 

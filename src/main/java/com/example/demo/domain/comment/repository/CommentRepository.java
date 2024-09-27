@@ -15,7 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, CustomC
 
     Optional<Comment> findByIdAndBoard_Id(Long id, Long boardId);
 
-    Optional<Comment> findByIdAndStudyProjectBoard_Id(Long id, Long studyProjectBoardId);
+    Optional<Comment> findByIdAndRecruitmentBoard_Id(Long id, Long recruitmentBoardId);
 
     @Query("SELECT c FROM Comment c WHERE c.deletedAt is null and c.id = :id")
     Optional<Comment> findNotDeleteCommentById(Long id);

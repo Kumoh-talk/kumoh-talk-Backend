@@ -3,7 +3,7 @@ package com.example.demo.domain.comment.domain.entity;
 
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.comment.domain.request.CommentRequest;
-import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
+import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -37,8 +37,8 @@ public class Comment extends BaseEntity {
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_project_board_id")
-    private StudyProjectBoard studyProjectBoard;
+    @JoinColumn(name = "recruitment_board_id")
+    private RecruitmentBoard recruitmentBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -67,10 +67,10 @@ public class Comment extends BaseEntity {
         setParentComment(parentComment);
     }
 
-    @Builder(builderMethodName = "studyProjectCommentBuilder", builderClassName = "StudyProjectCommentBuilder")
-    public Comment(String content, StudyProjectBoard studyProjectBoard, User user, Comment parentComment) {
+    @Builder(builderMethodName = "recruitmentCommentBuilder", builderClassName = "RecruitmentCommentBuilder")
+    public Comment(String content, RecruitmentBoard recruitmentBoard, User user, Comment parentComment) {
         this.content = content;
-        this.studyProjectBoard = studyProjectBoard;
+        this.recruitmentBoard = recruitmentBoard;
         this.user = user;
         setParentComment(parentComment);
     }
@@ -87,11 +87,11 @@ public class Comment extends BaseEntity {
         return comment;
     }
 
-    public static Comment fromStudyProjectBoardRequest(CommentRequest request,
-                                                       StudyProjectBoard studyProjectBoard, User user, Comment parentComment) {
-        Comment comment = Comment.studyProjectCommentBuilder()
+    public static Comment fromRecruitmentBoardRequest(CommentRequest request,
+                                                      RecruitmentBoard recruitmentBoard, User user, Comment parentComment) {
+        Comment comment = Comment.recruitmentCommentBuilder()
                 .content(request.getContent())
-                .studyProjectBoard(studyProjectBoard)
+                .recruitmentBoard(recruitmentBoard)
                 .user(user)
                 .build();
         comment.setParentComment(parentComment);

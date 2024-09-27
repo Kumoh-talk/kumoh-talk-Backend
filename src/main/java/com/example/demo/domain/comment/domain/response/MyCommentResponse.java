@@ -32,7 +32,7 @@ public class MyCommentResponse {
                 .build();
     }
 
-    public static MyCommentResponse fromStudyProjectComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
+    public static MyCommentResponse fromRecruitmentComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
         return MyCommentResponse.builder()
                 .comment(MyCommentInfoResponse.builder()
                         .id(commentEntity.getId())
@@ -41,9 +41,9 @@ public class MyCommentResponse {
                         .updatedAt(commentEntity.getUpdatedAt())
                         .build())
                 .board(CommentBoardInfoResponse.builder()
-                        .id(commentEntity.getStudyProjectBoard().getId())
-                        .createdAt(commentEntity.getStudyProjectBoard().getCreatedAt())
-                        .updatedAt(commentEntity.getStudyProjectBoard().getUpdatedAt())
+                        .id(commentEntity.getRecruitmentBoard().getId())
+                        .createdAt(commentEntity.getRecruitmentBoard().getCreatedAt())
+                        .updatedAt(commentEntity.getRecruitmentBoard().getUpdatedAt())
                         .build())
                 .build();
     }
