@@ -16,6 +16,8 @@ spring:
         one-indexed-parameters:
           true
 
-
+  profiles:
+    active: local
 file:
   dir: classpath:files/
+
