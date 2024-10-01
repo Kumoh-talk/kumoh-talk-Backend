@@ -21,11 +21,11 @@ public class InfoLogProperty extends LogProperty {
 		);
 	}
 
-	public static InfoLogProperty of(String description, JoinPoint joinPoint, String methodName, Object result) {
+	public static InfoLogProperty of(String description, JoinPoint joinPoint, Object result) {
 		return new InfoLogProperty(
 			description,
 			joinPoint.getSignature().getDeclaringTypeName(),
-			((MethodSignature)joinPoint.getSignature()).getName(),
+			(joinPoint.getSignature()).getName(),
 			new Map[] {Map.of(
 				"result", result
 			)}

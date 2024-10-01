@@ -44,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LocalLogAspect {
 
 	@Before("com.example.demo.global.aop.log.pointcut.LogPointCut.debugLogPointcut()")
-	public void controllerLogBefore(JoinPoint joinPoint) throws Throwable {
+	public void controllerLogBefore(JoinPoint joinPoint) {
 		MethodSignature methodSignature = (MethodSignature)joinPoint.getSignature();
 		LogProperty logProperty = InfoLogProperty.of(
 			getLogDescription(methodSignature),
@@ -61,7 +61,6 @@ public class LocalLogAspect {
 		LogProperty logProperty = InfoLogProperty.of(
 			getLogDescription(methodSignature),
 			joinPoint,
-			methodSignature.getName(),
 			result
 		);
 		log.info("성공 {} ", logProperty);

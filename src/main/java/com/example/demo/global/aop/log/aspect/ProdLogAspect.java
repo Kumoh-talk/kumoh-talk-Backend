@@ -81,7 +81,6 @@ public class ProdLogAspect {
 		logProperty = InfoLogProperty.of(
 			getLogDescription(methodSignature),
 			joinPoint,
-			methodSignature.getName(),
 			result
 		);
 

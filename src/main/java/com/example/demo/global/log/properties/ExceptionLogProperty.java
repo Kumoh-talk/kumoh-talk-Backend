@@ -30,7 +30,7 @@ public class ExceptionLogProperty extends LogProperty {
 		return new ExceptionLogProperty(
 			description,
 			joinPoint.getSignature().getDeclaringTypeName(),
-			((MethodSignature)joinPoint.getSignature()).getName(),
+			(joinPoint.getSignature()).getName(),
 			serviceException
 		);
 	}
