@@ -10,10 +10,10 @@ env:
   AWS_REGION: ap-northeast-2
   ECR_REPOSITORY: kumoh-talk/ecr-repo
 
-  ECS_SERVICE:
-  ECS_CLUSTER:
-  ECS_TASK_DEFINITION:
-  CONTAINER_NAME:
+  ECS_SERVICE: kumoh-talk-backend-deploy-service
+  ECS_CLUSTER: kumoh-talk-backend-ecs-cluster
+  ECS_TASK_DEFINITION: kumoh-talk-backend-deploy-task
+  CONTAINER_NAME: kumoh-talk-backend-container
 
 jobs:
   build:
@@ -90,22 +90,22 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-#      - name: Download task definition
-#        run: |
-#          aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION --query taskDefinition > task-definition.json
-#
-#      - name: Fill in the new image ID in the Amazon ECS task definition
-#        id: task-def
-#        uses: aws-actions/amazon-ecs-render-task-definition@v1
-#        with:
-#          task-definition: task-definition.json
-#          container-name: ${{ env.CONTAINER_NAME }}
-#          image: ${{ steps.build-image.outputs.image }}
-#
-#      - name: Deploy Amazon ECS task definition
-#        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-#        with:
-#          task-definition: ${{ steps.task-def.outputs.task-definition }}
-#          service: ${{ env.ECS_SERVICE }}
-#          cluster: ${{ env.ECS_CLUSTER }}
-#          wait-for-service-stability: true
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION --query taskDefinition > task-definition.json
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
