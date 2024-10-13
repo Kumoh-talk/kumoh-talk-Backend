@@ -1,0 +1,34 @@
+server:
+  shutdown: graceful
+  port: 8080
+
+spring:
+  config:
+    import:
+      - security/application-security.yml
+      - security/application-mail.yml
+      - security/application-s3.yml
+      - application-file.yml
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${prod-db.rdb.url}
+    username: ${prod-db.rdb.username}
+    password: ${prod-db.rdb.password}
+  data:
+    web:
+      pageable:
+        one-indexed-parameters:
+          true
+
+    redis:
+      host: ${prod-db.redis.host}
+      port: ${prod-db.redis.port}
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
+        highlight_sql: false
+        hbm2ddl.auto: validate
+        default_batch_fetch_size: 100
+    open-in-view: false
+    show-sql: false
