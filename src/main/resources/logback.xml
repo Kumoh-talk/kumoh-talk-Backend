@@ -20,6 +20,15 @@
         </root>
     </springProfile>
 
+    <!--dev-->
+    <springProfile name="dev">
+        <include resource="log/log-local.xml"/>
+
+        <root level="INFO">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
     <!--prod-->
     <springProfile name="prod">
         <include resource="log/log-prod.xml"/>
