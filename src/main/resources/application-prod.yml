@@ -1,14 +1,10 @@
-server:
-  shutdown: graceful
-  port: 8080
-
 spring:
   config:
     import:
       - security/application-security.yml
       - security/application-mail.yml
       - security/application-s3.yml
-      - application-file.yml
+      - security/application-db.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${prod-db.rdb.url}

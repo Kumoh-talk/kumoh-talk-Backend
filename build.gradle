@@ -65,9 +65,6 @@ dependencies {
 
     //AWS , S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-    // 파일 업로드를 위한 의존성 추가
-    implementation 'commons-io:commons-io:2.6'
-    implementation 'commons-fileupload:commons-fileupload:1.4'
 
     // QueryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
