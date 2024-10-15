@@ -1,5 +1,7 @@
 package com.example.demo.global.aop.log.aspect;
 
+import java.util.Optional;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -81,7 +83,7 @@ public class ProdLogAspect {
 		logProperty = InfoLogProperty.of(
 			getLogDescription(methodSignature),
 			joinPoint,
-			result
+			Optional.ofNullable(result)
 		);
 
 		long elapsedTime = System.currentTimeMillis() - startTime.get();

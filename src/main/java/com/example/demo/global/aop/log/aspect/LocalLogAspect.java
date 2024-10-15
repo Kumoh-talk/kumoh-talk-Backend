@@ -1,5 +1,7 @@
 package com.example.demo.global.aop.log.aspect;
 
+import java.util.Optional;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -61,7 +63,7 @@ public class LocalLogAspect {
 		LogProperty logProperty = InfoLogProperty.of(
 			getLogDescription(methodSignature),
 			joinPoint,
-			result
+			Optional.ofNullable(result)
 		);
 		log.info("성공 {} ", logProperty);
 	}
