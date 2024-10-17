@@ -16,7 +16,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/tokens")
+@RequestMapping("/api/v1/tokens")
 public class TokenController {
 
     private final TokenService tokenService;

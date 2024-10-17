@@ -26,7 +26,7 @@ public class Category extends BaseEntity {
     @NotBlank(message = "이름은 빈 값일 수 없습니다.")
     private String name;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
     public Category(String name) {

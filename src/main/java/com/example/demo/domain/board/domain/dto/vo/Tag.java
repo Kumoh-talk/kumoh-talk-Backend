@@ -14,6 +14,6 @@ public enum Tag {
                 return tag;
             }
         }
-        throw new IllegalArgumentException("tag에 해당하는 값이 없습니다.");
+        return null;
     }
 }

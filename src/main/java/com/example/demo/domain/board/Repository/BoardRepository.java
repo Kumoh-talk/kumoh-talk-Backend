@@ -35,6 +35,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         + "FROM Board b "
         + "LEFT JOIN b.likes l "
         + "LEFT JOIN b.views v "
+        + "WHERE b.status = 'PUBLISHED' "
         + "GROUP BY b.id, b.title, b.user.nickname, b.tag, b.createdAt")
     Page<BoardTitleInfoResponse> findBoardByPage(Pageable pageable);//TODO : 추후 QueryDSL로 변경
 

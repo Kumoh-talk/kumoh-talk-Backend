@@ -17,8 +17,6 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "newsletters")
-@SQLDelete(sql = "UPDATE newsletters SET deleted_at = NOW() where id=?")
-@SQLRestriction(value = "deleted_at is NULL")
 public class Newsletter extends BaseEntity {
 
     @Id

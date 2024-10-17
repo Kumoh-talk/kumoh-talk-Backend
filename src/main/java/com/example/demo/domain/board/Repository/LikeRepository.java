@@ -12,15 +12,16 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface LikeRepository extends JpaRepository<Like,Long> {
 
-    @Query("SELECT EXISTS(l) FROM Like l WHERE l.board.id = :boardId AND l.user.id = :userId")
-    boolean existsByBoardIdAndUserId(Long boardId, Long userId);
+	@Query("SELECT COUNT(l) > 0 FROM Like l WHERE l.board.id = :boardId AND l.user.id = :userId")
+	Boolean existsByBoardIdAndUserId(Long boardId, Long userId);
 
 	Optional<Like> findByBoardIdAndUserId(Long boardId, Long userId);
 
 	@Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
-		+ "(b.id, b.title, b.user.nickname, b.tag, COUNT(DISTINCT b.likes), COUNT(DISTINCT b.views), b.createdAt) "
-		+ "FROM Like l "
-		+ "LEFT JOIN l.board b "
+		+ "(b.id, b.title, b.user.nickname, b.tag, COUNT(DISTINCT v.id), COUNT(DISTINCT l.id), b.createdAt) "
+		+ "FROM Board b "
+		+ "JOIN b.likes l "
+		+ "LEFT JOIN b.views v "
 		+ "WHERE l.user.id = :userId "
 		+ "GROUP BY b.id, b.title, b.user.nickname, b.tag, b.createdAt")
 	Page<BoardTitleInfoResponse> findBoardsByUserId(Long userId, Pageable pageable);

@@ -31,11 +31,10 @@ public class BoardController {
     private final BoardUseCase boardUsecase;
 
     @AssignUserId
-    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @PostMapping("/v1/boards")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraft(Long userId,
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraftSeminar(Long userId,
                                                   @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
-
             return ResponseEntity.ok(createSuccessResponse(boardUsecase.saveDraftBoard(userId, boardCreateRequest)));
     }
 
@@ -46,7 +45,7 @@ public class BoardController {
 
 
     @AssignUserId
-    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
@@ -54,7 +53,7 @@ public class BoardController {
     }
 
     @AssignUserId
-    @PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardUsecase.deleteBoard(userId,boardId);

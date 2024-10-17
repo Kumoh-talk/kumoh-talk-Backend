@@ -19,6 +19,11 @@ configurations {
     asciidoctorExt
 }
 
+ext {
+    snippetsDir = file('build/generated-snippets')
+    set('springCloudVersion', "2023.0.0")
+}
+
 repositories {
     mavenCentral()
 }
@@ -71,10 +76,19 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    // Feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 }
 
-ext {
-    snippetsDir = file('build/generated-snippets')
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 test {
