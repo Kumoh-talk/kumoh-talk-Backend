@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,14 +29,14 @@ public class HeadImage {
 	@Column(nullable = false,length = 256)
 	private String url;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name ="board_id",nullable = true)
 	private Board board;
 
 	private HeadImage(String url, Board board) {
 		this.url = url;
 		this.board = board;
-		this.board.getHeadImages().add(this);
+		this.board.setHeadImage(this);
 	}
 
 	public static HeadImage createHeadImage(String url, Board board) {

@@ -52,6 +52,9 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private HeadImage headImage;
+
     @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -71,9 +74,6 @@ public class Board extends BaseEntity {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<View> views = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
-    private List<HeadImage> headImages = new ArrayList<>();
 
     private Board(String title, String content, User user, Tag tag,Status status) {
         this.title = title;
@@ -105,5 +105,9 @@ public class Board extends BaseEntity {
 
     public void changeAttachFileUrl(String attachFileUrl){
         this.attachFileUrl = attachFileUrl;
+    }
+
+    public void setHeadImage(HeadImage headImage) {
+        this.headImage = headImage;
     }
 }
