@@ -15,20 +15,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name ="image_files")
+@Table(name ="head_images")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE image_files SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE head_images SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class HeadImage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false,length = 45)
+	@Column(nullable = false,length = 256)
 	private String url;
 
 	@ManyToOne
 	@JoinColumn(name ="board_id",nullable = true)
 	private Board board;
+
+	private HeadImage(String url, Board board) {
+		this.url = url;
+		this.board = board;
+		this.board.getHeadImages().add(this);
+	}
+
+	public static HeadImage createHeadImage(String url, Board board) {
+		return new HeadImage(url, board);
+	}
 }
