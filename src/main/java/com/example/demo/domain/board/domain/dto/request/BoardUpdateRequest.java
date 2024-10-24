@@ -1,7 +1,5 @@
 package com.example.demo.domain.board.domain.dto.request;
 
-import static com.example.demo.global.regex.S3UrlRegex.*;
-
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.global.aop.valid.ValidEnum;
 
@@ -9,7 +7,6 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,15 +37,5 @@ public class BoardUpdateRequest {
     private Status status;
 
     @NotBlank(message = "게시물 대표 이미지는 필수 항목입니다.")
-    @Pattern(regexp = S3_BOARD_FILE_URL)
     private String boardHeadImageUrl;
-
-    @Builder
-    public BoardUpdateRequest(Long id, String title, String contents, @Nullable List<String> categoryName, Status status) {
-        this.id = id;
-        this.title = title;
-        this.contents = contents;
-        this.categoryName = categoryName;
-        this.status = status;
-    }
 }

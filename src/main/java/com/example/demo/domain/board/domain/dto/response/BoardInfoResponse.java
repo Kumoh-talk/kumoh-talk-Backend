@@ -18,6 +18,7 @@ public class BoardInfoResponse {
     private Long view;
     private Long like;
     private List<String> categoryNames;
+    private String boardHeadImageUrl;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
 

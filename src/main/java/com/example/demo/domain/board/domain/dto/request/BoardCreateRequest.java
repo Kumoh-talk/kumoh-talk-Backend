@@ -8,10 +8,8 @@ import com.example.demo.global.aop.valid.ValidEnum;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.*;
-import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
@@ -9,9 +8,7 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.board.domain.entity.HeadImage;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +25,6 @@ public class BoardCommandService {
     private final BoardRepository boardRepository;
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
-    private final HeadImageRepository headImageRepository;
 
     @Transactional
     public BoardInfoResponse createBoard(User user, BoardCreateRequest boardCreateRequest) {
@@ -40,8 +36,7 @@ public class BoardCommandService {
         boardCreateRequest.getCategoryName().forEach(categoryName -> {
             saveCategoryAndBoardCategory(board, categoryName);
         });
-        HeadImage headImage = HeadImage.createHeadImage(boardCreateRequest.getBoardHeadImageUrl(), savedBoard);
-        headImageRepository.save(headImage);
+
 
         return BoardInfoResponse.from(
                 savedBoard,
@@ -70,6 +65,7 @@ public class BoardCommandService {
                 .map(boardCategory -> boardCategory.getCategory().getName())
                 .collect(Collectors.toList());
 
+
         return BoardInfoResponse.from(board,
                 board.getUser().getNickname(),
                 boardRepository.countViewsByBoardId(boardUpdateRequest.getId()),
@@ -80,6 +76,7 @@ public class BoardCommandService {
     private void updateBoardInfo(Board board , BoardUpdateRequest boardUpdateRequest) {
         board.changeBoardInfo(boardUpdateRequest);
         board.changeBoardStatus(boardUpdateRequest.getStatus());
+        board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
         changeBoardCategories(board, boardUpdateRequest.getCategoryName());
     }
 
