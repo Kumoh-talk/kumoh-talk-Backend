@@ -37,7 +37,6 @@ public class BoardCommandService {
             saveCategoryAndBoardCategory(board, categoryName);
         });
 
-
         return BoardInfoResponse.from(
                 savedBoard,
                 user.getNickname(),
