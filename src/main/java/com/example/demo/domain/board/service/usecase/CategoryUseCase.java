@@ -31,6 +31,5 @@ public class CategoryUseCase {
 	 */
 	public BoardPageResponse getBoardsByCategoryName(String categoryName, Pageable pageable) {
 		return categoryQueryService.getBoardPageByCategoryName(categoryName,pageable);
-
 	}
 }

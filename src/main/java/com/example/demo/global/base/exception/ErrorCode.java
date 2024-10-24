@@ -15,6 +15,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_0005", "사용할 수 없는 메서드입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_0006", "서버 에러입니다."),
     INVALID_JSON(HttpStatus.BAD_REQUEST, "COMMON_0007", "JSON 파싱 오류입니다."),
+    REQUEST_PARAM_MISMATCH(HttpStatus.BAD_REQUEST, "COMMON_0008", "쿼리 파라미터 값이 형식에 맞지 않습니다."),
 
     // Security
     NEED_AUTHORIZED(HttpStatus.UNAUTHORIZED, "SECURITY_0001", "인증이 필요합니다."),
@@ -45,6 +46,9 @@ public enum ErrorCode {
     LIKE_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "BOARD_0004", "좋아요는 인증을 해야합니다."),
     USER_NOT_LIKE_BOARD(HttpStatus.NOT_FOUND, "BOARD_0005", "좋아요를 누르지 않은 게시물입니다."),
     DEADLINE_EXPIRED(HttpStatus.FORBIDDEN, "BOARD_0006", "신청 마감된 게시물입니다."),
+    NOT_NOTICE_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_0007", "해당 유저는 공지사항 작성 권한이 없습니다."),
+    NOT_SEMINAR_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_0008", "해당 유저는 세미나 작성 권한이 없습니다."),
+    NOT_AUTHORIZED_WRITE_NOTICE(HttpStatus.UNAUTHORIZED, "BOARD_0009", "공지사항 작성 권한이 없습니다."),
 
     // FILE
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_0001", "파일의 용량이 너무 큽니다."),
@@ -65,14 +69,17 @@ public enum ErrorCode {
     SEMINAR_APPLICATION_CANNOT_EDIT_OR_DELETE(HttpStatus.FORBIDDEN, "SEMINAR_0003", "해당 세미나 신청폼을 수정/삭제할 수 있는 기간이 아닙니다."),
 
     // StudyProjectBoard
-    STUDYPROJECT_APPLICATION_EXIST(HttpStatus.BAD_REQUEST, "STUDYPROEJCT_0001", "게시물에 신청한 사람이 존재합니다."),
+    RECRUITMENT_APPLICATION_EXIST(HttpStatus.BAD_REQUEST, "STUDYPROEJCT_0001", "게시물에 신청한 사람이 존재합니다."),
 
     // StudyProjectFormQuestion
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION_0001", "질문 정보가 존재하지 않습니다."),
 
     // StudyProjectApplicant
-    STUDYPROJECT_APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_0001", "신청자 정보가 존재하지 않습니다."),
-    STUDYPROJECT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다.");
+    RECRUITMENT_APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_0001", "신청자 정보가 존재하지 않습니다."),
+    RECRUITMENT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다."),
+
+    // StudyProjectApplicantAnswer
+    OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "ANSWER_0001", "필수 답변을 입력해야합니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;

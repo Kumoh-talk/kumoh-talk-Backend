@@ -1,5 +1,6 @@
 package com.example.demo.domain.user_addtional_info.controller;
 
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user_addtional_info.domain.dto.request.CreateUserAdditionalInfoRequest;
 import com.example.demo.domain.user_addtional_info.domain.dto.response.UserAdditionalInfoResponse;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
@@ -15,7 +16,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/userAdditionalInfos")
+@RequestMapping("/api/v1/userAdditionalInfos")
 public class UserAdditionalInfoController {
 
     private final UserAdditionalInfoService userAdditionalInfoService;
@@ -26,7 +27,7 @@ public class UserAdditionalInfoController {
      * 존재하면 UserAdditionalInfoResponse
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @GetMapping("/me")
     public ResponseEntity<ResponseBody<UserAdditionalInfoResponse>> getUserAdditionalInfo(Long userId) {
         return ResponseEntity.ok(createSuccessResponse(userAdditionalInfoService.getUserAdditionalInfo(userId)));
@@ -34,14 +35,14 @@ public class UserAdditionalInfoController {
 
     /**
      * 사용자 추가 정보 생성 api
-     * 존재하면 404
+     * 존재하면 409
+     * 존재하지 않으면 첫 생성이므로, 권한 업데이트 이후 새 토큰을 발급
      */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PostMapping("/me")
-    public ResponseEntity<ResponseBody<Void>> createUserAdditionalInfo(Long userId,
-                                                                       @RequestBody @Valid CreateUserAdditionalInfoRequest request) {
-        userAdditionalInfoService.createUserAdditionalInfo(userId, request);
-        return ResponseEntity.ok(createSuccessResponse());
+    public ResponseEntity<ResponseBody<TokenResponse>> createUserAdditionalInfo(Long userId,
+                                                                                @RequestBody @Valid CreateUserAdditionalInfoRequest request) {
+        return ResponseEntity.ok(createSuccessResponse( userAdditionalInfoService.createUserAdditionalInfo(userId, request)));
     }
 }

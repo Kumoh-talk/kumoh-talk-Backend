@@ -4,6 +4,7 @@ import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApp
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationUpdateRequest;
 import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
 import com.example.demo.domain.seminar_application.service.SeminarApplicationService;
+import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
@@ -18,31 +19,41 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/seminar-application")
+@RequestMapping("/api/v1/seminar-applications")
 public class SeminarApplicationController {
 
     private final SeminarApplicationService seminarApplicationService;
 
+    /**
+     * 세미나 신청서 작성
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @PostMapping("/apply")
-    public ResponseEntity<ResponseBody<Void>> applyForSeminar(Long userId,
-                                                              @RequestBody @Valid SeminarApplicationRequest request) {
-        seminarApplicationService.applyForSeminar(userId, request);
-        return ResponseEntity.ok(createSuccessResponse());
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
+    @PostMapping
+    public ResponseEntity<ResponseBody<TokenResponse>> applyForSeminar(Long userId,
+                                                                       @RequestBody @Valid SeminarApplicationRequest request) {
+        return seminarApplicationService.applyForSeminar(userId, request)
+                .map(token -> ResponseEntity.ok(createSuccessResponse(token))) // 200 OK
+                .orElseGet(() -> ResponseEntity.noContent().build()); // 204 No Content
     }
 
+    /**
+     * 내가 쓴 모든 세미나 신청서 목록 조회
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @GetMapping("/apply")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
+    @GetMapping
     public ResponseEntity<ResponseBody<Page<SeminarApplicationInfo>>> getSeminarApplicationByUserId(Long userId,
                                                                                                     Pageable pageable) {
         return ResponseEntity.ok(createSuccessResponse(seminarApplicationService.getSeminarApplicationByUserId(userId, pageable)));
     }
 
+    /**
+     * 내가 쓴 신청서 내용 수정
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @PutMapping("/apply/{seminarApplicationId}")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
+    @PutMapping("/{seminarApplicationId}")
     public ResponseEntity<ResponseBody<Void>> updateSeminarApplication(Long userId,
                                                                        @PathVariable Long seminarApplicationId,
                                                                        @RequestBody @Valid SeminarApplicationUpdateRequest request) {
@@ -50,9 +61,12 @@ public class SeminarApplicationController {
         return ResponseEntity.ok(createSuccessResponse());
     }
 
+    /**
+     * 내가 쓴 신청서 삭제
+     */
     @AssignUserId
-    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @DeleteMapping("/apply/{seminarApplicationId}")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
+    @DeleteMapping("/{seminarApplicationId}")
     public ResponseEntity<ResponseBody<Void>> deleteSeminarApplication(Long userId,
                                                                        @PathVariable Long seminarApplicationId) {
         seminarApplicationService.deleteSeminarApplication(userId, seminarApplicationId);

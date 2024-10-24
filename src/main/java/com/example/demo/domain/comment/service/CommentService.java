@@ -9,10 +9,11 @@ import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.study_project_board.domain.dto.vo.BoardType;
-import com.example.demo.domain.study_project_board.domain.entity.StudyProjectBoard;
-import com.example.demo.domain.study_project_board.repository.StudyProjectBoardRepository;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
+import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -31,11 +32,11 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
-    private final StudyProjectBoardRepository studyProjectBoardRepository;
+    private final RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Transactional(readOnly = true)
     public CommentResponse findCommentsByBoardId(Long boardId, BoardType boardType) {
-        List<Comment> commentList = validateBoard(boardId, boardType);
+        List<Comment> commentList = findBoardComments(boardId, boardType);
 
         return CommentResponse.from(commentList);
     }
@@ -51,31 +52,7 @@ public class CommentService {
     public CommentInfoResponse saveComment(CommentRequest commentRequest, Long userId, Long boardId, BoardType boardType) {
         User commentUser = userService.validateUser(userId);
 
-        Comment parentComment;
-        if (commentRequest.getGroupId() != null) {
-            parentComment = commentRepository.findById(commentRequest.getGroupId()).orElseThrow(() ->
-                    new ServiceException(ErrorCode.PARENT_NOT_FOUND));
-        } else {
-            parentComment = null;
-        }
-
-        Board commentBoard;
-        StudyProjectBoard studyProjectBoard;
-        Comment requestComment = null;
-        switch (boardType) {
-            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
-                commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
-                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
-                );
-                requestComment = Comment.fromSeminarBoardRequest(commentRequest, commentBoard, commentUser, parentComment);
-            }
-            case STUDY, PROJECT -> {
-                studyProjectBoard = studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
-                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
-                );
-                requestComment = Comment.fromStudyProjectBoardRequest(commentRequest, studyProjectBoard, commentUser, parentComment);
-            }
-        }
+        Comment requestComment = requestToEntity(commentRequest, boardId, boardType, commentUser);
 
         Comment saved = commentRepository.save(requestComment);
 
@@ -86,7 +63,7 @@ public class CommentService {
     public CommentInfoResponse updateComment(CommentRequest commentRequest,
                                              Long commentId,
                                              Long userId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+        Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
@@ -101,11 +78,12 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+        Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
-        if (userId.equals(comment.getUser().getId())) {
+        Role userRole = userService.validateUser(userId).getRole();
+        if (userId.equals(comment.getUser().getId()) || userRole == Role.ROLE_ADMIN) {
             commentRepository.replyCommentsDeleteById(commentId);
             commentRepository.delete(comment);
         } else {
@@ -113,7 +91,7 @@ public class CommentService {
         }
     }
 
-    public List<Comment> validateBoard(Long boardId, BoardType boardType) {
+    public List<Comment> findBoardComments(Long boardId, BoardType boardType) {
         switch (boardType) {
             case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
                 boardRepository.findById(boardId).orElseThrow(() ->
@@ -122,11 +100,42 @@ public class CommentService {
                 return commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
             }
             default -> {
-                studyProjectBoardRepository.findById(boardId).orElseThrow(() ->
+                recruitmentBoardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
-                return commentRepository.findByStudyProjectBoard_idOrderByCreatedAtAsc(boardId);
+                return commentRepository.findByRecruitmentBoard_idOrderByCreatedAtAsc(boardId);
             }
         }
+    }
+
+    public Comment requestToEntity(CommentRequest commentRequest, Long boardId, BoardType boardType, User commentUser) {
+        Comment requestComment = null;
+        switch (boardType) {
+            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
+                Board commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+
+                Comment parentComment = null;
+                if (commentRequest.getGroupId() != null) {
+                    parentComment = commentRepository.findByIdAndBoard_Id(commentRequest.getGroupId(), boardId).orElseThrow(() ->
+                            new ServiceException(ErrorCode.PARENT_NOT_FOUND));
+                }
+                requestComment = Comment.fromSeminarBoardRequest(commentRequest, commentBoard, commentUser, parentComment);
+            }
+            case STUDY, PROJECT, MENTORING -> {
+                RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+
+                Comment parentComment = null;
+                if (commentRequest.getGroupId() != null) {
+                    parentComment = commentRepository.findByIdAndRecruitmentBoard_Id(commentRequest.getGroupId(), boardId).orElseThrow(() ->
+                            new ServiceException(ErrorCode.PARENT_NOT_FOUND));
+                }
+                requestComment = Comment.fromRecruitmentBoardRequest(commentRequest, recruitmentBoard, commentUser, parentComment);
+            }
+        }
+        return requestComment;
     }
 }

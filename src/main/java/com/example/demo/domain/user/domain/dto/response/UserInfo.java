@@ -25,7 +25,7 @@ public record UserInfo(
                 user.getProvider(),
                 user.getNickname(),
                 user.getName(),
-                user.getProfileImage(),
+                user.getProfileImageUrl(),
                 user.getRole(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()

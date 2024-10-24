@@ -31,4 +31,8 @@ public class Report extends BaseEntity {
         this.user = user;
         this.comment = comment;
     }
+
+    public static Report from(User user, Comment comment) {
+        return new Report(user, comment);
+    }
 }

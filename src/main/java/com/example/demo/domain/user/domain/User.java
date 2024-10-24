@@ -43,7 +43,7 @@ public class User extends BaseEntity {
 
     private String name;
 
-    private String profileImage;
+    private String profileImageUrl;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -77,19 +77,15 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void setInitialInfo(String nickname, String name) {
+    public void setInitialInfo(String nickname, String name, String defaultImageUrl) {
         this.nickname = nickname;
         this.name = name;
-        this.profileImage = "기본이미지 url";
+        this.profileImageUrl = defaultImageUrl;
         this.role = Role.ROLE_USER;
     }
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public void updateProfileImage( String profileImage) {
-        this.profileImage = profileImage;
     }
 
     public void mapAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
@@ -102,5 +98,17 @@ public class User extends BaseEntity {
 
     public void addSeminarApplications(SeminarApplication seminarApplication) {
         this.seminarApplications.add(seminarApplication);
+    }
+
+    public void updateUserRoleToActiveUser() {
+        this.role = Role.ROLE_ACTIVE_USER;
+    }
+
+    public void updateUserRoleToSeminarWriter() {
+        this.role = Role.ROLE_SEMINAR_WRITER;
+    }
+
+    public void changeProfileUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }
