@@ -72,6 +72,9 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<View> views = new ArrayList<>();
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    private List<HeadImage> headImages = new ArrayList<>();
+
     private Board(String title, String content, User user, Tag tag,Status status) {
         this.title = title;
         this.content = content;
