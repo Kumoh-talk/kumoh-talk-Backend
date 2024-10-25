@@ -27,7 +27,7 @@ public class BoardCommandService {
     private final BoardCategoryRepository boardCategoryRepository;
 
     @Transactional
-    public BoardInfoResponse createBoard(User user, BoardCreateRequest boardCreateRequest) {
+    public BoardInfoResponse createDraftBoard(User user, BoardCreateRequest boardCreateRequest) {
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
 
