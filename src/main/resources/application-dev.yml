@@ -24,7 +24,7 @@ spring:
       hibernate:
         format_sql: false
         highlight_sql: false
-        hbm2ddl.auto: validate
+        hbm2ddl.auto: update
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: true
