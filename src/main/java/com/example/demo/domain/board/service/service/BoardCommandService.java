@@ -27,7 +27,7 @@ public class BoardCommandService {
     private final BoardCategoryRepository boardCategoryRepository;
 
     @Transactional
-    public BoardInfoResponse createDraftBoard(User user, BoardCreateRequest boardCreateRequest) {
+    public BoardInfoResponse createDraftBoard(User user, BoardCreateRequest boardCreateRequest) { //TODO : [Board] 대표이미지 미 설정시 첫 번째 이미지로 선정 및 그것 마저도 없으면 기본 이미지로 저장하게 하는데 프론트에서 처리할건지 물어봐야함
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
 
