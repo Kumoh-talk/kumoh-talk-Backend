@@ -31,7 +31,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<String> findCategoryNameByBoardId(@Param("id") Long id);
 
     @Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
-        + "(b.id, b.title, b.user.nickname, b.tag, COUNT(DISTINCT v), COUNT(DISTINCT l), b.createdAt) "
+        + "(b.id, b.title, b.user.nickname, b.tag, COUNT(DISTINCT v), COUNT(DISTINCT l),b.headImageUrl ,b.createdAt) "
         + "FROM Board b "
         + "LEFT JOIN b.likes l "
         + "LEFT JOIN b.views v "

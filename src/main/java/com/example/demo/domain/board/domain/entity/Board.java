@@ -82,6 +82,7 @@ public class Board extends BaseEntity {
         this.tag = tag;
         this.status = status;
         this.attachFileUrl = null;
+        this.headImageUrl = headImageUrl;
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
