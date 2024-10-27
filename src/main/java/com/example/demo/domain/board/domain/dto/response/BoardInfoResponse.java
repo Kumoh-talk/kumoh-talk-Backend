@@ -18,11 +18,12 @@ public class BoardInfoResponse {
     private Long view;
     private Long like;
     private List<String> categoryNames;
+    private String boardHeadImageUrl;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
 
     @Builder
-    public BoardInfoResponse(Long boardId, String username, String title, String contents, String tag, String status, Long view, Long like, List<String> categoryNames, LocalDateTime updatedAt, LocalDateTime createdAt) {
+    public BoardInfoResponse(Long boardId, String username, String title, String contents, String tag, String status, Long view, Long like, List<String> categoryNames,String boardHeadImageUrl, LocalDateTime updatedAt, LocalDateTime createdAt) {
         this.boardId = boardId;
         this.username = username;
         this.title = title;
@@ -32,6 +33,7 @@ public class BoardInfoResponse {
         this.view = view;
         this.like = like;
         this.categoryNames = categoryNames;
+        this.boardHeadImageUrl = boardHeadImageUrl;
         this.updatedAt = updatedAt;
         this.createdAt = createdAt;
     }
@@ -47,6 +49,7 @@ public class BoardInfoResponse {
                 .view(view)
                 .like(like)
                 .categoryNames(categoryNames)
+                .boardHeadImageUrl(board.getHeadImageUrl())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .build();

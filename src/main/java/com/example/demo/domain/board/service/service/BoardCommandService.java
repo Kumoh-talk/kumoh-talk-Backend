@@ -1,7 +1,6 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.*;
-import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
@@ -10,7 +9,6 @@ import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +27,7 @@ public class BoardCommandService {
     private final BoardCategoryRepository boardCategoryRepository;
 
     @Transactional
-    public BoardInfoResponse createBoard(User user, BoardCreateRequest boardCreateRequest) {
+    public BoardInfoResponse createDraftBoard(User user, BoardCreateRequest boardCreateRequest) { //TODO : [Board] 대표이미지 미 설정시 첫 번째 이미지로 선정 및 그것 마저도 없으면 기본 이미지로 저장하게 하는데 프론트에서 처리할건지 물어봐야함
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
         board.changeBoardStatus(Status.DRAFT);
 
@@ -66,6 +64,7 @@ public class BoardCommandService {
                 .map(boardCategory -> boardCategory.getCategory().getName())
                 .collect(Collectors.toList());
 
+
         return BoardInfoResponse.from(board,
                 board.getUser().getNickname(),
                 boardRepository.countViewsByBoardId(boardUpdateRequest.getId()),
@@ -76,6 +75,7 @@ public class BoardCommandService {
     private void updateBoardInfo(Board board , BoardUpdateRequest boardUpdateRequest) {
         board.changeBoardInfo(boardUpdateRequest);
         board.changeBoardStatus(boardUpdateRequest.getStatus());
+        board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
         changeBoardCategories(board, boardUpdateRequest.getCategoryName());
     }
 

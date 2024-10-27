@@ -52,6 +52,9 @@ public class Board extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(nullable = false,length = 256)
+    private String headImageUrl;
+
     @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -72,13 +75,14 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<View> views = new ArrayList<>();
 
-    private Board(String title, String content, User user, Tag tag,Status status) {
+    private Board(String title, String content, User user, Tag tag,Status status,String headImageUrl) {
         this.title = title;
         this.content = content;
         this.user = user;
         this.tag = tag;
         this.status = status;
         this.attachFileUrl = null;
+        this.headImageUrl = headImageUrl;
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
@@ -86,7 +90,8 @@ public class Board extends BaseEntity {
             boardCreateRequest.getContents(),
             user,
             boardCreateRequest.getTag(),
-            Status.DRAFT);
+            Status.DRAFT,
+            boardCreateRequest.getBoardHeadImageUrl());
         user.getBoards().add(board);
         return board;
     }
@@ -102,5 +107,9 @@ public class Board extends BaseEntity {
 
     public void changeAttachFileUrl(String attachFileUrl){
         this.attachFileUrl = attachFileUrl;
+    }
+
+    public void changeHeadImageUrl(String boardHeadImageUrl) {
+        this.headImageUrl = boardHeadImageUrl;
     }
 }

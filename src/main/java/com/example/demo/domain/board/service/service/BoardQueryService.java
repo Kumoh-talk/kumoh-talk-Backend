@@ -8,6 +8,8 @@ import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.jwt.JwtAuthentication;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -50,10 +52,16 @@ public class BoardQueryService {
     private void validateBoardStatus(Board board) {
         if(board.getStatus().equals(Status.DRAFT)) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Long userId = (Long) authentication.getPrincipal();
-            if(!board.getUser().getId().equals(userId)) {
-                throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
+
+            if (authentication.isAuthenticated() && authentication instanceof JwtAuthentication) {
+                Long userId = (Long) authentication.getPrincipal();
+                if(!board.getUser().getId().equals(userId)) {
+                    throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
+                }
+            } else {
+                throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
             }
+
         }
     }
 

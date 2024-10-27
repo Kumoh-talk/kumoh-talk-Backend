@@ -1,15 +1,15 @@
 package com.example.demo.domain.board.domain.dto.request;
 
 
+import static com.example.demo.global.regex.S3UrlRegex.*;
+
 import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.global.aop.valid.ValidEnum;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -32,10 +32,7 @@ public class BoardCreateRequest {
     @NotNull(message = "태그는 필수 항목입니다.")
     private Tag tag;
 
-    @Builder
-    public BoardCreateRequest(String title, String contents, @Nullable List<String> categoryName) {
-        this.title = title;
-        this.contents = contents;
-        this.categoryName = categoryName;
-    }
+    @NotBlank(message = "게시물 대표 이미지는 필수 항목입니다.")
+    @Pattern(regexp = S3_BOARD_FILE_URL)
+    private String boardHeadImageUrl;
 }

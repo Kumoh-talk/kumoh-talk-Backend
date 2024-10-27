@@ -33,9 +33,8 @@ public class BoardUseCase {
         if(boardCreateRequest.getTag().equals(Tag.notice) && !user.getRole().equals("ROLE_ADMIN")){
             throw new ServiceException(ErrorCode.NOT_AUTHORIZED_WRITE_NOTICE);
         }
-        return boardCommandService.createBoard(user, boardCreateRequest);
+        return boardCommandService.createDraftBoard(user, boardCreateRequest);
     }
-
 
     @Transactional
     public BoardInfoResponse searchSingleBoard(Long boardId) {
@@ -55,7 +54,4 @@ public class BoardUseCase {
 	public BoardPageResponse findBoardList(Pageable pageable) {
         return boardQueryService.findBoardPageList(pageable);
 	}
-
-
-
 }
