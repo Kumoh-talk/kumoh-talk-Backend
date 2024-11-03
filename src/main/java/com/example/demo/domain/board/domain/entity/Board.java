@@ -11,7 +11,6 @@ import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -101,8 +100,8 @@ public class Board extends BaseEntity {
         this.content = boardUpdateRequest.getContents();
     }
 
-    public void changeBoardStatus(Status status){
-        this.status = status;
+    public void publishBoard(){
+        this.status = Status.PUBLISHED;
     }
 
     public void changeAttachFileUrl(String attachFileUrl){

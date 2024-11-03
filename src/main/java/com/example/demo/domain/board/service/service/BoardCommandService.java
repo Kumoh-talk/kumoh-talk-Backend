@@ -1,6 +1,7 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.*;
+import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
@@ -8,11 +9,15 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
+import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +30,11 @@ public class BoardCommandService {
     private final BoardRepository boardRepository;
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public BoardInfoResponse createDraftBoard(User user, BoardCreateRequest boardCreateRequest) { //TODO : [Board] 대표이미지 미 설정시 첫 번째 이미지로 선정 및 그것 마저도 없으면 기본 이미지로 저장하게 하는데 프론트에서 처리할건지 물어봐야함
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
-        board.changeBoardStatus(Status.DRAFT);
 
         Board savedBoard = boardRepository.save(board);
 
@@ -57,6 +62,14 @@ public class BoardCommandService {
         Board board = validateBoard(boardUpdateRequest.getId());
         validateUserEqualBoardUser(userId, board);
 
+        // 게시 상태로 변경이면 뉴스레터 전송
+        if(boardUpdateRequest.isPublished() && board.getTag().equals(Tag.seminar) && board.getStatus().equals(Status.DRAFT)) {
+            eventPublisher.publishEvent(EmailNotificationEvent.create(
+                BoardType.SEMINAR_SUMMARY,
+                SeminarSummaryEmailDeliveryStrategy.create(board)
+            ));
+        }
+
         updateBoardInfo(board, boardUpdateRequest);
 
 
@@ -74,8 +87,8 @@ public class BoardCommandService {
 
     private void updateBoardInfo(Board board , BoardUpdateRequest boardUpdateRequest) {
         board.changeBoardInfo(boardUpdateRequest);
-        board.changeBoardStatus(boardUpdateRequest.getStatus());
         board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
+        if(boardUpdateRequest.isPublished()) board.publishBoard(); // 게시 상태로 변경
         changeBoardCategories(board, boardUpdateRequest.getCategoryName());
     }
 
