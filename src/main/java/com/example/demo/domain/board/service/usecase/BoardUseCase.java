@@ -9,6 +9,7 @@ import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -30,7 +31,8 @@ public class BoardUseCase {
     @Transactional
     public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
         User user = userService.validateUser(userId);
-        if(boardCreateRequest.getTag().equals(Tag.notice) && !user.getRole().equals("ROLE_ADMIN")){
+        // 공지사항은 관리자만 작성 가능
+        if(boardCreateRequest.getTag().equals(Tag.notice) && !user.getRole().equals(Role.ROLE_ADMIN)){
             throw new ServiceException(ErrorCode.NOT_AUTHORIZED_WRITE_NOTICE);
         }
         return boardCommandService.createDraftBoard(user, boardCreateRequest);
