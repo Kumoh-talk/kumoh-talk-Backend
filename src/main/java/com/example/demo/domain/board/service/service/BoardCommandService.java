@@ -30,7 +30,6 @@ public class BoardCommandService {
     private final BoardRepository boardRepository;
     private final CategoryRepository categoryRepository;
     private final BoardCategoryRepository boardCategoryRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public BoardInfoResponse createDraftBoard(User user, BoardCreateRequest boardCreateRequest) { //TODO : [Board] 대표이미지 미 설정시 첫 번째 이미지로 선정 및 그것 마저도 없으면 기본 이미지로 저장하게 하는데 프론트에서 처리할건지 물어봐야함
@@ -58,20 +57,13 @@ public class BoardCommandService {
     }
 
     @Transactional
-    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId)  {
-        Board board = validateBoard(boardUpdateRequest.getId());
-        validateUserEqualBoardUser(userId, board);
+    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest,Board board)  {
+        if(boardUpdateRequest.isPublished()) board.publishBoard(); // 게시 상태로 변경
 
-        // 게시 상태로 변경이면 뉴스레터 전송
-        if(boardUpdateRequest.isPublished() && board.getTag().equals(Tag.seminar) && board.getStatus().equals(Status.DRAFT)) {
-            eventPublisher.publishEvent(EmailNotificationEvent.create(
-                BoardType.SEMINAR_SUMMARY,
-                SeminarSummaryEmailDeliveryStrategy.create(board)
-            ));
-        }
+        board.changeBoardInfo(boardUpdateRequest);
+        board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
 
-        updateBoardInfo(board, boardUpdateRequest);
-
+        changeBoardCategories(board, boardUpdateRequest.getCategoryName());
 
         List<String> categoryNames = board.getBoardCategories().stream()
                 .map(boardCategory -> boardCategory.getCategory().getName())
@@ -83,13 +75,6 @@ public class BoardCommandService {
                 boardRepository.countViewsByBoardId(boardUpdateRequest.getId()),
                 boardRepository.countLikesByBoardId(boardUpdateRequest.getId()),
                 categoryNames);
-    }
-
-    private void updateBoardInfo(Board board , BoardUpdateRequest boardUpdateRequest) {
-        board.changeBoardInfo(boardUpdateRequest);
-        board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
-        if(boardUpdateRequest.isPublished()) board.publishBoard(); // 게시 상태로 변경
-        changeBoardCategories(board, boardUpdateRequest.getCategoryName());
     }
 
     private void changeBoardCategories(Board board, List<String> newCategoryNames) {

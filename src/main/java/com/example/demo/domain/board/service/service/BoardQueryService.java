@@ -1,6 +1,7 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
+import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.domain.entity.Board;
@@ -70,4 +71,18 @@ public class BoardQueryService {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
     }
+
+    @Transactional(readOnly = true)
+    public Board validateBoardForUpdate(BoardUpdateRequest boardUpdateRequest, Long userId) {
+        Board board = validateBoard(boardUpdateRequest.getId());
+        validateUserEqualBoardUser(userId, board);
+        return board;
+    }
+
+    private void validateUserEqualBoardUser(Long userId, Board board) {
+        if(!board.getUser().getId().equals(userId)) {
+            throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
+        }
+    }
+
 }

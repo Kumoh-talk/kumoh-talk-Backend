@@ -4,10 +4,15 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
+import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.board.domain.dto.vo.Tag;
+import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
+import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
+import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
@@ -16,6 +21,7 @@ import com.example.demo.global.base.exception.ServiceException;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +33,7 @@ public class BoardUseCase {
     private final BoardQueryService boardQueryService;
     private final ViewIncreaseService viewIncreaseService;
     private final UserService userService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
@@ -44,8 +51,19 @@ public class BoardUseCase {
         return boardQueryService.findByboardId(boardId);
     }
 
+    @Transactional
     public BoardInfoResponse updateBoard(Long userId, BoardUpdateRequest boardUpdateRequest) {
-        return boardCommandService.updateBoard(boardUpdateRequest, userId);
+        Board board = boardQueryService.validateBoardForUpdate(boardUpdateRequest, userId);
+
+        // 게시 상태로 변경이면 뉴스레터 전송
+        if(boardUpdateRequest.isPublished() && board.getTag().equals(Tag.seminar) && board.getStatus().equals(Status.DRAFT)) {
+            eventPublisher.publishEvent(EmailNotificationEvent.create(
+                BoardType.SEMINAR_SUMMARY,
+                SeminarSummaryEmailDeliveryStrategy.create(board)
+            ));
+        }
+
+        return boardCommandService.updateBoard(boardUpdateRequest, board);
     }
 
     public void deleteBoard(Long userId, Long boardId) {
