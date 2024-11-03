@@ -1,6 +1,6 @@
 package com.example.demo.domain.newsletter.strategy;
 
-import com.example.demo.domain.board.domain.dto.vo.Tag;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.entity.Board;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,7 +36,7 @@ public class SeminarSummaryEmailDeliveryStrategy implements EmailDeliveryStrateg
     }
 
     public static SeminarSummaryEmailDeliveryStrategy create(Board board) {
-        if (!board.getTag().equals(Tag.seminar)) {
+        if (!board.getBoardType().equals(BoardType.SEMINAR)) {
             throw new IllegalArgumentException("세미나 내용 정리에 대한 이메일 알림만 허용합니다.");
         }
         return new SeminarSummaryEmailDeliveryStrategy(

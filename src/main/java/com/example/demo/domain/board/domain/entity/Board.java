@@ -3,8 +3,8 @@ package com.example.demo.domain.board.domain.entity;
 
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
@@ -45,7 +45,7 @@ public class Board extends BaseEntity {
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
     @NotNull(message = "게시물 분류는 빈 값일 수 없습니다")
-    private Tag tag; //TODO : 각 종 조회에 세미나 와 공지사항 분리하도록 쿼리 추가해야하는지 확인 필요
+    private BoardType boardType; //TODO : 각 종 조회에 세미나 와 공지사항 분리하도록 쿼리 추가해야하는지 확인 필요
 
     @Column(nullable = false,length = 15)
     @Enumerated(EnumType.STRING)
@@ -74,11 +74,11 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<View> views = new ArrayList<>();
 
-    private Board(String title, String content, User user, Tag tag,Status status,String headImageUrl) {
+    private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
         this.title = title;
         this.content = content;
         this.user = user;
-        this.tag = tag;
+        this.boardType = boardType;
         this.status = status;
         this.attachFileUrl = null;
         this.headImageUrl = headImageUrl;
@@ -88,7 +88,7 @@ public class Board extends BaseEntity {
         Board board = new Board(boardCreateRequest.getTitle(),
             boardCreateRequest.getContents(),
             user,
-            boardCreateRequest.getTag(),
+            boardCreateRequest.getBoardType(),
             Status.DRAFT,
             boardCreateRequest.getBoardHeadImageUrl());
         user.getBoards().add(board);

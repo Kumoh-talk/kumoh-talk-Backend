@@ -1,23 +1,17 @@
 package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.*;
-import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import com.example.demo.domain.board.domain.entity.Category;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
-import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
