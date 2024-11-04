@@ -12,9 +12,7 @@ import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepo
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
-import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +29,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecruitmentBoardService {
     private final UserService userService;
-    private final UserAdditionalInfoService userAdditionalInfoService;
 
     private final RecruitmentBoardRepository recruitmentBoardRepository;
     private final RecruitmentFormQuestionRepository recruitmentFormQuestionRepository;
@@ -165,19 +162,27 @@ public class RecruitmentBoardService {
     @Transactional
     public void deleteBoardAndForm(
             Long userId,
-            Long recruitmentBoardId) {
+            Long recruitmentBoardId,
+            boolean isAuthorized) {
         RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
-        Role userRole = userService.validateUser(userId).getRole();
 
-        if (!userId.equals(recruitmentBoard.getUser().getId()) && userRole != Role.ROLE_ADMIN) {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+        if (!isAuthorized) {
+            if (!userId.equals(recruitmentBoard.getUser().getId())) {
+                throw new ServiceException(ErrorCode.ACCESS_DENIED);
+            }
         }
 
-        // soft delete
-        List<RecruitmentFormQuestion> questionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId)
-                .orElse(new ArrayList<>());
+        // TODO : 신청자, 신청자답변, 댓글 soft delete 추가 필요
+        softDeleteBoardAndQuestionAndAnswer(recruitmentBoardId, recruitmentBoard);
+    }
+
+    public void softDeleteBoardAndQuestionAndAnswer(Long recruitmentBoardId, RecruitmentBoard recruitmentBoard) {
+        List<RecruitmentFormQuestion> questionList =
+                recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId)
+                        .orElse(new ArrayList<>());
+
+        List<Long> questionIds = new ArrayList<>();
         for (RecruitmentFormQuestion recruitmentFormQuestion : questionList) {
-            List<Long> questionIds = new ArrayList<>();
             List<Long> answerIds = new ArrayList<>();
 
             questionIds.add(recruitmentFormQuestion.getId());
@@ -185,8 +190,8 @@ public class RecruitmentBoardService {
                 answerIds.add(recruitmentFormChoiceAnswer.getId());
             }
             recruitmentFormChoiceAnswerRepository.softDeleteAnswersByIds(answerIds);
-            recruitmentFormQuestionRepository.softDeleteQuestionsByIds(questionIds);
         }
+        recruitmentFormQuestionRepository.softDeleteQuestionsByIds(questionIds);
         recruitmentBoardRepository.delete(recruitmentBoard);
     }
 
