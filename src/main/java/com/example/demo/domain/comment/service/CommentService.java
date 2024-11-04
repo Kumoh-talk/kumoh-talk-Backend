@@ -13,7 +13,6 @@ import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -77,18 +76,17 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long userId) {
+    public void deleteComment(Long commentId, Long userId, boolean isAuthorized) {
         Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
-                new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
-        );
-
-        Role userRole = userService.validateUser(userId).getRole();
-        if (userId.equals(comment.getUser().getId()) || userRole == Role.ROLE_ADMIN) {
-            commentRepository.replyCommentsDeleteById(commentId);
-            commentRepository.delete(comment);
-        } else {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+                new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
+        if (!isAuthorized) {
+            if (!comment.getUser().getId().equals(userId)) {
+                throw new ServiceException(ErrorCode.ACCESS_DENIED);
+            }
         }
+
+        commentRepository.replyCommentsDeleteById(commentId);
+        commentRepository.delete(comment);
     }
 
     public List<Comment> findBoardComments(Long boardId, BoardType boardType) {

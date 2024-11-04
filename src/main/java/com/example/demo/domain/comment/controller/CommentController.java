@@ -86,7 +86,7 @@ public class CommentController {
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ResponseBody<Void>> deleteComment(Long userId, @PathVariable Long commentId) {
-        commentService.deleteComment(commentId, userId);
+        commentService.deleteComment(commentId, userId, false);
         return ResponseEntity.ok().body(createSuccessResponse());
     }
 }
