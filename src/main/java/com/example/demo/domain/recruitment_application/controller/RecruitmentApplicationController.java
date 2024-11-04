@@ -40,7 +40,7 @@ public class RecruitmentApplicationController {
     }
 
     /**
-     * 게시물 별 신청 리스트 조회(applicant 테이블 get) -> 관리자 기능
+     * 게시물 별 신청 리스트 조회(applicant 테이블 get)
      *
      * @param : size(페이징 사이즈), page(페이지 번호)
      */
@@ -52,11 +52,11 @@ public class RecruitmentApplicationController {
             Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicantList(userId, pageable, recruitmentBoardId)));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicantList(userId, pageable, recruitmentBoardId, false)));
     }
 
     /**
-     * applicant id를 사용하여 신청 정보 상세 조회 -> 관리자 기능
+     * applicant id를 사용하여 신청 정보 상세 조회
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
@@ -65,7 +65,7 @@ public class RecruitmentApplicationController {
             Long userId,
             @PathVariable Long recruitmentBoardId,
             @PathVariable Long applicantId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicationInfo(userId, recruitmentBoardId, applicantId)));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicationInfo(userId, recruitmentBoardId, applicantId, false)));
     }
 
     /**

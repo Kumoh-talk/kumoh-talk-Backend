@@ -14,7 +14,6 @@ import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQu
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -71,12 +70,13 @@ public class RecruitmentApplicationService {
     public RecruitmentApplicantPageResponse getApplicantList(
             Long userId,
             Pageable pageable,
-            Long recruitmentBoardId) {
-        Role userRole = userService.validateUser(userId).getRole();
-
-        RecruitmentBoard recruitmentBoard = recruitmentBoardService.validateRecruitmentBoard(recruitmentBoardId);
-        if (!recruitmentBoard.getUser().getId().equals(userId) && userRole != Role.ROLE_ADMIN) {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+            Long recruitmentBoardId,
+            boolean isAuthorized) {
+        if (!isAuthorized) {
+            RecruitmentBoard recruitmentBoard = recruitmentBoardService.validateRecruitmentBoard(recruitmentBoardId);
+            if (!recruitmentBoard.getUser().getId().equals(userId)) {
+                throw new ServiceException(ErrorCode.ACCESS_DENIED);
+            }
         }
 
         Page<RecruitmentApplicant> recruitmentApplicantList = recruitmentApplicantRepository.findByRecruitmentBoard_IdOrderByCreatedAtDesc(pageable, recruitmentBoardId);
@@ -85,12 +85,12 @@ public class RecruitmentApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public RecruitmentApplicationResponse getApplicationInfo(Long userId, Long recruitmentBoardId, Long applicantId) {
-        Role userRole = userService.validateUser(userId).getRole();
-
-        RecruitmentBoard recruitmentBoard = recruitmentBoardService.validateRecruitmentBoard(recruitmentBoardId);
-        if (!recruitmentBoard.getUser().getId().equals(userId) && userRole != Role.ROLE_ADMIN) {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+    public RecruitmentApplicationResponse getApplicationInfo(Long userId, Long recruitmentBoardId, Long applicantId, boolean isAuthorized) {
+        if (!isAuthorized) {
+            RecruitmentBoard recruitmentBoard = recruitmentBoardService.validateRecruitmentBoard(recruitmentBoardId);
+            if (!recruitmentBoard.getUser().getId().equals(userId)) {
+                throw new ServiceException(ErrorCode.ACCESS_DENIED);
+            }
         }
 
         RecruitmentApplicant applicant = recruitmentApplicantRepository.findById(applicantId).orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
@@ -124,7 +124,6 @@ public class RecruitmentApplicationService {
 
     @Transactional
     public void deleteApplication(Long userId, Long applicantId) {
-        userService.validateUser(userId);
         RecruitmentApplicant applicant = recruitmentApplicantRepository.findById(applicantId).orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
         if (!userId.equals(applicant.getUser().getId())) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
