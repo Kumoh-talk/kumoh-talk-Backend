@@ -10,7 +10,7 @@ public enum BoardType {
     @JsonCreator
     public static BoardType fromString(String value) {
         for(BoardType boardType : BoardType.values()) {
-            if(boardType.toString().equalsIgnoreCase(value)) {
+            if(boardType.toString().equals(value)) {
                 return boardType;
             }
         }
