@@ -44,10 +44,10 @@ public class RecruitmentBoard extends BaseEntity {
     private String content;
 
     @Enumerated(value = EnumType.STRING)
-    private RecruitmentBoardType type;
+    private RecruitmentBoardType type; //->숫자로?
 
     @Enumerated(value = EnumType.STRING)
-    private RecruitmentBoardTag tag;
+    private RecruitmentBoardTag tag;    //->숫자로?
 
     @Enumerated(value = EnumType.STRING)
     private Status status;
@@ -55,7 +55,7 @@ public class RecruitmentBoard extends BaseEntity {
     @Column(length = 50)
     private String recruitmentTarget;
 
-    private String recruitmentNum;
+    private String recruitmentNum; //->숫자로(현재인원 / 전체인원)
 
     private LocalDateTime recruitmentDeadline;
 
@@ -130,10 +130,14 @@ public class RecruitmentBoard extends BaseEntity {
         return recruitmentBoard;
     }
 
-    public void updateFromRequest(RecruitmentBoardInfoAndFormRequest request,
-                                  Status status,
-                                  RecruitmentFormQuestionRepository recruitmentFormQuestionRepository,
-                                  RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository) {
+    public boolean updateFromRequest(RecruitmentBoardInfoAndFormRequest request,
+                                     Status status,
+                                     RecruitmentFormQuestionRepository recruitmentFormQuestionRepository,
+                                     RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository) {
+        boolean isPublish = false;
+        if (this.status == Status.DRAFT && status == Status.PUBLISHED)
+            isPublish = true;
+
         // 게시물 업데이트
         this.title = request.getBoard().getTitle();
         this.summary = request.getBoard().getSummary();
@@ -165,7 +169,7 @@ public class RecruitmentBoard extends BaseEntity {
                     deleteIdList.add(delete.getId());
                 }
                 recruitmentFormQuestionRepository.hardDeleteQuestionsByIds(deleteIdList);
-                return;
+                return isPublish;
             }
         }
         // 수정 질문 수 > 기존 질문 수 -> 넘치는 수정 질문들 추가
@@ -174,5 +178,7 @@ public class RecruitmentBoard extends BaseEntity {
             RecruitmentFormQuestion savedRecruitmentFormQuestion = recruitmentFormQuestionRepository.save(RecruitmentFormQuestion.from(request.getForm().get(questionIdx++), this));
             recruitmentFormQuestionList.add(savedRecruitmentFormQuestion);
         }
+
+        return isPublish;
     }
 }
