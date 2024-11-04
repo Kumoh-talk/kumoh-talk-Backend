@@ -29,7 +29,7 @@ public class BoardCreateRequest {
     private List<String> categoryName;
 
     @ValidEnum(enumClass = BoardType.class,message = "태그는 'SEMINAR', 'NOTICE' 중 하나여야 합니다.")
-    @NotNull(message = "태그는 필수 항목입니다.")
+    @NotNull(message = "게시물 타입은 필수 항목입니다.")
     private BoardType boardType;
 
     @NotBlank(message = "게시물 대표 이미지는 필수 항목입니다.")

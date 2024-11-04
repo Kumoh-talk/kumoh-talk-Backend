@@ -2,8 +2,8 @@ package com.example.demo.domain.board.service.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
-import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.vo.Status;
@@ -42,9 +42,9 @@ public class BoardQueryService {
     }
 
     @Transactional(readOnly = true)
-	public BoardPageResponse findBoardPageList(Pageable pageable) {
+	public GlobalPageResponse findBoardPageList(Pageable pageable) {
         Page<BoardTitleInfoResponse> boardByPage = boardRepository.findBoardByPage(pageable);
-        return BoardPageResponse.from(boardByPage);
+        return GlobalPageResponse.from(boardByPage);
     }
 
     private void validateReportedBoard(Board board) { //TODO : [Board]report 기능 추가 시 로직 추가

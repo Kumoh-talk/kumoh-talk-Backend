@@ -6,8 +6,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
-import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -15,8 +14,6 @@ import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -62,7 +59,7 @@ public class BoardController {
 
 
     @GetMapping("/v1/boards")
-    public ResponseEntity<ResponseBody<BoardPageResponse>> findBoardPageList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse>> findBoardPageList(
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(createSuccessResponse(boardUsecase.findBoardList(pageable)));
     }

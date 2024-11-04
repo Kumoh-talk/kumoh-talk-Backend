@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.service.service.CategoryQueryService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class CategoryUseCase {
 	 * @param pageable
 	 * @return BoardPageResponse
 	 */
-	public BoardPageResponse getBoardsByCategoryName(String categoryName, Pageable pageable) {
+	public GlobalPageResponse getBoardsByCategoryName(String categoryName, Pageable pageable) {
 		return categoryQueryService.getBoardPageByCategoryName(categoryName,pageable);
 	}
 }
