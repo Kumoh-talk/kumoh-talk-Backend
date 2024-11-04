@@ -1,9 +1,14 @@
 package com.example.demo.domain.recruitment_board.service;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
+import com.example.demo.domain.newsletter.strategy.MentoringNoticeEmailDeliveryStrategy;
+import com.example.demo.domain.newsletter.strategy.ProjectNoticeEmailDeliveryStrategy;
+import com.example.demo.domain.newsletter.strategy.StudyNoticeEmailDeliveryStrategy;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;
+import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormChoiceAnswer;
@@ -16,6 +21,7 @@ import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,6 +41,8 @@ public class RecruitmentBoardService {
     private final RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository;
     private final RecruitmentApplicantRepository recruitmentApplicantRepository;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     @Transactional
     public RecruitmentBoardInfoAndFormResponse saveBoardAndForm(
             Long userId,
@@ -44,6 +52,9 @@ public class RecruitmentBoardService {
 
         RecruitmentBoard recruitmentBoard = RecruitmentBoard.from(recruitmentBoardInfoAndFormRequest, user, status);
         RecruitmentBoard savedBoard = recruitmentBoardRepository.save(recruitmentBoard);
+
+        if (status == Status.PUBLISHED)
+            publishEventFactory(savedBoard);
 
         return RecruitmentBoardInfoAndFormResponse.from(savedBoard);
     }
@@ -152,8 +163,11 @@ public class RecruitmentBoardService {
         }
 
         // 게시물 업데이트
-        recruitmentBoard.updateFromRequest(recruitmentBoardInfoAndFormRequest, status,
+        boolean isPublish = recruitmentBoard.updateFromRequest(recruitmentBoardInfoAndFormRequest, status,
                 recruitmentFormQuestionRepository, recruitmentFormChoiceAnswerRepository);
+        
+        if (isPublish)
+            publishEventFactory(recruitmentBoard);
 
         // TODO : Request enum valid 문제
         return RecruitmentBoardInfoAndFormResponse.from(recruitmentBoard);
@@ -211,5 +225,28 @@ public class RecruitmentBoardService {
 
     public RecruitmentBoard validateRecruitmentBoard(Long recruitmentBoardId) {
         return recruitmentBoardRepository.findById(recruitmentBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+    public void publishEventFactory(RecruitmentBoard recruitmentBoard) {
+        if (recruitmentBoard.getType() == RecruitmentBoardType.STUDY) {
+            eventPublisher.publishEvent(
+                    EmailNotificationEvent.create(
+                            BoardType.valueOf(recruitmentBoard.getType().name()),
+                            StudyNoticeEmailDeliveryStrategy.create(recruitmentBoard))
+            );
+        } else if (recruitmentBoard.getType() == RecruitmentBoardType.PROJECT) {
+            eventPublisher.publishEvent(
+                    EmailNotificationEvent.create(
+                            BoardType.valueOf(recruitmentBoard.getType().name()),
+                            ProjectNoticeEmailDeliveryStrategy.create(recruitmentBoard))
+            );
+        } else if (recruitmentBoard.getType() == RecruitmentBoardType.MENTORING) {
+            eventPublisher.publishEvent(
+                    EmailNotificationEvent.create(
+                            BoardType.valueOf(recruitmentBoard.getType().name()),
+                            MentoringNoticeEmailDeliveryStrategy.create(recruitmentBoard)
+                    )
+            );
+        }
     }
 }

@@ -41,7 +41,7 @@ public class ProjectNoticeEmailDeliveryStrategy implements EmailDeliveryStrategy
 
     public static ProjectNoticeEmailDeliveryStrategy create(RecruitmentBoard recruitmentBoard) {
         if (!recruitmentBoard.getType().equals(RecruitmentBoardType.PROJECT)) {
-            throw new IllegalArgumentException("스터디에 대한 이메일 알림만 허용합니다.");
+            throw new IllegalArgumentException("프로젝트에 대한 이메일 알림만 허용합니다.");
         }
         return new ProjectNoticeEmailDeliveryStrategy(
                 recruitmentBoard.getType().name(),
