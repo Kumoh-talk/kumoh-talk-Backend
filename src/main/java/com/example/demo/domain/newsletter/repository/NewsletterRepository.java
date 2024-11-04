@@ -13,8 +13,9 @@ public interface NewsletterRepository extends JpaRepository<Newsletter, Long> {
 
     @Query("SELECT n.email FROM Newsletter n WHERE " +
             "(:postType = 'SEMINAR_NOTICE' OR " +
-            "(n.isSeminarContentUpdated = true AND :postType = 'SEMINAR_SUMMARY') OR " +
-            "(n.isStudyUpdated = true AND :postType = 'STUDY') OR " +
-            "(n.isProjectUpdated = true AND :postType = 'PROJECT'))")
+            "(n.seminarContentNotice = true AND :postType = 'SEMINAR_SUMMARY') OR " +
+            "(n.studyNotice = true AND :postType = 'STUDY') OR " +
+            "(n.mentoringNotice = true AND :postType = 'MENTORING') OR " +
+            "(n.projectNotice = true AND :postType = 'PROJECT'))")
     List<String> findSubscriberEmails(@Param("postType") String postType);
 }
