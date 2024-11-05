@@ -41,7 +41,6 @@ public class Board extends BaseEntity {
     private String content;
 
     @Column(nullable = true,length = 500)
-    @NotBlank(message = "첨부파일은 빈 값일 수 없습니다.")
     private String attachFileUrl;
 
     @Column(nullable = false,length = 10)
