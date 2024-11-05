@@ -3,7 +3,7 @@ version: '3.7'
 services:
   mysql:
     image: mysql:latest
-    container_name: local-kumoh-mysql
+    container_name: kumoh_talk
     ports:
       - 3310:3306
     environment:
@@ -13,6 +13,7 @@ services:
       MYSQL_COLLATION: utf8mb4_unicode_ci
     volumes:
       - ./data/:/var/lib/mysql
+    restart: always  # 자동 재시작 설정
 
   redis:
     image: redis
@@ -20,3 +21,4 @@ services:
     container_name: local-redis
     ports:
       - "6381:6379"
+    restart: always  # 자동 재시작 설정
