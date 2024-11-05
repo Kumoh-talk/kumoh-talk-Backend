@@ -22,7 +22,7 @@ public class Category extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 45)
+    @Column(nullable = false,length = 50)
     @NotBlank(message = "이름은 빈 값일 수 없습니다.")
     private String name;
 
