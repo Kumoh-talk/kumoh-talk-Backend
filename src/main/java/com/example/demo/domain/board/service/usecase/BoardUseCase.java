@@ -53,6 +53,7 @@ public class BoardUseCase {
     @Transactional
     public BoardInfoResponse updateBoard(Long userId, BoardUpdateRequest boardUpdateRequest) {
         Board board = boardQueryService.validateBoardForUpdate(boardUpdateRequest, userId);
+        BoardInfoResponse boardInfoResponse = boardCommandService.updateBoard(boardUpdateRequest, board);
 
         // 게시 상태로 변경이면 뉴스레터 전송
         if(boardUpdateRequest.getIsPublished() && board.getBoardType().equals(BoardType.SEMINAR) && board.getStatus().equals(Status.DRAFT)) {
@@ -62,7 +63,7 @@ public class BoardUseCase {
             ));
         }
 
-        return boardCommandService.updateBoard(boardUpdateRequest, board);
+        return boardInfoResponse;
     }
 
     public void deleteBoard(Long userId, Long boardId) {
