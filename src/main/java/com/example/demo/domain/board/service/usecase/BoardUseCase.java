@@ -55,7 +55,7 @@ public class BoardUseCase {
         Board board = boardQueryService.validateBoardForUpdate(boardUpdateRequest, userId);
 
         // 게시 상태로 변경이면 뉴스레터 전송
-        if(boardUpdateRequest.isPublished() && board.getBoardType().equals(BoardType.SEMINAR) && board.getStatus().equals(Status.DRAFT)) {
+        if(boardUpdateRequest.getIsPublished() && board.getBoardType().equals(BoardType.SEMINAR) && board.getStatus().equals(Status.DRAFT)) {
             eventPublisher.publishEvent(EmailNotificationEvent.create(
                 com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType.SEMINAR_SUMMARY,
                 SeminarSummaryEmailDeliveryStrategy.create(board)

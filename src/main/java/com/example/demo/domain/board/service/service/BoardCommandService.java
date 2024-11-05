@@ -52,8 +52,7 @@ public class BoardCommandService {
 
     @Transactional
     public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest,Board board)  {
-        if(boardUpdateRequest.isPublished()) board.publishBoard(); // 게시 상태로 변경
-
+        if(boardUpdateRequest.getIsPublished()) board.publishBoard(); // 게시 상태로 변경
         board.changeBoardInfo(boardUpdateRequest);
         board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
 
@@ -82,11 +81,14 @@ public class BoardCommandService {
                 .filter(categoryName -> !newCategoryNames.contains(categoryName))
                 .forEach(categoryName -> {
                     Category category = categoryRepository.findByName(categoryName).get();
-                    BoardCategory boardCategory = boardCategoryRepository.findByName(categoryName).get();
+                    BoardCategory boardCategory = boardCategoryRepository.findByNameAndBoardId(categoryName,board.getId()).get();
                     if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 1) {
                         board.getBoardCategories().remove(boardCategory);
                         categoryRepository.delete(category);
                     }
+                    board.getBoardCategories().remove(boardCategory);
+                    category.getBoardCategories().remove(boardCategory);
+                    boardCategoryRepository.delete(boardCategory);
                 });
 
         // 추가할 카테고리 처리
@@ -111,11 +113,14 @@ public class BoardCommandService {
         existingCategoryNames.stream()
             .forEach(categoryName -> {
                 Category category = categoryRepository.findByName(categoryName).get();
-                BoardCategory boardCategory = boardCategoryRepository.findByName(categoryName).get();
+                BoardCategory boardCategory = boardCategoryRepository.findByNameAndBoardId(categoryName,boardId).get();
                 if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 1) {
                     board.getBoardCategories().remove(boardCategory);
                     categoryRepository.delete(category);
                 }
+                board.getBoardCategories().remove(boardCategory);
+                category.getBoardCategories().remove(boardCategory);
+                boardCategoryRepository.delete(boardCategory);
             });
         boardRepository.delete(board);
     }
