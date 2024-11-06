@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_board.domain.dto.request;
 
-import com.example.demo.domain.recruitment_board.domain.dto.vo.QuestionType;
+import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
 import com.example.demo.global.aop.valid.ValidAnswerList;
 import com.example.demo.global.aop.valid.ValidEnum;
 import jakarta.validation.Valid;

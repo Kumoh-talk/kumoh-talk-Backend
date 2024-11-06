@@ -2,7 +2,7 @@ package com.example.demo.domain.recruitment_board.domain.entity;
 
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormChoiceAnswerRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormQuestionRequest;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.QuestionType;
+import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;

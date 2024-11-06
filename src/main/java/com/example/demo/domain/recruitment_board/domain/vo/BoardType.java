@@ -1,4 +1,4 @@
-package com.example.demo.domain.recruitment_board.domain.dto.vo;
+package com.example.demo.domain.recruitment_board.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

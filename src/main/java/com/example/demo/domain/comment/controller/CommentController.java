@@ -6,7 +6,7 @@ import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.dto.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.dto.response.CommentResponse;
 import com.example.demo.domain.comment.service.CommentService;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;

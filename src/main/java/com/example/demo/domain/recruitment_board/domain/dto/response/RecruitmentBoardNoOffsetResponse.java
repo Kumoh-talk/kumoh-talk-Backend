@@ -1,8 +1,8 @@
 package com.example.demo.domain.recruitment_board.domain.dto.response;
 
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

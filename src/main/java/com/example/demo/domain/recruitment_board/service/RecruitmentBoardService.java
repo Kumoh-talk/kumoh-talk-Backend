@@ -8,11 +8,11 @@ import com.example.demo.domain.newsletter.strategy.StudyNoticeEmailDeliveryStrat
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormChoiceAnswer;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
+import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
@@ -165,7 +165,7 @@ public class RecruitmentBoardService {
         // 게시물 업데이트
         boolean isPublish = recruitmentBoard.updateFromRequest(recruitmentBoardInfoAndFormRequest, status,
                 recruitmentFormQuestionRepository, recruitmentFormChoiceAnswerRepository);
-        
+
         if (isPublish)
             publishEventFactory(recruitmentBoard);
 

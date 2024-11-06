@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_board.repository;
 
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

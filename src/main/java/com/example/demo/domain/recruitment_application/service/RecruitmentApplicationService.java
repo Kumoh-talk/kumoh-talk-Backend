@@ -8,9 +8,9 @@ import com.example.demo.domain.recruitment_application.domain.response.Recruitme
 import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantAnswerRepository;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
 import com.example.demo.domain.user.domain.User;

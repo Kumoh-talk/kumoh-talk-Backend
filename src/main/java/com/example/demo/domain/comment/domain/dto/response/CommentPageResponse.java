@@ -1,7 +1,7 @@
 package com.example.demo.domain.comment.domain.dto.response;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

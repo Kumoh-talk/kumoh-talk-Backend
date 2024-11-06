@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_board.domain.dto.request;
 
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.global.aop.valid.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

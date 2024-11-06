@@ -5,8 +5,8 @@ import com.example.demo.domain.recruitment_application.domain.response.MyRecruit
 import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicantPageResponse;
 import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;

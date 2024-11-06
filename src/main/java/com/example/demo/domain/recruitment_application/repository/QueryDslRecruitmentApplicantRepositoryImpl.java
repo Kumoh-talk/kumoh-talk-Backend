@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_application.repository;
 
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.global.utils.QueryDslUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
