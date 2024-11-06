@@ -3,11 +3,11 @@ package com.example.demo.domain.comment.service;
 
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
+import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
+import com.example.demo.domain.comment.domain.dto.response.CommentPageResponse;
+import com.example.demo.domain.comment.domain.dto.response.CommentResponse;
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.comment.domain.request.CommentRequest;
-import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.comment.domain.response.CommentPageResponse;
-import com.example.demo.domain.comment.domain.response.CommentResponse;
 import com.example.demo.domain.comment.repository.CommentRepository;
 import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;

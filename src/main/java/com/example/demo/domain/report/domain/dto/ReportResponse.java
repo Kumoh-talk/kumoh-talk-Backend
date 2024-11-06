@@ -1,6 +1,6 @@
 package com.example.demo.domain.report.domain.dto;
 
-import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
+import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
 import com.example.demo.domain.report.domain.Report;
 import com.fasterxml.jackson.annotation.JsonFormat;
 

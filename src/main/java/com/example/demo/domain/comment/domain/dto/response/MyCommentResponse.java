@@ -1,4 +1,4 @@
-package com.example.demo.domain.comment.domain.response;
+package com.example.demo.domain.comment.domain.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

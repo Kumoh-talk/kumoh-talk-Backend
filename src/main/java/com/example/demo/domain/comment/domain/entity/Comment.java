@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.domain.entity;
 
 
 import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.comment.domain.request.CommentRequest;
+import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;

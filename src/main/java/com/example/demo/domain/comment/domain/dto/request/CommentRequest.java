@@ -1,4 +1,4 @@
-package com.example.demo.domain.comment.domain.request;
+package com.example.demo.domain.comment.domain.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
