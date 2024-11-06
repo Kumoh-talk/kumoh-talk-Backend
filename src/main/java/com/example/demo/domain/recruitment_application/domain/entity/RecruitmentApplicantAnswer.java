@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_application.domain.entity;
 
-import com.example.demo.domain.recruitment_application.domain.request.RecruitmentApplicationRequest;
+import com.example.demo.domain.recruitment_application.domain.dto.request.RecruitmentApplicationRequest;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;

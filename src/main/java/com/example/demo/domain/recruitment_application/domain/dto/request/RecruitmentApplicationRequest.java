@@ -1,4 +1,4 @@
-package com.example.demo.domain.recruitment_application.domain.request;
+package com.example.demo.domain.recruitment_application.domain.dto.request;
 
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantAnswer;
 import jakarta.validation.Valid;

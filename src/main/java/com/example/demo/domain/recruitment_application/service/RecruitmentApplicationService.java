@@ -1,11 +1,11 @@
 package com.example.demo.domain.recruitment_application.service;
 
+import com.example.demo.domain.recruitment_application.domain.dto.request.RecruitmentApplicationRequest;
+import com.example.demo.domain.recruitment_application.domain.dto.response.MyRecruitmentApplicationPageResponse;
+import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
+import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantAnswer;
-import com.example.demo.domain.recruitment_application.domain.request.RecruitmentApplicationRequest;
-import com.example.demo.domain.recruitment_application.domain.response.MyRecruitmentApplicationPageResponse;
-import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicantPageResponse;
-import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantAnswerRepository;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;

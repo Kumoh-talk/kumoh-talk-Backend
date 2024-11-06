@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_application.controller;
 
-import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicantPageResponse;
-import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicationResponse;
+import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
+import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
 import com.example.demo.global.base.dto.ResponseBody;
 import lombok.RequiredArgsConstructor;

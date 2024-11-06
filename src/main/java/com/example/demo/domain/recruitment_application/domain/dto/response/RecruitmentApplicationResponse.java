@@ -1,4 +1,4 @@
-package com.example.demo.domain.recruitment_application.domain.response;
+package com.example.demo.domain.recruitment_application.domain.dto.response;
 
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantAnswer;
