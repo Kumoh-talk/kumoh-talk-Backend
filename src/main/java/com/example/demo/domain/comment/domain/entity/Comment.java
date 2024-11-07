@@ -75,10 +75,13 @@ public class Comment extends BaseEntity {
         setParentComment(parentComment);
     }
 
-    public static Comment fromSeminarBoardRequest(CommentRequest request,
-                                                  Board board, User user, Comment parentComment) {
+    public static Comment fromSeminarBoardRequest(
+            User user,
+            Board board,
+            CommentRequest commentRequest,
+            Comment parentComment) {
         Comment comment = Comment.seminarCommentBuilder()
-                .content(request.getContent())
+                .content(commentRequest.getContent())
                 .board(board)
                 .user(user)
                 .build();
@@ -87,10 +90,13 @@ public class Comment extends BaseEntity {
         return comment;
     }
 
-    public static Comment fromRecruitmentBoardRequest(CommentRequest request,
-                                                      RecruitmentBoard recruitmentBoard, User user, Comment parentComment) {
+    public static Comment fromRecruitmentBoardRequest(
+            User user,
+            RecruitmentBoard recruitmentBoard,
+            CommentRequest commentRequest,
+            Comment parentComment) {
         Comment comment = Comment.recruitmentCommentBuilder()
-                .content(request.getContent())
+                .content(commentRequest.getContent())
                 .recruitmentBoard(recruitmentBoard)
                 .user(user)
                 .build();

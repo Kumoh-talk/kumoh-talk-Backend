@@ -1,5 +1,6 @@
 package com.example.demo.domain.comment.domain.dto.response;
 
+import com.example.demo.domain.comment.domain.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ public class MyCommentResponse {
     private MyCommentInfoResponse comment;
     private CommentBoardInfoResponse board;
 
-    public static MyCommentResponse fromSeminarComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
+    public static MyCommentResponse fromSeminarComment(Comment commentEntity) {
         return MyCommentResponse.builder()
                 .comment(MyCommentInfoResponse.builder()
                         .id(commentEntity.getId())

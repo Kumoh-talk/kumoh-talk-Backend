@@ -12,5 +12,5 @@ public interface CustomCommentRepository {
 
     List<Comment> findByRecruitmentBoard_idOrderByCreatedAtAsc(Long recruitmentBoardId);
 
-    Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardType boardType);
+    Page<Comment> findPageByUser_idOrderByCreatedAtDsc(Long userId, Pageable pageable, BoardType boardType);
 }

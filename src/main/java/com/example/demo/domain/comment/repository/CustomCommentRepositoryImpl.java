@@ -49,19 +49,20 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     }
 
     @Override
-    public Page<Comment> findCommentByUser_idOrderByCreatedAtDsc(Pageable pageable, Long userId, BoardType boardType) {
+    public Page<Comment> findPageByUser_idOrderByCreatedAtDsc(Long userId, Pageable pageable, BoardType boardType) {
         if (boardType == BoardType.SEMINAR_NOTICE || boardType == BoardType.SEMINAR_SUMMARY) {
-            return findSeminarComment(pageable, userId);
+            return findSeminarCommentPage(pageable, userId, boardType);
         } else {
-            return findStudyAndProjectComment(pageable, userId, boardType);
+            return findRecruitmentCommentPage(pageable, userId, boardType);
         }
     }
 
-    public Page<Comment> findSeminarComment(Pageable pageable, Long userId) {
+    public Page<Comment> findSeminarCommentPage(Pageable pageable, Long userId, BoardType boardType) {
         List<Comment> content = jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.board, board).fetchJoin()
                 .where(comment.board.isNotNull(),
+                        // TODO : Board 엔티티의 tag(type) enum이 잘 가공된 후에 boardType과 일치 조건 추가해야함
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .orderBy(comment.createdAt.desc())
@@ -73,6 +74,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 .select(comment.count())
                 .from(comment)
                 .where(comment.board.isNotNull(),
+                        // TODO : Board 엔티티의 tag(type) enum이 잘 가공된 후에 boardType과 일치 조건 추가해야함
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .fetchOne();
@@ -80,7 +82,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
         return new PageImpl<>(content, pageable, totalCount);
     }
 
-    public Page<Comment> findStudyAndProjectComment(Pageable pageable, Long userId, BoardType boardType) {
+    public Page<Comment> findRecruitmentCommentPage(Pageable pageable, Long userId, BoardType boardType) {
         List<Comment> content = jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.recruitmentBoard, recruitmentBoard).fetchJoin()

@@ -8,6 +8,7 @@ import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.dto.response.CommentPageResponse;
 import com.example.demo.domain.comment.domain.dto.response.CommentResponse;
 import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
 import com.example.demo.domain.comment.repository.CommentRepository;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
@@ -34,34 +35,32 @@ public class CommentService {
     private final RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Transactional(readOnly = true)
-    public CommentResponse findCommentsByBoardId(Long boardId, BoardType boardType) {
-        List<Comment> commentList = findBoardComments(boardId, boardType);
+    public CommentResponse findCommentsByBoardId(Long boardId, CommentTargetBoardType boardType) {
+        List<Comment> commentList = findCommentsFactory(boardId, boardType);
 
         return CommentResponse.from(commentList);
     }
 
     @Transactional(readOnly = true)
-    public CommentPageResponse findCommentsByUserId(Long userId, BoardType boardType, Pageable pageable) {
+    public CommentPageResponse findCommentsByUserId(Long userId, Pageable pageable, BoardType boardType) {
         userService.validateUser(userId);
-        Page<Comment> commentPage = commentRepository.findCommentByUser_idOrderByCreatedAtDsc(pageable, userId, boardType);
+
+        Page<Comment> commentPage = commentRepository.findPageByUser_idOrderByCreatedAtDsc(userId, pageable, boardType);
         return CommentPageResponse.from(commentPage, boardType);
     }
 
     @Transactional
-    public CommentInfoResponse saveComment(CommentRequest commentRequest, Long userId, Long boardId, BoardType boardType) {
+    public CommentInfoResponse saveComment(Long userId, Long boardId, CommentTargetBoardType boardType, CommentRequest commentRequest) {
         User commentUser = userService.validateUser(userId);
 
-        Comment requestComment = requestToEntity(commentRequest, boardId, boardType, commentUser);
-
+        Comment requestComment = transformToEntityFactory(commentUser, boardId, boardType, commentRequest);
         Comment saved = commentRepository.save(requestComment);
 
         return CommentInfoResponse.from(saved);
     }
 
     @Transactional
-    public CommentInfoResponse updateComment(CommentRequest commentRequest,
-                                             Long commentId,
-                                             Long userId) {
+    public CommentInfoResponse updateComment(Long userId, Long commentId, CommentRequest commentRequest) {
         Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
         );
@@ -76,7 +75,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long userId, boolean isAuthorized) {
+    public void deleteComment(Long userId, Long commentId, boolean isAuthorized) {
         Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
         if (!isAuthorized) {
@@ -89,9 +88,9 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public List<Comment> findBoardComments(Long boardId, BoardType boardType) {
+    public List<Comment> findCommentsFactory(Long boardId, CommentTargetBoardType boardType) {
         switch (boardType) {
-            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
+            case BASIC -> {
                 boardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
@@ -106,32 +105,27 @@ public class CommentService {
         }
     }
 
-    public Comment requestToEntity(CommentRequest commentRequest, Long boardId, BoardType boardType, User commentUser) {
+    public Comment transformToEntityFactory(User commentUser, Long boardId, CommentTargetBoardType boardType, CommentRequest commentRequest) {
+        Comment parentComment = null;
+        if (commentRequest.getGroupId() != null) {
+            parentComment = commentRepository.findNotDeleteCommentById(commentRequest.getGroupId()).orElseThrow(() ->
+                    new ServiceException(ErrorCode.PARENT_NOT_FOUND));
+        }
+
         Comment requestComment = null;
         switch (boardType) {
-            case SEMINAR_NOTICE, SEMINAR_SUMMARY -> {
+            case BASIC -> {
                 Board commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
 
-                Comment parentComment = null;
-                if (commentRequest.getGroupId() != null) {
-                    parentComment = commentRepository.findByIdAndBoard_Id(commentRequest.getGroupId(), boardId).orElseThrow(() ->
-                            new ServiceException(ErrorCode.PARENT_NOT_FOUND));
-                }
-                requestComment = Comment.fromSeminarBoardRequest(commentRequest, commentBoard, commentUser, parentComment);
+                requestComment = Comment.fromSeminarBoardRequest(commentUser, commentBoard, commentRequest, parentComment);
             }
-            case STUDY, PROJECT, MENTORING -> {
+            case RECRUITMENT -> {
                 RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
-
-                Comment parentComment = null;
-                if (commentRequest.getGroupId() != null) {
-                    parentComment = commentRepository.findByIdAndRecruitmentBoard_Id(commentRequest.getGroupId(), boardId).orElseThrow(() ->
-                            new ServiceException(ErrorCode.PARENT_NOT_FOUND));
-                }
-                requestComment = Comment.fromRecruitmentBoardRequest(commentRequest, recruitmentBoard, commentUser, parentComment);
+                requestComment = Comment.fromRecruitmentBoardRequest(commentUser, recruitmentBoard, commentRequest, parentComment);
             }
         }
         return requestComment;
