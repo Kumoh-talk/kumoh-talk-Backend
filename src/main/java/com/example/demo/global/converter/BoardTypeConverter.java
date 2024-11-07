@@ -5,7 +5,12 @@ import org.springframework.core.convert.converter.Converter;
 
 public class BoardTypeConverter implements Converter<String, BoardType> {
     @Override
-    public BoardType convert(String value) {
-        return BoardType.fromString(value);
+    public BoardType convert(String source) {
+        for (BoardType boardType : BoardType.values()) {
+            if (boardType.toString().equalsIgnoreCase(source)) {
+                return boardType;
+            }
+        }
+        return null;
     }
 }
