@@ -1,6 +1,8 @@
 package com.example.demo.global.converter;
 
 import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
+import com.example.demo.global.base.exception.ErrorCode;
+import com.example.demo.global.base.exception.ServiceException;
 import org.springframework.core.convert.converter.Converter;
 
 public class CommentTargetBoardTypeConverter implements Converter<String, CommentTargetBoardType> {
@@ -11,6 +13,6 @@ public class CommentTargetBoardTypeConverter implements Converter<String, Commen
                 return boardType;
             }
         }
-        return null;
+        throw new ServiceException(ErrorCode.COMMENT_TARGET_BOARD_TYPE_PARSE_ERROR);
     }
 }

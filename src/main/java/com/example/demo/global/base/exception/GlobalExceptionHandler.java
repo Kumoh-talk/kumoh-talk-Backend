@@ -106,6 +106,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class) // 쿼리 파라미터 형식 매칭 실패 예외
     public ResponseEntity<ResponseBody<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("MethodArgumentTypeMismatchException : {}", e.getMessage());
+
+        if (e.getCause() != null && e.getCause().getCause() != null) {
+            if (e.getCause().getCause().getClass() == ServiceException.class) {
+                ErrorCode errorCode = ((ServiceException) e.getCause().getCause()).getErrorCode();
+
+                return ResponseEntity.status(errorCode.getStatus())
+                        .body(createFailureResponse(errorCode));
+            }
+        }
         return ResponseEntity.badRequest()
                 .body(createFailureResponse(ErrorCode.INVALID_INPUT_VALUE));
     }
