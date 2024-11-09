@@ -1,30 +1,49 @@
 spring:
   config:
     import:
+      - security/application-db.yml
       - security/application-security.yml
       - security/application-mail.yml
       - security/application-s3.yml
-      - security/application-db.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${local-db.rdb.url}
-    username: ${local-db.rdb.username}
-    password: ${local-db.rdb.password}
+    url: jdbc:mysql://localhost:3310/local-mysql
+    username: root
+    password: 22115533
   data:
     web:
       pageable:
         one-indexed-parameters:
           true
-
     redis:
-      host: ${local-db.redis.host}
-      port: ${local-db.redis.port}
+      host: localhost
+      port: 6381
+
   jpa:
     properties:
       hibernate:
-        format_sql: true
-        highlight_sql: true
+        format_sql: false
+        highlight_sql: false
         hbm2ddl.auto: update
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: true
+
+
+swagger:
+  server-url: http://localhost:8080
+  description: "Local 테스트용 서버"
+
+
+springdoc:
+  packagesToScan: com.example.demo
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /docs
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+  api-docs:
+    groups:
+      enabled: false
