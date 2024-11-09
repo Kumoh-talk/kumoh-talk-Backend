@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.board.api.BoardFileApi;
 import com.example.demo.domain.board.domain.dto.request.FileRequest;
 import com.example.demo.domain.board.domain.dto.request.PresignedUrlRequest;
 import com.example.demo.domain.board.service.usecase.BoardFileUseCase;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class BoardFileController {
+public class BoardFileController implements BoardFileApi {
 	private final BoardFileUseCase boardFileUseCase;
 
 	@AssignUserId

@@ -2,7 +2,6 @@ package com.example.demo.domain.board.controller;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -13,9 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.board.api.LikeApi;
 import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
 import com.example.demo.domain.board.service.usecase.LikeUseCase;
 import com.example.demo.global.aop.AssignUserId;
@@ -26,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class LikeController {
+public class LikeController implements LikeApi {
 	private final LikeUseCase likeUseCase;
 
 	@AssignUserId

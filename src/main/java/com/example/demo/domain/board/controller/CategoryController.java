@@ -4,8 +4,6 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -15,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.board.api.CategoryApi;
 import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
-import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.service.usecase.CategoryUseCase;
 import com.example.demo.global.base.dto.ResponseBody;
 
@@ -25,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryController implements CategoryApi {
 	private final CategoryUseCase categoryUseCase;
 
 	@GetMapping("/v1/categories")
