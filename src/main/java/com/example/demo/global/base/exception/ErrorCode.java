@@ -1,5 +1,11 @@
 package com.example.demo.global.base.exception;
 
+import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,7 +85,15 @@ public enum ErrorCode {
     RECRUITMENT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다."),
 
     // StudyProjectApplicantAnswer
-    OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "ANSWER_0001", "필수 답변을 입력해야합니다.");
+    OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "ANSWER_0001", "필수 답변을 입력해야합니다."),
+
+    // Enum Validation
+    BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0001", BoardType.errorMsg),
+    QUESTION_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0002", QuestionType.errorMsg),
+    RECRUITMENT_BOARD_TAG_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0003", RecruitmentBoardTag.errorMsg),
+    RECRUITMENT_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0004", RecruitmentBoardType.errorMsg),
+    COMMENT_TARGET_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0005", CommentTargetBoardType.errorMsg),
+    STATUS_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0005", Status.errorMsg);
     private final HttpStatus status;
     private final String code;
     private final String message;
