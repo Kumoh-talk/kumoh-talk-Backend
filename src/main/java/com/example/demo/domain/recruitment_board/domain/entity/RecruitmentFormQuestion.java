@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Table(name = "recruitment_form_questions")
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE recruitment_form_questions SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class RecruitmentFormQuestion extends BaseEntity {
     @Id
@@ -43,7 +45,7 @@ public class RecruitmentFormQuestion extends BaseEntity {
     private RecruitmentBoard recruitmentBoard;
 
     @Setter
-    @OneToMany(mappedBy = "recruitmentFormQuestion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "recruitmentFormQuestion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("number ASC")
     private List<RecruitmentFormChoiceAnswer> recruitmentFormChoiceAnswerList = new ArrayList<>();
 
@@ -99,17 +101,16 @@ public class RecruitmentFormQuestion extends BaseEntity {
                     RecruitmentFormChoiceAnswer delete = recruitmentFormChoiceAnswerList.remove(i);
                     deleteIdList.add(delete.getId());
                 }
-                // TODO : hardDelete는 명시 삭제 X?
                 recruitmentFormChoiceAnswerRepository.hardDeleteAnswersByIds(deleteIdList);
                 return;
             }
         }
         int size = request.getAnswerList() != null ? request.getAnswerList().size() : 0;
         while (answerIdx < size) {
-            recruitmentFormChoiceAnswerList.add(
-                    RecruitmentFormChoiceAnswer.from(request.getAnswerList().get(answerIdx++), this));
+            // 추가된 객관식 선택지의 id를 알기 위한 저장 쿼리
+            RecruitmentFormChoiceAnswer recruitmentFormChoiceAnswer = recruitmentFormChoiceAnswerRepository
+                    .save(RecruitmentFormChoiceAnswer.from(request.getAnswerList().get(answerIdx++), this));
+            recruitmentFormChoiceAnswerList.add(recruitmentFormChoiceAnswer);
         }
     }
-
-
 }
