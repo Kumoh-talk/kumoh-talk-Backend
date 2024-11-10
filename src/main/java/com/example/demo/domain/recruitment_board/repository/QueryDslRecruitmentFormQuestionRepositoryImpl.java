@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentFormQuestion.recruitmentFormQuestion;
 
@@ -14,11 +13,11 @@ public class QueryDslRecruitmentFormQuestionRepositoryImpl implements QueryDslRe
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<List<RecruitmentFormQuestion>> findByBoard_IdByFetchingAnswerList(Long recruitmentBoardId) {
-        return Optional.of(jpaQueryFactory
+    public List<RecruitmentFormQuestion> findByBoard_IdByFetchingAnswerList(Long recruitmentBoardId) {
+        return jpaQueryFactory
                 .selectFrom(recruitmentFormQuestion)
                 .leftJoin(recruitmentFormQuestion.recruitmentFormChoiceAnswerList).fetchJoin()
                 .where(recruitmentFormQuestion.recruitmentBoard.id.eq(recruitmentBoardId))
-                .fetch());
+                .fetch();
     }
 }

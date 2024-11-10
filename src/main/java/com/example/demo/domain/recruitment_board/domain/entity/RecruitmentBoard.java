@@ -179,7 +179,9 @@ public class RecruitmentBoard extends BaseEntity {
         // 수정 질문 수 > 기존 질문 수 -> 넘치는 수정 질문들 추가
         int size = request.getForm() != null ? request.getForm().size() : 0;
         while (questionIdx < size) {
-            RecruitmentFormQuestion savedRecruitmentFormQuestion = recruitmentFormQuestionRepository.save(RecruitmentFormQuestion.from(request.getForm().get(questionIdx++), this));
+            // 추가된 질문의 id를 알기 위한 저장 쿼리
+            RecruitmentFormQuestion savedRecruitmentFormQuestion = recruitmentFormQuestionRepository
+                    .save(RecruitmentFormQuestion.from(request.getForm().get(questionIdx++), this));
             recruitmentFormQuestionList.add(savedRecruitmentFormQuestion);
         }
 

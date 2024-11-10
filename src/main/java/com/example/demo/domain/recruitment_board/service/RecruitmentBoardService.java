@@ -9,7 +9,6 @@ import com.example.demo.domain.recruitment_application.repository.RecruitmentApp
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormChoiceAnswer;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
 import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
@@ -46,8 +45,8 @@ public class RecruitmentBoardService {
     @Transactional
     public RecruitmentBoardInfoAndFormResponse saveBoardAndForm(
             Long userId,
-            RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest,
-            Status status) {
+            Status status,
+            RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) {
         User user = userService.validateUser(userId);
 
         RecruitmentBoard recruitmentBoard = RecruitmentBoard.from(recruitmentBoardInfoAndFormRequest, user, status);
@@ -68,8 +67,10 @@ public class RecruitmentBoardService {
             List<Long> boardIdList;
             Long firstId;
             try {
-                boardIdList = recruitmentBoardRepository.findPublishedId(boardType)
-                        .orElseThrow(() -> new NullPointerException("can't find any Board"));
+                boardIdList = recruitmentBoardRepository.findPublishedId(boardType);
+                if (boardIdList.isEmpty()) {
+                    throw new NullPointerException("can't find any Board");
+                }
                 firstId = boardIdList.get(0);
             } catch (NullPointerException e) {
                 return RecruitmentBoardNoOffsetResponse.newEmptyListInstance(size);
@@ -132,8 +133,7 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public List<RecruitmentFormQuestionResponse> getFormInfoList(Long recruitmentBoardId) {
-        List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId)
-                .orElse(new ArrayList<>());
+        List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId);
 
         if (recruitmentFormQuestionList.isEmpty())
             return new ArrayList<>();
@@ -148,15 +148,13 @@ public class RecruitmentBoardService {
     public RecruitmentBoardInfoAndFormResponse updateBoardAndForm(
             Long userId,
             Long recruitmentBoardId,
-            RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest,
-            Status status) {
+            Status status,
+            RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) {
         RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingChoiceAnswerList(recruitmentBoardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-
         if (!userId.equals(recruitmentBoard.getUser().getId())) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
-
         // 신청자가 존재하면 수정 불가
         if (recruitmentApplicantRepository.existsByRecruitmentBoard_Id(recruitmentBoardId)) {
             throw new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_EXIST);
@@ -169,7 +167,6 @@ public class RecruitmentBoardService {
         if (isPublish)
             publishEventFactory(recruitmentBoard);
 
-        // TODO : Request enum valid 문제
         return RecruitmentBoardInfoAndFormResponse.from(recruitmentBoard);
     }
 
@@ -185,27 +182,6 @@ public class RecruitmentBoardService {
                 throw new ServiceException(ErrorCode.ACCESS_DENIED);
             }
         }
-
-        // TODO : 신청자, 신청자답변, 댓글 soft delete 추가 필요
-        softDeleteBoardAndQuestionAndAnswer(recruitmentBoardId, recruitmentBoard);
-    }
-
-    public void softDeleteBoardAndQuestionAndAnswer(Long recruitmentBoardId, RecruitmentBoard recruitmentBoard) {
-        List<RecruitmentFormQuestion> questionList =
-                recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId)
-                        .orElse(new ArrayList<>());
-
-        List<Long> questionIds = new ArrayList<>();
-        for (RecruitmentFormQuestion recruitmentFormQuestion : questionList) {
-            List<Long> answerIds = new ArrayList<>();
-
-            questionIds.add(recruitmentFormQuestion.getId());
-            for (RecruitmentFormChoiceAnswer recruitmentFormChoiceAnswer : recruitmentFormQuestion.getRecruitmentFormChoiceAnswerList()) {
-                answerIds.add(recruitmentFormChoiceAnswer.getId());
-            }
-            recruitmentFormChoiceAnswerRepository.softDeleteAnswersByIds(answerIds);
-        }
-        recruitmentFormQuestionRepository.softDeleteQuestionsByIds(questionIds);
         recruitmentBoardRepository.delete(recruitmentBoard);
     }
 

@@ -14,7 +14,7 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
             "and sb.status = com.example.demo.domain.board.domain.dto.vo.Status.PUBLISHED " +
             "and sb.type = :boardType " +
             "order by sb.recruitmentDeadline asc")
-    Optional<List<Long>> findPublishedId(RecruitmentBoardType boardType);
+    List<Long> findPublishedId(RecruitmentBoardType boardType);
 
     @Query("Select Max(id) From RecruitmentBoard " +
             "where status = com.example.demo.domain.board.domain.dto.vo.Status.DRAFT " +
