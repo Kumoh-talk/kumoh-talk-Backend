@@ -61,7 +61,10 @@ public class RecruitmentBoardNoOffsetResponse {
 
         private String recruitmentTarget;
 
-        private String recruitmentNum;
+        private Integer recruitmentNum;
+
+        private Integer currentMemberNum;
+
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime recruitmentStart;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
@@ -76,6 +79,7 @@ public class RecruitmentBoardNoOffsetResponse {
                     .tag(recruitmentBoardEntity.getTag())
                     .recruitmentTarget(recruitmentBoardEntity.getRecruitmentTarget())
                     .recruitmentNum(recruitmentBoardEntity.getRecruitmentNum())
+                    .currentMemberNum(recruitmentBoardEntity.getCurrentMemberNum())
                     .recruitmentStart(recruitmentBoardEntity.getActivityStart())
                     .recruitmentDeadline(recruitmentBoardEntity.getRecruitmentDeadline())
                     .build();

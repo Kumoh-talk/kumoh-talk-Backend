@@ -37,7 +37,10 @@ public class RecruitmentBoardInfoResponse {
 
     private String recruitmentTarget;
 
-    private String recruitmentNum;
+    private Integer recruitmentNum;
+
+    private Integer currentMemberNum;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime recruitmentStart;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
@@ -62,6 +65,7 @@ public class RecruitmentBoardInfoResponse {
                 .status(recruitmentBoardEntity.getStatus())
                 .recruitmentTarget(recruitmentBoardEntity.getRecruitmentTarget())
                 .recruitmentNum(recruitmentBoardEntity.getRecruitmentNum())
+                .currentMemberNum(recruitmentBoardEntity.getCurrentMemberNum())
                 .recruitmentStart(recruitmentBoardEntity.getActivityStart())
                 .recruitmentDeadline(recruitmentBoardEntity.getRecruitmentDeadline())
                 .activityStart(recruitmentBoardEntity.getActivityStart())

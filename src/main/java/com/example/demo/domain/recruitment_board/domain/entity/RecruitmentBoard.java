@@ -150,6 +150,7 @@ public class RecruitmentBoard extends BaseEntity {
         this.status = status;
         this.recruitmentTarget = request.getBoard().getRecruitmentTarget();
         this.recruitmentNum = request.getBoard().getRecruitmentNum();
+        this.currentMemberNum = request.getBoard().getCurrentMemberNum();
         this.recruitmentDeadline = request.getBoard().getRecruitmentDeadline();
         this.activityStart = request.getBoard().getActivityStart();
         this.activityFinish = request.getBoard().getActivityFinish();
