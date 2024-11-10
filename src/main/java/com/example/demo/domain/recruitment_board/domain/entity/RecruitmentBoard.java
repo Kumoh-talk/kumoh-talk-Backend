@@ -40,14 +40,14 @@ public class RecruitmentBoard extends BaseEntity {
     @Column(length = 100)
     private String summary;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     private String content;
 
     @Enumerated(value = EnumType.STRING)
-    private RecruitmentBoardType type; //->숫자로?
+    private RecruitmentBoardType type;
 
     @Enumerated(value = EnumType.STRING)
-    private RecruitmentBoardTag tag;    //->숫자로?
+    private RecruitmentBoardTag tag;
 
     @Enumerated(value = EnumType.STRING)
     private Status status;
@@ -55,7 +55,9 @@ public class RecruitmentBoard extends BaseEntity {
     @Column(length = 50)
     private String recruitmentTarget;
 
-    private String recruitmentNum; //->숫자로(현재인원 / 전체인원)
+    private Integer recruitmentNum;
+
+    private Integer currentMemberNum;
 
     private LocalDateTime recruitmentDeadline;
 
@@ -86,7 +88,7 @@ public class RecruitmentBoard extends BaseEntity {
 
     @Builder
     public RecruitmentBoard(String title, String summary, String content, RecruitmentBoardType type, RecruitmentBoardTag tag, Status status,
-                            String recruitmentTarget, String recruitmentNum, LocalDateTime recruitmentDeadline, LocalDateTime activityStart, LocalDateTime activityFinish,
+                            String recruitmentTarget, int recruitmentNum, int currentMemberNum, LocalDateTime recruitmentDeadline, LocalDateTime activityStart, LocalDateTime activityFinish,
                             String activityCycle, User user) {
         this.title = title;
         this.summary = summary;
@@ -96,6 +98,7 @@ public class RecruitmentBoard extends BaseEntity {
         this.status = status;
         this.recruitmentTarget = recruitmentTarget;
         this.recruitmentNum = recruitmentNum;
+        this.currentMemberNum = currentMemberNum;
         this.recruitmentDeadline = recruitmentDeadline;
         this.activityStart = activityStart;
         this.activityFinish = activityFinish;

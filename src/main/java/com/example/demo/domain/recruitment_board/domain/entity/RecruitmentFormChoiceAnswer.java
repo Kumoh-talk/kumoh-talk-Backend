@@ -21,7 +21,7 @@ public class RecruitmentFormChoiceAnswer extends BaseEntity {
     @Column(nullable = false)
     private Integer number;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)

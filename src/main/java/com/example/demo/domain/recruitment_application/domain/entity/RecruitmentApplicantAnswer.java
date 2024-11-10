@@ -21,7 +21,7 @@ public class RecruitmentApplicantAnswer extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 500)
+    @Column(length = 1000)
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)

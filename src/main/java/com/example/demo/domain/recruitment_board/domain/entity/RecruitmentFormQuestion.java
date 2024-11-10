@@ -30,7 +30,7 @@ public class RecruitmentFormQuestion extends BaseEntity {
     @Column(nullable = false)
     private Integer number;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String question;
 
     @Enumerated(value = EnumType.STRING)
