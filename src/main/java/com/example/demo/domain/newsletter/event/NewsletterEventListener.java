@@ -18,7 +18,7 @@ public class NewsletterEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handlePostCreatedEvent(EmailNotificationEvent event) {
-        List<String> subscriberEmails = newsletterRepository.findSubscriberEmails(String.valueOf(event.getBoardType()));
+        List<String> subscriberEmails = newsletterRepository.findSubscriberEmails(String.valueOf(event.getEntireBoardType()));
         emailService.sendEmailNotice(subscriberEmails, event.getEmailStrategy());
     }
 }

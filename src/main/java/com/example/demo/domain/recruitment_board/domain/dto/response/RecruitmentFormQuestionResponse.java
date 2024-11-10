@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,7 @@ public class RecruitmentFormQuestionResponse {
 
     private Boolean isEssential;
 
-    private List<RecruitmentFormChoiceAnswerResponse> answerList = new ArrayList<>();
+    private List<RecruitmentFormChoiceAnswerResponse> answerList;
 
     public static RecruitmentFormQuestionResponse from(
             RecruitmentFormQuestion recruitmentFormQuestionEntity) {

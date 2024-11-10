@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.repository;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.domain.entity.QComment;
-import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -49,15 +49,15 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
     }
 
     @Override
-    public Page<Comment> findPageByUser_idOrderByCreatedAtDsc(Long userId, Pageable pageable, BoardType boardType) {
-        if (boardType == BoardType.SEMINAR_NOTICE || boardType == BoardType.SEMINAR_SUMMARY) {
-            return findSeminarCommentPage(pageable, userId, boardType);
+    public Page<Comment> findPageByUser_idOrderByCreatedAtDsc(Long userId, Pageable pageable, EntireBoardType entireBoardType) {
+        if (entireBoardType == EntireBoardType.SEMINAR_NOTICE || entireBoardType == EntireBoardType.SEMINAR_SUMMARY) {
+            return findSeminarCommentPage(pageable, userId, entireBoardType);
         } else {
-            return findRecruitmentCommentPage(pageable, userId, boardType);
+            return findRecruitmentCommentPage(pageable, userId, entireBoardType);
         }
     }
 
-    public Page<Comment> findSeminarCommentPage(Pageable pageable, Long userId, BoardType boardType) {
+    public Page<Comment> findSeminarCommentPage(Pageable pageable, Long userId, EntireBoardType entireBoardType) {
         List<Comment> content = jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.board, board).fetchJoin()
@@ -82,12 +82,12 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
         return new PageImpl<>(content, pageable, totalCount);
     }
 
-    public Page<Comment> findRecruitmentCommentPage(Pageable pageable, Long userId, BoardType boardType) {
+    public Page<Comment> findRecruitmentCommentPage(Pageable pageable, Long userId, EntireBoardType entireBoardType) {
         List<Comment> content = jpaQueryFactory
                 .selectFrom(comment)
                 .join(comment.recruitmentBoard, recruitmentBoard).fetchJoin()
                 .where(comment.recruitmentBoard.isNotNull(),
-                        comment.recruitmentBoard.type.eq(RecruitmentBoardType.valueOf(boardType.toString())),
+                        comment.recruitmentBoard.type.eq(RecruitmentBoardType.valueOf(entireBoardType.toString())),
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .orderBy(comment.createdAt.desc())
@@ -98,7 +98,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 .select(comment.count())
                 .from(comment)
                 .where(comment.recruitmentBoard.isNotNull(),
-                        comment.recruitmentBoard.type.eq(RecruitmentBoardType.valueOf(boardType.toString())),
+                        comment.recruitmentBoard.type.eq(RecruitmentBoardType.valueOf(entireBoardType.toString())),
                         comment.user.id.eq(userId),
                         comment.deletedAt.isNull())
                 .fetchOne();

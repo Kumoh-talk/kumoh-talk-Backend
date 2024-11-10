@@ -1,7 +1,7 @@
 package com.example.demo.domain.comment.repository;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,5 +12,5 @@ public interface CustomCommentRepository {
 
     List<Comment> findByRecruitmentBoard_idOrderByCreatedAtAsc(Long recruitmentBoardId);
 
-    Page<Comment> findPageByUser_idOrderByCreatedAtDsc(Long userId, Pageable pageable, BoardType boardType);
+    Page<Comment> findPageByUser_idOrderByCreatedAtDsc(Long userId, Pageable pageable, EntireBoardType entireBoardType);
 }

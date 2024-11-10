@@ -5,7 +5,7 @@ import com.example.demo.domain.recruitment_application.domain.dto.response.MyRec
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
-import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -115,8 +115,8 @@ public class RecruitmentApplicationController {
     @GetMapping("/my-applications")
     public ResponseEntity<ResponseBody<MyRecruitmentApplicationPageResponse>> getUserApplicationList(
             Long userId,
-            @RequestParam BoardType boardType,
+            @RequestParam EntireBoardType entireBoardType,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getUserApplicationList(userId, pageable, RecruitmentBoardType.valueOf(boardType.name()))));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getUserApplicationList(userId, pageable, RecruitmentBoardType.valueOf(entireBoardType.name()))));
     }
 }

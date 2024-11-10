@@ -58,9 +58,9 @@ public class RecruitmentBoardController {
      * [홈 화면에 출력될 모집 게시물 페이징 리스트 무한 스크롤 조회] <br>
      * No-Offset으로 구현한 홈 화면 Published 모집 게시물 리스트 조회 기능
      *
-     * @param size        한 페이지의 사이즈
-     * @param lastBoardId 이전 페이지 마지막 게시물 Id(nullable)
-     * @param boardType   [study, project, mentoring]
+     * @param size                 한 페이지의 사이즈
+     * @param lastBoardId          이전 페이지 마지막 게시물 Id(nullable)
+     * @param recruitmentBoardType [study, project, mentoring]
      * @apiNote 1. 이전 페이지에서 출력한 가장 마지막 게시물의 Id를 lastBoardId에 실어 요청하면, 다음 게시물부터 페이징 사이즈에 맞게 응답 <br>
      * 2. 가장 처음 요청을 위해 lastBoardId은 nullable로 설정 <br>
      * -> lastBoardId가 널이라면 서비스 로직에서 맨 처음 게시물 Id를 조회하여 그 게시물부터 페이징 사이즈에 맞게 응답 <br>
@@ -69,27 +69,27 @@ public class RecruitmentBoardController {
     public ResponseEntity<ResponseBody<RecruitmentBoardNoOffsetResponse>> getRecruitmentBoardListByNoOffset(
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long lastBoardId,
-            @RequestParam RecruitmentBoardType boardType
+            @RequestParam RecruitmentBoardType recruitmentBoardType
     ) {
         // TODO : 차단 기능 추가
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, boardType)));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, recruitmentBoardType)));
     }
 
     /**
      * [지정한 타입 게시판에 출력할 모집 게시물 페이징 리스트 조회] <br>
      * 페이지 번호로 구현한 모집 게시판에서 출력할 게시물 페이징 리스트 조회 기능
      *
-     * @param pageable  페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
-     *                  -> 정렬 조건은 createdAt, recruitmentDeadline 중 선택 <br>
-     *                  -> 정렬 방향은 asc, desc 중 선택
-     * @param boardType [study, project, mentoring]
+     * @param pageable             페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
+     *                             -> 정렬 조건은 createdAt, recruitmentDeadline 중 선택 <br>
+     *                             -> 정렬 방향은 asc, desc 중 선택
+     * @param recruitmentBoardType [study, project, mentoring]
      */
     @GetMapping("/page-num")
     public ResponseEntity<ResponseBody<RecruitmentBoardPageNumResponse>> getRecruitmentBoardListByPageNum(
             @PageableDefault(page = 0, size = 10, sort = "recruitmentDeadline", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam RecruitmentBoardType boardType
+            @RequestParam RecruitmentBoardType recruitmentBoardType
     ) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getPublishedBoardListByPageNum(pageable, boardType)));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getPublishedBoardListByPageNum(pageable, recruitmentBoardType)));
     }
 
     /**
@@ -187,10 +187,10 @@ public class RecruitmentBoardController {
      * [사용자의 임시저장 게시물 페이징 리스트 조회] <br>
      * 페이지 번호로 구현한 사용자 임시서장 게시물 페이징 리스트 조회 기능
      *
-     * @param pageable  페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
-     *                  -> 정렬 조건은 createdAt <br>
-     *                  -> 정렬 방향은 asc, desc 중 선택
-     * @param boardType [study, project, mentoring]
+     * @param pageable             페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
+     *                             -> 정렬 조건은 createdAt <br>
+     *                             -> 정렬 방향은 asc, desc 중 선택
+     * @param recruitmentBoardType [study, project, mentoring]
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
@@ -198,9 +198,9 @@ public class RecruitmentBoardController {
     public ResponseEntity<ResponseBody<RecruitmentBoardPageNumResponse>> getPublishedUserRecruitmentBoardList(
             Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam RecruitmentBoardType boardType) {
+            @RequestParam RecruitmentBoardType recruitmentBoardType) {
         return ResponseEntity.ok(createSuccessResponse(
-                recruitmentBoardService.getPublishedBoardListByUserId(userId, pageable, boardType)));
+                recruitmentBoardService.getPublishedBoardListByUserId(userId, pageable, recruitmentBoardType)));
     }
 
     // Valid 검사 메서드
