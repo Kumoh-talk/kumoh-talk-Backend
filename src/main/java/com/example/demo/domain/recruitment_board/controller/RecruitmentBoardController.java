@@ -188,7 +188,7 @@ public class RecruitmentBoardController {
      * 페이지 번호로 구현한 사용자 임시서장 게시물 페이징 리스트 조회 기능
      *
      * @param pageable  페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
-     *                  -> 정렬 조건은 createdAt, recruitmentDeadline 중 선택 <br>
+     *                  -> 정렬 조건은 createdAt <br>
      *                  -> 정렬 방향은 asc, desc 중 선택
      * @param boardType [study, project, mentoring]
      */
