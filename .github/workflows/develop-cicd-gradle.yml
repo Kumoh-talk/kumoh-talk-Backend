@@ -1,0 +1,92 @@
+name: Java CI with Gradle and Deploy to develop EC2
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+env:
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: checkout action with submodule
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACTION_TOKEN }}
+          submodules: true
+
+      - name: Set up JDK 17 action
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle action
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      - name: add +x permission to gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew clean build
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-libs
+          path: build/libs/*.jar
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout action
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-libs
+          path: build/libs
+
+      - name: Build image and Generate tar
+        id: build-image
+        run: |
+          docker build -t kumoh_talk:$IMAGE_TAG .
+          docker save kumoh_talk:$IMAGE_TAG -o kumoh_talk:$IMAGE_TAG.tar
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp kumoh_talk:$IMAGE_TAG.tar s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:$IMAGE_TAG.tar
+
+      - name: SSH Connect
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ubuntu
+          key: ${{ secrets.DEV_EC2_PRIVATE_KEY }}
+          script: |
+            sudo docker stop spring-boot-app || true
+            sudo docker rm spring-boot-app || true
+            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:$IMAGE_TAG.tar kumoh_talk:$IMAGE_TAG.tar
+            sudo docker load -i kumoh_talk:$IMAGE_TAG.tar
+            sudo docker run -d --log-driver=syslog -p 8080:8080 kumoh_talk:$IMAGE_TAG
+            sudo docker image prune -a -f
+
