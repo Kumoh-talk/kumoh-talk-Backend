@@ -98,7 +98,7 @@ public class CommentController {
      * [댓글 삭제] <br>
      * 작성한 댓글 soft 삭제
      *
-     * @apiNote 1. 삭제된 댓글도 응답으로 보내야하므로 Comment 엔티티에 SQLDelete 처리를 해놓지 않았음
+     * @apiNote 1. 삭제된 댓글도 응답으로 보내야하므로 Comment 엔티티에 SQLRestriction 처리를 해놓지 않았음
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")

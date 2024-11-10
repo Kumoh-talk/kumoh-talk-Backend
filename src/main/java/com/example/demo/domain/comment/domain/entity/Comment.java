@@ -48,7 +48,6 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "group_id")
     private Comment parentComment;
 
-    // 쿼리 실험 필요
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("createdAt ASC")
     private List<Comment> replyComments = new ArrayList<>();
