@@ -3,6 +3,7 @@ package com.example.demo.domain.board.service.usecase;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.dto.vo.Status;
@@ -71,7 +72,7 @@ public class BoardUseCase {
     }
 
     @Transactional(readOnly = true)
-	public GlobalPageResponse findBoardList(Pageable pageable) {
+	public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(Pageable pageable) {
         return boardQueryService.findBoardPageList(pageable);
 	}
 }

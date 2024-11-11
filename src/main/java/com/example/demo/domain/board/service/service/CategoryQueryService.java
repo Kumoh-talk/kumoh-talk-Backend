@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.board.Repository.CategoryRepository;
+import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class CategoryQueryService {
 	}
 
 	@Transactional(readOnly = true)
-	public GlobalPageResponse getBoardPageByCategoryName(String categoryName, Pageable pageable) {
-		return GlobalPageResponse.from(categoryRepository.findBoardByPage(categoryName,pageable));
+	public GlobalPageResponse<BoardTitleInfoResponse> getBoardPageByCategoryName(String categoryName, Pageable pageable) {
+		return GlobalPageResponse.fromBoardTitleInfoResponse(categoryRepository.findBoardByPage(categoryName,pageable));
 	}
 }
