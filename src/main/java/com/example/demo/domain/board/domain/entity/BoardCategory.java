@@ -21,8 +21,8 @@ public class BoardCategory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 45)
-    @NotBlank(message = "이름은 빈 값일 수 없습니다.")
+    @Column(nullable = false,length = 50)
+    @NotBlank(message = "카테고리 이름은 빈 값일 수 없습니다.")
     private String name;
 
     @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)

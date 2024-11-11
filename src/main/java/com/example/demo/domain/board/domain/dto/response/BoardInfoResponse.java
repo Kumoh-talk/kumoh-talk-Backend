@@ -9,18 +9,18 @@ import java.util.List;
 
 @Getter
 public class BoardInfoResponse {
-    private Long boardId;
-    private String username;
-    private String title;
-    private String contents;
-    private String tag;
-    private String status;
-    private Long view;
-    private Long like;
-    private List<String> categoryNames;
-    private String boardHeadImageUrl;
-    private LocalDateTime updatedAt;
-    private LocalDateTime createdAt;
+    private final Long boardId;
+    private final String username;
+    private final String title;
+    private final String contents;
+    private final String boardType;
+    private final String status;
+    private final Long view;
+    private final Long like;
+    private final List<String> categoryNames;
+    private final String boardHeadImageUrl;
+    private final LocalDateTime updatedAt;
+    private final LocalDateTime createdAt;
 
     @Builder
     public BoardInfoResponse(Long boardId, String username, String title, String contents, String tag, String status, Long view, Long like, List<String> categoryNames,String boardHeadImageUrl, LocalDateTime updatedAt, LocalDateTime createdAt) {
@@ -28,7 +28,7 @@ public class BoardInfoResponse {
         this.username = username;
         this.title = title;
         this.contents = contents;
-        this.tag = tag;
+        this.boardType = tag;
         this.status = status;
         this.view = view;
         this.like = like;
@@ -44,7 +44,7 @@ public class BoardInfoResponse {
                 .username(username)
                 .title(board.getTitle())
                 .contents(board.getContent())
-                .tag(board.getTag().name())
+                .tag(board.getBoardType().name())
                 .status(board.getStatus().name())
                 .view(view)
                 .like(like)
