@@ -7,9 +7,9 @@ spring:
       - security/application-db.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${local-db.rdb.url}
-    username: ${local-db.rdb.username}
-    password: ${local-db.rdb.password}
+    url: jdbc:mysql://localhost:3310/local-mysql
+    username: root
+    password: 22115533
   data:
     web:
       pageable:
@@ -17,8 +17,8 @@ spring:
           true
 
     redis:
-      host: ${local-db.redis.host}
-      port: ${local-db.redis.port}
+      host: localhost
+      port: 6381
   jpa:
     properties:
       hibernate:

@@ -7,7 +7,6 @@ import com.example.demo.domain.board.domain.entity.Category;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -29,7 +28,6 @@ public class BoardCommandService {
     @Transactional
     public BoardInfoResponse createDraftBoard(User user, BoardCreateRequest boardCreateRequest) { //TODO : [Board] 대표이미지 미 설정시 첫 번째 이미지로 선정 및 그것 마저도 없으면 기본 이미지로 저장하게 하는데 프론트에서 처리할건지 물어봐야함
         Board board = Board.fromBoardRequest(user,boardCreateRequest);
-        board.changeBoardStatus(Status.DRAFT);
 
         Board savedBoard = boardRepository.save(board);
 
@@ -53,12 +51,12 @@ public class BoardCommandService {
     }
 
     @Transactional
-    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest, Long userId)  {
-        Board board = validateBoard(boardUpdateRequest.getId());
-        validateUserEqualBoardUser(userId, board);
+    public BoardInfoResponse updateBoard(BoardUpdateRequest boardUpdateRequest,Board board)  {
+        if(boardUpdateRequest.getIsPublished()) board.publishBoard(); // 게시 상태로 변경
+        board.changeBoardInfo(boardUpdateRequest);
+        board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
 
-        updateBoardInfo(board, boardUpdateRequest);
-
+        changeBoardCategories(board, boardUpdateRequest.getCategoryName());
 
         List<String> categoryNames = board.getBoardCategories().stream()
                 .map(boardCategory -> boardCategory.getCategory().getName())
@@ -72,13 +70,6 @@ public class BoardCommandService {
                 categoryNames);
     }
 
-    private void updateBoardInfo(Board board , BoardUpdateRequest boardUpdateRequest) {
-        board.changeBoardInfo(boardUpdateRequest);
-        board.changeBoardStatus(boardUpdateRequest.getStatus());
-        board.changeHeadImageUrl(boardUpdateRequest.getBoardHeadImageUrl());
-        changeBoardCategories(board, boardUpdateRequest.getCategoryName());
-    }
-
     private void changeBoardCategories(Board board, List<String> newCategoryNames) {
         List<BoardCategory> existingBoardCategories = board.getBoardCategories();
         List<String> existingCategoryNames = existingBoardCategories.stream()
@@ -90,11 +81,14 @@ public class BoardCommandService {
                 .filter(categoryName -> !newCategoryNames.contains(categoryName))
                 .forEach(categoryName -> {
                     Category category = categoryRepository.findByName(categoryName).get();
-                    BoardCategory boardCategory = boardCategoryRepository.findByName(categoryName).get();
+                    BoardCategory boardCategory = boardCategoryRepository.findByNameAndBoardId(categoryName,board.getId()).get();
                     if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 1) {
                         board.getBoardCategories().remove(boardCategory);
                         categoryRepository.delete(category);
                     }
+                    board.getBoardCategories().remove(boardCategory);
+                    category.getBoardCategories().remove(boardCategory);
+                    boardCategoryRepository.delete(boardCategory);
                 });
 
         // 추가할 카테고리 처리
@@ -119,11 +113,14 @@ public class BoardCommandService {
         existingCategoryNames.stream()
             .forEach(categoryName -> {
                 Category category = categoryRepository.findByName(categoryName).get();
-                BoardCategory boardCategory = boardCategoryRepository.findByName(categoryName).get();
+                BoardCategory boardCategory = boardCategoryRepository.findByNameAndBoardId(categoryName,boardId).get();
                 if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 1) {
                     board.getBoardCategories().remove(boardCategory);
                     categoryRepository.delete(category);
                 }
+                board.getBoardCategories().remove(boardCategory);
+                category.getBoardCategories().remove(boardCategory);
+                boardCategoryRepository.delete(boardCategory);
             });
         boardRepository.delete(board);
     }
