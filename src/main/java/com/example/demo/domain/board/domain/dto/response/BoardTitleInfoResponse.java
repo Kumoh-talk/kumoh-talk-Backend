@@ -2,7 +2,7 @@ package com.example.demo.domain.board.domain.dto.response;
 
 import java.time.LocalDateTime;
 
-import com.example.demo.domain.board.domain.dto.vo.Tag;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -29,11 +29,11 @@ public class BoardTitleInfoResponse {
 	@Schema(description = "게시글 생성일", example = "2021-08-01T00:00:00")
 	private String createdAt;
 
-	public BoardTitleInfoResponse(Long boardId, String title, String userName, Tag tag ,Long view, Long like,String headImageUrl ,LocalDateTime createdAt) {
+	public BoardTitleInfoResponse(Long boardId, String title, String userName, BoardType boardType,Long view, Long like,String headImageUrl ,LocalDateTime createdAt) {
 		this.boardId = boardId;
 		this.title = title;
 		this.userName = userName;
-		this.boardTag = tag.toString();
+		this.boardTag = boardType.toString();
 		this.view = view;
 		this.like = like;
 		this.headImageUrl = headImageUrl;

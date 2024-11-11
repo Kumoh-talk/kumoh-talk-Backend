@@ -3,15 +3,14 @@ package com.example.demo.domain.board.domain.entity;
 
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.board.domain.dto.vo.Tag;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -32,27 +31,30 @@ public class Board extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 45)
+    @Column(nullable = false,length = 30)
     @NotBlank(message = "제목은 빈 값일 수 없습니다.")
     private String title;
 
+    @Lob
     @Column(nullable = false)
-    @NotBlank(message = "게시물은 빈 값일 수 없습니다.")
+    @NotBlank(message = "본문은 빈 값일 수 없습니다.")
     private String content;
 
-    @Column(nullable = true)
+    @Column(nullable = true,length = 500)
     private String attachFileUrl;
 
-    @Column(nullable = false,length = 15)
+    @Column(nullable = false,length = 10)
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "게시물 분류는 빈 값일 수 없습니다")
-    private Tag tag; //TODO : 각 종 조회에 세미나 와 공지사항 분리하도록 쿼리 추가해야하는지 확인 필요
+    @NotNull(message = "게시판 타입은 빈 값일 수 없습니다.")
+    private BoardType boardType; //TODO : 각 종 조회에 세미나 와 공지사항 분리하도록 쿼리 추가해야하는지 확인 필요
 
-    @Column(nullable = false,length = 15)
+    @Column(nullable = false,length = 10)
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "게시판 상태는 빈 값일 수 없습니다.")
     private Status status;
 
-    @Column(nullable = false,length = 256)
+    @Column(nullable = false,length = 500)
+    @NotBlank(message = "게시물 헤드 이미지는 빈 값일 수 없습니다.")
     private String headImageUrl;
 
     @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
@@ -75,11 +77,11 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<View> views = new ArrayList<>();
 
-    private Board(String title, String content, User user, Tag tag,Status status,String headImageUrl) {
+    private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
         this.title = title;
         this.content = content;
         this.user = user;
-        this.tag = tag;
+        this.boardType = boardType;
         this.status = status;
         this.attachFileUrl = null;
         this.headImageUrl = headImageUrl;
@@ -89,7 +91,7 @@ public class Board extends BaseEntity {
         Board board = new Board(boardCreateRequest.getTitle(),
             boardCreateRequest.getContents(),
             user,
-            boardCreateRequest.getTag(),
+            boardCreateRequest.getBoardType(),
             Status.DRAFT,
             boardCreateRequest.getBoardHeadImageUrl());
         user.getBoards().add(board);
@@ -101,8 +103,8 @@ public class Board extends BaseEntity {
         this.content = boardUpdateRequest.getContents();
     }
 
-    public void changeBoardStatus(Status status){
-        this.status = status;
+    public void publishBoard(){
+        this.status = Status.PUBLISHED;
     }
 
     public void changeAttachFileUrl(String attachFileUrl){

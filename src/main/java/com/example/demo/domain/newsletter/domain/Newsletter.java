@@ -25,26 +25,30 @@ public class Newsletter extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
-    private Boolean isSeminarContentUpdated;
+    private Boolean seminarContentNotice;
     @Column(nullable = false)
-    private Boolean isStudyUpdated;
+    private Boolean studyNotice;
     @Column(nullable = false)
-    private Boolean isProjectUpdated;
+    private Boolean projectNotice;
+    @Column(nullable = false)
+    private Boolean mentoringNotice;
 
     @Builder
-    public Newsletter(String email, Boolean isSeminarContentUpdated, Boolean isStudyUpdated, Boolean isProjectUpdated) {
+    public Newsletter(String email, Boolean mentoringNotice, Boolean projectNotice, Boolean seminarContentNotice, Boolean studyNotice) {
         this.email = email;
-        this.isSeminarContentUpdated = isSeminarContentUpdated;
-        this.isStudyUpdated = isStudyUpdated;
-        this.isProjectUpdated = isProjectUpdated;
+        this.mentoringNotice = mentoringNotice;
+        this.projectNotice = projectNotice;
+        this.seminarContentNotice = seminarContentNotice;
+        this.studyNotice = studyNotice;
     }
 
     public static Newsletter from(NewsletterSubscribeRequest request) {
         return Newsletter.builder()
                 .email(request.email())
-                .isSeminarContentUpdated(request.isSeminarContentUpdated())
-                .isStudyUpdated(request.isStudyUpdated())
-                .isProjectUpdated(request.isProjectUpdated())
+                .seminarContentNotice(request.seminarContentNotice())
+                .studyNotice(request.studyNotice())
+                .projectNotice(request.projectNotice())
+                .mentoringNotice(request.mentoringNotice())
                 .build();
     }
 
@@ -53,8 +57,9 @@ public class Newsletter extends BaseEntity {
     }
 
     public void updateNewsletterNotify(@Valid NewsletterUpdateNotifyRequest request) {
-        this.isSeminarContentUpdated = request.isSeminarContentUpdated();
-        this.isStudyUpdated = request.isStudyUpdated();
-        this.isProjectUpdated = request.isProjectUpdated();
+        this.seminarContentNotice = request.seminarContentNotice();
+        this.studyNotice = request.studyNotice();
+        this.projectNotice = request.projectNotice();
+        this.mentoringNotice = request.mentoringNotice();
     }
 }

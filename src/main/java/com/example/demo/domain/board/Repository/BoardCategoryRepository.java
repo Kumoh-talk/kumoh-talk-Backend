@@ -2,7 +2,6 @@ package com.example.demo.domain.board.Repository;
 
 import java.util.Optional;
 
-
 import com.example.demo.domain.board.domain.entity.BoardCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +13,6 @@ public interface BoardCategoryRepository extends JpaRepository<BoardCategory,Lon
     Long countBoardCategoryByCategoryId(Long categoryId);
 
     Optional<BoardCategory> findByName(String name);
+
+    Optional<BoardCategory> findByNameAndBoardId(String categoryName, Long id);
 }

@@ -18,7 +18,6 @@ spring:
     redis:
       host: localhost
       port: 6381
-
   jpa:
     properties:
       hibernate:
