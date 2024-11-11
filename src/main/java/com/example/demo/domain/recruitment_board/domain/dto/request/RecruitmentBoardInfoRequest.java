@@ -21,8 +21,12 @@ public class RecruitmentBoardInfoRequest {
     @Size(min = 1, max = 100, message = "요약 최대 길이는 100글자 입니다.")
     private String summary;
 
-    @NotBlank(message = "내용을 작성해야합니다.")
-    @Size(min = 1, max = 1000, message = "내용 최대 길이는 1000글자 입니다.")
+    @NotBlank(message = "주최자 내용을 작성해야합니다.")
+    @Size(min = 1, max = 50, message = "주최자 최대 길이는 50글자 입니다.")
+    private String host;
+
+    @NotBlank(message = "본문 내용을 작성해야합니다.")
+    @Size(min = 1, max = 1000, message = "본문 내용 최대 길이는 1000글자 입니다.")
     private String content;
 
     @NotNull(message = "타입을 선택해야합니다.")

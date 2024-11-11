@@ -40,6 +40,9 @@ public class RecruitmentBoard extends BaseEntity {
     @Column(length = 100)
     private String summary;
 
+    @Column(length = 50)
+    private String host;
+
     @Column(length = 1000)
     private String content;
 
@@ -87,11 +90,12 @@ public class RecruitmentBoard extends BaseEntity {
     }
 
     @Builder
-    public RecruitmentBoard(String title, String summary, String content, RecruitmentBoardType type, RecruitmentBoardTag tag, Status status,
+    public RecruitmentBoard(String title, String summary, String host, String content, RecruitmentBoardType type, RecruitmentBoardTag tag, Status status,
                             String recruitmentTarget, int recruitmentNum, int currentMemberNum, LocalDateTime recruitmentDeadline, LocalDateTime activityStart, LocalDateTime activityFinish,
                             String activityCycle, User user) {
         this.title = title;
         this.summary = summary;
+        this.host = host;
         this.content = content;
         this.type = type;
         this.tag = tag;
@@ -110,6 +114,7 @@ public class RecruitmentBoard extends BaseEntity {
         RecruitmentBoard recruitmentBoard = RecruitmentBoard.builder()
                 .title(request.getBoard().getTitle())
                 .summary(request.getBoard().getSummary())
+                .host(request.getBoard().getHost())
                 .content(request.getBoard().getContent())
                 .type(request.getBoard().getType())
                 .tag(request.getBoard().getTag())
@@ -144,6 +149,7 @@ public class RecruitmentBoard extends BaseEntity {
         // 게시물 업데이트
         this.title = request.getBoard().getTitle();
         this.summary = request.getBoard().getSummary();
+        this.host = request.getBoard().getHost();
         this.content = request.getBoard().getContent();
         this.type = request.getBoard().getType();
         this.tag = request.getBoard().getTag();
