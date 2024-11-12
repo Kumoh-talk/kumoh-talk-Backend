@@ -1,14 +1,22 @@
 package com.example.demo.domain.board.api;
 
 
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
@@ -90,6 +98,20 @@ public interface BoardApi {
 	)
 	ResponseEntity<ResponseBody<Void>> delete(@Parameter(hidden = true) Long userId, @PathVariable Long boardId);
 
-
-
+	@Operation(
+		summary = "게시글 목록 조회",
+		description = "게시글 목록을 조회합니다."
+	)
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class))
+	)
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoardTitleInfoResponse.class))
+	)
+	@ApiResponseExplanations(
+		success = @ApiSuccessResponseExplanation(
+			responseClass = GlobalPageResponse.class,
+			description = "게시글 목록 조회 성공\n"
+				+ "게시글 목록을 반환합니다.")
+	)
+	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findBoardPageList(
+		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
 }

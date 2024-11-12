@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.domain.board.domain.dto.response.BoardPageResponse;
+import com.example.demo.domain.board.api.LikeApi;
+import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.service.usecase.LikeUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
 

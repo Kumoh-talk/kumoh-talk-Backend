@@ -24,7 +24,7 @@ public class BoardTitleInfoResponse {
 	private Long view;
 	@Schema(description = "게시글 좋아요 수", example = "10")
 	private Long like;
-	@Schema(description = "게시글 작성자 프로필 이미지 URL", example = "https://s3.bucket/board/1.jpg")
+	@Schema(description = "게시글 작성자 프로필 이미지 URL", example = "https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/")
 	private String headImageUrl;
 	@Schema(description = "게시글 생성일", example = "2021-08-01T00:00:00")
 	private String createdAt;
