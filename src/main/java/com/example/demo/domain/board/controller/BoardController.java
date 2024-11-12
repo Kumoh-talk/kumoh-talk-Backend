@@ -3,14 +3,15 @@ package com.example.demo.domain.board.controller;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
+import com.example.demo.domain.board.api.BoardApi;
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
-import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class BoardController {
+public class BoardController implements BoardApi {
     private final BoardUseCase boardUsecase;
 
     @AssignUserId
