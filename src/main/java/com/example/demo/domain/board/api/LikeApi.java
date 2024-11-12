@@ -3,6 +3,8 @@ package com.example.demo.domain.board.api;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
+import org.springdoc.core.annotations.ParameterObject;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -23,6 +25,7 @@ import com.example.demo.global.config.swagger.ApiSuccessResponseExplanation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public interface LikeApi {
 
@@ -65,6 +68,7 @@ public interface LikeApi {
 	)
 	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> getLikes(
 		@Parameter(hidden = true) Long userId,
+		@ParameterObject
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
 
 }

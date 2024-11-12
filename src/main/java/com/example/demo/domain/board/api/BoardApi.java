@@ -3,6 +3,7 @@ package com.example.demo.domain.board.api;
 
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -113,5 +114,6 @@ public interface BoardApi {
 				+ "게시글 목록을 반환합니다.")
 	)
 	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findBoardPageList(
+		@ParameterObject
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
 }

@@ -4,6 +4,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.*;
 
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -55,5 +56,6 @@ public interface CategoryApi {
 	)
 	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> getBoardsByCategoryName(
 		@Schema(example = "카테고리 네임") @RequestParam("categoryName") String categoryName,
+		@ParameterObject
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
 }
