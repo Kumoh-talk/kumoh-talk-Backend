@@ -13,7 +13,6 @@ import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +42,7 @@ public class ReportService {
         discordReportClient.sendReport(DiscordMessage.createCommentReportMessage(user, comment));
     }
 
-    public Page<ReportResponse> findAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Report> reportPage = reportRepository.findAllByOrderByCreatedAtDesc(pageable);
-        return reportPage.map(ReportResponse::from);
+    public Page<ReportResponse> getAllReport(Pageable pageable) {
+        return reportRepository.findAll(pageable).map(ReportResponse::from);
     }
 }
