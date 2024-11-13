@@ -5,6 +5,7 @@ import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
+import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
@@ -53,9 +54,10 @@ public class User extends BaseEntity {
     @JoinColumn(name = "user_additional_info_id")
     private UserAdditionalInfo userAdditionalInfo;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "news_letter_id")
-    private Newsletter newsletter;
+    // TODO. 추후 user 와 newsletter 연동이 확정되면 추가
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "news_letter_id")
+//    private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();
@@ -78,10 +80,7 @@ public class User extends BaseEntity {
     }
 
     public void setInitialInfo(String nickname, String name, String defaultImageUrl) {
-        this.nickname = nickname;
-        this.name = name;
-        this.profileImageUrl = defaultImageUrl;
-        this.role = Role.ROLE_USER;
+
     }
 
     public void updateNickname(String nickname) {
@@ -92,9 +91,9 @@ public class User extends BaseEntity {
         this.userAdditionalInfo = userAdditionalInfo;
     }
 
-    public void mapNewsletter(Newsletter newsletter) {
-        this.newsletter = newsletter;
-    }
+//    public void mapNewsletter(Newsletter newsletter) {
+//        this.newsletter = newsletter;
+//    }
 
     public void addSeminarApplications(SeminarApplication seminarApplication) {
         this.seminarApplications.add(seminarApplication);
@@ -110,5 +109,24 @@ public class User extends BaseEntity {
 
     public void changeProfileUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public Boolean isAdmin() {
+        return Role.ROLE_ADMIN.equals(this.role);
+    }
+
+    public void updateUserInfo(UpdateUserInfoRequest request) {
+        this.nickname = request.nickname();
+        this.name = request.name();
+        this.profileImageUrl = request.profileImageUrl();
+        this.role = request.role();
+    }
+
+//    public boolean hasNewsletter() {
+//        return this.newsletter != null;
+//    }
+
+    public void setDefaultProfileUrl(String defaultImageUrl) {
+        this.profileImageUrl = defaultImageUrl;
     }
 }

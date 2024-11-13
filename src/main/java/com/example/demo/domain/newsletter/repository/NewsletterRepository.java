@@ -2,11 +2,13 @@ package com.example.demo.domain.newsletter.repository;
 
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import io.lettuce.core.dynamic.annotation.Param;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NewsletterRepository extends JpaRepository<Newsletter, Long> {
     boolean existsByEmail(String email);
@@ -18,4 +20,6 @@ public interface NewsletterRepository extends JpaRepository<Newsletter, Long> {
             "(n.mentoringNotice = true AND :postType = 'MENTORING') OR " +
             "(n.projectNotice = true AND :postType = 'PROJECT'))")
     List<String> findSubscriberEmails(@Param("postType") String postType);
+
+    Optional<Newsletter> findByEmail(String email);
 }

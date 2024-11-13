@@ -62,6 +62,7 @@ public enum ErrorCode {
     // Newsletter
     SUBSCRIBE_EMAIL_CONFLICT(HttpStatus.CONFLICT, "NEWSLETTER_0001", "이미 구독되어있는 이메일입니다."),
     SUBSCRIBE_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWSLETTER_0002", "구독 정보가 존재하지 않습니다."),
+    ALREADY_SUBSCRIBE(HttpStatus.CONFLICT, "NEWSLETTER_0003", "사용자는 이미 구독중입니다."),
 
     // SeminarApplication
     SEMINAR_APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "SEMINAR_0001", "해당 세미나 신청폼 정보가 존재하지 않습니다."),

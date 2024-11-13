@@ -86,7 +86,8 @@ dependencies {
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'  // 최신 버전을 사용하려면 2.2.x로 유지
 
-
+    // Jsoup
+    implementation 'org.jsoup:jsoup:1.18.1'
 
 }
 

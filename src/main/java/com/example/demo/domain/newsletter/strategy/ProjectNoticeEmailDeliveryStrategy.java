@@ -11,12 +11,12 @@ import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ProjectNoticeEmailDeliveryStrategy implements EmailDeliveryStrategy {
+public class ProjectNoticeEmailDeliveryStrategy extends BaseEmailDeliveryStrategy {
     private String type;
     private String tag;
     private String title;
     private String author;
-    private String link;
+    private String postUrl;
 
     @Override
     public String getTemplateName() {
@@ -30,7 +30,10 @@ public class ProjectNoticeEmailDeliveryStrategy implements EmailDeliveryStrategy
         variables.put("tag", tag);
         variables.put("title", title);
         variables.put("author", author);
-        variables.put("link", link);
+        variables.put("postUrl", postUrl);
+        variables.put("youtubeUrl", youtubeUrl);
+        variables.put("changeSubscribeUrl", changeSubscribeUrl);
+        variables.put("cancelSubscribeUrl", cancelSubscribeUrl);
         return variables;
     }
 
@@ -41,7 +44,7 @@ public class ProjectNoticeEmailDeliveryStrategy implements EmailDeliveryStrategy
 
     public static ProjectNoticeEmailDeliveryStrategy create(RecruitmentBoard recruitmentBoard) {
         if (!recruitmentBoard.getType().equals(RecruitmentBoardType.PROJECT)) {
-            throw new IllegalArgumentException("스터디에 대한 이메일 알림만 허용합니다.");
+            throw new IllegalArgumentException("프로젝트에 대한 이메일 알림만 허용합니다.");
         }
         return new ProjectNoticeEmailDeliveryStrategy(
                 recruitmentBoard.getType().name(),
