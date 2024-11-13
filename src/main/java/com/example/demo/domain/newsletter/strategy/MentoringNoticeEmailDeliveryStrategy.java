@@ -11,12 +11,12 @@ import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MentoringNoticeEmailDeliveryStrategy implements EmailDeliveryStrategy {
+public class MentoringNoticeEmailDeliveryStrategy extends BaseEmailDeliveryStrategy {
     private String type;
     private String topicTag;
     private String title;
     private String author;
-    private String link;
+    private String postUrl;
 
     @Override
     public String getTemplateName() {
@@ -30,7 +30,10 @@ public class MentoringNoticeEmailDeliveryStrategy implements EmailDeliveryStrate
         variables.put("topicTag", topicTag);
         variables.put("title", title);
         variables.put("author", author);
-        variables.put("link", link);
+        variables.put("postUrl", postUrl);
+        variables.put("youtubeUrl", youtubeUrl);
+        variables.put("changeSubscribeUrl", changeSubscribeUrl);
+        variables.put("cancelSubscribeUrl", cancelSubscribeUrl);
         return variables;
     }
 
