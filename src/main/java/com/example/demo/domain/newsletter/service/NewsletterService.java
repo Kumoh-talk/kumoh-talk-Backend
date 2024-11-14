@@ -2,14 +2,11 @@ package com.example.demo.domain.newsletter.service;
 
 import com.example.demo.domain.newsletter.domain.Newsletter;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateEmailRequest;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
-import com.example.demo.domain.newsletter.domain.dto.response.NewsletterInfo;
 import com.example.demo.domain.newsletter.repository.NewsletterRepository;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ServiceException;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +23,9 @@ public class NewsletterService {
     private final NewsletterRepository newsletterRepository;
 
     @Transactional
-    public void subscribe(Long userId, @Valid NewsletterSubscribeRequest request) {
-        User user = userService.validateUser(userId);
+    public void subscribe(NewsletterSubscribeRequest request) {
         this.validateSubscribe(request.email());
-        user.mapNewsletter(Newsletter.from(request));
+        newsletterRepository.save(Newsletter.from(request));
     }
     
     public void validateSubscribe(String email) {
@@ -38,33 +34,33 @@ public class NewsletterService {
         }
     }
 
-    public NewsletterInfo getNewsletterInfo(Long userId) {
-        User user = userService.validateUser(userId);
-        if (user.getNewsletter() == null) {
-            throw new ServiceException(SUBSCRIBE_NOT_FOUND);
-        }
-        return NewsletterInfo.from(user.getNewsletter());
+//    public NewsletterInfo getNewsletterInfo(Long userId) {
+//        User user = userService.validateUser(userId);
+//        if (!user.hasNewsletter()) {
+//            throw new ServiceException(SUBSCRIBE_NOT_FOUND);
+//        }
+//        return NewsletterInfo.from(user.getNewsletter());
+//    }
+
+//    @Transactional
+//    public void updateNewsletterEmail(NewsletterUpdateEmailRequest request) {
+//        this.validateSubscribe(request.email());
+//        Newsletter newsletter = newsletterRepository.findByEmail(request.email())
+//                .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
+//        newsletter.updateNewsletter(request);
+//    }
+
+    @Transactional
+    public void updateNewsletterNotify(String email, NewsletterUpdateNotifyRequest request) {
+        Newsletter newsletter = newsletterRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
+        newsletter.updateNewsletter(request);
     }
 
     @Transactional
-    public void updateNewsletterEmail(Long userId, @Valid NewsletterUpdateEmailRequest request) {
-        User user = userService.validateUser(userId);
-        this.validateSubscribe(request.email());
-        user.getNewsletter().updateNewsletterEmail(request);
-    }
-
-    @Transactional
-    public void updateNewsletterNotify(Long userId, @Valid NewsletterUpdateNotifyRequest request) {
-        User user = userService.validateUser(userId);
-        user.getNewsletter().updateNewsletterNotify(request);
-    }
-
-    @Transactional
-    public void deleteNewsletterInfo(Long userId) {
-        User user = userService.validateUser(userId);
-        Newsletter newsletter = user.getNewsletter();
-        if (newsletter != null) {
-            user.mapNewsletter(null);
-        }
+    public void deleteNewsletterInfo(String email) {
+        Newsletter newsletter = newsletterRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
+        newsletterRepository.delete(newsletter);
     }
 }

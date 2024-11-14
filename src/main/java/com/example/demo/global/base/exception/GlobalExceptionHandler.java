@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseBody<Void>> handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("IllegalArgumentException : {}", e.getMessage());
         return ResponseEntity.badRequest()
-                .body(createFailureResponse(ErrorCode.INVALID_INPUT_VALUE));
+                .body(createFailureResponse(ErrorCode.INVALID_INPUT_VALUE, e.getMessage()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class) // JSON 파싱 예외(JsonCreator 사용 시 발생 예외)

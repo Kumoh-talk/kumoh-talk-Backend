@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.board.api.CategoryApi;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
-import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.service.usecase.CategoryUseCase;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryController implements CategoryApi {
 	private final CategoryUseCase categoryUseCase;
 
 	@GetMapping("/v1/categories")

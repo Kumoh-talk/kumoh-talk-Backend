@@ -30,4 +30,10 @@ public class UserFileService {
         User user = userService.validateUser(userId);
         user.changeProfileUrl(request.url());
     }
+
+    @Transactional
+    public void deleteProfileImage(Long userId) {
+        User user = userService.validateUser(userId);
+        user.setDefaultProfileUrl(s3UrlUtil.getDefaultImageUrl());
+    }
 }
