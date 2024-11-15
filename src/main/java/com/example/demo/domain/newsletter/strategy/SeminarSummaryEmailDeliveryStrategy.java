@@ -1,6 +1,6 @@
 package com.example.demo.domain.newsletter.strategy;
 
-import com.example.demo.domain.board.domain.dto.vo.Tag;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.entity.Board;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,15 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class SeminarSummaryEmailDeliveryStrategy implements EmailDeliveryStrategy {
+@AllArgsConstructor
+public class SeminarSummaryEmailDeliveryStrategy extends BaseEmailDeliveryStrategy {
     private String title;
     private String author;
-    private String link;
+    private String postUrl;
 
     @Override
     public String getTemplateName() {
-        return "seminar_notice";
+        return "seminar_summary";
     }
 
     @Override
@@ -26,7 +26,10 @@ public class SeminarSummaryEmailDeliveryStrategy implements EmailDeliveryStrateg
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);
         variables.put("author", author);
-        variables.put("link", link);
+        variables.put("postUrl", postUrl);
+        variables.put("youtubeUrl", youtubeUrl);
+        variables.put("changeSubscribeUrl", changeSubscribeUrl);
+        variables.put("cancelSubscribeUrl", cancelSubscribeUrl);
         return variables;
     }
 
@@ -36,13 +39,13 @@ public class SeminarSummaryEmailDeliveryStrategy implements EmailDeliveryStrateg
     }
 
     public static SeminarSummaryEmailDeliveryStrategy create(Board board) {
-        if (!board.getTag().equals(Tag.seminar)) {
+        if (!board.getBoardType().equals(BoardType.SEMINAR)) {
             throw new IllegalArgumentException("세미나 내용 정리에 대한 이메일 알림만 허용합니다.");
         }
-        return new SeminarSummaryEmailDeliveryStrategy(
+        return new SeminarSummaryEmailDeliveryStrategy(// TODO. 프론트 배포 후 수정 필요
                 board.getTitle(),
                 board.getUser().getNickname(),
-                "https://프론트도메인/~" // TODO. 수정 필요
+                "https://프론트도메인/~"
         );
     }
 }

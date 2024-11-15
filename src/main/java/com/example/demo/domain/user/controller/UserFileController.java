@@ -36,4 +36,12 @@ public class UserFileController {
         userFileService.changeProfileUrl(userId, request);
         return ResponseEntity.ok(createSuccessResponse());
     }
+
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+    @DeleteMapping("/profile")
+    public ResponseEntity<ResponseBody<Void>> deleteProfileImage(Long userId) {
+        userFileService.deleteProfileImage(userId);
+        return ResponseEntity.ok(createSuccessResponse());
+    }
 }

@@ -12,7 +12,7 @@ public record UserInfo(
         OAuth2Provider provider,
         String nickname,
         String name,
-        String profileImage,
+        String profileImageUrl,
         Role role,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime createdAt,

@@ -1,17 +1,15 @@
 package com.example.demo.domain.newsletter.domain;
 
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateEmailRequest;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,11 +50,8 @@ public class Newsletter extends BaseEntity {
                 .build();
     }
 
-    public void updateNewsletterEmail(@Valid NewsletterUpdateEmailRequest request) {
+    public void updateNewsletter(NewsletterUpdateNotifyRequest request) {
         this.email = request.email();
-    }
-
-    public void updateNewsletterNotify(@Valid NewsletterUpdateNotifyRequest request) {
         this.seminarContentNotice = request.seminarContentNotice();
         this.studyNotice = request.studyNotice();
         this.projectNotice = request.projectNotice();
