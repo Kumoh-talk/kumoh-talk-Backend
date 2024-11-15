@@ -3,7 +3,7 @@ package com.example.demo.domain.recruitment_board.controller;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -35,7 +35,6 @@ public class RecruitmentBoardController {
     private final Validator validator;
 
     // TODO : 마감기한이 지한 게시물은 삭제 처리?
-    // TODO : 게시물이 수정되어 질문이 변경된다면, 이미 신청한 신청자들은 어떻게 되는가? -> 신청자들에게 알림을 주는 서비스?
 
     /**
      * 게시물 저장 및 임시저장 API
@@ -54,7 +53,7 @@ public class RecruitmentBoardController {
     }
 
     /**
-     * 홈 화면 스터디, 프로젝트 Published 게시물 리스트 조회 API(No-Offset)
+     * 홈 화면 스터디, 프로젝트, 멘토링 Published 게시물 리스트 조회 API(No-Offset)
      *
      * @param : size(페이징 사이즈), lastBoardId(전 페이지 마지막 게시물 Id), boardType[study, project, mentoring]
      */
@@ -69,7 +68,7 @@ public class RecruitmentBoardController {
     }
 
     /**
-     * 더보기 스터디, 프로젝트 Published 게시물 리스트 조회 API(PageNum)
+     * 더보기 스터디, 프로젝트, 멘토링 Published 게시물 리스트 조회 API(PageNum)
      *
      * @param : size, page, boardType[study, project, mentoring]
      */
@@ -82,7 +81,7 @@ public class RecruitmentBoardController {
     }
 
     /**
-     * 스터디, 프로젝트 게시물 상세조회 API
+     * 스터디, 프로젝트, 멘토링 게시물 상세조회 API
      */
     @GetMapping("/{recruitmentBoardId}/board")
     public ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(@PathVariable Long recruitmentBoardId) {
@@ -90,7 +89,7 @@ public class RecruitmentBoardController {
     }
 
     /**
-     * 스터디, 프로젝트 신청폼 상세조회 API
+     * 스터디, 프로젝트, 멘토링 신청폼 상세조회 API
      */
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/{recruitmentBoardId}/form")
@@ -99,7 +98,7 @@ public class RecruitmentBoardController {
     }
 
     /**
-     * 스터디, 프로젝트 게시물 및 신청폼 수정 API
+     * 스터디, 프로젝트, 멘토링 게시물 및 신청폼 수정 API
      *
      * @param : status[published, draft]
      */
@@ -118,7 +117,7 @@ public class RecruitmentBoardController {
     }
 
     /**
-     * 스터디, 프로젝트 게시물 및 신청폼 삭제 API
+     * 스터디, 프로젝트, 멘토링 게시물 및 신청폼 삭제 API
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
@@ -126,7 +125,7 @@ public class RecruitmentBoardController {
     public ResponseEntity<ResponseBody<Void>> deleteRecruitmentBoardAndForm(
             Long userId,
             @PathVariable Long recruitmentBoardId) {
-        recruitmentBoardService.deleteBoardAndForm(userId, recruitmentBoardId);
+        recruitmentBoardService.deleteBoardAndForm(userId, recruitmentBoardId, false);
         return ResponseEntity.ok(createSuccessResponse());
     }
 

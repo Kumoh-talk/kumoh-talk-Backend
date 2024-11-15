@@ -80,14 +80,23 @@ public class GlobalExceptionHandler {
                 .body(createFailureResponse(ErrorCode.INVALID_INPUT_VALUE, e.getMessage()));
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class) // JSON 파싱 예외
+    @ExceptionHandler(HttpMessageNotReadableException.class) // JSON 파싱 예외(JsonCreator 사용 시 발생 예외)
     public ResponseEntity<ResponseBody<Void>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.error("HttpMessageNotReadableException : {}", e.getMessage());
+
+        if (e.getCause() != null && e.getCause().getCause() != null) {
+            if (e.getCause().getCause().getClass() == ServiceException.class) {
+                ErrorCode errorCode = ((ServiceException) e.getCause().getCause()).getErrorCode();
+
+                return ResponseEntity.status(errorCode.getStatus())
+                        .body(createFailureResponse(errorCode));
+            }
+        }
         return ResponseEntity.badRequest()
                 .body(createFailureResponse(ErrorCode.INVALID_JSON));
     }
 
-    @ExceptionHandler(MissingServletRequestParameterException.class) // 쿼리 파라미터 enum convert 실패 예외
+    @ExceptionHandler(MissingServletRequestParameterException.class) // 쿼리 파라미터 enum convert 실패 예외(Null)
     public ResponseEntity<?> converterExceptionHandler(MissingServletRequestParameterException e) {
         log.error("MissingServletRequestParameterException : {}", e.getMessage());
         return ResponseEntity.badRequest()
@@ -97,6 +106,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class) // 쿼리 파라미터 형식 매칭 실패 예외
     public ResponseEntity<ResponseBody<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.error("MethodArgumentTypeMismatchException : {}", e.getMessage());
+
+        if (e.getCause() != null && e.getCause().getCause() != null) {
+            if (e.getCause().getCause().getClass() == ServiceException.class) {
+                ErrorCode errorCode = ((ServiceException) e.getCause().getCause()).getErrorCode();
+
+                return ResponseEntity.status(errorCode.getStatus())
+                        .body(createFailureResponse(errorCode));
+            }
+        }
         return ResponseEntity.badRequest()
                 .body(createFailureResponse(ErrorCode.INVALID_INPUT_VALUE));
     }

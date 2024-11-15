@@ -1,12 +1,12 @@
 package com.example.demo.domain.recruitment_application.controller;
 
-import com.example.demo.domain.recruitment_application.domain.request.RecruitmentApplicationRequest;
-import com.example.demo.domain.recruitment_application.domain.response.MyRecruitmentApplicationPageResponse;
-import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicantPageResponse;
-import com.example.demo.domain.recruitment_application.domain.response.RecruitmentApplicationResponse;
+import com.example.demo.domain.recruitment_application.domain.dto.request.RecruitmentApplicationRequest;
+import com.example.demo.domain.recruitment_application.domain.dto.response.MyRecruitmentApplicationPageResponse;
+import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
+import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
@@ -40,7 +40,7 @@ public class RecruitmentApplicationController {
     }
 
     /**
-     * 게시물 별 신청 리스트 조회(applicant 테이블 get) -> 관리자 기능
+     * 게시물 별 신청 리스트 조회(applicant 테이블 get)
      *
      * @param : size(페이징 사이즈), page(페이지 번호)
      */
@@ -52,11 +52,11 @@ public class RecruitmentApplicationController {
             Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicantList(userId, pageable, recruitmentBoardId)));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicantList(userId, pageable, recruitmentBoardId, false)));
     }
 
     /**
-     * applicant id를 사용하여 신청 정보 상세 조회 -> 관리자 기능
+     * applicant id를 사용하여 신청 정보 상세 조회
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
@@ -65,7 +65,7 @@ public class RecruitmentApplicationController {
             Long userId,
             @PathVariable Long recruitmentBoardId,
             @PathVariable Long applicantId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicationInfo(userId, recruitmentBoardId, applicantId)));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicationInfo(userId, recruitmentBoardId, applicantId, false)));
     }
 
     /**

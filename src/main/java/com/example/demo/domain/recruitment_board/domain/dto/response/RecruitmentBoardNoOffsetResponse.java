@@ -1,8 +1,8 @@
 package com.example.demo.domain.recruitment_board.domain.dto.response;
 
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,7 +61,10 @@ public class RecruitmentBoardNoOffsetResponse {
 
         private String recruitmentTarget;
 
-        private String recruitmentNum;
+        private Integer recruitmentNum;
+
+        private Integer currentMemberNum;
+
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime recruitmentStart;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
@@ -76,6 +79,7 @@ public class RecruitmentBoardNoOffsetResponse {
                     .tag(recruitmentBoardEntity.getTag())
                     .recruitmentTarget(recruitmentBoardEntity.getRecruitmentTarget())
                     .recruitmentNum(recruitmentBoardEntity.getRecruitmentNum())
+                    .currentMemberNum(recruitmentBoardEntity.getCurrentMemberNum())
                     .recruitmentStart(recruitmentBoardEntity.getActivityStart())
                     .recruitmentDeadline(recruitmentBoardEntity.getRecruitmentDeadline())
                     .build();

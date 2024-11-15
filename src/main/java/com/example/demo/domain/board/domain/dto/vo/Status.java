@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Status {
     DRAFT,
-    PUBLISHED
-    ;
+    PUBLISHED;
+    public static final String errorMsg = "상태는 draft, published 중 하나여야 합니다.";
 
     @JsonCreator
     public static Status fromString(String value) {
-        for(Status status : Status.values()) {
-            if(status.toString().equalsIgnoreCase(value)) {
+        for (Status status : Status.values()) {
+            if (status.toString().equalsIgnoreCase(value)) {
                 return status;
             }
         }

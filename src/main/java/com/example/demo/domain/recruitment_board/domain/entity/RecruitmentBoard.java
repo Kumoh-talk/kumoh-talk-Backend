@@ -5,8 +5,8 @@ import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormQuestionRequest;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
@@ -40,7 +40,7 @@ public class RecruitmentBoard extends BaseEntity {
     @Column(length = 100)
     private String summary;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 1000)
     private String content;
 
     @Enumerated(value = EnumType.STRING)
@@ -55,7 +55,9 @@ public class RecruitmentBoard extends BaseEntity {
     @Column(length = 50)
     private String recruitmentTarget;
 
-    private String recruitmentNum;
+    private Integer recruitmentNum;
+
+    private Integer currentMemberNum;
 
     private LocalDateTime recruitmentDeadline;
 
@@ -86,7 +88,7 @@ public class RecruitmentBoard extends BaseEntity {
 
     @Builder
     public RecruitmentBoard(String title, String summary, String content, RecruitmentBoardType type, RecruitmentBoardTag tag, Status status,
-                            String recruitmentTarget, String recruitmentNum, LocalDateTime recruitmentDeadline, LocalDateTime activityStart, LocalDateTime activityFinish,
+                            String recruitmentTarget, int recruitmentNum, int currentMemberNum, LocalDateTime recruitmentDeadline, LocalDateTime activityStart, LocalDateTime activityFinish,
                             String activityCycle, User user) {
         this.title = title;
         this.summary = summary;
@@ -96,6 +98,7 @@ public class RecruitmentBoard extends BaseEntity {
         this.status = status;
         this.recruitmentTarget = recruitmentTarget;
         this.recruitmentNum = recruitmentNum;
+        this.currentMemberNum = currentMemberNum;
         this.recruitmentDeadline = recruitmentDeadline;
         this.activityStart = activityStart;
         this.activityFinish = activityFinish;
@@ -130,10 +133,14 @@ public class RecruitmentBoard extends BaseEntity {
         return recruitmentBoard;
     }
 
-    public void updateFromRequest(RecruitmentBoardInfoAndFormRequest request,
-                                  Status status,
-                                  RecruitmentFormQuestionRepository recruitmentFormQuestionRepository,
-                                  RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository) {
+    public boolean updateFromRequest(RecruitmentBoardInfoAndFormRequest request,
+                                     Status status,
+                                     RecruitmentFormQuestionRepository recruitmentFormQuestionRepository,
+                                     RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository) {
+        boolean isPublish = false;
+        if (this.status == Status.DRAFT && status == Status.PUBLISHED)
+            isPublish = true;
+
         // 게시물 업데이트
         this.title = request.getBoard().getTitle();
         this.summary = request.getBoard().getSummary();
@@ -143,6 +150,7 @@ public class RecruitmentBoard extends BaseEntity {
         this.status = status;
         this.recruitmentTarget = request.getBoard().getRecruitmentTarget();
         this.recruitmentNum = request.getBoard().getRecruitmentNum();
+        this.currentMemberNum = request.getBoard().getCurrentMemberNum();
         this.recruitmentDeadline = request.getBoard().getRecruitmentDeadline();
         this.activityStart = request.getBoard().getActivityStart();
         this.activityFinish = request.getBoard().getActivityFinish();
@@ -165,7 +173,7 @@ public class RecruitmentBoard extends BaseEntity {
                     deleteIdList.add(delete.getId());
                 }
                 recruitmentFormQuestionRepository.hardDeleteQuestionsByIds(deleteIdList);
-                return;
+                return isPublish;
             }
         }
         // 수정 질문 수 > 기존 질문 수 -> 넘치는 수정 질문들 추가
@@ -174,5 +182,7 @@ public class RecruitmentBoard extends BaseEntity {
             RecruitmentFormQuestion savedRecruitmentFormQuestion = recruitmentFormQuestionRepository.save(RecruitmentFormQuestion.from(request.getForm().get(questionIdx++), this));
             recruitmentFormQuestionList.add(savedRecruitmentFormQuestion);
         }
+
+        return isPublish;
     }
 }

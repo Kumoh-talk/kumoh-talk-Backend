@@ -1,23 +1,27 @@
 package com.example.demo.domain.recruitment_board.service;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
+import com.example.demo.domain.newsletter.strategy.MentoringNoticeEmailDeliveryStrategy;
+import com.example.demo.domain.newsletter.strategy.ProjectNoticeEmailDeliveryStrategy;
+import com.example.demo.domain.newsletter.strategy.StudyNoticeEmailDeliveryStrategy;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormChoiceAnswer;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
+import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
-import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,12 +35,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecruitmentBoardService {
     private final UserService userService;
-    private final UserAdditionalInfoService userAdditionalInfoService;
 
     private final RecruitmentBoardRepository recruitmentBoardRepository;
     private final RecruitmentFormQuestionRepository recruitmentFormQuestionRepository;
     private final RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository;
     private final RecruitmentApplicantRepository recruitmentApplicantRepository;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public RecruitmentBoardInfoAndFormResponse saveBoardAndForm(
@@ -47,6 +52,9 @@ public class RecruitmentBoardService {
 
         RecruitmentBoard recruitmentBoard = RecruitmentBoard.from(recruitmentBoardInfoAndFormRequest, user, status);
         RecruitmentBoard savedBoard = recruitmentBoardRepository.save(recruitmentBoard);
+
+        if (status == Status.PUBLISHED)
+            publishEventFactory(savedBoard);
 
         return RecruitmentBoardInfoAndFormResponse.from(savedBoard);
     }
@@ -155,8 +163,11 @@ public class RecruitmentBoardService {
         }
 
         // 게시물 업데이트
-        recruitmentBoard.updateFromRequest(recruitmentBoardInfoAndFormRequest, status,
+        boolean isPublish = recruitmentBoard.updateFromRequest(recruitmentBoardInfoAndFormRequest, status,
                 recruitmentFormQuestionRepository, recruitmentFormChoiceAnswerRepository);
+
+        if (isPublish)
+            publishEventFactory(recruitmentBoard);
 
         // TODO : Request enum valid 문제
         return RecruitmentBoardInfoAndFormResponse.from(recruitmentBoard);
@@ -165,19 +176,27 @@ public class RecruitmentBoardService {
     @Transactional
     public void deleteBoardAndForm(
             Long userId,
-            Long recruitmentBoardId) {
+            Long recruitmentBoardId,
+            boolean isAuthorized) {
         RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
-        Role userRole = userService.validateUser(userId).getRole();
 
-        if (!userId.equals(recruitmentBoard.getUser().getId()) && userRole != Role.ROLE_ADMIN) {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+        if (!isAuthorized) {
+            if (!userId.equals(recruitmentBoard.getUser().getId())) {
+                throw new ServiceException(ErrorCode.ACCESS_DENIED);
+            }
         }
 
-        // soft delete
-        List<RecruitmentFormQuestion> questionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId)
-                .orElse(new ArrayList<>());
+        // TODO : 신청자, 신청자답변, 댓글 soft delete 추가 필요
+        softDeleteBoardAndQuestionAndAnswer(recruitmentBoardId, recruitmentBoard);
+    }
+
+    public void softDeleteBoardAndQuestionAndAnswer(Long recruitmentBoardId, RecruitmentBoard recruitmentBoard) {
+        List<RecruitmentFormQuestion> questionList =
+                recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId)
+                        .orElse(new ArrayList<>());
+
+        List<Long> questionIds = new ArrayList<>();
         for (RecruitmentFormQuestion recruitmentFormQuestion : questionList) {
-            List<Long> questionIds = new ArrayList<>();
             List<Long> answerIds = new ArrayList<>();
 
             questionIds.add(recruitmentFormQuestion.getId());
@@ -185,8 +204,8 @@ public class RecruitmentBoardService {
                 answerIds.add(recruitmentFormChoiceAnswer.getId());
             }
             recruitmentFormChoiceAnswerRepository.softDeleteAnswersByIds(answerIds);
-            recruitmentFormQuestionRepository.softDeleteQuestionsByIds(questionIds);
         }
+        recruitmentFormQuestionRepository.softDeleteQuestionsByIds(questionIds);
         recruitmentBoardRepository.delete(recruitmentBoard);
     }
 
@@ -206,5 +225,28 @@ public class RecruitmentBoardService {
 
     public RecruitmentBoard validateRecruitmentBoard(Long recruitmentBoardId) {
         return recruitmentBoardRepository.findById(recruitmentBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+    public void publishEventFactory(RecruitmentBoard recruitmentBoard) {
+        if (recruitmentBoard.getType() == RecruitmentBoardType.STUDY) {
+            eventPublisher.publishEvent(
+                    EmailNotificationEvent.create(
+                            BoardType.valueOf(recruitmentBoard.getType().name()),
+                            StudyNoticeEmailDeliveryStrategy.create(recruitmentBoard))
+            );
+        } else if (recruitmentBoard.getType() == RecruitmentBoardType.PROJECT) {
+            eventPublisher.publishEvent(
+                    EmailNotificationEvent.create(
+                            BoardType.valueOf(recruitmentBoard.getType().name()),
+                            ProjectNoticeEmailDeliveryStrategy.create(recruitmentBoard))
+            );
+        } else if (recruitmentBoard.getType() == RecruitmentBoardType.MENTORING) {
+            eventPublisher.publishEvent(
+                    EmailNotificationEvent.create(
+                            BoardType.valueOf(recruitmentBoard.getType().name()),
+                            MentoringNoticeEmailDeliveryStrategy.create(recruitmentBoard)
+                    )
+            );
+        }
     }
 }
