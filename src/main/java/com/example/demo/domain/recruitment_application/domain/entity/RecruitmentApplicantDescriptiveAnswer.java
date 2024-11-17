@@ -11,12 +11,12 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name = "recruitment_applicants_answers")
+@Table(name = "recruitment_applicants_descriptive_answers")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE recruitment_applicants_answers SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE recruitment_applicants_descriptive_answers SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-public class RecruitmentApplicantAnswer extends BaseEntity {
+public class RecruitmentApplicantDescriptiveAnswer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,16 +33,16 @@ public class RecruitmentApplicantAnswer extends BaseEntity {
     private RecruitmentApplicant recruitmentApplicant;
 
     @Builder
-    public RecruitmentApplicantAnswer(String answer, RecruitmentFormQuestion recruitmentFormQuestion, RecruitmentApplicant recruitmentApplicant) {
+    public RecruitmentApplicantDescriptiveAnswer(String answer, RecruitmentFormQuestion recruitmentFormQuestion, RecruitmentApplicant recruitmentApplicant) {
         this.answer = answer;
         this.recruitmentFormQuestion = recruitmentFormQuestion;
         this.recruitmentApplicant = recruitmentApplicant;
     }
 
-    public static RecruitmentApplicantAnswer from(RecruitmentApplicationRequest.RecruitmentApplicantAnswerInfoRequest request,
-                                                  RecruitmentFormQuestion recruitmentFormQuestion,
-                                                  RecruitmentApplicant recruitmentApplicant) {
-        return RecruitmentApplicantAnswer.builder()
+    public static RecruitmentApplicantDescriptiveAnswer from(RecruitmentApplicationRequest.RecruitmentApplicantAnswerInfoRequest request,
+                                                             RecruitmentFormQuestion recruitmentFormQuestion,
+                                                             RecruitmentApplicant recruitmentApplicant) {
+        return RecruitmentApplicantDescriptiveAnswer.builder()
                 .answer(request.getAnswer())
                 .recruitmentFormQuestion(recruitmentFormQuestion)
                 .recruitmentApplicant(recruitmentApplicant)
