@@ -86,7 +86,7 @@ public enum ErrorCode {
 
     // RecruitmentApplicant
     RECRUITMENT_APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_0001", "신청자 정보가 존재하지 않습니다."),
-    RECRUITMENT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다."),
+    RECRUITMENT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자가 존재합니다."),
 
     // RecruitmentApplicantAnswer
     OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "APPLICANT_ANSWER_0001", "필수 답변을 입력해야합니다."),

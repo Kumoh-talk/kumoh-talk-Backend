@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface RecruitmentFormQuestionRepository extends JpaRepository<RecruitmentFormQuestion, Long>, QueryDslRecruitmentFormQuestionRepository {
     @Modifying
-    @Query("DELETE FROM RecruitmentFormQuestion q WHERE q.id IN :ids")
+    @Query(value = "DELETE FROM recruitment_form_questions q WHERE q.id IN :ids", nativeQuery = true)
     void hardDeleteQuestionsByIds(List<Long> ids);
 }
