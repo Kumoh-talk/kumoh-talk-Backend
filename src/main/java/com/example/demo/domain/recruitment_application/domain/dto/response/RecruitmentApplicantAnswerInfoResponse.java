@@ -1,27 +1,78 @@
 package com.example.demo.domain.recruitment_application.domain.dto.response;
 
-import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantAnswer;
+import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantDescriptiveAnswer;
+import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantOptionalAnswer;
+import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
 @Builder
 public class RecruitmentApplicantAnswerInfoResponse {
-    private Long answerId;
     private Long questionId;
-    private Integer number;
+    private Integer questionNumber;
     private String question;
-    private String answer;
+    private List<Answer> answerList;
 
-    public static RecruitmentApplicantAnswerInfoResponse from(RecruitmentApplicantAnswer applicantAnswerEntity) {
-        return RecruitmentApplicantAnswerInfoResponse.builder()
-                .answerId(applicantAnswerEntity.getId())
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class Answer {
+        private Long answerId;
+        private Integer answerNumber;
+        private String answer;
+
+        public static Answer from(RecruitmentApplicantDescriptiveAnswer applicantAnswerEntity) {
+            return Answer.builder()
+                    .answerId(applicantAnswerEntity.getId())
+                    .answerNumber(null)
+                    .answer(applicantAnswerEntity.getAnswer())
+                    .build();
+        }
+
+        public static Answer from(RecruitmentApplicantOptionalAnswer applicantAnswerEntity) {
+            return Answer.builder()
+                    .answerId(applicantAnswerEntity.getId())
+                    .answerNumber(applicantAnswerEntity.getRecruitmentFormAnswer().getNumber())
+                    .answer(applicantAnswerEntity.getRecruitmentFormAnswer().getAnswer())
+                    .build();
+        }
+    }
+
+    public static RecruitmentApplicantAnswerInfoResponse from(RecruitmentApplicantDescriptiveAnswer applicantAnswerEntity) {
+        RecruitmentApplicantAnswerInfoResponse response = RecruitmentApplicantAnswerInfoResponse.builder()
                 .questionId(applicantAnswerEntity.getRecruitmentFormQuestion().getId())
-                .number(applicantAnswerEntity.getRecruitmentFormQuestion().getNumber())
+                .questionNumber(applicantAnswerEntity.getRecruitmentFormQuestion().getNumber())
                 .question(applicantAnswerEntity.getRecruitmentFormQuestion().getQuestion())
-                .answer(applicantAnswerEntity.getAnswer())
+                .answerList(new ArrayList<>())
                 .build();
+        response.getAnswerList().add(Answer.from(applicantAnswerEntity));
+        return response;
+    }
+
+    public static RecruitmentApplicantAnswerInfoResponse from(RecruitmentApplicantOptionalAnswer applicantAnswerEntity) {
+        RecruitmentApplicantAnswerInfoResponse response = RecruitmentApplicantAnswerInfoResponse.builder()
+                .questionId(applicantAnswerEntity.getRecruitmentFormAnswer().getRecruitmentFormQuestion().getId())
+                .questionNumber(applicantAnswerEntity.getRecruitmentFormAnswer().getRecruitmentFormQuestion().getNumber())
+                .question(applicantAnswerEntity.getRecruitmentFormAnswer().getRecruitmentFormQuestion().getQuestion())
+                .answerList(new ArrayList<>())
+                .build();
+        response.getAnswerList().add(Answer.from(applicantAnswerEntity));
+        return response;
+    }
+
+    public static RecruitmentApplicantAnswerInfoResponse from(RecruitmentFormQuestion recruitmentFormQuestion) {
+        RecruitmentApplicantAnswerInfoResponse response = RecruitmentApplicantAnswerInfoResponse.builder()
+                .questionId(recruitmentFormQuestion.getId())
+                .questionNumber(recruitmentFormQuestion.getNumber())
+                .question(recruitmentFormQuestion.getQuestion())
+                .answerList(new ArrayList<>())
+                .build();
+        return response;
     }
 }

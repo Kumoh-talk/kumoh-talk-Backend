@@ -6,9 +6,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum QuestionType {
     CHOICE,
-    DESCRIPTION;
+    DESCRIPTION,
+    CHECKBOX;
 
-    public static final String errorMsg = "질문 타입은 choice, description 중 하나여야 합니다.";
+    public static final String errorMsg = "질문 타입은 choice, description, checkbox 중 하나여야 합니다.";
 
     @JsonCreator
     public static QuestionType fromString(String value) {
