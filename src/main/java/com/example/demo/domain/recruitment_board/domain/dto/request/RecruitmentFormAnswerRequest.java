@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RecruitmentFormChoiceAnswerRequest {
+public class RecruitmentFormAnswerRequest {
     @NotNull(message = "답변 번호를 작성해야합니다.")
     private Integer number;
 

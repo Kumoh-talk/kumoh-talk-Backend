@@ -75,18 +75,21 @@ public enum ErrorCode {
     SEMINAR_APPLICATION_ACCESS_DENIED(HttpStatus.FORBIDDEN, "SEMINAR_0002", "해당 세미나 신청폼에 접근할 권한이 없습니다."),
     SEMINAR_APPLICATION_CANNOT_EDIT_OR_DELETE(HttpStatus.FORBIDDEN, "SEMINAR_0003", "해당 세미나 신청폼을 수정/삭제할 수 있는 기간이 아닙니다."),
 
-    // StudyProjectBoard
+    // RecruitmentBoard
     RECRUITMENT_APPLICATION_EXIST(HttpStatus.BAD_REQUEST, "STUDYPROEJCT_0001", "게시물에 신청한 사람이 존재합니다."),
 
-    // StudyProjectFormQuestion
+    // RecruitmentFormQuestion
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION_0001", "질문 정보가 존재하지 않습니다."),
 
-    // StudyProjectApplicant
+    // RecruitmentFormAnswer
+    ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "FORM_ANSWER_0001", "선택한 객관식 답안을 찾을 수 없습니다."),
+
+    // RecruitmentApplicant
     RECRUITMENT_APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_0001", "신청자 정보가 존재하지 않습니다."),
     RECRUITMENT_APPLICANT_EXIST(HttpStatus.CONFLICT, "APPLICANT_0002", "이미 신청한 사용자입니다."),
 
-    // StudyProjectApplicantAnswer
-    OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "ANSWER_0001", "필수 답변을 입력해야합니다."),
+    // RecruitmentApplicantAnswer
+    OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "APPLICANT_ANSWER_0001", "필수 답변을 입력해야합니다."),
 
     // Enum Validation
     ENTIRE_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0001", EntireBoardType.errorMsg),

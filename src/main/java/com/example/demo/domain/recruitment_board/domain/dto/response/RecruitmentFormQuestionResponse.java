@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_board.domain.dto.response;
 
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormChoiceAnswer;
+import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormAnswer;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
 import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
 import lombok.AllArgsConstructor;
@@ -36,7 +36,7 @@ public class RecruitmentFormQuestionResponse {
                 .question(recruitmentFormQuestionEntity.getQuestion())
                 .type(recruitmentFormQuestionEntity.getType())
                 .isEssential(recruitmentFormQuestionEntity.getIsEssential())
-                .answerList(recruitmentFormQuestionEntity.getRecruitmentFormChoiceAnswerList().stream()
+                .answerList(recruitmentFormQuestionEntity.getRecruitmentFormAnswerList().stream()
                         .map(RecruitmentFormChoiceAnswerResponse::from)
                         .collect(Collectors.toList()))
                 .build();
@@ -53,11 +53,11 @@ public class RecruitmentFormQuestionResponse {
         private String answer;
 
         public static RecruitmentFormChoiceAnswerResponse from(
-                RecruitmentFormChoiceAnswer recruitmentFormChoiceAnswerEntity) {
+                RecruitmentFormAnswer recruitmentFormAnswerEntity) {
             return RecruitmentFormChoiceAnswerResponse.builder()
-                    .answerId(recruitmentFormChoiceAnswerEntity.getId())
-                    .number(recruitmentFormChoiceAnswerEntity.getNumber())
-                    .answer(recruitmentFormChoiceAnswerEntity.getAnswer())
+                    .answerId(recruitmentFormAnswerEntity.getId())
+                    .number(recruitmentFormAnswerEntity.getNumber())
+                    .answer(recruitmentFormAnswerEntity.getAnswer())
                     .build();
         }
     }

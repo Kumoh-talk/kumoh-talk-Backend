@@ -30,5 +30,5 @@ public class RecruitmentFormQuestionRequest {
     private Boolean isEssential;
 
     @Valid
-    private List<RecruitmentFormChoiceAnswerRequest> answerList = new ArrayList<>();
+    private List<RecruitmentFormAnswerRequest> answerList = new ArrayList<>();
 }
