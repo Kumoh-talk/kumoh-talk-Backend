@@ -19,13 +19,13 @@ import java.time.LocalDateTime;
 public class RecruitmentBoardInfoResponse {
     private Long boardId;
 
-    private String writerNickname;
-
-    private String writerPhoneNumber;
+    private Long userId;
 
     private String title;
 
     private String summary;
+
+    private String host;
 
     private String content;
 
@@ -55,10 +55,10 @@ public class RecruitmentBoardInfoResponse {
     public static RecruitmentBoardInfoResponse from(RecruitmentBoard recruitmentBoardEntity) {
         return RecruitmentBoardInfoResponse.builder()
                 .boardId(recruitmentBoardEntity.getId())
-                .writerNickname(recruitmentBoardEntity.getUser().getNickname())
-                .writerPhoneNumber(recruitmentBoardEntity.getUser().getUserAdditionalInfo().getPhoneNumber())
+                .userId(recruitmentBoardEntity.getUser().getId())
                 .title(recruitmentBoardEntity.getTitle())
                 .summary(recruitmentBoardEntity.getSummary())
+                .host(recruitmentBoardEntity.getHost())
                 .content(recruitmentBoardEntity.getContent())
                 .type(recruitmentBoardEntity.getType())
                 .tag(recruitmentBoardEntity.getTag())

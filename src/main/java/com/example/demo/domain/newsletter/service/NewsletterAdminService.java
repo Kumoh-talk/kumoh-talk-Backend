@@ -4,7 +4,7 @@ import com.example.demo.domain.newsletter.domain.dto.response.SeminarNoticeBasic
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.repository.NewsletterRepository;
 import com.example.demo.domain.newsletter.strategy.ByPassEmailDeliveryStrategy;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,7 +26,7 @@ public class NewsletterAdminService {
     public void sendNoticeByEmail(String subject, String htmlContent) {
         eventPublisher.publishEvent(
                 EmailNotificationEvent.create(
-                        BoardType.SEMINAR_NOTICE,
+                        EntireBoardType.SEMINAR_NOTICE,
                         ByPassEmailDeliveryStrategy.create(subject, htmlContent)));
     }
 

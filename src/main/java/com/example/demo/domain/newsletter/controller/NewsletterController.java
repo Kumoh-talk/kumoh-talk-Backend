@@ -1,33 +1,14 @@
 package com.example.demo.domain.newsletter.controller;
 
-import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateEmailRequest;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
-import com.example.demo.domain.newsletter.domain.dto.response.NewsletterInfo;
-import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.service.NewsletterService;
-import com.example.demo.domain.newsletter.strategy.*;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.dto.vo.RecruitmentBoardType;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
-import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 import static com.example.demo.global.base.dto.ResponseUtil.createSuccessResponse;
 import static com.example.demo.global.regex.UserRegex.EMAIL_REGEXP;

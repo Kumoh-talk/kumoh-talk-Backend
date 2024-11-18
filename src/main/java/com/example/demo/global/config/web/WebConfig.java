@@ -1,7 +1,7 @@
 package com.example.demo.global.config.web;
 
-import com.example.demo.global.converter.BoardTypeConverter;
 import com.example.demo.global.converter.CommentTargetBoardTypeConverter;
+import com.example.demo.global.converter.EntireBoardTypeConverter;
 import com.example.demo.global.converter.RecruitmentBoardTypeConverter;
 import com.example.demo.global.converter.StatusConverter;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new BoardTypeConverter());
+        registry.addConverter(new EntireBoardTypeConverter());
         registry.addConverter(new CommentTargetBoardTypeConverter());
         registry.addConverter(new RecruitmentBoardTypeConverter());
         registry.addConverter(new StatusConverter());

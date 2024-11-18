@@ -6,12 +6,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "recruitment_form_choice_answers")
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE recruitment_form_choice_answers SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
 public class RecruitmentFormChoiceAnswer extends BaseEntity {
     @Id

@@ -4,7 +4,6 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
-import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.board.domain.entity.Board;
@@ -13,14 +12,14 @@ import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.ViewIncreaseService;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.service.UserService;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class BoardUseCase {
     public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
         User user = userService.validateUser(userId);
         // 공지사항은 관리자만 작성 가능
-        if(boardCreateRequest.getBoardType().equals(BoardType.NOTICE) && !user.getRole().equals(Role.ROLE_ADMIN)){
+        if (boardCreateRequest.getBoardType().equals(BoardType.NOTICE) && !user.getRole().equals(Role.ROLE_ADMIN)) {
             throw new ServiceException(ErrorCode.NOT_AUTHORIZED_WRITE_NOTICE);
         }
         return boardCommandService.createDraftBoard(user, boardCreateRequest);
@@ -57,10 +56,10 @@ public class BoardUseCase {
         BoardInfoResponse boardInfoResponse = boardCommandService.updateBoard(boardUpdateRequest, board);
 
         // 게시 상태로 변경이면 뉴스레터 전송
-        if(boardUpdateRequest.getIsPublished() && board.getBoardType().equals(BoardType.SEMINAR) && board.getStatus().equals(Status.DRAFT)) {
+        if (boardUpdateRequest.getIsPublished() && board.getBoardType().equals(BoardType.SEMINAR) && board.getStatus().equals(Status.DRAFT)) {
             eventPublisher.publishEvent(EmailNotificationEvent.create(
-                com.example.demo.domain.recruitment_board.domain.dto.vo.BoardType.SEMINAR_SUMMARY,
-                SeminarSummaryEmailDeliveryStrategy.create(board)
+                    EntireBoardType.SEMINAR_SUMMARY,
+                    SeminarSummaryEmailDeliveryStrategy.create(board)
             ));
         }
 
@@ -72,7 +71,7 @@ public class BoardUseCase {
     }
 
     @Transactional(readOnly = true)
-	public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(Pageable pageable) {
+    public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(Pageable pageable) {
         return boardQueryService.findBoardPageList(pageable);
-	}
+    }
 }

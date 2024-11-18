@@ -1,7 +1,7 @@
 package com.example.demo.domain.comment.domain.dto.response;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,9 +20,9 @@ public class CommentPageResponse {
     private final String pageSort;
     private final List<MyCommentResponse> myCommentResponseList;
 
-    public static CommentPageResponse from(Page<Comment> commentEntityPage, BoardType boardType) {
+    public static CommentPageResponse from(Page<Comment> commentEntityPage, EntireBoardType entireBoardType) {
         List<MyCommentResponse> myCommentResponseList;
-        switch (boardType) {
+        switch (entireBoardType) {
             case SEMINAR_NOTICE, SEMINAR_SUMMARY -> myCommentResponseList = commentEntityPage.stream()
                     .map(MyCommentResponse::fromSeminarComment)
                     .collect(Collectors.toList());

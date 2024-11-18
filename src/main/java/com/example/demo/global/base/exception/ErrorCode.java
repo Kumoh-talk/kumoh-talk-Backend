@@ -2,7 +2,7 @@ package com.example.demo.global.base.exception;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
-import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
@@ -89,7 +89,7 @@ public enum ErrorCode {
     OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "ANSWER_0001", "필수 답변을 입력해야합니다."),
 
     // Enum Validation
-    BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0001", BoardType.errorMsg),
+    ENTIRE_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0001", EntireBoardType.errorMsg),
     QUESTION_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0002", QuestionType.errorMsg),
     RECRUITMENT_BOARD_TAG_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0003", RecruitmentBoardTag.errorMsg),
     RECRUITMENT_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0004", RecruitmentBoardType.errorMsg),

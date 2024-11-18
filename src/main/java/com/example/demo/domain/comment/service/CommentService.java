@@ -11,7 +11,7 @@ import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
 import com.example.demo.domain.comment.repository.CommentRepository;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.vo.BoardType;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
@@ -35,25 +35,25 @@ public class CommentService {
     private final RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Transactional(readOnly = true)
-    public CommentResponse findCommentsByBoardId(Long boardId, CommentTargetBoardType boardType) {
-        List<Comment> commentList = findCommentsFactory(boardId, boardType);
+    public CommentResponse findCommentsByBoardId(Long boardId, CommentTargetBoardType commentTargetBoardType) {
+        List<Comment> commentList = findCommentsFactory(boardId, commentTargetBoardType);
 
         return CommentResponse.from(commentList);
     }
 
     @Transactional(readOnly = true)
-    public CommentPageResponse findCommentsByUserId(Long userId, Pageable pageable, BoardType boardType) {
+    public CommentPageResponse findCommentsByUserId(Long userId, Pageable pageable, EntireBoardType entireBoardType) {
         userService.validateUser(userId);
 
-        Page<Comment> commentPage = commentRepository.findPageByUser_idOrderByCreatedAtDsc(userId, pageable, boardType);
-        return CommentPageResponse.from(commentPage, boardType);
+        Page<Comment> commentPage = commentRepository.findPageByUser_idOrderByCreatedAtDsc(userId, pageable, entireBoardType);
+        return CommentPageResponse.from(commentPage, entireBoardType);
     }
 
     @Transactional
-    public CommentInfoResponse saveComment(Long userId, Long boardId, CommentTargetBoardType boardType, CommentRequest commentRequest) {
+    public CommentInfoResponse saveComment(Long userId, Long boardId, CommentTargetBoardType commentTargetBoardType, CommentRequest commentRequest) {
         User commentUser = userService.validateUser(userId);
 
-        Comment requestComment = transformToEntityFactory(commentUser, boardId, boardType, commentRequest);
+        Comment requestComment = transformToEntityFactory(commentUser, boardId, commentTargetBoardType, commentRequest);
         Comment saved = commentRepository.save(requestComment);
 
         return CommentInfoResponse.from(saved);
@@ -88,8 +88,8 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public List<Comment> findCommentsFactory(Long boardId, CommentTargetBoardType boardType) {
-        switch (boardType) {
+    public List<Comment> findCommentsFactory(Long boardId, CommentTargetBoardType commentTargetBoardType) {
+        switch (commentTargetBoardType) {
             case BASIC -> {
                 boardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)
@@ -105,7 +105,7 @@ public class CommentService {
         }
     }
 
-    public Comment transformToEntityFactory(User commentUser, Long boardId, CommentTargetBoardType boardType, CommentRequest commentRequest) {
+    public Comment transformToEntityFactory(User commentUser, Long boardId, CommentTargetBoardType commentTargetBoardType, CommentRequest commentRequest) {
         Comment parentComment = null;
         if (commentRequest.getGroupId() != null) {
             parentComment = commentRepository.findNotDeleteCommentById(commentRequest.getGroupId()).orElseThrow(() ->
@@ -113,7 +113,7 @@ public class CommentService {
         }
 
         Comment requestComment = null;
-        switch (boardType) {
+        switch (commentTargetBoardType) {
             case BASIC -> {
                 Board commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
                         new ServiceException(ErrorCode.BOARD_NOT_FOUND)

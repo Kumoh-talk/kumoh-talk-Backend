@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,6 @@ public class RecruitmentApplicationService {
     @Transactional
     public RecruitmentApplicationResponse createApplication(Long userId, Long recruitmentBoardId, RecruitmentApplicationRequest request) {
         User user = userService.validateUser(userId);
-
         RecruitmentBoard recruitmentBoard = recruitmentBoardService.validateRecruitmentBoard(recruitmentBoardId);
         validateDeadLine(recruitmentBoard);
         validateEssential(recruitmentBoard, request);
@@ -94,8 +92,7 @@ public class RecruitmentApplicationService {
         }
 
         RecruitmentApplicant applicant = recruitmentApplicantRepository.findById(applicantId).orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
-        List<RecruitmentApplicantAnswer> recruitmentApplicantAnswerList = recruitmentApplicantAnswerRepository.findByRecruitmentApplicant_IdFetchQuestion(applicantId)
-                .orElseGet(ArrayList::new);
+        List<RecruitmentApplicantAnswer> recruitmentApplicantAnswerList = recruitmentApplicantAnswerRepository.findByRecruitmentApplicant_IdFetchQuestion(applicantId);
 
         return RecruitmentApplicationResponse.from(applicant, recruitmentApplicantAnswerList);
     }
@@ -110,10 +107,7 @@ public class RecruitmentApplicationService {
         validateDeadLine(applicant.getRecruitmentBoard());
         validateEssential(applicant.getRecruitmentBoard(), request);
 
-        List<RecruitmentApplicantAnswer> recruitmentApplicantAnswerList = recruitmentApplicantAnswerRepository.findByRecruitmentApplicant_IdFetchQuestion(applicantId).orElseGet(ArrayList::new);
-
-        System.out.println(recruitmentApplicantAnswerList.size());
-        System.out.println(request.getAnswerList().size());
+        List<RecruitmentApplicantAnswer> recruitmentApplicantAnswerList = recruitmentApplicantAnswerRepository.findByRecruitmentApplicant_IdFetchQuestion(applicantId);
 
         int idx = 0;
         for (RecruitmentApplicantAnswer applicantAnswer : recruitmentApplicantAnswerList) {
@@ -129,6 +123,7 @@ public class RecruitmentApplicationService {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
         validateDeadLine(applicant.getRecruitmentBoard());
+
         recruitmentApplicantRepository.deleteById(applicantId);
     }
 
@@ -140,12 +135,14 @@ public class RecruitmentApplicationService {
         return MyRecruitmentApplicationPageResponse.from(applicantPage);
     }
 
+    // 모집 게시물 마감기한 확인
     public void validateDeadLine(RecruitmentBoard recruitmentBoard) {
         if (recruitmentBoard.getRecruitmentDeadline().isBefore(LocalDateTime.now())) {
             throw new ServiceException(ErrorCode.DEADLINE_EXPIRED);
         }
     }
 
+    // 필수 질문 답변 여부 확인
     public void validateEssential(RecruitmentBoard recruitmentBoard, RecruitmentApplicationRequest request) {
         List<RecruitmentApplicationRequest.RecruitmentApplicantAnswerInfoRequest> requestAnswerList = request.getAnswerList();
         for (RecruitmentFormQuestion recruitmentFormQuestion : recruitmentBoard.getRecruitmentFormQuestionList()) {

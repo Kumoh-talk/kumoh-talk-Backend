@@ -11,8 +11,4 @@ public interface RecruitmentFormChoiceAnswerRepository extends JpaRepository<Rec
     @Modifying
     @Query("DELETE FROM RecruitmentFormChoiceAnswer c WHERE c.id IN :ids")
     void hardDeleteAnswersByIds(List<Long> ids);
-
-    @Modifying
-    @Query("UPDATE RecruitmentFormChoiceAnswer a SET a.deletedAt = NOW() WHERE a.id IN :ids")
-    void softDeleteAnswersByIds(List<Long> ids);
 }

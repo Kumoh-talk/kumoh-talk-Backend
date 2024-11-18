@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,7 @@ public class RecruitmentBoardInfoAndFormResponse {
 
     private RecruitmentBoardInfoResponse board;
 
-    private List<RecruitmentFormQuestionResponse> form = new ArrayList<>();
+    private List<RecruitmentFormQuestionResponse> form;
 
     public static RecruitmentBoardInfoAndFormResponse from(RecruitmentBoard recruitmentBoard) {
         return RecruitmentBoardInfoAndFormResponse

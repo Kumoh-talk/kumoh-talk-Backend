@@ -11,8 +11,4 @@ public interface RecruitmentFormQuestionRepository extends JpaRepository<Recruit
     @Modifying
     @Query("DELETE FROM RecruitmentFormQuestion q WHERE q.id IN :ids")
     void hardDeleteQuestionsByIds(List<Long> ids);
-
-    @Modifying
-    @Query("UPDATE RecruitmentFormQuestion q SET q.deletedAt = NOW() WHERE q.id IN :ids")
-    void softDeleteQuestionsByIds(List<Long> ids);
 }
