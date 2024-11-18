@@ -21,6 +21,13 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 public class FakeLoginController {
     private final JwtHandler jwtHandler;
 
+    /**
+     * [임시 JWT 토큰을 발급받기] <br>
+     * 개발 후 권한이 필요한 기능을 테스트를 해보고 싶을 때, 로그인을 하지 않고 JWT를 발급받을 수 있는 Api <br>
+     *
+     * @apiNote 1. 가짜 유저 아이디 : 1L, 가짜 유저 권한 : ADMIN <br>
+     * 2. 제대로 된 사용을 위해 유저 아이디가 1L인 유저에 대한 추가 정보를 데이터베이스에 입력시켜놓아야 한다.
+     */
     @PostMapping
     public ResponseEntity<ResponseBody<LoginResponse>> fakeLogin() {
         JwtUserClaim claim = new JwtUserClaim(1L, Role.ROLE_ADMIN);

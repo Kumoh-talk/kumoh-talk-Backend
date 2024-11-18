@@ -29,6 +29,8 @@ public class RecruitmentApplicationController {
     /**
      * [모집 신청 추가] <br>
      * 모집 공고에 신청서 추가
+     *
+     * @apiNote 1. 신청자의 답변은 질문 타입에 따라 서술형 답변 테이블과 선택형 답변으로 나누어져서 저장된다. <br>
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
@@ -47,6 +49,7 @@ public class RecruitmentApplicationController {
      * @param pageable 페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
      *                 -> 정렬 조건은 createdAt <br>
      *                 -> 정렬 방향은 asc, desc 중 선택
+     * @apiNote 1. 관리자 기능과 달리 로그인한 유저의 id와 댓글 작성 유저의 id를 비교하는 절차를 거쳐야하므로, isAuthorized 매개변수를 false로 설정함
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
@@ -62,7 +65,8 @@ public class RecruitmentApplicationController {
      * [신청서 정보 상세 조회] <br>
      * 신청서 목록 창에서 applicantId를 사용하여 해당 신청자의 신청서 정보를 상세 조회
      *
-     * @apiNote applicant 테이블 도입 이유 -> recruitment_applicants_answers 테이블에 저장된 신청자들의 답변 중 동일한 신청서의 답변들을 묶기 위해
+     * @apiNote 1. applicant 테이블 도입 이유 -> recruitment_applicants_answers 테이블에 저장된 신청자들의 답변 중 동일한 신청서의 답변들을 묶기 위해 <br>
+     * 2. 관리자 기능과 달리 로그인한 유저의 id와 댓글 작성 유저의 id를 비교하는 절차를 거쳐야하므로, isAuthorized 매개변수를 false로 설정함
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")

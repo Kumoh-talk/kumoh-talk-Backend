@@ -24,11 +24,14 @@ public class AdminRecruitmentApplicationController {
     private final RecruitmentApplicationService recruitmentApplicationService;
 
     /**
-     * 관리자 전용 게시물 별 신청 리스트 조회(applicant 테이블 get)
+     * [관리자 전용 모집 게시물 별 신청 페이징 리스트 조회] <br>
+     * 페이지 번호로 구현된 모집 게시물 작성자가 화인할 수 있는 신청 페이징 리스트 조회
      *
-     * @param : size(페이징 사이즈), page(페이지 번호)
+     * @param pageable 페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
+     *                 -> 정렬 조건은 createdAt <br>
+     *                 -> 정렬 방향은 asc, desc 중 선택
+     * @apiNote 1. 필터에서 유저 권한이 ADMIN인 것을 확인하면 따로 서비스 로직에서 유저 인증을 거치지 않도록 isAuthorized 매개변수를 true로 하여 서비스 메서드를 호출
      */
-    // TODO : 디자인이 확정되면 응답 포맷 확실히
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/{recruitmentBoardId}")
     public ResponseEntity<ResponseBody<RecruitmentApplicantPageResponse>> getApplicantListByAdmin(
@@ -38,7 +41,11 @@ public class AdminRecruitmentApplicationController {
     }
 
     /**
-     * 관리자 전용 applicant id를 사용하여 신청 정보 상세 조회
+     * [관리자 전용 신청서 정보 상세 조회] <br>
+     * 신청서 목록 창에서 applicantId를 사용하여 해당 신청자의 신청서 정보를 상세 조회
+     *
+     * @apiNote 1. applicant 테이블 도입 이유 -> recruitment_applicants_answers 테이블에 저장된 신청자들의 답변 중 동일한 신청서의 답변들을 묶기 위해 <br>
+     * 2. 필터에서 유저 권한이 ADMIN인 것을 확인하면 따로 서비스 로직에서 유저 인증을 거치지 않도록 isAuthorized 매개변수를 true로 하여 서비스 메서드를 호출
      */
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/{recruitmentBoardId}/{applicantId}")

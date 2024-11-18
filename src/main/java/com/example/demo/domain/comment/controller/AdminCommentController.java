@@ -19,7 +19,11 @@ public class AdminCommentController {
     private final CommentService commentService;
 
     /**
-     * 관리자 전용 댓글 삭제
+     * [관리자 전용 댓글 삭제] <br>
+     * 작성한 댓글 soft 삭제
+     *
+     * @apiNote 1. 삭제된 댓글도 응답으로 보내야하므로 Comment 엔티티에 SQLRestriction 처리를 해놓지 않았음
+     * 2. 필터에서 유저 권한이 ADMIN인 것을 확인하면 따로 서비스 로직에서 유저 인증을 거치지 않도록 isAuthorized 매개변수를 true로 하여 서비스 메서드를 호출
      */
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @DeleteMapping("/{commentId}")
