@@ -1,5 +1,6 @@
 package com.example.demo.domain.recruitment_application.controller;
 
+import com.example.demo.domain.recruitment_application.controller.swagger.AdminRecruitmentApplicationApi;
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
@@ -20,7 +21,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/admin/applications/recruitment")
 @RequiredArgsConstructor
-public class AdminRecruitmentApplicationController {
+public class AdminRecruitmentApplicationController implements AdminRecruitmentApplicationApi {
     private final RecruitmentApplicationService recruitmentApplicationService;
 
     /**

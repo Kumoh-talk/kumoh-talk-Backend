@@ -1,11 +1,11 @@
 package com.example.demo.domain.recruitment_application.controller;
 
+import com.example.demo.domain.recruitment_application.controller.swagger.RecruitmentApplicationApi;
 import com.example.demo.domain.recruitment_application.domain.dto.request.RecruitmentApplicationRequest;
 import com.example.demo.domain.recruitment_application.domain.dto.response.MyRecruitmentApplicationPageResponse;
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -23,7 +23,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/applications/recruitment")
 @RequiredArgsConstructor
-public class RecruitmentApplicationController {
+public class RecruitmentApplicationController implements RecruitmentApplicationApi {
     private final RecruitmentApplicationService recruitmentApplicationService;
 
     /**
@@ -110,17 +110,18 @@ public class RecruitmentApplicationController {
      * [사용자 신청 페이징 리스트 조회] <br>
      * 페이지 번호로 구현된 마이페이지에 출력될 신청 페이징 리스트 조회
      *
-     * @param pageable 페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
-     *                 -> 정렬 조건은 createdAt <br>
-     *                 -> 정렬 방향은 asc, desc 중 선택
+     * @param recruitmentBoardType [study, project, mentoring]
+     * @param pageable             페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
+     *                             -> 정렬 조건은 createdAt <br>
+     *                             -> 정렬 방향은 asc, desc 중 선택
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/my-applications")
     public ResponseEntity<ResponseBody<MyRecruitmentApplicationPageResponse>> getUserApplicationList(
             Long userId,
-            @RequestParam EntireBoardType entireBoardType,
+            @RequestParam RecruitmentBoardType recruitmentBoardType,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getUserApplicationList(userId, pageable, RecruitmentBoardType.valueOf(entireBoardType.name()))));
+        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getUserApplicationList(userId, pageable, recruitmentBoardType)));
     }
 }

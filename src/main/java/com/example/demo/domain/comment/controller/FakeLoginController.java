@@ -1,10 +1,12 @@
 package com.example.demo.domain.comment.controller;
 
+import com.example.demo.domain.comment.controller.swagger.FakeLoginApi;
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/test/auth/login")
 @RequiredArgsConstructor
-public class FakeLoginController {
+public class FakeLoginController implements FakeLoginApi {
     private final JwtHandler jwtHandler;
 
     /**
@@ -40,7 +42,9 @@ public class FakeLoginController {
     }
 
     @Getter
+    @Schema(name = "LoginResponse", description = "임시 JWT 토큰 발급 응답")
     public static class LoginResponse {
+        @Schema(description = "JWT 토큰", example = "\"eyJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoxLCJVU0VSX1JPTEUiOiJST0xFX0FETUlOIiwiaWF0IjoxNzMxOTQ0OTAxLCJleHAiOjE3MzE5NDY3MDF9.iLoB5n0v_xSUCvZnqdWUtrhQnO_8UZGHfxWJKqJJIys\"")
         private String token;
 
         // 기본 생성자

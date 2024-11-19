@@ -1,6 +1,7 @@
 package com.example.demo.domain.recruitment_board.controller;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.recruitment_board.controller.swagger.RecruitmentBoardApi;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
@@ -29,7 +30,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/recruitment-boards")
 @RequiredArgsConstructor
-public class RecruitmentBoardController {
+public class RecruitmentBoardController implements RecruitmentBoardApi {
     private final RecruitmentBoardService recruitmentBoardService;
     private final Validator validator;
 

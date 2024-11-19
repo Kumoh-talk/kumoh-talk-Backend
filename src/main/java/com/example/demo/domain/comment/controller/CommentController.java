@@ -1,6 +1,7 @@
 package com.example.demo.domain.comment.controller;
 
 
+import com.example.demo.domain.comment.controller.swagger.CommentApi;
 import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
 import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.dto.response.CommentPageResponse;
@@ -24,7 +25,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/comments")
-public class CommentController {
+public class CommentController implements CommentApi {
     private final CommentService commentService;
 
     /**

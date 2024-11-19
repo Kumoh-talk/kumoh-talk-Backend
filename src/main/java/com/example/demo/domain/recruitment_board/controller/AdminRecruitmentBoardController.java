@@ -1,5 +1,6 @@
 package com.example.demo.domain.recruitment_board.controller;
 
+import com.example.demo.domain.recruitment_board.controller.swagger.AdminRecruitmentBoardApi;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
 import com.example.demo.global.base.dto.ResponseBody;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/admin/recruitment-boards")
 @RequiredArgsConstructor
-public class AdminRecruitmentBoardController {
+public class AdminRecruitmentBoardController implements AdminRecruitmentBoardApi {
     private final RecruitmentBoardService recruitmentBoardService;
 
     /**

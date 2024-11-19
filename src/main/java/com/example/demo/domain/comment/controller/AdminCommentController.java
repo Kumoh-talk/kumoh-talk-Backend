@@ -1,5 +1,6 @@
 package com.example.demo.domain.comment.controller;
 
+import com.example.demo.domain.comment.controller.swagger.AdminCommentApi;
 import com.example.demo.domain.comment.service.CommentService;
 import com.example.demo.global.base.dto.ResponseBody;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("api/vi/admin/comments")
 @RequiredArgsConstructor
-public class AdminCommentController {
+public class AdminCommentController implements AdminCommentApi {
     private final CommentService commentService;
 
     /**

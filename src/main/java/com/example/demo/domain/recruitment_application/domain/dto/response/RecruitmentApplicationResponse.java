@@ -5,6 +5,7 @@ import com.example.demo.domain.recruitment_application.domain.entity.Recruitment
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantOptionalAnswer;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +17,11 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @Builder
+@Schema(name = "RecruitmentApplicationResponse", description = "모집 게시물 신청서 응답")
 public class RecruitmentApplicationResponse {
+    @Schema(description = "신청자 id 정보", example = "1")
     private final Long applicantId;
+    @Schema(description = "신청자의 신청서 정보 리스트")
     private final List<RecruitmentApplicantAnswerInfoResponse> applicantAnswer;
 
     public static RecruitmentApplicationResponse from(RecruitmentApplicant applicant,
