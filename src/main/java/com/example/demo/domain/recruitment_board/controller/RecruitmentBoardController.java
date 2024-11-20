@@ -1,6 +1,7 @@
 package com.example.demo.domain.recruitment_board.controller;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.recruitment_board.controller.swagger.RecruitmentBoardApi;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
@@ -29,7 +30,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/recruitment-boards")
 @RequiredArgsConstructor
-public class RecruitmentBoardController {
+public class RecruitmentBoardController implements RecruitmentBoardApi {
     private final RecruitmentBoardService recruitmentBoardService;
     private final Validator validator;
 
@@ -141,7 +142,8 @@ public class RecruitmentBoardController {
      * 모집 게시물 및 신청폼, 신청자, 신청서, 댓글을 OrphanRemoval 설정을 통해 Soft Delete
      *
      * @apiNote 1. SoftDelete 설정을 사용할거면 통일하는게 좋다고 생각하여 해당 도메인 관련 모든 엔티티에 Soft Delete 적용 <br>
-     * -> OrpahnRemoval을 통해 삭제가 될 때 Hard Delete, Soft Delete가 섞이면 곤란할 것이라고 생각했기 때문
+     * -> OrpahnRemoval을 통해 삭제가 될 때 Hard Delete, Soft Delete가 섞이면 곤란할 것이라고 생각했기 때문 <br>
+     * 2. 관리자 기능과 달리 로그인한 유저의 id와 댓글 작성 유저의 id를 비교하는 절차를 거쳐야하므로, isAuthorized 매개변수를 false로 설정함
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")

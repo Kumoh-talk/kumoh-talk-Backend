@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentBoard.recruitmentBoard;
-import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentFormChoiceAnswer.recruitmentFormChoiceAnswer;
+import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentFormAnswer.recruitmentFormAnswer;
 import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentFormQuestion.recruitmentFormQuestion;
 import static com.example.demo.domain.user.domain.QUser.user;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -142,7 +142,7 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
     }
 
     @Override
-    public Optional<RecruitmentBoard> findByIdByFetchingChoiceAnswerList(Long recruitmentBoardId) {
+    public Optional<RecruitmentBoard> findByIdByFetchingQuestionList(Long recruitmentBoardId) {
         RecruitmentBoard result = jpaQueryFactory
                 .selectFrom(recruitmentBoard)
                 .leftJoin(recruitmentBoard.recruitmentFormQuestionList, recruitmentFormQuestion).fetchJoin()
@@ -156,7 +156,7 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
 
         jpaQueryFactory
                 .selectFrom(recruitmentFormQuestion)
-                .leftJoin(recruitmentFormQuestion.recruitmentFormChoiceAnswerList, recruitmentFormChoiceAnswer).fetchJoin()
+                .leftJoin(recruitmentFormQuestion.recruitmentFormAnswerList, recruitmentFormAnswer).fetchJoin()
                 .where(recruitmentFormQuestion.recruitmentBoard.id.eq(selectedId))
                 .fetch();
 

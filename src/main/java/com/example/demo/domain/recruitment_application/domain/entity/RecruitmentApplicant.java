@@ -33,7 +33,10 @@ public class RecruitmentApplicant extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "recruitmentApplicant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<RecruitmentApplicantAnswer> answerList = new ArrayList<>();
+    private List<RecruitmentApplicantDescriptiveAnswer> descriptiveAnswerList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recruitmentApplicant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RecruitmentApplicantOptionalAnswer> optionalAnswerList = new ArrayList<>();
 
     @Builder
     public RecruitmentApplicant(RecruitmentBoard recruitmentBoard, User user) {

@@ -7,7 +7,7 @@ import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentB
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormQuestionRequest;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
+import com.example.demo.domain.recruitment_board.repository.RecruitmentFormAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
@@ -77,6 +77,7 @@ public class RecruitmentBoard extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderBy("number ASC")
     private List<RecruitmentFormQuestion> recruitmentFormQuestionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -141,7 +142,7 @@ public class RecruitmentBoard extends BaseEntity {
     public boolean updateFromRequest(RecruitmentBoardInfoAndFormRequest request,
                                      Status status,
                                      RecruitmentFormQuestionRepository recruitmentFormQuestionRepository,
-                                     RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository) {
+                                     RecruitmentFormAnswerRepository recruitmentFormAnswerRepository) {
         boolean isPublish = false;
         if (this.status == Status.DRAFT && status == Status.PUBLISHED)
             isPublish = true;
@@ -170,15 +171,20 @@ public class RecruitmentBoard extends BaseEntity {
                 request.getForm() == null ? new ArrayList<>() : request.getForm();
         for (RecruitmentFormQuestion recruitmentFormQuestion : recruitmentFormQuestionList) {
             try {
-                recruitmentFormQuestion.updateFromRequest(requestForm.get(questionIdx), recruitmentFormChoiceAnswerRepository);
+                recruitmentFormQuestion.updateFromRequest(requestForm.get(questionIdx), recruitmentFormAnswerRepository);
                 questionIdx++;
             } catch (IndexOutOfBoundsException e) {
-                List<Long> deleteIdList = new ArrayList<>();
+                List<Long> deleteQuestionIdList = new ArrayList<>();
+                List<Long> deleteAnswerIdList = new ArrayList<>();
                 for (int i = recruitmentFormQuestionList.size() - 1; i >= questionIdx; i--) {
                     RecruitmentFormQuestion delete = recruitmentFormQuestionList.remove(i);
-                    deleteIdList.add(delete.getId());
+                    for (RecruitmentFormAnswer recruitmentFormAnswer : delete.getRecruitmentFormAnswerList()) {
+                        deleteAnswerIdList.add(recruitmentFormAnswer.getId());
+                    }
+                    deleteQuestionIdList.add(delete.getId());
                 }
-                recruitmentFormQuestionRepository.hardDeleteQuestionsByIds(deleteIdList);
+                recruitmentFormAnswerRepository.hardDeleteAnswersByIds(deleteAnswerIdList);
+                recruitmentFormQuestionRepository.hardDeleteQuestionsByIds(deleteQuestionIdList);
                 return isPublish;
             }
         }

@@ -13,7 +13,7 @@ import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQu
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
+import com.example.demo.domain.recruitment_board.repository.RecruitmentFormAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class RecruitmentBoardService {
 
     private final RecruitmentBoardRepository recruitmentBoardRepository;
     private final RecruitmentFormQuestionRepository recruitmentFormQuestionRepository;
-    private final RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository;
+    private final RecruitmentFormAnswerRepository recruitmentFormAnswerRepository;
     private final RecruitmentApplicantRepository recruitmentApplicantRepository;
 
     private final ApplicationEventPublisher eventPublisher;
@@ -140,6 +141,7 @@ public class RecruitmentBoardService {
         else {
             return recruitmentFormQuestionList.stream()
                     .map(RecruitmentFormQuestionResponse::from)
+                    .sorted(Comparator.comparing(RecruitmentFormQuestionResponse::getNumber))
                     .collect(Collectors.toList());
         }
     }
@@ -150,7 +152,7 @@ public class RecruitmentBoardService {
             Long recruitmentBoardId,
             Status status,
             RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) {
-        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingChoiceAnswerList(recruitmentBoardId)
+        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingQuestionList(recruitmentBoardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         if (!userId.equals(recruitmentBoard.getUser().getId())) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
@@ -162,7 +164,7 @@ public class RecruitmentBoardService {
 
         // 게시물 업데이트
         boolean isPublish = recruitmentBoard.updateFromRequest(recruitmentBoardInfoAndFormRequest, status,
-                recruitmentFormQuestionRepository, recruitmentFormChoiceAnswerRepository);
+                recruitmentFormQuestionRepository, recruitmentFormAnswerRepository);
 
         if (isPublish)
             publishEventFactory(recruitmentBoard);

@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_board.domain.entity;
 
-import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormChoiceAnswerRequest;
+import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormAnswerRequest;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -10,12 +10,12 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name = "recruitment_form_choice_answers")
+@Table(name = "recruitment_form_answers")
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE recruitment_form_choice_answers SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE recruitment_form_answers SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-public class RecruitmentFormChoiceAnswer extends BaseEntity {
+public class RecruitmentFormAnswer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,24 +31,24 @@ public class RecruitmentFormChoiceAnswer extends BaseEntity {
     private RecruitmentFormQuestion recruitmentFormQuestion;
 
     @Builder
-    public RecruitmentFormChoiceAnswer(int number, String answer, RecruitmentFormQuestion recruitmentFormQuestion) {
+    public RecruitmentFormAnswer(int number, String answer, RecruitmentFormQuestion recruitmentFormQuestion) {
         this.number = number;
         this.answer = answer;
         this.recruitmentFormQuestion = recruitmentFormQuestion;
     }
 
-    public static RecruitmentFormChoiceAnswer from(
-            RecruitmentFormChoiceAnswerRequest choiceAnswerRequest,
+    public static RecruitmentFormAnswer from(
+            RecruitmentFormAnswerRequest answerRequest,
             RecruitmentFormQuestion recruitmentFormQuestion) {
-        return RecruitmentFormChoiceAnswer.builder()
-                .number(choiceAnswerRequest.getNumber())
-                .answer(choiceAnswerRequest.getAnswer())
+        return RecruitmentFormAnswer.builder()
+                .number(answerRequest.getNumber())
+                .answer(answerRequest.getAnswer())
                 .recruitmentFormQuestion(recruitmentFormQuestion)
                 .build();
     }
 
-    public void updateFromRequest(RecruitmentFormChoiceAnswerRequest recruitmentFormChoiceAnswerRequest) {
-        this.number = recruitmentFormChoiceAnswerRequest.getNumber();
-        this.answer = recruitmentFormChoiceAnswerRequest.getAnswer();
+    public void updateFromRequest(RecruitmentFormAnswerRequest recruitmentFormAnswerRequest) {
+        this.number = recruitmentFormAnswerRequest.getNumber();
+        this.answer = recruitmentFormAnswerRequest.getAnswer();
     }
 }
