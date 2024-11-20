@@ -28,6 +28,6 @@ public class CategoryQueryService {
 
 	@Transactional(readOnly = true)
 	public GlobalPageResponse<BoardTitleInfoResponse> getBoardPageByCategoryName(String categoryName, Pageable pageable) {
-		return GlobalPageResponse.fromBoardTitleInfoResponse(categoryRepository.findBoardByPage(categoryName,pageable));
+		return GlobalPageResponse.create(categoryRepository.findBoardByPage(categoryName,pageable));
 	}
 }

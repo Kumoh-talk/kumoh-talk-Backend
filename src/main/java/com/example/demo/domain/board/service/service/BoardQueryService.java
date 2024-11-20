@@ -44,7 +44,7 @@ public class BoardQueryService {
     @Transactional(readOnly = true)
 	public GlobalPageResponse<BoardTitleInfoResponse> findBoardPageList(Pageable pageable) {
         Page<BoardTitleInfoResponse> boardByPage = boardRepository.findBoardByPage(pageable);
-        return GlobalPageResponse.fromBoardTitleInfoResponse(boardByPage);
+        return GlobalPageResponse.create(boardByPage);
     }
 
     private void validateReportedBoard(Board board) { //TODO : [Board]report 기능 추가 시 로직 추가

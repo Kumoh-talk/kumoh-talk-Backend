@@ -36,7 +36,7 @@ public class LikeService {
 
     @Transactional(readOnly = true)
     public GlobalPageResponse<BoardTitleInfoResponse> getLikes(Long userId, Pageable pageable) {
-        return GlobalPageResponse.fromBoardTitleInfoResponse(likeRepository.findBoardsByUserId(userId, pageable));
+        return GlobalPageResponse.create(likeRepository.findBoardsByUserId(userId, pageable));
     }
 
     private User validateUser(Long userId) {
