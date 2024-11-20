@@ -5,6 +5,7 @@ spring:
       - security/application-security.yml
       - security/application-mail.yml
       - security/application-s3.yml
+      - security/application-server.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${dev-db.rdb.url}
