@@ -89,6 +89,5 @@ jobs:
             aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:$IMAGE_TAG.tar kumoh_talk:$IMAGE_TAG.tar
             sudo docker load -i kumoh_talk:$IMAGE_TAG.tar
             USE_PROFILE=dev IMAGE_TAG=$IMAGE_TAG docker-compose up -d
-            # sudo docker run -d --log-driver=syslog -e USE_PROFILE=dev -p 8080:8080 --name spring-boot-app kumoh_talk:$IMAGE_TAG
             sudo docker image prune -a -f
 
