@@ -78,4 +78,13 @@ public class BoardController implements BoardApi {
         return ResponseEntity.ok(createSuccessResponse(boardUsecase.findDraftBoardList(userId,pageable)));
     }
 
+    @AssignUserId
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
+    @GetMapping("/v1/boards/me")
+    public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findMyBoardPageList(
+        Long userId,
+        @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findMyBoardPageList(userId,pageable)));
+    }
+
 }

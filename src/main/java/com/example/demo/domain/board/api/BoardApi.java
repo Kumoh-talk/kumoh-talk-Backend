@@ -2,11 +2,15 @@ package com.example.demo.domain.board.api;
 
 
 
+import static com.example.demo.global.base.dto.ResponseUtil.*;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -16,6 +20,7 @@ import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
 import com.example.demo.domain.board.domain.dto.vo.BoardType;
+import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -132,6 +137,27 @@ public interface BoardApi {
 	)
 	ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitleResponse>>> findDraftBoardPageList(
 		@Parameter(hidden = true) Long userId,
-		@ParameterObject
-		@PageableDefault(page = 0, size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable);
+		@ParameterObject Pageable pageable);
+
+
+	@Operation(
+		summary = "내가 작성한 게시글 목록 조회",
+		description = "해당 사용자가 작성한 게시글 목록을 조회합니다. 공개 게시글만 조회됩니다."
+	)
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class)))
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoardTitleInfoResponse.class)))
+	@ApiResponseExplanations(
+		success = @ApiSuccessResponseExplanation(
+			responseClass = GlobalPageResponse.class,
+			description = "내가 작성한 게시글 목록 조회 성공\n"
+				+ "해당 사용자가 작성한 게시글 목록을 반환합니다."),
+
+		errors = {
+			@ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND),
+		}
+	)
+	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findMyBoardPageList(
+		@Parameter(hidden = true) Long userId,
+		@ParameterObject Pageable pageable);
+
 }

@@ -92,4 +92,10 @@ public class BoardQueryService {
     public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardPageList(Long userId,Pageable pageable) {
         return GlobalPageResponse.create(boardRepository.findDraftBoardByPage(userId,pageable));
     }
+
+    @Transactional(readOnly = true)
+    public GlobalPageResponse<BoardTitleInfoResponse> findPublishedBoardListByUser(Long userId,
+        Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findPublishedBoardListByUser(userId,pageable));
+    }
 }

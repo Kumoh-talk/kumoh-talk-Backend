@@ -66,5 +66,14 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     + "FROM Board b "
     + "WHERE b.user.id = :userId AND b.status = 'DRAFT'")
     Page<DraftBoardTitleResponse> findDraftBoardByPage(Long userId, Pageable pageable);
+
+    @Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
+    + "(b.id, b.title, b.user.nickname, b.boardType, COUNT(DISTINCT v), COUNT(DISTINCT l),b.headImageUrl ,b.createdAt) "
+    + "FROM Board b "
+    + "LEFT JOIN b.likes l "
+    + "LEFT JOIN b.views v "
+    + "WHERE b.status = 'PUBLISHED' AND b.user.id = :userId "
+    + "GROUP BY b.id, b.title, b.user.nickname, b.boardType, b.createdAt")
+    Page<BoardTitleInfoResponse> findPublishedBoardListByUser(@Param("userId") Long userId, Pageable pageable);
 }
 
