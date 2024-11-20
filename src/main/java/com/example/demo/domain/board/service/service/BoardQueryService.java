@@ -3,6 +3,7 @@ package com.example.demo.domain.board.service.service;
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
@@ -85,4 +86,7 @@ public class BoardQueryService {
         }
     }
 
+    public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardPageList(Long userId,Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findDraftBoardByPage(userId,pageable));
+    }
 }

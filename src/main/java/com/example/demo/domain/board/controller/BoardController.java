@@ -8,6 +8,7 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
 import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -64,6 +65,14 @@ public class BoardController implements BoardApi {
     public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findBoardPageList(
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(createSuccessResponse(boardUsecase.findBoardList(pageable)));
+    }
+
+    @AssignUserId
+    @GetMapping("/v1/boards/draft")
+    public ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitleResponse>>> findDraftBoardPageList(
+        Long userId,
+        @PageableDefault(page=0, size=10,sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findDraftBoardList(userId,pageable)));
     }
 
 }

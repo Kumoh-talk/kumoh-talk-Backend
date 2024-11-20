@@ -1,6 +1,7 @@
 package com.example.demo.domain.board.Repository;
 
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 
 import org.springframework.data.domain.Page;
@@ -59,5 +60,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("UPDATE BoardCategory bc SET bc.deletedAt = NOW() WHERE bc.board.id = :boardId")
     void deleteBoardCategoryByBoardId(Long boardId);
 
+    @Query("SELECT new com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse "
+    + "(b.id, b.title, b.createdAt, b.updatedAt) "
+    + "FROM Board b "
+    + "WHERE b.user.id = :userId AND b.status = 'DRAFT'")
+    Page<DraftBoardTitleResponse> findDraftBoardByPage(Long userId, Pageable pageable);
 }
 
