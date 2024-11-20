@@ -67,8 +67,10 @@ public class BoardUseCase {
         return boardInfoResponse;
     }
 
+    @Transactional
     public void deleteBoard(Long userId, Long boardId) {
-        boardCommandService.removeBoard(userId, boardId);
+        Board board = boardCommandService.validateBoardForDelete(userId, boardId);
+        boardCommandService.removeBoard(board);
     }
 
     @Transactional(readOnly = true)

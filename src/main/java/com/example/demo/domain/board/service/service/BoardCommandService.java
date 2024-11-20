@@ -100,10 +100,7 @@ public class BoardCommandService {
     }
 
     @Transactional
-    public void removeBoard(Long userId,Long boardId) {
-        Board board = validateBoard(boardId);
-        validateUserEqualBoardUser(userId, board);
-
+    public void removeBoard(Board board) {
         List<BoardCategory> existingBoardCategories = board.getBoardCategories();
         List<String> existingCategoryNames = existingBoardCategories.stream()
             .map(boardCategory -> boardCategory.getCategory().getName())
@@ -113,7 +110,7 @@ public class BoardCommandService {
         existingCategoryNames.stream()
             .forEach(categoryName -> {
                 Category category = categoryRepository.findByName(categoryName).get();
-                BoardCategory boardCategory = boardCategoryRepository.findByNameAndBoardId(categoryName,boardId).get();
+                BoardCategory boardCategory = boardCategoryRepository.findByNameAndBoardId(categoryName,board.getId()).get();
                 if (boardCategoryRepository.countBoardCategoryByCategoryId(category.getId()) == 1) {
                     board.getBoardCategories().remove(boardCategory);
                     categoryRepository.delete(category);
@@ -123,6 +120,12 @@ public class BoardCommandService {
                 boardCategoryRepository.delete(boardCategory);
             });
         boardRepository.delete(board);
+    }
+
+    public Board validateBoardForDelete(Long userId, Long boardId) {
+        Board board = validateBoard(boardId);
+        validateUserEqualBoardUser(userId, board);
+        return board;
     }
 
     private Board validateBoard(Long boardId) {
