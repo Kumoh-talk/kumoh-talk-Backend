@@ -28,3 +28,21 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: true
+
+swagger:
+  server-url: http://${dev.backend.ip}:8080
+  description: "develop 백엔드 서버"
+
+
+springdoc:
+  packagesToScan: com.example.demo
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /docs
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+  api-docs:
+    groups:
+      enabled: false
