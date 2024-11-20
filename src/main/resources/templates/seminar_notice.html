@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[야밤의금오톡] '세미나' 공지사항 알림</title>
+</head>
+<body>
+<div style="text-align: center; font-size: 13px; line-height: 2">
+    <img
+            src="https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/email/kumoh-talk-header.png"
+            alt="배너 이미지"
+            width="480"
+            height="140"
+            style="border-radius: 15px"
+    />
+
+    <h2 style="text-align: center; margin: 2px">📚 세미나 공지사항</h2>
+    <p>안녕하세요. 야밤의금오톡 뉴스레터를 구독해주신 여러분!</p>
+    <p>제 <span>[#회차 입력]</span>회 야밤의금오톡 활동에 대한 공고입니다.</p>
+    <p>금주 세미나 활동 주제는 다음과 같습니다.</p>
+
+    <ul style="list-style-type: none; padding: 5px">
+        <li>
+            <h3 style="margin: 2px">
+            <span
+                    style="
+                color: #2b4577;
+                background-color: #eaeaea;
+                padding: 0px 7px;
+                border-radius: 4px;
+                display: inline-block;
+              "
+            >[#태그 입력]</span
+            >
+                <span>[#제목 입력]</span>
+            </h3>
+            <div style="height: 4px"></div>
+            <ul style="list-style-type: none">
+                <li>
+                    <h4 style="margin: 2px">
+                        발표자 : <span>[#학과 입력]</span>과
+                        <span>[#학번 입력]</span>학번
+                        <span>[#이름 입력]</span>
+                    </h4>
+                </li>
+                <li>
+                    <h4 style="margin: 2px">
+                        시간 : [<span>[#시 입력]</span> : <span>[#분 입력]</span> ~
+                        <span>[#시 입력]</span> : <span>[#분 입력]</span>]
+                    </h4>
+                </li>
+            </ul>
+        </li>
+        <div style="height: 20px"></div>
+        <li>
+            <h3 style="margin: 2px">
+            <span
+                    style="
+                color: #2b4577;
+                background-color: #eaeaea;
+                padding: 0px 7px;
+                border-radius: 4px;
+                display: inline-block;
+              "
+            >[#태그 입력]</span
+            >
+                <span>[#제목 입력]</span>
+            </h3>
+            <div style="height: 4px"></div>
+            <ul style="list-style-type: none">
+                <li>
+                    <h4 style="margin: 2px">
+                        발표자 : <span>[#학과 입력]</span>과
+                        <span>[#학번 입력]</span>학번
+                        <span>[#이름 입력]</span>
+                    </h4>
+                </li>
+                <li>
+                    <h4 style="margin: 2px">
+                        시간 : [<span>[#시 입력]</span> : <span>[#분 입력]</span> ~
+                        <span>[#시 입력]</span> : <span>[#분 입력]</span>]
+                    </h4>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <p>
+        세미나에 참여하여 함께 학습하고자 하는 여러분들의 많은 관심
+        부탁드립니다.
+    </p>
+
+    <hr style="width: 480px; margin: 25px auto" />
+
+    <img
+            src="https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/email/kumoh-talk-logo.jpeg"
+            alt="로고 이미지"
+            width="40"
+    /><br />
+    <a th:href="${youtubeUrl}" style="line-height: 3.5">야밤의금오톡 Youtube</a>
+    <br />
+    <a
+            th:href="${changeSubscribeUrl}"
+            style="color: gray; font-size: 10px; text-decoration: none"
+    >구독정보 변경하기</a
+    >
+    <span style="color: gray; padding: 0.3%">|</span>
+    <a
+            th:href="${cancelSubscribeUrl}"
+            style="color: gray; font-size: 10px; text-decoration: none"
+    >구독취소</a
+    >
+</div>
+</body>
+</html>

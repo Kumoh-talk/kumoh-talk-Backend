@@ -1,7 +1,15 @@
 package com.example.demo.global.config.web;
 
+import com.example.demo.global.converter.CommentTargetBoardTypeConverter;
+import com.example.demo.global.converter.EntireBoardTypeConverter;
+import com.example.demo.global.converter.RecruitmentBoardTypeConverter;
+import com.example.demo.global.converter.StatusConverter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebMvc
 @Configuration
@@ -14,9 +22,18 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
                 .allowCredentials(true);
     }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/docs/**")
                 .addResourceLocations("classpath:/static/docs/");
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new EntireBoardTypeConverter());
+        registry.addConverter(new CommentTargetBoardTypeConverter());
+        registry.addConverter(new RecruitmentBoardTypeConverter());
+        registry.addConverter(new StatusConverter());
     }
 }

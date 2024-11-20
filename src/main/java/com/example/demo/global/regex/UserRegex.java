@@ -1,12 +1,16 @@
 package com.example.demo.global.regex;
 
-public class UserRegex {
-    // 2~20, 한글, 영문 대소문자, 숫자, '[]<>-' 기호 허용
-    public static final String NAME_REGEXP = "^[가-힣a-zA-Z\\d\\[\\]<>-]{2,20}";
+public interface UserRegex {
+    // 5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능
+    String USERID_REGEXP = "^[a-z0-9_-]{5,20}$";
 
-    // kit 학교 이메일 형식 체크
-    public static final String EMAIL_REGEXP = "^[a-zA-Z0-9._%+-]+@kumoh\\.ac\\.kr$";
+    // 한글 2글자 ~ 6글자 / 영어 4글자 ~ 8글자 / 다른 글자 X
+    String NICKNAME_REGEXP = "^(([가-힣]{2,6})|([A-Za-z]{4,8}))$";
 
-    // 최소 8, 최대 25자 이내. 적어도 하나의 영문자와 하나의 숫자를 포함해야 한다.
-    public static final String PASSWORD_REGEXP = "^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$";
+    // 이메일 형식
+    String EMAIL_REGEXP = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+    // 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용
+    String PASSWORD_REGEXP = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()\\-_=+\\[\\]{}|;:'\",.<>/?~]).{8,16}$";
+
 }

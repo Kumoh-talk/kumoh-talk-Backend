@@ -2,64 +2,132 @@ package com.example.demo.domain.comment.service;
 
 
 import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.comment.domain.Comment;
-import com.example.demo.domain.comment.domain.request.CommentRequest;
-import com.example.demo.domain.comment.domain.response.CommentInfoResponse;
-import com.example.demo.domain.comment.repository.CommentRepository;
 import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
+import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
+import com.example.demo.domain.comment.domain.dto.response.CommentPageResponse;
+import com.example.demo.domain.comment.domain.dto.response.CommentResponse;
+import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
+import com.example.demo.domain.comment.repository.CommentRepository;
+import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
+import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.service.UserService;
+import com.example.demo.global.base.exception.ErrorCode;
+import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    private CommentRepository commentRepository;
-    private BoardRepository boardRepository;
-    private UserRepository userRepository;
+    private final UserService userService;
 
+    private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
+    private final RecruitmentBoardRepository recruitmentBoardRepository;
 
-    @Transactional
-    public CommentInfoResponse save(Long userId, CommentRequest commentRequest,Long postId) {
-        Board findBoard = boardRepository.findById(postId).orElseThrow(() ->
-                new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다."));
-        User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다"));
-
-        Comment saved = commentRepository.save(new Comment(commentRequest.getContents(), findBoard, findUser));
-        return CommentInfoResponse.from(saved, findUser.getName());
-    }
-
-    @Transactional
-    public CommentInfoResponse update(CommentRequest commentRequest,
-                                      Long commentId,
-                                      String username) {
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
-                new IllegalArgumentException("해당 id 의 comment를 찾을 수 없습니다.")
-        );
-        findComment.setContent(commentRequest.getContents());
-        return CommentInfoResponse.from(findComment,username);
-    }
-    @Transactional
-    public void delete(Long commentId) {
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(() ->
-                new IllegalArgumentException("해당 id 의 comment를 찾을 수 없습니다.")
-        );
-        commentRepository.delete(findComment);
-    }
     @Transactional(readOnly = true)
-    public List<CommentInfoResponse> findByPostId(Long postId) {
-        Board board = boardRepository.findPostByIdWithComments(postId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("해당 id 의 게시물을 찾을 수 없습니다.")
+    public CommentResponse findCommentsByBoardId(Long boardId, CommentTargetBoardType commentTargetBoardType) {
+        List<Comment> commentList = findCommentsFactory(boardId, commentTargetBoardType);
+
+        return CommentResponse.from(commentList);
+    }
+
+    @Transactional(readOnly = true)
+    public CommentPageResponse findCommentsByUserId(Long userId, Pageable pageable, EntireBoardType entireBoardType) {
+        userService.validateUser(userId);
+
+        Page<Comment> commentPage = commentRepository.findPageByUser_idOrderByCreatedAtDsc(userId, pageable, entireBoardType);
+        return CommentPageResponse.from(commentPage, entireBoardType);
+    }
+
+    @Transactional
+    public CommentInfoResponse saveComment(Long userId, Long boardId, CommentTargetBoardType commentTargetBoardType, CommentRequest commentRequest) {
+        User commentUser = userService.validateUser(userId);
+
+        Comment requestComment = transformToEntityFactory(commentUser, boardId, commentTargetBoardType, commentRequest);
+        Comment saved = commentRepository.save(requestComment);
+
+        return CommentInfoResponse.from(saved);
+    }
+
+    @Transactional
+    public CommentInfoResponse updateComment(Long userId, Long commentId, CommentRequest commentRequest) {
+        Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
+                new ServiceException(ErrorCode.COMMENT_NOT_FOUND)
+        );
+
+        if (userId.equals(comment.getUser().getId())) {
+            comment.changeContent(commentRequest.getContent());
+        } else {
+            throw new ServiceException(ErrorCode.ACCESS_DENIED);
+        }
+
+        return CommentInfoResponse.from(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long userId, Long commentId, boolean isAuthorized) {
+        Comment comment = commentRepository.findNotDeleteCommentById(commentId).orElseThrow(() ->
+                new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
+        if (!isAuthorized) {
+            if (!comment.getUser().getId().equals(userId)) {
+                throw new ServiceException(ErrorCode.ACCESS_DENIED);
+            }
+        }
+
+        commentRepository.replyCommentsDeleteById(commentId);
+        commentRepository.delete(comment);
+    }
+
+    public List<Comment> findCommentsFactory(Long boardId, CommentTargetBoardType commentTargetBoardType) {
+        switch (commentTargetBoardType) {
+            case BASIC -> {
+                boardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
                 );
-        return board.getComments().stream()
-                .map(comment -> Comment.entityToResponse(comment))
-                .collect(Collectors.toList());
+                return commentRepository.findByBoard_idOrderByCreatedAtAsc(boardId);
+            }
+            default -> {
+                recruitmentBoardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                return commentRepository.findByRecruitmentBoard_idOrderByCreatedAtAsc(boardId);
+            }
+        }
+    }
+
+    public Comment transformToEntityFactory(User commentUser, Long boardId, CommentTargetBoardType commentTargetBoardType, CommentRequest commentRequest) {
+        Comment parentComment = null;
+        if (commentRequest.getGroupId() != null) {
+            parentComment = commentRepository.findNotDeleteCommentById(commentRequest.getGroupId()).orElseThrow(() ->
+                    new ServiceException(ErrorCode.PARENT_NOT_FOUND));
+        }
+
+        Comment requestComment = null;
+        switch (commentTargetBoardType) {
+            case BASIC -> {
+                Board commentBoard = boardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+
+                requestComment = Comment.fromSeminarBoardRequest(commentUser, commentBoard, commentRequest, parentComment);
+            }
+            case RECRUITMENT -> {
+                RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findById(boardId).orElseThrow(() ->
+                        new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+                );
+                requestComment = Comment.fromRecruitmentBoardRequest(commentUser, recruitmentBoard, commentRequest, parentComment);
+            }
+        }
+        return requestComment;
     }
 }

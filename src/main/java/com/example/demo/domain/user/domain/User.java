@@ -1,75 +1,63 @@
 package com.example.demo.domain.user.domain;
 
-import com.example.demo.domain.comment.domain.Comment;
+import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.like.domain.Like;
+import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.domain.newsletter.domain.Newsletter;
+import com.example.demo.domain.seminar_application.domain.SeminarApplication;
+import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
 import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.domain.vo.Status;
+import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.demo.global.regex.UserRegex.EMAIL_REGEXP;
-import static com.example.demo.global.regex.UserRegex.NAME_REGEXP;
-
 @Slf4j
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id=?")
-@Where(clause = "deleted_at is NULL")
+@SQLDelete(sql = "UPDATE users SET deleted_at = NOW() where id=?")
+@SQLRestriction(value = "deleted_at is NULL")
 public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 30)
-    @NotBlank(message = "이메일은 빈값 일 수 없습니다.")
-    @Pattern(regexp = EMAIL_REGEXP, message = "이메일 형식이 맞지 않습니다.")
-    private String email;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OAuth2Provider provider;
 
-    @Column(nullable = false, length = 20)
-    @NotBlank(message = "이름은 빈값 일 수 없습니다.")
-    @Pattern(regexp = NAME_REGEXP, message = "이름 형식이 맞지 않습니다.")
-    private String name;
+    @Column(nullable = false)
+    private String providerId;
 
-    @Column(nullable = false, length = 20)
-    @NotBlank(message = "이름은 빈값 일 수 없습니다.")
-    @Pattern(regexp = NAME_REGEXP, message = "이름 형식이 맞지 않습니다.")
+    @Column(unique = true)
     private String nickname;
 
-    @Column(nullable = false)
-    @NotBlank(message = "비밀번호는 빈값 일 수 없습니다.")
-    private String password;
+    private String name;
 
+    private String profileImageUrl;
+
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false, length = 10)
     private Role role;
 
-    @Column(nullable = false, length = 10)
-    private String department;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_additional_info_id")
+    private UserAdditionalInfo userAdditionalInfo;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private Status status; // 재학 상태
-
-    @Column(nullable = false)
-    @NotBlank(message = "필드 값은 빈값 일 수 없습니다.")
-    private String field;
+    // TODO. 추후 user 와 newsletter 연동이 확정되면 추가
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "news_letter_id")
+//    private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();
@@ -80,29 +68,65 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Like> likes= new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SeminarApplication> seminarApplications = new ArrayList<>();
+
     @Builder
-    public User(String email, String name, String nickname, String password, Role role, String department, Status status, String field) {
-        this.email = email;
-        this.name = name;
+    public User(OAuth2Provider provider, String providerId, String nickname, Role role) {
+        this.provider = provider;
+        this.providerId = providerId;
         this.nickname = nickname;
-        this.password = password;
         this.role = role;
-        this.department = department;
-        this.status = status;
-        this.field = field;
     }
 
-    public void updateInfo(User user) {
-        if (user == null) {
-            log.warn("UPDATE_FAILED: Invalid user data provided.");
-            throw new ServiceException(ErrorCode.INVALID_INPUT_VALUE);
-        }
-        this.name = user.getName();
-//        this.track = user.getTrack();
-//        this.major = user.getMajor();
+    public void setInitialInfo(String nickname, String name, String defaultImageUrl) {
+
     }
 
-    public void updatePassword(String newPassword) {
-        this.password = newPassword;
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void mapAdditionalInfo(UserAdditionalInfo userAdditionalInfo) {
+        this.userAdditionalInfo = userAdditionalInfo;
+    }
+
+//    public void mapNewsletter(Newsletter newsletter) {
+//        this.newsletter = newsletter;
+//    }
+
+    public void addSeminarApplications(SeminarApplication seminarApplication) {
+        this.seminarApplications.add(seminarApplication);
+    }
+
+    public void updateUserRoleToActiveUser() {
+        this.role = Role.ROLE_ACTIVE_USER;
+    }
+
+    public void updateUserRoleToSeminarWriter() {
+        this.role = Role.ROLE_SEMINAR_WRITER;
+    }
+
+    public void changeProfileUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public Boolean isAdmin() {
+        return Role.ROLE_ADMIN.equals(this.role);
+    }
+
+    public void updateUserInfo(UpdateUserInfoRequest request) {
+        this.nickname = request.nickname();
+        this.name = request.name();
+        this.profileImageUrl = request.profileImageUrl();
+        this.role = request.role();
+    }
+
+//    public boolean hasNewsletter() {
+//        return this.newsletter != null;
+//    }
+
+    public void setDefaultProfileUrl(String defaultImageUrl) {
+        this.profileImageUrl = defaultImageUrl;
     }
 }

@@ -38,3 +38,6 @@ out/
 
 # 속성 제외
 **/application.properties
+.env
+data
+.DS_Store

@@ -1,0 +1,30 @@
+spring:
+  config:
+    import:
+      - security/application-db.yml
+      - security/application-security.yml
+      - security/application-mail.yml
+      - security/application-s3.yml
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${dev-db.rdb.url}
+    username: ${dev-db.rdb.username}
+    password: ${dev-db.rdb.password}
+  data:
+    web:
+      pageable:
+        one-indexed-parameters:
+          true
+    redis:
+      host: ${dev-db.redis.host}
+      port: ${dev-db.redis.port}
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
+        highlight_sql: false
+        hbm2ddl.auto: update
+        default_batch_fetch_size: 100
+    open-in-view: false
+    show-sql: true

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[야밤의금오톡] '세미나 발표 정리' 새 글 알림</title>
+</head>
+<body>
+<div style="text-align: center; font-size: 13px; line-height: 2.3">
+    <img
+            src="https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/email/kumoh-talk-header.png"
+            alt="배너 이미지"
+            width="480"
+            height="140"
+            style="border-radius: 15px"
+    />
+
+    <h2 style="text-align: center; margin: 2px">📚 세미나 새 글 발행</h2>
+    <p>안녕하세요. 야밤의금오톡 뉴스레터를 구독해주신 여러분!</p>
+    <p>지난 야밤의금오톡 IT 세미나 내용에 대한 게시물이 업로드 되었습니다.</p>
+    <p>게시글을 읽으신 후 궁금한 점이나 더 알고 싶은 내용이 있으시면,</p>
+    <p>게시글 댓글로 남겨주시면 감사하겠습니다.</p>
+
+    <ul style="list-style-type: none; padding: 0">
+        <li>
+            <h4 style="margin: 2px">
+                제목 : <span th:text="${title}">제목</span>
+            </h4>
+        </li>
+        <li>
+            <h4 style="margin: 2px">
+                작성자 : <span th:text="${author}">작성자</span>
+            </h4>
+        </li>
+        <li>
+            <h4 style="margin: 2px">
+                <a th:href="${postUrl}">게시글 바로가기</a>
+            </h4>
+        </li>
+    </ul>
+    <hr style="width: 480px; margin: 15px auto" />
+
+    <img
+            src="https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/email/kumoh-talk-logo.jpeg"
+            alt="로고 이미지"
+            width="40"
+    /><br />
+    <a th:href="${youtubeUrl}" style="line-height: 3.5">야밤의금오톡 Youtube</a>
+    <br />
+    <a
+            th:href="${changeSubscribeUrl}"
+            style="color: gray; font-size: 10px; text-decoration: none"
+    >구독정보 변경하기</a
+    >
+    <span style="color: gray; padding: 0.3%">|</span>
+    <a
+            th:href="${cancelSubscribeUrl}"
+            style="color: gray; font-size: 10px; text-decoration: none"
+    >구독취소</a
+    >
+</div>
+</body>
+</html>
