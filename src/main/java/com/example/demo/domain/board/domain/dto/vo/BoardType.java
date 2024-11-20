@@ -7,6 +7,7 @@ public enum BoardType {
     NOTICE
     ;
 
+    public static final String errorMsg = "게시판 타입은 seminar, notice 중 하나여야 합니다.";
     @JsonCreator
     public static BoardType fromString(String value) {
         for(BoardType boardType : BoardType.values()) {

@@ -48,7 +48,7 @@ public class BoardUseCase {
     @Transactional
     public BoardInfoResponse searchSingleBoard(Long boardId) {
         viewIncreaseService.increaseView(boardId);
-        return boardQueryService.findByboardId(boardId);
+        return boardQueryService.searchSingleBoard(boardId);
     }
 
     @Transactional
@@ -72,8 +72,8 @@ public class BoardUseCase {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(Pageable pageable) {
-        return boardQueryService.findBoardPageList(pageable);
+    public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(BoardType boardType , Pageable pageable) {
+        return boardQueryService.findBoardPageList(boardType,pageable);
     }
 
     public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardList(Long userId, Pageable pageable) {

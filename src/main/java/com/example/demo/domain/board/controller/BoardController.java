@@ -9,6 +9,7 @@ import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -63,11 +64,13 @@ public class BoardController implements BoardApi {
 
     @GetMapping("/v1/boards")
     public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findBoardPageList(
+        @RequestParam(defaultValue = "SEMINAR") BoardType boardType,
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findBoardList(pageable)));
+        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findBoardList(boardType,pageable)));
     }
 
     @AssignUserId
+    @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @GetMapping("/v1/boards/draft")
     public ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitleResponse>>> findDraftBoardPageList(
         Long userId,

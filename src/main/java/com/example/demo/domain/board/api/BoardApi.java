@@ -15,6 +15,7 @@ import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -63,7 +64,7 @@ public interface BoardApi {
 			@ApiErrorResponseExplanation(errorCode = ErrorCode.NOT_ACCESS_USER),
 		}
 	)
-	ResponseEntity<ResponseBody<BoardInfoResponse>> search(@Parameter(hidden = true) @PathVariable Long boardId);
+	ResponseEntity<ResponseBody<BoardInfoResponse>> search( @PathVariable Long boardId);
 
 	@Operation(
 		summary = "게시글 수정",
@@ -113,6 +114,7 @@ public interface BoardApi {
 				+ "게시글 목록을 반환합니다.")
 	)
 	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findBoardPageList(
+		@Schema(name="boardType",description = "게시물 타입 SEMINAR/NOTICE 중에 선택해야 합니다.",example = "SEMINAR") BoardType boardType,
 		@ParameterObject
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
 
