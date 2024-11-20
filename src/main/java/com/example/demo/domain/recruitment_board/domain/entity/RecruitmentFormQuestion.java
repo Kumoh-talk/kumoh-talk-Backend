@@ -1,9 +1,9 @@
 package com.example.demo.domain.recruitment_board.domain.entity;
 
-import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormChoiceAnswerRequest;
+import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormAnswerRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormQuestionRequest;
 import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentFormChoiceAnswerRepository;
+import com.example.demo.domain.recruitment_board.repository.RecruitmentFormAnswerRepository;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -47,16 +47,16 @@ public class RecruitmentFormQuestion extends BaseEntity {
     @Setter
     @OneToMany(mappedBy = "recruitmentFormQuestion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("number ASC")
-    private List<RecruitmentFormChoiceAnswer> recruitmentFormChoiceAnswerList = new ArrayList<>();
+    private List<RecruitmentFormAnswer> recruitmentFormAnswerList = new ArrayList<>();
 
     @Builder
-    public RecruitmentFormQuestion(int number, String question, QuestionType type, Boolean isEssential, RecruitmentBoard recruitmentBoard, List<RecruitmentFormChoiceAnswer> recruitmentFormChoiceAnswerList) {
+    public RecruitmentFormQuestion(int number, String question, QuestionType type, Boolean isEssential, RecruitmentBoard recruitmentBoard, List<RecruitmentFormAnswer> recruitmentFormAnswerList) {
         this.number = number;
         this.question = question;
         this.type = type;
         this.isEssential = isEssential;
         this.recruitmentBoard = recruitmentBoard;
-        this.recruitmentFormChoiceAnswerList = recruitmentFormChoiceAnswerList;
+        this.recruitmentFormAnswerList = recruitmentFormAnswerList;
     }
 
     public static RecruitmentFormQuestion from(
@@ -70,17 +70,17 @@ public class RecruitmentFormQuestion extends BaseEntity {
                 .recruitmentBoard(recruitmentBoard)
                 .build();
 
-        List<RecruitmentFormChoiceAnswerRequest> requestAnswerList =
+        List<RecruitmentFormAnswerRequest> requestAnswerList =
                 questionRequest.getAnswerList() == null ? new ArrayList<>() : questionRequest.getAnswerList();
 
-        recruitmentFormQuestion.setRecruitmentFormChoiceAnswerList(requestAnswerList.stream()
-                .map(v -> RecruitmentFormChoiceAnswer.from(v, recruitmentFormQuestion))
+        recruitmentFormQuestion.setRecruitmentFormAnswerList(requestAnswerList.stream()
+                .map(v -> RecruitmentFormAnswer.from(v, recruitmentFormQuestion))
                 .collect(Collectors.toList()));
         return recruitmentFormQuestion;
     }
 
     public void updateFromRequest(RecruitmentFormQuestionRequest request,
-                                  RecruitmentFormChoiceAnswerRepository recruitmentFormChoiceAnswerRepository) {
+                                  RecruitmentFormAnswerRepository recruitmentFormAnswerRepository) {
         // 질문 수정
         this.number = request.getNumber();
         this.question = request.getQuestion();
@@ -89,28 +89,28 @@ public class RecruitmentFormQuestion extends BaseEntity {
 
         // 객관식 답 수정
         int answerIdx = 0;
-        List<RecruitmentFormChoiceAnswerRequest> requestAnswerList =
+        List<RecruitmentFormAnswerRequest> requestAnswerList =
                 request.getAnswerList() == null ? new ArrayList<>() : request.getAnswerList();
-        for (RecruitmentFormChoiceAnswer recruitmentFormChoiceAnswer : recruitmentFormChoiceAnswerList) {
+        for (RecruitmentFormAnswer recruitmentFormAnswer : recruitmentFormAnswerList) {
             try {
-                recruitmentFormChoiceAnswer.updateFromRequest(requestAnswerList.get(answerIdx));
+                recruitmentFormAnswer.updateFromRequest(requestAnswerList.get(answerIdx));
                 answerIdx++;
             } catch (IndexOutOfBoundsException e) {
                 List<Long> deleteIdList = new ArrayList<>();
-                for (int i = recruitmentFormChoiceAnswerList.size() - 1; i >= answerIdx; i--) {
-                    RecruitmentFormChoiceAnswer delete = recruitmentFormChoiceAnswerList.remove(i);
+                for (int i = recruitmentFormAnswerList.size() - 1; i >= answerIdx; i--) {
+                    RecruitmentFormAnswer delete = recruitmentFormAnswerList.remove(i);
                     deleteIdList.add(delete.getId());
                 }
-                recruitmentFormChoiceAnswerRepository.hardDeleteAnswersByIds(deleteIdList);
+                recruitmentFormAnswerRepository.hardDeleteAnswersByIds(deleteIdList);
                 return;
             }
         }
         int size = request.getAnswerList() != null ? request.getAnswerList().size() : 0;
         while (answerIdx < size) {
             // 추가된 객관식 선택지의 id를 알기 위한 저장 쿼리
-            RecruitmentFormChoiceAnswer recruitmentFormChoiceAnswer = recruitmentFormChoiceAnswerRepository
-                    .save(RecruitmentFormChoiceAnswer.from(request.getAnswerList().get(answerIdx++), this));
-            recruitmentFormChoiceAnswerList.add(recruitmentFormChoiceAnswer);
+            RecruitmentFormAnswer recruitmentFormAnswer = recruitmentFormAnswerRepository
+                    .save(RecruitmentFormAnswer.from(request.getAnswerList().get(answerIdx++), this));
+            recruitmentFormAnswerList.add(recruitmentFormAnswer);
         }
     }
 }

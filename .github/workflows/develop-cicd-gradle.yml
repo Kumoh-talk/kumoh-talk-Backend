@@ -59,7 +59,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
@@ -70,12 +70,17 @@ jobs:
       - name: Build image and Generate tar
         id: build-image
         run: |
-          docker build -t kumoh_talk:$IMAGE_TAG .
-          docker save kumoh_talk:$IMAGE_TAG -o kumoh_talk:$IMAGE_TAG.tar
+          docker build -t kumoh_talk:latest .
+          docker save kumoh_talk:latest -o kumoh_talk:latest.tar
 
       - name: Upload to S3
         run: |
-          aws s3 cp kumoh_talk:$IMAGE_TAG.tar s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:$IMAGE_TAG.tar
+          aws s3 cp kumoh_talk:latest.tar s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:latest.tar
+
+      - name: Create .env file
+        run: |
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
+          echo "USE_PROFILE=dev" >> .env
 
       - name: SSH Connect
         uses: appleboy/ssh-action@master
@@ -86,8 +91,7 @@ jobs:
           script: |
             sudo docker stop spring-boot-app || true
             sudo docker rm spring-boot-app || true
-            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:$IMAGE_TAG.tar kumoh_talk:$IMAGE_TAG.tar
-            sudo docker load -i kumoh_talk:$IMAGE_TAG.tar
-            sudo docker run -d --log-driver=syslog -e USE_PROFILE=dev -p 8080:8080 kumoh_talk:$IMAGE_TAG
+            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:latest.tar kumoh_talk:latest.tar
+            sudo docker load -i kumoh_talk:latest.tar
+            docker-compose up -d
             sudo docker image prune -a -f
-

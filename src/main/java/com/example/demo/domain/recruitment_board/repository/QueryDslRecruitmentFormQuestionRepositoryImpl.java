@@ -16,7 +16,7 @@ public class QueryDslRecruitmentFormQuestionRepositoryImpl implements QueryDslRe
     public List<RecruitmentFormQuestion> findByBoard_IdByFetchingAnswerList(Long recruitmentBoardId) {
         return jpaQueryFactory
                 .selectFrom(recruitmentFormQuestion)
-                .leftJoin(recruitmentFormQuestion.recruitmentFormChoiceAnswerList).fetchJoin()
+                .leftJoin(recruitmentFormQuestion.recruitmentFormAnswerList).fetchJoin()
                 .where(recruitmentFormQuestion.recruitmentBoard.id.eq(recruitmentBoardId))
                 .fetch();
     }
