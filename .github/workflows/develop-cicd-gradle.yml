@@ -77,6 +77,11 @@ jobs:
         run: |
           aws s3 cp kumoh_talk:$IMAGE_TAG.tar s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:$IMAGE_TAG.tar
 
+      - name: Create .env file
+        run: |
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
+          echo "USE_PROFILE=dev" >> .env
+
       - name: SSH Connect
         uses: appleboy/ssh-action@master
         with:
@@ -86,7 +91,7 @@ jobs:
           script: |
             sudo docker stop spring-boot-app || true
             sudo docker rm spring-boot-app || true
-            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:$IMAGE_TAG.tar kumoh_talk:$IMAGE_TAG.tar
+            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:${IMAGE_TAG}.tar kumoh_talk:${IMAGE_TAG}.tar
             sudo docker load -i kumoh_talk:$IMAGE_TAG.tar
-            USE_PROFILE=dev IMAGE_TAG=$IMAGE_TAG docker-compose up -d
+            docker-compose up -d
             sudo docker image prune -a -f
