@@ -29,7 +29,10 @@ public class BoardInfoResponse {
     private final Long view;
     @Schema(description = "게시물 좋아요 수", example = "10")
     private final Long like;
-    @Schema(description = "게시물 카테고리 목록", example = "{'백엔드', '로드맵'}")
+    @Schema(
+        description = "게시물 카테고리 이름 리스트",
+        example = "[\"카테고리1\", \"카테고리2\"]"
+    )
     private final List<String> categoryNames;
     @Schema(description = "게시물 대표 이미지 URL", example = "https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/")
     private final String boardHeadImageUrl;
