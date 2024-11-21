@@ -1,5 +1,6 @@
 package com.example.demo.global.base.exception;
 
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
@@ -55,6 +56,7 @@ public enum ErrorCode {
     NOT_NOTICE_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_0007", "해당 유저는 공지사항 작성 권한이 없습니다."),
     NOT_SEMINAR_ROLE(HttpStatus.UNAUTHORIZED, "BOARD_0008", "해당 유저는 세미나 작성 권한이 없습니다."),
     NOT_AUTHORIZED_WRITE_NOTICE(HttpStatus.UNAUTHORIZED, "BOARD_0009", "공지사항 작성 권한이 없습니다."),
+    DRAFT_NOT_ACCESS_USER(HttpStatus.UNAUTHORIZED, "BOARD_0010", "해당 유저는 임시저장된 게시물에 접근할 수 없습니다."),
 
     // FILE
     FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_0001", "파일의 용량이 너무 큽니다."),
@@ -97,7 +99,10 @@ public enum ErrorCode {
     RECRUITMENT_BOARD_TAG_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0003", RecruitmentBoardTag.errorMsg),
     RECRUITMENT_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0004", RecruitmentBoardType.errorMsg),
     COMMENT_TARGET_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0005", CommentTargetBoardType.errorMsg),
-    STATUS_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0005", Status.errorMsg);
+    STATUS_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0005", Status.errorMsg),
+    BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0006", BoardType.errorMsg),
+    ;
+
     private final HttpStatus status;
     private final String code;
     private final String message;

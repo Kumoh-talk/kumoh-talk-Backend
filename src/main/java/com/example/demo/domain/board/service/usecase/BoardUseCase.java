@@ -4,6 +4,7 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
 import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.board.domain.entity.Board;
@@ -47,7 +48,7 @@ public class BoardUseCase {
     @Transactional
     public BoardInfoResponse searchSingleBoard(Long boardId) {
         viewIncreaseService.increaseView(boardId);
-        return boardQueryService.findByboardId(boardId);
+        return boardQueryService.searchSingleBoard(boardId);
     }
 
     @Transactional
@@ -66,12 +67,24 @@ public class BoardUseCase {
         return boardInfoResponse;
     }
 
+    @Transactional
     public void deleteBoard(Long userId, Long boardId) {
-        boardCommandService.removeBoard(userId, boardId);
+        Board board = boardCommandService.validateBoardForDelete(userId, boardId);
+        boardCommandService.removeBoard(board);
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(Pageable pageable) {
-        return boardQueryService.findBoardPageList(pageable);
+    public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(BoardType boardType , Pageable pageable) {
+        return boardQueryService.findBoardPageList(boardType,pageable);
+    }
+
+    public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardList(Long userId, Pageable pageable) {
+        return boardQueryService.findDraftBoardPageList(userId,pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public GlobalPageResponse<BoardTitleInfoResponse> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
+        userService.validateUser(userId);
+        return boardQueryService.findPublishedBoardListByUser(userId,boardType, pageable);
     }
 }

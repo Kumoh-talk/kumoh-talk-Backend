@@ -3,6 +3,8 @@ package com.example.demo.domain.board.service.service;
 import com.example.demo.domain.board.Repository.BoardRepository;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
@@ -27,11 +29,12 @@ public class BoardQueryService {
     private final BoardRepository boardRepository;
 
     @Transactional(readOnly = true)
-    public BoardInfoResponse findByboardId(Long boardId) {
+    public BoardInfoResponse searchSingleBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        validateBoardStatus(board); //TODO : [Board]조회수 증가 로직 신고 글 안보임 수정 사항이 많음
+        validateBoardStatus(board); // 임시저장 게시물은 작성자만 조회 가능하기 때문에 작성자인지 확인
         validateReportedBoard(board);  //TODO : [Board]report 기능 추가 시 로직 변경
+
 
         return BoardInfoResponse.from(
                 board,
@@ -42,14 +45,15 @@ public class BoardQueryService {
     }
 
     @Transactional(readOnly = true)
-	public GlobalPageResponse<BoardTitleInfoResponse> findBoardPageList(Pageable pageable) {
-        Page<BoardTitleInfoResponse> boardByPage = boardRepository.findBoardByPage(pageable);
-        return GlobalPageResponse.fromBoardTitleInfoResponse(boardByPage);
+	public GlobalPageResponse<BoardTitleInfoResponse> findBoardPageList(BoardType boardType, Pageable pageable) {
+        Page<BoardTitleInfoResponse> boardByPage = boardRepository.findBoardByPage(boardType,pageable);
+        return GlobalPageResponse.create(boardByPage);
     }
 
     private void validateReportedBoard(Board board) { //TODO : [Board]report 기능 추가 시 로직 추가
     }
 
+    // 임시저장 게시물은 작성자만 조회 가능하기 때문에 작성자인지 확인
     private void validateBoardStatus(Board board) {
         if(board.getStatus().equals(Status.DRAFT)) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -57,7 +61,7 @@ public class BoardQueryService {
             if (authentication.isAuthenticated() && authentication instanceof JwtAuthentication) {
                 Long userId = (Long) authentication.getPrincipal();
                 if(!board.getUser().getId().equals(userId)) {
-                    throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
+                    throw new ServiceException(ErrorCode.DRAFT_NOT_ACCESS_USER);
                 }
             } else {
                 throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
@@ -85,4 +89,14 @@ public class BoardQueryService {
         }
     }
 
+    public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardPageList(Long userId,Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findDraftBoardByPage(userId,pageable));
+    }
+
+    @Transactional(readOnly = true)
+    public GlobalPageResponse<BoardTitleInfoResponse> findPublishedBoardListByUser(Long userId,
+        BoardType boardType,
+        Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findPublishedBoardListByUser(userId,boardType,pageable));
+    }
 }

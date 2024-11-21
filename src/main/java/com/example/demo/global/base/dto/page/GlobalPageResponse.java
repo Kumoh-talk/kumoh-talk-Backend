@@ -32,16 +32,6 @@ public class GlobalPageResponse<T> {
 		this.pageContents = pageContents;
 	}
 
-	public static GlobalPageResponse<BoardTitleInfoResponse> fromBoardTitleInfoResponse(
-		Page<BoardTitleInfoResponse> pageDTO) {
-		return new GlobalPageResponse<BoardTitleInfoResponse>(
-			pageDTO.getNumber() + 1,
-			pageDTO.getSize(),
-			pageDTO.getTotalPages(),
-			pageDTO.getSort().toString(),
-			pageDTO.getContent());
-	}
-
 	public static <T> GlobalPageResponse<T> create(
 			Page<T> pageDTO) {
 		return new GlobalPageResponse<>(

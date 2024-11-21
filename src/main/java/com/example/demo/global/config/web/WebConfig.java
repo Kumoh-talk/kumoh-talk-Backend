@@ -1,5 +1,6 @@
 package com.example.demo.global.config.web;
 
+import com.example.demo.global.converter.BoardTypeConverter;
 import com.example.demo.global.converter.CommentTargetBoardTypeConverter;
 import com.example.demo.global.converter.EntireBoardTypeConverter;
 import com.example.demo.global.converter.RecruitmentBoardTypeConverter;
@@ -35,5 +36,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new CommentTargetBoardTypeConverter());
         registry.addConverter(new RecruitmentBoardTypeConverter());
         registry.addConverter(new StatusConverter());
+        registry.addConverter(new BoardTypeConverter());
     }
 }
