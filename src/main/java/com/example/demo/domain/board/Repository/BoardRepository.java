@@ -72,8 +72,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     + "FROM Board b "
     + "LEFT JOIN b.likes l "
     + "LEFT JOIN b.views v "
-    + "WHERE b.status = 'PUBLISHED' AND b.user.id = :userId "
+    + "WHERE b.status = 'PUBLISHED' AND b.user.id = :userId AND b.boardType = :boardType "
     + "GROUP BY b.id, b.title, b.user.nickname, b.boardType, b.createdAt")
-    Page<BoardTitleInfoResponse> findPublishedBoardListByUser(@Param("userId") Long userId, Pageable pageable);
+    Page<BoardTitleInfoResponse> findPublishedBoardListByUser(@Param("userId") Long userId,
+        @Param("boardType") BoardType boardType,
+        Pageable pageable);
 }
 

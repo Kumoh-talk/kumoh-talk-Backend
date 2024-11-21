@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
@@ -154,6 +155,7 @@ public interface BoardApi {
 	)
 	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findMyBoardPageList(
 		@Parameter(hidden = true) Long userId,
+		@Schema(name="boardType",description = "게시물 타입 SEMINAR/NOTICE 중에 선택해야 합니다.",example = "SEMINAR") BoardType boardType,
 		@ParameterObject Pageable pageable);
 
 }

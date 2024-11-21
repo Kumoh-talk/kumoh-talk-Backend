@@ -95,7 +95,8 @@ public class BoardQueryService {
 
     @Transactional(readOnly = true)
     public GlobalPageResponse<BoardTitleInfoResponse> findPublishedBoardListByUser(Long userId,
+        BoardType boardType,
         Pageable pageable) {
-        return GlobalPageResponse.create(boardRepository.findPublishedBoardListByUser(userId,pageable));
+        return GlobalPageResponse.create(boardRepository.findPublishedBoardListByUser(userId,boardType,pageable));
     }
 }

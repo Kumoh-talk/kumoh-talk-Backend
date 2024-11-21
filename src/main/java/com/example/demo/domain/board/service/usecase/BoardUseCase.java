@@ -83,8 +83,8 @@ public class BoardUseCase {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfoResponse> findMyBoardPageList(Long userId, Pageable pageable) {
+    public GlobalPageResponse<BoardTitleInfoResponse> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
         userService.validateUser(userId);
-        return boardQueryService.findPublishedBoardListByUser(userId, pageable);
+        return boardQueryService.findPublishedBoardListByUser(userId,boardType, pageable);
     }
 }

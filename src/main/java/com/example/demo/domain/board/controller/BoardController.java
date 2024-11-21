@@ -83,8 +83,9 @@ public class BoardController implements BoardApi {
     @GetMapping("/v1/boards/me")
     public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findMyBoardPageList(
         Long userId,
+        @RequestParam(defaultValue = "SEMINAR") BoardType boardType,
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findMyBoardPageList(userId,pageable)));
+        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findMyBoardPageList(userId,boardType,pageable)));
     }
 
 }
