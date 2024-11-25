@@ -89,10 +89,13 @@ public interface RecruitmentBoardApi {
                     responseClass = RecruitmentBoardInfoResponse.class,
                     description = "모집 게시물 정보 상세조회 성공"),
             errors = {
-                    @ApiErrorResponseExplanation(errorCode = ErrorCode.BOARD_NOT_FOUND)
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.BOARD_NOT_FOUND),
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.DRAFT_NOT_ACCESS_USER)
+
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(@PathVariable Long recruitmentBoardId);
+    ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(
+            @Parameter(hidden = true) Long userId, @PathVariable Long recruitmentBoardId);
 
     @Operation(
             summary = "모집 게시물 신청폼 상세조회",
@@ -105,10 +108,12 @@ public interface RecruitmentBoardApi {
                     description = "모집 게시물 신청폼 상세조회 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.BOARD_NOT_FOUND),
-                    @ApiErrorResponseExplanation(errorCode = ErrorCode.ACCESS_DENIED)
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.ACCESS_DENIED),
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.DRAFT_NOT_ACCESS_USER)
             }
     )
-    ResponseEntity<ResponseBody<List<RecruitmentFormQuestionResponse>>> getRecruitmentFormInfo(@PathVariable Long recruitmentBoardId);
+    ResponseEntity<ResponseBody<List<RecruitmentFormQuestionResponse>>> getRecruitmentFormInfo(
+            @Parameter(hidden = true) Long userId, @PathVariable Long recruitmentBoardId);
 
     @Operation(
             summary = "모집 게시물 정보 및 신청폼 수정",

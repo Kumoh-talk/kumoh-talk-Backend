@@ -126,16 +126,19 @@ public class RecruitmentBoardService {
     }
 
     @Transactional(readOnly = true)
-    public RecruitmentBoardInfoResponse getBoardInfo(Long recruitmentBoardId) {
+    public RecruitmentBoardInfoResponse getBoardInfo(Long userId, Long recruitmentBoardId) {
         RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
+        validateAccessToBoard(userId, recruitmentBoard);
 
         return RecruitmentBoardInfoResponse.from(recruitmentBoard);
     }
 
     @Transactional(readOnly = true)
-    public List<RecruitmentFormQuestionResponse> getFormInfoList(Long recruitmentBoardId) {
-        List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId);
+    public List<RecruitmentFormQuestionResponse> getFormInfoList(Long userId, Long recruitmentBoardId) {
+        RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
+        validateAccessToBoard(userId, recruitmentBoard);
 
+        List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId);
         if (recruitmentFormQuestionList.isEmpty())
             return new ArrayList<>();
         else {
@@ -194,15 +197,28 @@ public class RecruitmentBoardService {
         Long recruitmentBoardId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
+        // TODO : 최근 임시저장 게시물이 없으면 에러가 아닌 빈 값을 리턴
         return RecruitmentBoardInfoAndFormResponse
                 .builder()
-                .board(getBoardInfo(recruitmentBoardId))
-                .form(getFormInfoList(recruitmentBoardId))
+                .board(getBoardInfo(userId, recruitmentBoardId))
+                .form(getFormInfoList(userId, recruitmentBoardId))
                 .build();
     }
 
     public RecruitmentBoard validateRecruitmentBoard(Long recruitmentBoardId) {
         return recruitmentBoardRepository.findById(recruitmentBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+    public boolean isPublished(RecruitmentBoard recruitmentBoard) {
+        return recruitmentBoard.getStatus() == Status.PUBLISHED;
+    }
+
+    public void validateAccessToBoard(Long userId, RecruitmentBoard recruitmentBoard) {
+        if (!isPublished(recruitmentBoard)) {
+            if (userId == null || !userId.equals(recruitmentBoard.getUser().getId())) {
+                throw new ServiceException(ErrorCode.DRAFT_NOT_ACCESS_USER);
+            }
+        }
     }
 
     public void publishEventFactory(RecruitmentBoard recruitmentBoard) {

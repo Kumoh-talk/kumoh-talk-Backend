@@ -97,19 +97,21 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
      * [모집 게시물 정보 상세조회] <br>
      * 모집 게시물 리스트에서 게시물 클릭 시 상세조회 하는 기능
      */
+    @AssignUserId(required = false)
     @GetMapping("/{recruitmentBoardId}/board")
-    public ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(@PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getBoardInfo(recruitmentBoardId)));
+    public ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(Long userId, @PathVariable Long recruitmentBoardId) {
+        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getBoardInfo(userId, recruitmentBoardId)));
     }
 
     /**
      * [모집 게시물 신청폼 상세조회] <br>
      * 모집 게시물 신청 페이지에서 보여질 신청 질문 리스트 조회 기능
      */
+    @AssignUserId(required = false)
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/{recruitmentBoardId}/form")
-    public ResponseEntity<ResponseBody<List<RecruitmentFormQuestionResponse>>> getRecruitmentFormInfo(@PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getFormInfoList(recruitmentBoardId)));
+    public ResponseEntity<ResponseBody<List<RecruitmentFormQuestionResponse>>> getRecruitmentFormInfo(Long userId, @PathVariable Long recruitmentBoardId) {
+        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getFormInfoList(userId, recruitmentBoardId)));
     }
 
     /**
