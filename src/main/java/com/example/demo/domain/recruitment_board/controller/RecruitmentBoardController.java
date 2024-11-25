@@ -104,7 +104,7 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
 
     /**
      * [모집 게시물 신청폼 상세조회] <br>
-     * 모집 게시물 신청 페이지에서 보여질 신청 질문 리스트 조지 기능
+     * 모집 게시물 신청 페이지에서 보여질 신청 질문 리스트 조회 기능
      */
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/{recruitmentBoardId}/form")
@@ -186,8 +186,8 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     }
 
     /**
-     * [사용자의 임시저장 게시물 페이징 리스트 조회] <br>
-     * 페이지 번호로 구현한 사용자 임시서장 게시물 페이징 리스트 조회 기능
+     * [사용자 작성 게시물 페이징 리스트 조회] <br>
+     * 페이지 번호로 구현한 사용자 작성 게시물 페이징 리스트 조회 기능
      *
      * @param pageable             페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
      *                             -> 정렬 조건은 createdAt <br>

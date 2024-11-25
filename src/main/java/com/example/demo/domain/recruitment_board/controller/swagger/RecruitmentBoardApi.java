@@ -186,14 +186,14 @@ public interface RecruitmentBoardApi {
 
 
     @Operation(
-            summary = "페이지 번호 방식 사용자 임시저장 모집 게시물 페이지 조회",
-            description = "페이지 번호를 통해 사용자의 임시저장 모집 게시물 목록 페이지를 조회합니다."
+            summary = "페이지 번호 방식 사용자 작성 모집 게시물 페이지 조회",
+            description = "페이지 번호를 통해 사용자가 작성한 모집 게시물 목록 페이지를 조회합니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardPageNumResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
                     responseClass = RecruitmentBoardPageNumResponse.class,
-                    description = "사용자 임시저장 모집 게시물 페이지 조회 성공"),
+                    description = "사용자 작성 시모집 게시물 페이지 조회 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND)
             }
