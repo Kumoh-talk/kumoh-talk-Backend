@@ -9,7 +9,8 @@ public enum RecruitmentBoardTag {
     BACKEND,
     AI,
     MOBILE,
-    SECURITY;
+    SECURITY,
+    ETC;
 
     public static final String errorMsg = "태그는 frontend, backend, ai, mobile, security 중 하나여야 합니다.";
 
