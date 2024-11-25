@@ -81,7 +81,8 @@ public interface RecruitmentBoardApi {
 
     @Operation(
             summary = "모집 게시물 정보 상세조회",
-            description = "recruitmentBoardId에 해당하는 모집 게시물 정보를 상세조회 합니다."
+            description = "recruitmentBoardId에 해당하는 모집 게시물 정보를 상세조회 합니다.\n" +
+                    "임시저장 게시물은 작성자만이 조회할 수 있습니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardInfoResponse.class)))
     @ApiResponseExplanations(
@@ -99,7 +100,9 @@ public interface RecruitmentBoardApi {
 
     @Operation(
             summary = "모집 게시물 신청폼 상세조회",
-            description = "recruitmentBoardId에 해당하는 모집 게시물 신청폼을 상세조회 합니다."
+            description = "recruitmentBoardId에 해당하는 모집 게시물 신청폼을 상세조회 합니다. \n" +
+                    "임시저장 신청폼은 작성자만이 조회할 수 있습니다. \n" +
+                    "마감기한이 지난 신청폼은 작성자만이 조회 할 수 있습니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentFormQuestionResponse.class)))
     @ApiResponseExplanations(
@@ -117,8 +120,9 @@ public interface RecruitmentBoardApi {
 
     @Operation(
             summary = "모집 게시물 정보 및 신청폼 수정",
-            description = "recruitmentBoardId에 해당하는 모집 게시물 정보 및 신청폼을 수정합니다.\n" +
-                    "만약 임시저장된 게시물을 불러온 후 그 게시물을 저장한다면 저장 api가 아닌 수정 api를 요청해야합니다."
+            description = "recruitmentBoardId에 해당하는 모집 게시물 정보 및 신청폼을 수정합니다. \n" +
+                    "만약 임시저장된 게시물을 불러온 후 그 게시물을 저장한다면 저장 api가 아닌 수정 api를 요청해야합니다. \n" +
+                    "게시물의 신청자가 한 명이라도 있으면 게시물 수정이 불가능합니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardInfoAndFormResponse.class)))
     @ApiResponseExplanations(
@@ -156,7 +160,8 @@ public interface RecruitmentBoardApi {
 
     @Operation(
             summary = "사용자의 최근 임시저장 모집 게시물 조회",
-            description = "사용자가 최근에 임시저장한 모집 게시물을 조회합니다."
+            description = "사용자가 최근에 임시저장한 모집 게시물을 조회합니다.\n" +
+                    "최근 임시저장 게시물이 없다면, board, form에 null이 응답됩니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardInfoAndFormResponse.class)))
     @ApiResponseExplanations(
@@ -164,8 +169,7 @@ public interface RecruitmentBoardApi {
                     responseClass = RecruitmentBoardInfoAndFormResponse.class,
                     description = "사용자 최근 임시저장 모집 게시물 조회 성공"),
             errors = {
-                    @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND),
-                    @ApiErrorResponseExplanation(errorCode = ErrorCode.BOARD_NOT_FOUND)
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND)
             }
     )
     ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> getDraftRecruitmentBoard(

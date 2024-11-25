@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -137,6 +138,7 @@ public class RecruitmentBoardService {
     public List<RecruitmentFormQuestionResponse> getFormInfoList(Long userId, Long recruitmentBoardId) {
         RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
         validateAccessToBoard(userId, recruitmentBoard);
+        validateDeadLine(userId, recruitmentBoard);
 
         List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId);
         if (recruitmentFormQuestionList.isEmpty())
@@ -194,15 +196,23 @@ public class RecruitmentBoardService {
     public RecruitmentBoardInfoAndFormResponse getLatestDraftBoardAndForm(Long userId) {
         userService.validateUser(userId);
 
-        Long recruitmentBoardId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        Long recruitmentBoardId;
+        try {
+            recruitmentBoardId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
+                    .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        // TODO : 최근 임시저장 게시물이 없으면 에러가 아닌 빈 값을 리턴
-        return RecruitmentBoardInfoAndFormResponse
-                .builder()
-                .board(getBoardInfo(userId, recruitmentBoardId))
-                .form(getFormInfoList(userId, recruitmentBoardId))
-                .build();
+            return RecruitmentBoardInfoAndFormResponse
+                    .builder()
+                    .board(getBoardInfo(userId, recruitmentBoardId))
+                    .form(getFormInfoList(userId, recruitmentBoardId))
+                    .build();
+        } catch (ServiceException e) {
+            return RecruitmentBoardInfoAndFormResponse
+                    .builder()
+                    .board(null)
+                    .form(null)
+                    .build();
+        }
     }
 
     public RecruitmentBoard validateRecruitmentBoard(Long recruitmentBoardId) {
@@ -217,6 +227,14 @@ public class RecruitmentBoardService {
         if (!isPublished(recruitmentBoard)) {
             if (userId == null || !userId.equals(recruitmentBoard.getUser().getId())) {
                 throw new ServiceException(ErrorCode.DRAFT_NOT_ACCESS_USER);
+            }
+        }
+    }
+
+    public void validateDeadLine(Long userId, RecruitmentBoard recruitmentBoard) {
+        if (recruitmentBoard.getRecruitmentDeadline().isBefore(LocalDateTime.now())) {
+            if (userId == null || !userId.equals(recruitmentBoard.getUser().getId())) {
+                throw new ServiceException(ErrorCode.DEADLINE_EXPIRED);
             }
         }
     }

@@ -96,6 +96,8 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     /**
      * [모집 게시물 정보 상세조회] <br>
      * 모집 게시물 리스트에서 게시물 클릭 시 상세조회 하는 기능
+     *
+     * @apiNote 1. 임시저장 게시물은 작성자만 조회할 수 있도록 구현
      */
     @AssignUserId(required = false)
     @GetMapping("/{recruitmentBoardId}/board")
@@ -106,6 +108,9 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     /**
      * [모집 게시물 신청폼 상세조회] <br>
      * 모집 게시물 신청 페이지에서 보여질 신청 질문 리스트 조회 기능
+     *
+     * @apiNote 1. 임서저장 신청폼은 작성자만 조회할 수 있도록 구현 <br>
+     * 2. 마감기한이 지난 경우 작성자가 아니면 폼 조회를 할 수 없도록 구현
      */
     @AssignUserId(required = false)
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
