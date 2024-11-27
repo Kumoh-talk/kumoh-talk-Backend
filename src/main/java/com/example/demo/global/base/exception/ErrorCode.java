@@ -39,6 +39,7 @@ public enum ErrorCode {
     USERID_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_0003", "존재하지 않는 아이디입니다."),
     EXIST_SAME_USERID(HttpStatus.CONFLICT, "AUTH_0004", "이미 사용중인 아이디 입니다."),
     EXIST_SAME_NICKNAME(HttpStatus.CONFLICT, "AUTH_0005", "이미 사용중인 닉네임 입니다."),
+    ADDITIONAL_INFO_NOT_UPDATED(HttpStatus.UNAUTHORIZED, "AUTH_0006", "추가정보가 업데이트되지 않았습니다."),
 
     // User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_0001", "해당 사용자는 존재하지 않는 사용자입니다."),

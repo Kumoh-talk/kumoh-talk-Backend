@@ -4,6 +4,7 @@ import com.example.demo.domain.user_addtional_info.domain.dto.request.CreateUser
 import com.example.demo.domain.user_addtional_info.domain.vo.StudentStatus;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -27,6 +28,7 @@ public class UserAdditionalInfo extends BaseEntity {
     private int grade;
     private StudentStatus studentStatus;
     private String phoneNumber;
+    private boolean isUpdated;
 
     public static UserAdditionalInfo from(CreateUserAdditionalInfoRequest request) {
         return UserAdditionalInfo.builder()
@@ -36,6 +38,13 @@ public class UserAdditionalInfo extends BaseEntity {
                 .grade(request.grade())
                 .studentStatus(request.studentStatus())
                 .phoneNumber(request.phoneNumber())
+                .isUpdated(true)
                 .build();
+    }
+
+    public void updateAcademicInfo(int grade, StudentStatus studentStatus) {
+        this.grade = grade;
+        this.studentStatus = studentStatus;
+        this.isUpdated = true;
     }
 }

@@ -13,6 +13,7 @@ public record UserAdditionalInfoResponse(
         int grade,
         StudentStatus studentStatus,
         String phoneNumber,
+        boolean isUpdated,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime createdAt,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -26,6 +27,7 @@ public record UserAdditionalInfoResponse(
                 userAdditionalInfo.getGrade(),
                 userAdditionalInfo.getStudentStatus(),
                 userAdditionalInfo.getPhoneNumber(),
+                userAdditionalInfo.isUpdated(),
                 userAdditionalInfo.getCreatedAt(),
                 userAdditionalInfo.getUpdatedAt()
         );

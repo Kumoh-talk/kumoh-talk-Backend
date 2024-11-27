@@ -1,7 +1,9 @@
 package com.example.demo.domain.user_addtional_info.controller;
 
 import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.domain.user_addtional_info.api.UserAdditionalInfoApi;
 import com.example.demo.domain.user_addtional_info.domain.dto.request.CreateUserAdditionalInfoRequest;
+import com.example.demo.domain.user_addtional_info.domain.dto.request.UpdateUserAcademicInfoRequest;
 import com.example.demo.domain.user_addtional_info.domain.dto.response.UserAdditionalInfoResponse;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.aop.AssignUserId;
@@ -17,7 +19,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/userAdditionalInfos")
-public class UserAdditionalInfoController {
+public class UserAdditionalInfoController implements UserAdditionalInfoApi {
 
     private final UserAdditionalInfoService userAdditionalInfoService;
 
@@ -44,5 +46,18 @@ public class UserAdditionalInfoController {
     public ResponseEntity<ResponseBody<TokenResponse>> createUserAdditionalInfo(Long userId,
                                                                                 @RequestBody @Valid CreateUserAdditionalInfoRequest request) {
         return ResponseEntity.ok(createSuccessResponse( userAdditionalInfoService.createUserAdditionalInfo(userId, request)));
+    }
+
+    /**
+     * 매 학기마다 진행되는 학적 정보 변경 API
+     * - 재학상태와 학년 변경
+     */
+    @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_ACTIVE_USER')")
+    @PatchMapping("/academic-info")
+    public ResponseEntity<ResponseBody<Void>> updateUserAcademicInfo(Long userId,
+                                                                     @RequestBody @Valid UpdateUserAcademicInfoRequest request) {
+        userAdditionalInfoService.updateUserAcademicInfo(userId, request);
+        return ResponseEntity.ok(createSuccessResponse());
     }
 }
