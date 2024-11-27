@@ -4,9 +4,12 @@ package com.example.demo.domain.user.controller;
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 
+import com.example.demo.domain.board.api.BoardFileApi;
 import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.domain.user.api.UserApi;
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
 import com.example.demo.domain.user.domain.dto.response.UserInfo;
+import com.example.demo.domain.user.domain.dto.response.UserProfile;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.global.aop.AssignUserId;
@@ -23,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")
-public class UserController {
+public class UserController implements UserApi {
 
     private final UserService userService;
 
@@ -69,7 +72,7 @@ public class UserController {
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PatchMapping("/me/nickname")
     public ResponseEntity<ResponseBody<Void>> updateNickname(@RequestBody @Valid UpdateNicknameRequest request,
-                                                                      Long userId) {
+                                                             Long userId) {
         userService.updateNickname(userId, request);
         return ResponseEntity.ok(createSuccessResponse());
     }
@@ -82,5 +85,13 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<ResponseBody<UserInfo>> getUserInfo(Long userId) {
         return ResponseEntity.ok(createSuccessResponse(userService.getUserInfo(userId)));
+    }
+
+    /**
+     * 외부로 노출되는 사용자 정보 확인 api
+     */
+    @GetMapping("/{userId}")
+    public ResponseEntity<ResponseBody<UserProfile>> getUserProfile(@PathVariable Long userId) {
+        return ResponseEntity.ok(createSuccessResponse(userService.getUserProfile(userId)));
     }
 }
