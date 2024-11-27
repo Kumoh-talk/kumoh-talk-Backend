@@ -9,6 +9,7 @@ import com.example.demo.domain.report.domain.dto.ReportResponse;
 import com.example.demo.domain.report.repository.ReportRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,8 @@ public class ReportService {
         discordReportClient.sendReport(DiscordMessage.createCommentReportMessage(user, comment));
     }
 
-    public Page<ReportResponse> getAllReport(Pageable pageable) {
-        return reportRepository.findAll(pageable).map(ReportResponse::from);
+    public GlobalPageResponse<ReportResponse> getAllReport(Pageable pageable) {
+        Page<ReportResponse> pages = reportRepository.findAll(pageable).map(ReportResponse::from);
+        return GlobalPageResponse.create(pages);
     }
 }
