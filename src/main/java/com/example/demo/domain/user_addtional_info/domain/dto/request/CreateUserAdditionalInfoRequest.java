@@ -13,7 +13,7 @@ public record CreateUserAdditionalInfoRequest(
         @NotBlank(message = "학과는 빈 값일 수 없습니다.") String department,
         @NotNull(message = "학번은 빈 값일 수 없습니다.") int studentId,
         @NotNull(message = "학년은 빈 값일 수 없습니다.") int grade,
-        @ValidEnum(enumClass = StudentStatus.class,message = "재학 상태는 휴학, 재학, 좋업 중 하나여야 합니다.") StudentStatus studentStatus,
+        @ValidEnum(enumClass = StudentStatus.class,message = "재학 상태는 휴학, 재학, 졸업 중 하나여야 합니다.") StudentStatus studentStatus,
         @NotBlank(message = "전화번호는 빈 값일 수 없습니다.") String phoneNumber
 ) {
 }
