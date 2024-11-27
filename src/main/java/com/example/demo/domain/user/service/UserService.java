@@ -6,6 +6,7 @@ import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
 import com.example.demo.domain.user.domain.dto.response.UserInfo;
+import com.example.demo.domain.user.domain.dto.response.UserProfile;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -62,5 +63,10 @@ public class UserService {
     public UserInfo getUserInfo(Long userId) {
         User user = this.validateUser(userId);
         return UserInfo.from(user);
+    }
+
+    public UserProfile getUserProfile(Long userId) {
+        User user = this.validateUser(userId);
+        return UserProfile.create(user);
     }
 }

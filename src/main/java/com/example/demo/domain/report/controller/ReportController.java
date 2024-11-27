@@ -1,10 +1,12 @@
 package com.example.demo.domain.report.controller;
 
+import com.example.demo.domain.report.api.ReportApi;
 import com.example.demo.domain.report.service.ReportService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.demo.global.base.dto.ResponseUtil.createSuccessResponse;
@@ -12,7 +14,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/reports")
-public class ReportController {
+public class ReportController implements ReportApi {
 
     private final ReportService reportService;
 
@@ -20,6 +22,7 @@ public class ReportController {
      * 신고하기 - comment
      */
     @AssignUserId
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PostMapping("/comments/{commentId}")
     public ResponseEntity<ResponseBody<Void>> report(@PathVariable Long commentId,
                                                      Long userId) {

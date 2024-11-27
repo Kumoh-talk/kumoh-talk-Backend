@@ -1,5 +1,6 @@
 package com.example.demo.domain.newsletter.controller;
 
+import com.example.demo.domain.newsletter.api.NewsletterAdminApi;
 import com.example.demo.domain.newsletter.domain.dto.request.EmailNoticeRequest;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
 import com.example.demo.domain.newsletter.domain.dto.response.SeminarNoticeBasicForm;
@@ -21,7 +22,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/admin/newsletters")
 @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
-public class NewsletterAdminController {
+public class NewsletterAdminController implements NewsletterAdminApi {
 
     private final NewsletterAdminService newsletterAdminService;
 

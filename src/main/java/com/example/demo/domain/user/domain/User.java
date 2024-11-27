@@ -80,7 +80,10 @@ public class User extends BaseEntity {
     }
 
     public void setInitialInfo(String nickname, String name, String defaultImageUrl) {
-
+        this.nickname = nickname;
+        this.name = name;
+        this.profileImageUrl = defaultImageUrl;
+        this.role = Role.ROLE_USER;
     }
 
     public void updateNickname(String nickname) {

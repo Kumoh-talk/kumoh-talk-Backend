@@ -54,6 +54,7 @@ public class NewsletterService {
     public void updateNewsletterNotify(String email, NewsletterUpdateNotifyRequest request) {
         Newsletter newsletter = newsletterRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
+        this.validateSubscribe(request.email());
         newsletter.updateNewsletter(request);
     }
 
