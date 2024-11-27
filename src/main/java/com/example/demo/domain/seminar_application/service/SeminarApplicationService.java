@@ -8,6 +8,7 @@ import com.example.demo.domain.seminar_application.repository.SeminarApplication
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
@@ -48,9 +49,10 @@ public class SeminarApplicationService {
                 : Optional.empty(); // 첫 생성이 아닐 경우 빈 Optional 반환
     }
 
-    public Page<SeminarApplicationInfo> getSeminarApplicationByUserId(Long userId, Pageable pageable) {
+    public GlobalPageResponse<SeminarApplicationInfo> getSeminarApplicationByUserId(Long userId, Pageable pageable) {
         User user = userService.validateUser(userId);
-        return seminarApplicationRepository.findByUser(user, pageable);
+        Page<SeminarApplicationInfo> pages = seminarApplicationRepository.findByUser(user, pageable);
+        return GlobalPageResponse.create(pages);
     }
 
     @Transactional

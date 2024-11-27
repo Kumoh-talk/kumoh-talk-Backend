@@ -1,5 +1,6 @@
 package com.example.demo.domain.newsletter.controller;
 
+import com.example.demo.domain.newsletter.api.NewsletterApi;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
 import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
 import com.example.demo.domain.newsletter.service.NewsletterService;
@@ -16,7 +17,7 @@ import static com.example.demo.global.regex.UserRegex.EMAIL_REGEXP;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/newsletters")
-public class NewsletterController {
+public class NewsletterController implements NewsletterApi {
 
     private final NewsletterService newsletterService;
 

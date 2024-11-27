@@ -1,5 +1,6 @@
 package com.example.demo.domain.user.controller;
 
+import com.example.demo.domain.user.api.UserAdminApi;
 import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
 import com.example.demo.domain.user.domain.dto.response.UserInfo;
 import com.example.demo.domain.user.service.UserAdminService;
@@ -21,7 +22,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/admin/users")
 @PreAuthorize("isAuthenticated() and hasRole('ROLE_ADMIN')")
-public class UserAdminController {
+public class UserAdminController implements UserAdminApi {
 
     private final UserAdminService userAdminService;
 

@@ -2,10 +2,12 @@ package com.example.demo.domain.seminar_application.domain.dto.response;
 
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Schema
 public record SeminarApplicationInfo(
         Long id,
         String name,

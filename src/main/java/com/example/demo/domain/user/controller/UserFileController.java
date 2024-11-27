@@ -1,6 +1,7 @@
 package com.example.demo.domain.user.controller;
 
 import com.example.demo.domain.board.domain.dto.request.FileRequest;
+import com.example.demo.domain.user.api.UserFileApi;
 import com.example.demo.domain.user.domain.dto.request.ChangeProfileUrlRequest;
 import com.example.demo.domain.user.domain.dto.request.ProfilePresignedUrlRequest;
 import com.example.demo.domain.user.service.UserFileService;
@@ -17,7 +18,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users/files")
-public class UserFileController {
+public class UserFileController implements UserFileApi {
 
     private final UserFileService userFileService;
 
