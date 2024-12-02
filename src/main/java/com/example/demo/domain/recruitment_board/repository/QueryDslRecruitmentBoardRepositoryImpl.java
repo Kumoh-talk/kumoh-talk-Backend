@@ -42,20 +42,24 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
                             recruitmentBoard.type.eq(boardType),
                             recruitmentBoard.status.eq(Status.PUBLISHED))
 //                .where(recruitment.user.id.ne(userId))
-                    .orderBy(recruitmentBoard.recruitmentDeadline.asc())
+                    .orderBy(recruitmentBoard.recruitmentDeadline.asc(), recruitmentBoard.id.asc())
                     .limit(size + 1)
                     .fetch();
         } else {
             return jpaQueryFactory
                     .selectFrom(recruitmentBoard)
                     .join(recruitmentBoard.user, user).fetchJoin()
-                    .where(recruitmentBoard.recruitmentDeadline.goe(LocalDateTime.now()),
-                            recruitmentBoard.recruitmentDeadline.goe(lastBoard.getRecruitmentDeadline()),
-                            recruitmentBoard.id.ne(lastBoard.getId()),
-                            recruitmentBoard.type.eq(boardType),
-                            recruitmentBoard.status.eq(Status.PUBLISHED))
+                    .where(recruitmentBoard.recruitmentDeadline.goe(LocalDateTime.now())
+                            .and(recruitmentBoard.type.eq(boardType))
+                            .and(recruitmentBoard.status.eq(Status.PUBLISHED))
+                            .and(
+                                    recruitmentBoard.recruitmentDeadline.eq(lastBoard.getRecruitmentDeadline())
+                                            .and(recruitmentBoard.id.gt(lastBoard.getId()))
+                                            .or(recruitmentBoard.recruitmentDeadline.gt(lastBoard.getRecruitmentDeadline()))
+                            )
+                    )
 //                .where(recruitment.user.id.ne(userId))
-                    .orderBy(recruitmentBoard.recruitmentDeadline.asc())
+                    .orderBy(recruitmentBoard.recruitmentDeadline.asc(), recruitmentBoard.id.asc())
                     .limit(size + 1)
                     .fetch();
         }

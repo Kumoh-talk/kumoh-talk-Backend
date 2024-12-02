@@ -65,6 +65,7 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
      * @apiNote 1. 이전 페이지에서 출력한 가장 마지막 게시물의 Id를 lastBoardId에 실어 요청하면, 다음 게시물부터 페이징 사이즈에 맞게 응답 <br>
      * 2. 가장 처음 요청을 위해 lastBoardId은 nullable로 설정 <br>
      * -> lastBoardId가 널이라면 서비스 로직에서 맨 처음 게시물 Id를 조회하여 그 게시물부터 페이징 사이즈에 맞게 응답 <br>
+     * 3. 정렬 기준 : 모집 마감일 오름차순
      */
     @GetMapping("/no-offset")
     public ResponseEntity<ResponseBody<RecruitmentBoardNoOffsetResponse>> getRecruitmentBoardListByNoOffset(
@@ -180,7 +181,8 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
      *
      * @param size        한 페이지의 사이즈
      * @param lastBoardId 이전 페이지 마지막 게시물 Id(nullable)
-     * @apiNote 현재 도메인의 /no-offset API 설명 참조
+     * @apiNote 1. 현재 도메인의 /no-offset API 설명 참조
+     * 2. 정렬 기준 : 생성 날짜 내림차순
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
