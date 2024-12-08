@@ -82,7 +82,8 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_DEV }}
         run: |
           FILE_PATH="dev_exe.zip"  # 압축된 파일의 경로
+          PR_TITLE="${{ github.event.pull_request.title }}"  # PR 제목 가져오기
           curl -X POST -H "Content-Type: multipart/form-data" \
           -F "file=@${FILE_PATH}" \
-          -F "payload_json={\"content\": \"Here is the dev_exe folder as a zip file:\"}" \
+          -F "payload_json={\"content\": \"Here is the ${PR_TITLE} folder as a zip file:\"}" \
           "${DISCORD_WEBHOOK_URL}"
