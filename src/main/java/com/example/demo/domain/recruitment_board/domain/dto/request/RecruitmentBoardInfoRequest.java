@@ -35,11 +35,11 @@ public class RecruitmentBoardInfoRequest {
     @Size(min = 1, max = 1000, message = "본문 내용 최대 길이는 1000글자 입니다.")
     private String content;
 
-    @Schema(description = "모집 게시물 타입 정보(study, project, mentoring, seminar_notice, seminar_summary)", example = "study")
+    @Schema(description = "모집 게시물 타입 정보[study, project, mentoring]", example = "study")
     @NotNull(message = "타입을 선택해야합니다.")
     private RecruitmentBoardType type;
 
-    @Schema(description = "모집 게시물 태그 정보(frontend, backend, ai, mobile, security)", example = "frontend")
+    @Schema(description = "모집 게시물 태그 정보[frontend, backend, ai, mobile, security, etc]", example = "frontend")
     @NotNull(message = "태그를 선택해야합니다.")
     private RecruitmentBoardTag tag;
 

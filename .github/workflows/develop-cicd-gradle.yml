@@ -71,27 +71,19 @@ jobs:
         id: build-image
         run: |
           docker build -t kumoh_talk:latest .
-          docker save kumoh_talk:latest -o kumoh_talk:latest.tar
+          docker save kumoh_talk:latest -o ./dev_exe/kumoh_talk:latest.tar
 
-      - name: Upload to S3
+      - name: Compress dev_exe folder
         run: |
-          aws s3 cp kumoh_talk:latest.tar s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:latest.tar
+          zip -r dev_exe.zip dev_exe
 
-      - name: Create .env file
+      - name: Send zip file to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_DEV }}
         run: |
-          echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
-          echo "USE_PROFILE=dev" >> .env
-
-      - name: SSH Connect
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ubuntu
-          key: ${{ secrets.DEV_EC2_PRIVATE_KEY }}
-          script: |
-            sudo docker stop spring-boot-app || true
-            sudo docker rm spring-boot-app || true
-            aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/kumoh_talk:latest.tar kumoh_talk:latest.tar
-            sudo docker load -i kumoh_talk:latest.tar
-            docker-compose up -d
-            sudo docker image prune -a -f
+          FILE_PATH="dev_exe.zip"  # 압축된 파일의 경로
+          PR_TITLE="${{ github.event.pull_request.title }}"  # PR 제목 가져오기
+          curl -X POST -H "Content-Type: multipart/form-data" \
+          -F "file=@${FILE_PATH}" \
+          -F "payload_json={\"content\": \"Here is the ${PR_TITLE} folder as a zip file:\"}" \
+          "${DISCORD_WEBHOOK_URL}"

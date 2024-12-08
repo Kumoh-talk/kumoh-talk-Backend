@@ -29,7 +29,8 @@ public interface RecruitmentApplicationApi {
 
     @Operation(
             summary = "모집 신청 저장",
-            description = "recruitmentBoardId에 해당하는 모집 게시물에 신청을 저장합니다."
+            description = "recruitmentBoardId에 해당하는 모집 게시물에 신청을 저장합니다. \n" +
+                    "마감 기한 이전에 신청이 가능합니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentApplicationResponse.class)))
     @ApiResponseExplanations(
@@ -92,7 +93,8 @@ public interface RecruitmentApplicationApi {
 
     @Operation(
             summary = "신청서 수정",
-            description = "applicantId에 해당하는 신청서를 수정합니다."
+            description = "applicantId에 해당하는 신청서를 수정합니다.\n" +
+                    "마감기한 이전에 수정이 가능합니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentApplicationResponse.class)))
     @ApiResponseExplanations(
@@ -118,7 +120,8 @@ public interface RecruitmentApplicationApi {
 
     @Operation(
             summary = "신청서 삭제",
-            description = "applicantId에 해당하는 신청서를 삭제합니다."
+            description = "applicantId에 해당하는 신청서를 삭제합니다.\n" +
+                    "마감 기한 이전에 삭제가 가능합니다."
     )
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(

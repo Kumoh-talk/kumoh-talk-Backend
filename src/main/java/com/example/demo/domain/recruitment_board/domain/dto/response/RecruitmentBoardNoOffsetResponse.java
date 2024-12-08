@@ -60,9 +60,9 @@ public class RecruitmentBoardNoOffsetResponse {
         private String title;
         @Schema(description = "모집 게시물 요약 내용 정보", example = "board summary")
         private String summary;
-        @Schema(description = "모집 게시물 타입 정보", example = "STUDY")
+        @Schema(description = "모집 게시물 타입 정보[STUDY, PROJECT, MENTORING]", example = "STUDY")
         private RecruitmentBoardType type;
-        @Schema(description = "모집 게시물 태그 정보", example = "FRONTEND")
+        @Schema(description = "모집 게시물 태그 정보[FRONTEND, BACKEND, AI, MOBILE, SECURITY, ETC]", example = "FRONTEND")
         private RecruitmentBoardTag tag;
         @Schema(description = "모집 게시물 모집 대상 정보", example = "people using spring")
         private String recruitmentTarget;

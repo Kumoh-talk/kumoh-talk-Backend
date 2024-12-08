@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -126,16 +127,20 @@ public class RecruitmentBoardService {
     }
 
     @Transactional(readOnly = true)
-    public RecruitmentBoardInfoResponse getBoardInfo(Long recruitmentBoardId) {
+    public RecruitmentBoardInfoResponse getBoardInfo(Long userId, Long recruitmentBoardId) {
         RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
+        validateAccessToBoard(userId, recruitmentBoard);
 
         return RecruitmentBoardInfoResponse.from(recruitmentBoard);
     }
 
     @Transactional(readOnly = true)
-    public List<RecruitmentFormQuestionResponse> getFormInfoList(Long recruitmentBoardId) {
-        List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId);
+    public List<RecruitmentFormQuestionResponse> getFormInfoList(Long userId, Long recruitmentBoardId) {
+        RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
+        validateAccessToBoard(userId, recruitmentBoard);
+        validateDeadLine(userId, recruitmentBoard);
 
+        List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId);
         if (recruitmentFormQuestionList.isEmpty())
             return new ArrayList<>();
         else {
@@ -191,18 +196,47 @@ public class RecruitmentBoardService {
     public RecruitmentBoardInfoAndFormResponse getLatestDraftBoardAndForm(Long userId) {
         userService.validateUser(userId);
 
-        Long recruitmentBoardId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        Long recruitmentBoardId;
+        try {
+            recruitmentBoardId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
+                    .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        return RecruitmentBoardInfoAndFormResponse
-                .builder()
-                .board(getBoardInfo(recruitmentBoardId))
-                .form(getFormInfoList(recruitmentBoardId))
-                .build();
+            return RecruitmentBoardInfoAndFormResponse
+                    .builder()
+                    .board(getBoardInfo(userId, recruitmentBoardId))
+                    .form(getFormInfoList(userId, recruitmentBoardId))
+                    .build();
+        } catch (ServiceException e) {
+            return RecruitmentBoardInfoAndFormResponse
+                    .builder()
+                    .board(null)
+                    .form(null)
+                    .build();
+        }
     }
 
     public RecruitmentBoard validateRecruitmentBoard(Long recruitmentBoardId) {
         return recruitmentBoardRepository.findById(recruitmentBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+    public boolean isPublished(RecruitmentBoard recruitmentBoard) {
+        return recruitmentBoard.getStatus() == Status.PUBLISHED;
+    }
+
+    public void validateAccessToBoard(Long userId, RecruitmentBoard recruitmentBoard) {
+        if (!isPublished(recruitmentBoard)) {
+            if (userId == null || !userId.equals(recruitmentBoard.getUser().getId())) {
+                throw new ServiceException(ErrorCode.DRAFT_NOT_ACCESS_USER);
+            }
+        }
+    }
+
+    public void validateDeadLine(Long userId, RecruitmentBoard recruitmentBoard) {
+        if (recruitmentBoard.getRecruitmentDeadline().isBefore(LocalDateTime.now())) {
+            if (userId == null || !userId.equals(recruitmentBoard.getUser().getId())) {
+                throw new ServiceException(ErrorCode.DEADLINE_EXPIRED);
+            }
+        }
     }
 
     public void publishEventFactory(RecruitmentBoard recruitmentBoard) {

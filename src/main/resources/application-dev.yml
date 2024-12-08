@@ -31,7 +31,7 @@ spring:
     show-sql: true
 
 swagger:
-  server-url: http://${dev.backend.ip}:8080
+  server-url: http://localhost:8080
   description: "develop 백엔드 서버"
 
 

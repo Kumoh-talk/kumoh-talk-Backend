@@ -44,7 +44,8 @@ public interface CommentApi {
     )
     ResponseEntity<ResponseBody<CommentResponse>> getBoardComments(
             @PathVariable Long boardId,
-            @Parameter(description = "게시물 타입(basic, recruitment)", example = "basic") @RequestParam CommentTargetBoardType commentTargetBoardType);
+            @Parameter(description = "게시물 타입(basic, recruitment) \n" +
+                    "세미나, 공지사항 게시물은 basic, 스멘프 게시물은 recruitment로 설정", example = "basic") @RequestParam CommentTargetBoardType commentTargetBoardType);
 
     @Operation(
             summary = "사용자 작성 댓글 페이지 조회",
@@ -83,7 +84,8 @@ public interface CommentApi {
     ResponseEntity<ResponseBody<CommentInfoResponse>> createComment(
             @Parameter(hidden = true) Long userId,
             @PathVariable Long boardId,
-            @Parameter(description = "게시물 타입(basic, recruitment)", example = "basic") @RequestParam CommentTargetBoardType commentTargetBoardType,
+            @Parameter(description = "게시물 타입(basic, recruitment) \n" +
+                    "세미나, 공지사항 게시물은 basic, 스멘프 게시물은 recruitment로 설정", example = "basic") @RequestParam CommentTargetBoardType commentTargetBoardType,
             @RequestBody @Valid CommentRequest commentRequest);
 
     @Operation(

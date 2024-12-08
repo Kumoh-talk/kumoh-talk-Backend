@@ -31,9 +31,9 @@ public class RecruitmentBoardInfoResponse {
     private String host;
     @Schema(description = "모집 게시물 내용 정보", example = "board content")
     private String content;
-    @Schema(description = "모집 게시물 타입 정보", example = "STUDY")
+    @Schema(description = "모집 게시물 타입 정보[STUDY, PROJECT, MENTORING]", example = "STUDY")
     private RecruitmentBoardType type;
-    @Schema(description = "모집 게시물 태그 정보", example = "FRONTEND")
+    @Schema(description = "모집 게시물 태그 정보[FRONTEND, BACKEND, AI, MOBILE, SECURITY, ETC]", example = "FRONTEND")
     private RecruitmentBoardTag tag;
     @Schema(description = "모집 게시물 상태 정보", example = "PUBLISHED")
     private Status status;
