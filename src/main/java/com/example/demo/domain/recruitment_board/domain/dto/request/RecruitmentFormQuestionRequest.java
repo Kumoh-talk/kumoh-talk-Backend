@@ -27,7 +27,7 @@ public class RecruitmentFormQuestionRequest {
     @Size(min = 1, max = 100, message = "질문 최대 길이는 100글자 입니다.")
     private String question;
 
-    @Schema(description = "신청폼 질문 타입 정보(choice, description, checkbox)", example = "description")
+    @Schema(description = "신청폼 질문 타입 정보[choice, description, checkbox]", example = "description")
     @NotNull(message = "질문 타입을 선택해야합니다.")
     private QuestionType type;
 

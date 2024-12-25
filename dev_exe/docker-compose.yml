@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  spring-boot-app:
+    image: kumoh_talk:latest
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"  # 백엔드 API 포트
+    environment:
+      - USE_PROFILE=dev
+    depends_on:
+      kumoh-talk-mysql:
+        condition: service_healthy
+      kumoh-talk-redis:
+        condition: service_healthy
+
+  kumoh-talk-mysql:
+    image: mysql:latest
+    container_name: kumoh-talk-mysql
+    ports:
+      - 3310:3306
+    environment:
+      MYSQL_DATABASE: kumoh_talk
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_ROOT_PASSWORD: kumohtalk1234@
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    restart: always  # 자동 재시작 설정
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kumoh-talk-redis:
+    image: redis
+    command: redis-server --port 6379
+    container_name: kumoh-talk-redis
+    ports:
+      - "6381:6379"
+    restart: always  # 자동 재시작 설정
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

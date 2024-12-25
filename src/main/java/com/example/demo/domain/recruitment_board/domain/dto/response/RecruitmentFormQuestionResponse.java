@@ -24,7 +24,7 @@ public class RecruitmentFormQuestionResponse {
     private Integer number;
     @Schema(description = "신청폼 질문 내용 정보", example = "what is your hobby?")
     private String question;
-    @Schema(description = "신청폼 질문 타입 정보", example = "DESCRIPTION")
+    @Schema(description = "신청폼 질문 타입 정보[CHOICE, DESCRIPTION, CHECKBOX]", example = "DESCRIPTION")
     private QuestionType type;
     @Schema(description = "신청폼 질문 필수여부 정보", example = "true")
     private Boolean isEssential;

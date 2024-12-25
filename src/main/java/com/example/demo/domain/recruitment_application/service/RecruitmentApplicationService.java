@@ -29,7 +29,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +51,7 @@ public class RecruitmentApplicationService {
     public RecruitmentApplicationResponse createApplication(Long userId, Long recruitmentBoardId, RecruitmentApplicationRequest request) {
         User user = userService.validateUser(userId);
         RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingQuestionList(recruitmentBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        validateDeadLine(recruitmentBoard);
+        recruitmentBoardService.validateDeadLine(userId, recruitmentBoard);
         validateEssential(recruitmentBoard, request);
         if (recruitmentApplicantRepository.existsByUser_IdAndRecruitmentBoard_Id(userId, recruitmentBoardId)) {
             throw new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_EXIST);
@@ -117,7 +116,7 @@ public class RecruitmentApplicationService {
         }
         RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingQuestionList(applicant.getRecruitmentBoard().getId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        validateDeadLine(recruitmentBoard);
+        recruitmentBoardService.validateDeadLine(userId, recruitmentBoard);
         validateEssential(recruitmentBoard, request);
 
         List<RecruitmentApplicantDescriptiveAnswer> recruitmentApplicantDescriptiveAnswerList = recruitmentApplicantDescriptiveAnswerRepository.findByRecruitmentApplicant_IdFetchQuestion(applicant.getId());
@@ -275,7 +274,7 @@ public class RecruitmentApplicationService {
         if (!userId.equals(applicant.getUser().getId())) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
-        validateDeadLine(applicant.getRecruitmentBoard());
+        recruitmentBoardService.validateDeadLine(userId, applicant.getRecruitmentBoard());
 
         recruitmentApplicantRepository.deleteById(applicantId);
     }
@@ -288,12 +287,6 @@ public class RecruitmentApplicationService {
         return MyRecruitmentApplicationPageResponse.from(applicantPage);
     }
 
-    // 모집 게시물 마감기한 확인
-    public void validateDeadLine(RecruitmentBoard recruitmentBoard) {
-        if (recruitmentBoard.getRecruitmentDeadline().isBefore(LocalDateTime.now())) {
-            throw new ServiceException(ErrorCode.DEADLINE_EXPIRED);
-        }
-    }
 
     // 필수 질문 답변 여부 확인
     public void validateEssential(RecruitmentBoard recruitmentBoard, RecruitmentApplicationRequest request) {

@@ -65,6 +65,7 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
      * @apiNote 1. 이전 페이지에서 출력한 가장 마지막 게시물의 Id를 lastBoardId에 실어 요청하면, 다음 게시물부터 페이징 사이즈에 맞게 응답 <br>
      * 2. 가장 처음 요청을 위해 lastBoardId은 nullable로 설정 <br>
      * -> lastBoardId가 널이라면 서비스 로직에서 맨 처음 게시물 Id를 조회하여 그 게시물부터 페이징 사이즈에 맞게 응답 <br>
+     * 3. 정렬 기준 : 모집 마감일 오름차순
      */
     @GetMapping("/no-offset")
     public ResponseEntity<ResponseBody<RecruitmentBoardNoOffsetResponse>> getRecruitmentBoardListByNoOffset(
@@ -96,20 +97,27 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     /**
      * [모집 게시물 정보 상세조회] <br>
      * 모집 게시물 리스트에서 게시물 클릭 시 상세조회 하는 기능
+     *
+     * @apiNote 1. 임시저장 게시물은 작성자만 조회할 수 있도록 구현
      */
+    @AssignUserId(required = false)
     @GetMapping("/{recruitmentBoardId}/board")
-    public ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(@PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getBoardInfo(recruitmentBoardId)));
+    public ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(Long userId, @PathVariable Long recruitmentBoardId) {
+        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getBoardInfo(userId, recruitmentBoardId)));
     }
 
     /**
      * [모집 게시물 신청폼 상세조회] <br>
-     * 모집 게시물 신청 페이지에서 보여질 신청 질문 리스트 조지 기능
+     * 모집 게시물 신청 페이지에서 보여질 신청 질문 리스트 조회 기능
+     *
+     * @apiNote 1. 임서저장 신청폼은 작성자만 조회할 수 있도록 구현 <br>
+     * 2. 마감기한이 지난 경우 작성자가 아니면 폼 조회를 할 수 없도록 구현
      */
+    @AssignUserId(required = false)
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/{recruitmentBoardId}/form")
-    public ResponseEntity<ResponseBody<List<RecruitmentFormQuestionResponse>>> getRecruitmentFormInfo(@PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getFormInfoList(recruitmentBoardId)));
+    public ResponseEntity<ResponseBody<List<RecruitmentFormQuestionResponse>>> getRecruitmentFormInfo(Long userId, @PathVariable Long recruitmentBoardId) {
+        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getFormInfoList(userId, recruitmentBoardId)));
     }
 
     /**
@@ -173,7 +181,8 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
      *
      * @param size        한 페이지의 사이즈
      * @param lastBoardId 이전 페이지 마지막 게시물 Id(nullable)
-     * @apiNote 현재 도메인의 /no-offset API 설명 참조
+     * @apiNote 1. 현재 도메인의 /no-offset API 설명 참조
+     * 2. 정렬 기준 : 생성 날짜 내림차순
      */
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
@@ -186,8 +195,8 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     }
 
     /**
-     * [사용자의 임시저장 게시물 페이징 리스트 조회] <br>
-     * 페이지 번호로 구현한 사용자 임시서장 게시물 페이징 리스트 조회 기능
+     * [사용자 작성 게시물 페이징 리스트 조회] <br>
+     * 페이지 번호로 구현한 사용자 작성 게시물 페이징 리스트 조회 기능
      *
      * @param pageable             페이지 번호(page), 페이지 사이즈(size), 페이지 정렬 조건 및 정렬 방향(sort) <br>
      *                             -> 정렬 조건은 createdAt <br>
