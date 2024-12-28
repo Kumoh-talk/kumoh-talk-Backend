@@ -77,11 +77,11 @@ jobs:
       - name: Send tar.gz file to Raspberry Pi via SCP
         run: |
           sudo apt-get install -y sshpass  # sshpass 설치
-          sshpass -p ${{ secrets.DEV_PASSWORD }} scp -P ${{ secrets.DEV_PORT }} kumoh_talk.tar.gz ${{ secrets.DEV_HOST }}:/home/admin
+          sshpass -p ${{ secrets.DEV_PASSWORD }} scp -o StrictHostKeyChecking=no -P ${{ secrets.DEV_PORT }} kumoh_talk.tar.gz ${{ secrets.DEV_HOST }}:/home/admin
 
       - name: Unzip and load Docker image on Raspberry Pi
         run: |
-          sshpass -p ${{ secrets.DEV_PASSWORD }} ssh -p ${{ secrets.DEV_PORT }} admin@${{ secrets.DEV_HOST }} <<EOF
+          sshpass -p ${{ secrets.DEV_PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.DEV_PORT }} admin@${{ secrets.DEV_HOST }} <<EOF
             gunzip /home/admin/kumoh_talk.tar.gz
             docker load < /home/admin/kumoh_talk.tar
             docker-compose -f /home/admin/docker-compose.yml up -d
