@@ -1,4 +1,4 @@
-name: Java CI with Gradle and Deploy to develop EC2
+name: Java CI with Gradle and Deploy to Raspberry Pi
 
 on:
   push:
@@ -8,6 +8,9 @@ on:
 
 env:
   IMAGE_TAG: ${{ github.sha }}
+  SSH_PORT: ${{ secrets.SSH_PORT }}  # GitHub Secrets에서 SSH 포트
+  SSH_HOST: ${{ secrets.SSH_HOST }}  # GitHub Secrets에서 SSH 호스트 (IP)
+  SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}  # GitHub Secrets에서 SSH 비밀번호
 
 jobs:
   build:
@@ -16,25 +19,25 @@ jobs:
       contents: read
 
     steps:
-      - name: checkout action with submodule
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACTION_TOKEN }}
           submodules: true
 
-      - name: Set up JDK 17 action
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle action
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4.0.0
 
-      - name: add +x permission to gradlew
+      - name: Add +x permission to gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle Wrapper
+      - name: Build with Gradle
         run: ./gradlew clean build
 
       - name: Upload Build Artifacts
@@ -51,15 +54,8 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout action
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
@@ -67,23 +63,26 @@ jobs:
           name: build-libs
           path: build/libs
 
-      - name: Build image and Generate tar
-        id: build-image
+      - name: Build Docker image and generate tar
         run: |
           docker build -t kumoh_talk:latest .
-          docker save kumoh_talk:latest -o ./dev_exe/kumoh_talk:latest.tar
+          docker save kumoh_talk:latest | gzip > kumoh_talk.tar.gz
 
-      - name: Compress dev_exe folder
-        run: |
-          zip -r dev_exe.zip dev_exe
+      - name: Upload tar.gz as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: kumoh_talk-tar
+          path: kumoh_talk.tar.gz
 
-      - name: Send zip file to Discord
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL_DEV }}
+      - name: Send tar.gz file to Raspberry Pi via SCP
         run: |
-          FILE_PATH="dev_exe.zip"  # 압축된 파일의 경로
-          PR_TITLE="${{ github.event.pull_request.title }}"  # PR 제목 가져오기
-          curl -X POST -H "Content-Type: multipart/form-data" \
-          -F "file=@${FILE_PATH}" \
-          -F "payload_json={\"content\": \"Here is the ${PR_TITLE} folder as a zip file:\"}" \
-          "${DISCORD_WEBHOOK_URL}"
+          sudo apt-get install -y sshpass  # sshpass 설치
+          sshpass -p ${{ secrets.DEV_PASSWORD }} scp -P ${{ secrets.DEV_PORT }} kumoh_talk.tar.gz ${{ secrets.DEV_HOST }}:/home/admin
+
+      - name: Unzip and load Docker image on Raspberry Pi
+        run: |
+          sshpass -p ${{ secrets.DEV_PASSWORD }} ssh -p ${{ secrets.DEV_PORT }} admin@${{ secrets.DEV_HOST }} <<EOF
+            gunzip /home/admin/kumoh_talk.tar.gz
+            docker load < /home/admin/kumoh_talk.tar
+            docker-compose -f /home/admin/docker-compose.yml up -d
+          EOF

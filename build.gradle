@@ -89,6 +89,12 @@ dependencies {
     // Jsoup
     implementation 'org.jsoup:jsoup:1.18.1'
 
+    // spring boot actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // loki
+    implementation 'com.github.loki4j:loki-logback-appender:1.4.1'
 }
 
 dependencyManagement {
