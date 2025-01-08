@@ -8,7 +8,6 @@ on:
 
 env:
   IMAGE_TAG: ${{ github.sha }}
-  SSH_PORT: ${{ secrets.SSH_PORT }}  # GitHub Secrets에서 SSH 포트
   SSH_HOST: ${{ secrets.SSH_HOST }}  # GitHub Secrets에서 SSH 호스트 (IP)
   SSH_PRIVATE_KEY: ${{ secrets.DEV_SSH_PRIVATE_KEY }}  # GitHub Secrets에서 SSH 개인 키
 
@@ -83,11 +82,11 @@ jobs:
 
       - name: Send tar.gz file to Raspberry Pi via SCP
         run: |
-          scp -P ${{ secrets.SSH_PORT }} kumoh_talk.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
+          scp -P 101 kumoh_talk.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
 
       - name: Unzip and load Docker image on Raspberry Pi
         run: |
-          ssh -p ${{ secrets.SSH_PORT }} admin@${{ secrets.SSH_HOST }} <<EOF
+          ssh -p 101 admin@${{ secrets.SSH_HOST }} <<EOF
             gunzip /home/admin/kumoh_talk.tar.gz
             docker load < /home/admin/kumoh_talk.tar
             docker-compose -f /home/admin/docker-compose.yml up -d
