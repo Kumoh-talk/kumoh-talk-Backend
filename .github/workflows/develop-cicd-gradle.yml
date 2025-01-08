@@ -10,7 +10,7 @@ env:
   IMAGE_TAG: ${{ github.sha }}
   SSH_PORT: ${{ secrets.SSH_PORT }}  # GitHub Secrets에서 SSH 포트
   SSH_HOST: ${{ secrets.SSH_HOST }}  # GitHub Secrets에서 SSH 호스트 (IP)
-  SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}  # GitHub Secrets에서 SSH 비밀번호
+  SSH_PRIVATE_KEY: ${{ secrets.DEV_SSH_PRIVATE_KEY }}  # GitHub Secrets에서 SSH 개인 키
 
 jobs:
   build:
@@ -74,14 +74,20 @@ jobs:
           name: kumoh_talk-tar
           path: kumoh_talk.tar.gz
 
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
       - name: Send tar.gz file to Raspberry Pi via SCP
         run: |
-          sudo apt-get install -y sshpass  # sshpass 설치
-          sshpass -p ${{ secrets.DEV_PASSWORD }} scp -o StrictHostKeyChecking=no -P ${{ secrets.DEV_PORT }} kumoh_talk.tar.gz ${{ secrets.DEV_HOST }}:/home/admin
+          scp -P ${{ secrets.SSH_PORT }} kumoh_talk.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
 
       - name: Unzip and load Docker image on Raspberry Pi
         run: |
-          sshpass -p ${{ secrets.DEV_PASSWORD }} ssh -o StrictHostKeyChecking=no -p ${{ secrets.DEV_PORT }} admin@${{ secrets.DEV_HOST }} <<EOF
+          ssh -p ${{ secrets.SSH_PORT }} admin@${{ secrets.SSH_HOST }} <<EOF
             gunzip /home/admin/kumoh_talk.tar.gz
             docker load < /home/admin/kumoh_talk.tar
             docker-compose -f /home/admin/docker-compose.yml up -d
