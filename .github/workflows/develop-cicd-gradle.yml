@@ -87,7 +87,7 @@ jobs:
       - name: Unzip and load Docker image on Raspberry Pi
         run: |
           ssh -p 101 admin@${{ secrets.SSH_HOST }} <<EOF
-            gunzip /home/admin/kumoh_talk.tar.gz
+            gunzip -f /home/admin/kumoh_talk.tar.gz 
             docker load < /home/admin/kumoh_talk.tar
-            docker-compose -f /home/admin/docker-compose.yml up -d
+            docker compose -f /home/admin/docker-compose.yml up -d
           EOF
