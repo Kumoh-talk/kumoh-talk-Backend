@@ -46,3 +46,30 @@ springdoc:
   api-docs:
     groups:
       enabled: false
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  #
+  #  endpoint:
+  #    health:
+  #      show-details: always
+
+  endpoint:
+    health:
+      show-components: always
+    logfile:
+      external-file: ./logs/my.log
+
+
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+
+  server:
+    port: 8080

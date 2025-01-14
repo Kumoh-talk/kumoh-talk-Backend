@@ -47,3 +47,26 @@ springdoc:
   api-docs:
     groups:
       enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  #
+  #  endpoint:
+  #    health:
+  #      show-details: always
+
+  endpoint:
+    health:
+      show-components: always
+
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+
+  server:
+    port: 9292
