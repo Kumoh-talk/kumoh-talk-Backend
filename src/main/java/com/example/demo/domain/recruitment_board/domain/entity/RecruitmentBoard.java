@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_board.domain.entity;
 
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormQuestionRequest;
@@ -29,7 +29,7 @@ import java.util.List;
 @Getter
 @SQLDelete(sql = "UPDATE recruitment_boards SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-public class RecruitmentBoard extends BaseEntity {
+public class RecruitmentBoard extends BaseEntity implements GenericBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -80,8 +80,8 @@ public class RecruitmentBoard extends BaseEntity {
     @OrderBy("number ASC")
     private List<RecruitmentFormQuestion> recruitmentFormQuestionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Comment> commentList = new ArrayList<>();
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RecruitmentBoardComment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RecruitmentApplicant> applicantList = new ArrayList<>();
