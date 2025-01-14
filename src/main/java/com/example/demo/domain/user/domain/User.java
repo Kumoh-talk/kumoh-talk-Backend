@@ -1,9 +1,9 @@
 package com.example.demo.domain.user.domain;
 
-import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.Like;
-import com.example.demo.domain.newsletter.domain.Newsletter;
+import com.example.demo.domain.comment.domain.entity.BoardComment;
+import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
 import com.example.demo.domain.user.domain.vo.Role;
@@ -11,7 +11,10 @@ import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -63,10 +66,13 @@ public class User extends BaseEntity {
     private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Comment> comments= new ArrayList<>();
+    private List<BoardComment> boardComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<RecruitmentBoardComment> recruitmentBoardComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<Like> likes= new ArrayList<>();
+    private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SeminarApplication> seminarApplications = new ArrayList<>();
