@@ -95,6 +95,10 @@ dependencies {
 
     // loki
     implementation 'com.github.loki4j:loki-logback-appender:1.4.1'
+
+    // test-containers
+    testImplementation "org.testcontainers:testcontainers:1.19.0"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.0"
 }
 
 dependencyManagement {
