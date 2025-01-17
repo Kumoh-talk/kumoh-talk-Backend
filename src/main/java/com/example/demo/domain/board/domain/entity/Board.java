@@ -57,6 +57,9 @@ public class Board extends BaseEntity {
     @NotBlank(message = "게시물 헤드 이미지는 빈 값일 수 없습니다.")
     private String headImageUrl;
 
+    @Column(nullable = false)
+    private Long viewCount;
+
     @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -74,8 +77,6 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<View> views = new ArrayList<>();
 
     private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
         this.title = title;
@@ -85,6 +86,7 @@ public class Board extends BaseEntity {
         this.status = status;
         this.attachFileUrl = null;
         this.headImageUrl = headImageUrl;
+        this.viewCount = 0L;
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){

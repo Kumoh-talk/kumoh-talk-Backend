@@ -39,7 +39,6 @@ public class BoardQueryService {
         return BoardInfoResponse.from(
                 board,
                 board.getUser().getNickname(),
-                boardRepository.countViewsByBoardId(boardId),
                 boardRepository.countLikesByBoardId(boardId),
                 boardRepository.findCategoryNameByBoardId(boardId));
     }
