@@ -48,19 +48,20 @@ public class CommentInfoResponse {
         this.deletedAt = deletedAt;
     }
 
-    public static CommentInfoResponse from(Comment commentEntity) {
-        CommentInfoResponse commentInfoResponse = new CommentInfoResponse(commentEntity.getId(),
-                commentEntity.getUser().getNickname(),
-                commentEntity.getContent(),
-                commentEntity.getCreatedAt(),
-                commentEntity.getUpdatedAt(),
-                commentEntity.getDeletedAt()
+    public static CommentInfoResponse fromComment(Comment comment) {
+        CommentInfoResponse commentInfoResponse = new CommentInfoResponse(
+                comment.getId(),
+                comment.getUser().getNickname(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                comment.getUpdatedAt(),
+                comment.getDeletedAt()
         );
-        if (commentEntity.getParentComment() != null) {
-            commentInfoResponse.setGroupId(commentEntity.getParentComment().getId());
+        if (comment.getParentComment() != null) {
+            commentInfoResponse.setGroupId(comment.getParentComment().getId());
         }
-        commentInfoResponse.setReplyComments(new ArrayList<>(commentEntity.getReplyComments().stream()
-                .map(CommentInfoResponse::from).collect(Collectors.toList())));
+        commentInfoResponse.setReplyComments(new ArrayList<>(comment.getReplyComments().stream()
+                .map(CommentInfoResponse::fromComment).collect(Collectors.toList())));
         return commentInfoResponse;
     }
 }

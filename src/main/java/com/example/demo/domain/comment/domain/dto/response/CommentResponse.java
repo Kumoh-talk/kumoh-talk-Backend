@@ -19,9 +19,9 @@ public class CommentResponse {
     @Schema(description = "댓글 정보 리스트")
     private List<CommentInfoResponse> commentInfoResponseList;
 
-    public static CommentResponse from(List<Comment> commentEntityList) {
+    public static CommentResponse fromComment(List<Comment> commentEntityList) {
         List<CommentInfoResponse> commentInfoResponseList = commentEntityList.stream()
-                .map(CommentInfoResponse::from)
+                .map(CommentInfoResponse::fromComment)
                 .collect(Collectors.toList());
 
         int replyCommentsCount = 0;

@@ -11,15 +11,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 public interface AdminCommentApi {
     @Operation(
-            summary = "관리자 전용 댓글 삭제",
+            summary = "관리자 전용 마크다운 게시물 댓글 삭제",
             description = "관리자가 commentId에 해당하는 댓글을 삭제합니다."
     )
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    description = "관리자가 댓글 삭제 성공"),
+                    description = "관리자 댓글 삭제 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.COMMENT_NOT_FOUND)
             }
     )
-    ResponseEntity<ResponseBody<Void>> deleteComment(@PathVariable Long commentId);
+    ResponseEntity<ResponseBody<Void>> deleteBoardComment(@PathVariable Long commentId);
+
+    @Operation(
+            summary = "관리자 전용 모집 게시물 댓글 삭제",
+            description = "관리자가 commentId에 해당하는 댓글을 삭제합니다."
+    )
+    @ApiResponseExplanations(
+            success = @ApiSuccessResponseExplanation(
+                    description = "관리자 댓글 삭제 성공"),
+            errors = {
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.COMMENT_NOT_FOUND)
+            }
+    )
+    ResponseEntity<ResponseBody<Void>> deleteRecruitmentBoardComment(@PathVariable Long commentId);
 }

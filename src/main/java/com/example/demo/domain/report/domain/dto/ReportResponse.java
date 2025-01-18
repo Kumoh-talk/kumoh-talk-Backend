@@ -15,10 +15,18 @@ public record ReportResponse(
         LocalDateTime createdAt
 ) {
     public static ReportResponse from(Report report) { // TODO. 프론트 협의 & N+1 생각
-        return new ReportResponse(
-                report.getUser().getNickname(),
-                CommentInfoResponse.from(report.getComment()),
-                report.getCreatedAt()
-        );
+        if (report.getBoardComment() == null) {
+            return new ReportResponse(
+                    report.getUser().getNickname(),
+                    CommentInfoResponse.fromComment(report.getRecruitmentBoardComment()),
+                    report.getCreatedAt()
+            );
+        } else {
+            return new ReportResponse(
+                    report.getUser().getNickname(),
+                    CommentInfoResponse.fromComment(report.getBoardComment()),
+                    report.getCreatedAt()
+            );
+        }
     }
 }

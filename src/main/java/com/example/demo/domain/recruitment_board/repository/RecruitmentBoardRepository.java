@@ -1,5 +1,6 @@
 package com.example.demo.domain.recruitment_board.repository;
 
+import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long>, QueryDslRecruitmentBoardRepository {
+public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long>, CommonBoardRepository, QueryDslRecruitmentBoardRepository {
     @Query("Select sb.id From RecruitmentBoard sb " +
             "where sb.recruitmentDeadline >= CURRENT_TIMESTAMP " +
             "and sb.status = com.example.demo.domain.board.domain.dto.vo.Status.PUBLISHED " +
@@ -20,4 +21,14 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
             "where status = com.example.demo.domain.board.domain.dto.vo.Status.DRAFT " +
             "and user.id = :userId")
     Optional<Long> findFirstDraftIdByUserId(Long userId);
+
+    @Override
+    default Optional<GenericBoard> doFindById(Long id) {
+        Optional<RecruitmentBoard> recruitmentBoard = findById(id);
+        if (recruitmentBoard.isPresent()) {
+            return Optional.of(recruitmentBoard.get());
+        } else {
+            return Optional.empty();
+        }
+    }
 }
