@@ -11,6 +11,7 @@ import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -77,7 +78,7 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
-
+    @Builder
     private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
         this.title = title;
         this.content = content;
