@@ -18,10 +18,9 @@ public interface LikeRepository extends JpaRepository<Like,Long> {
 	Optional<Like> findByBoardIdAndUserId(Long boardId, Long userId);
 
 	@Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
-		+ "(b.id, b.title, b.user.nickname, b.boardType, COUNT(DISTINCT v.id), COUNT(DISTINCT l.id),b.headImageUrl, b.createdAt) "
+		+ "(b.id, b.title, b.user.nickname, b.boardType, b.viewCount, COUNT(DISTINCT l.id),b.headImageUrl, b.createdAt) "
 		+ "FROM Board b "
 		+ "JOIN b.likes l "
-		+ "LEFT JOIN b.views v "
 		+ "WHERE l.user.id = :userId "
 		+ "GROUP BY b.id, b.title, b.user.nickname, b.boardType, b.createdAt")
 	Page<BoardTitleInfoResponse> findBoardsByUserId(Long userId, Pageable pageable);
