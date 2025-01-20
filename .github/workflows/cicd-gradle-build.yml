@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
+      pull-requests: write
     steps:
       - name: checkout action with submodule
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACTION_TOKEN }}
-          submodules: true
+          submodules: 'recursive'
 
       - name: Set up JDK 17 action
         uses: actions/setup-java@v4
