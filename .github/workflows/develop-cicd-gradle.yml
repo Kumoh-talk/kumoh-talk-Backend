@@ -45,6 +45,30 @@ jobs:
           name: build-libs
           path: build/libs/*.jar
 
+      - name: Test Coverage Report
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          title: 📝 Jacoco Test Coverage
+          paths: ${{ github.workspace }}/**/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.ACTION_TOKEN }}
+          min-coverage-overall: 30
+          min-coverage-changed-files: 50
+          update-comment: true
+
+      - name: Write Test Report
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          comment_title: 🧪 Test Results
+          files: "**/build/test-results/test/TEST-*.xml"
+
+      - name: Comment(Annotation) for Failed Test
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: "**/build/test-results/test/TEST-*.xml"
+
   deploy:
     needs: build
     if: github.event_name == 'push'
