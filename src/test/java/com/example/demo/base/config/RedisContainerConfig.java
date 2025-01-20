@@ -1,28 +1,31 @@
 package com.example.demo.base.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringJUnitConfig
-@Testcontainers
+
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
+
+@ActiveProfiles("test")
+@TestConfiguration
 public class RedisContainerConfig {
 
-	@Container
-	static GenericContainer redis =
-		new GenericContainer("redis:5.0.3-alpine").withExposedPorts(6379);
+	private static final String REDIS_DOCKER_IMAGE = "redis:5.0.3-alpine";
+	private static final Integer REDIS_PORT = 6379;
 
-	@DynamicPropertySource
-	static void redisProperties(DynamicPropertyRegistry registry) {
-		registry.add("redis.host", redis::getHost);
-		registry.add("redis.port", redis::getFirstMappedPort);
+	static {    // (1)
+		GenericContainer<?> REDIS_CONTAINER =
+			new GenericContainer<>(DockerImageName.parse(REDIS_DOCKER_IMAGE))
+				.withExposedPorts(REDIS_PORT)
+				.withReuse(true);
+
+		REDIS_CONTAINER.start();    // (2)
+
+		// (3)
+		System.setProperty("spring.data.redis.host", REDIS_CONTAINER.getHost());
+		System.setProperty("spring.data.redis.port", REDIS_CONTAINER.getMappedPort(REDIS_PORT).toString());
 	}
+
 
 }
