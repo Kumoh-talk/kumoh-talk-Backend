@@ -1,6 +1,5 @@
 package com.example.demo.domain.comment.domain.dto.response;
 
-import com.example.demo.domain.comment.domain.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -19,37 +18,11 @@ public class MyCommentResponse {
     @Schema(description = "댓글을 단 게시물 정보")
     private CommentBoardInfoResponse board;
 
-    public static MyCommentResponse fromSeminarComment(Comment commentEntity) {
-        return MyCommentResponse.builder()
-                .comment(MyCommentInfoResponse.builder()
-                        .id(commentEntity.getId())
-                        .content(commentEntity.getContent())
-                        .createdAt(commentEntity.getCreatedAt())
-                        .updatedAt(commentEntity.getUpdatedAt())
-                        .build())
-                .board(CommentBoardInfoResponse.builder()
-                        .id(commentEntity.getBoard().getId())
-                        .title(commentEntity.getBoard().getTitle())
-                        .createdAt(commentEntity.getBoard().getCreatedAt())
-                        .updatedAt(commentEntity.getBoard().getUpdatedAt())
-                        .build())
-                .build();
-    }
-
-    public static MyCommentResponse fromRecruitmentComment(com.example.demo.domain.comment.domain.entity.Comment commentEntity) {
-        return MyCommentResponse.builder()
-                .comment(MyCommentInfoResponse.builder()
-                        .id(commentEntity.getId())
-                        .content(commentEntity.getContent())
-                        .createdAt(commentEntity.getCreatedAt())
-                        .updatedAt(commentEntity.getUpdatedAt())
-                        .build())
-                .board(CommentBoardInfoResponse.builder()
-                        .id(commentEntity.getRecruitmentBoard().getId())
-                        .createdAt(commentEntity.getRecruitmentBoard().getCreatedAt())
-                        .updatedAt(commentEntity.getRecruitmentBoard().getUpdatedAt())
-                        .build())
-                .build();
+    public MyCommentResponse(
+            Long commentId, String content, LocalDateTime commentCreatedAt, LocalDateTime commentUpdatedAt,
+            Long boardId, String title, LocalDateTime boardCreatedAt, LocalDateTime boardUpdatedAt) {
+        this.comment = new MyCommentInfoResponse(commentId, content, commentCreatedAt, commentUpdatedAt);
+        this.board = new CommentBoardInfoResponse(boardId, title, boardCreatedAt, boardUpdatedAt);
     }
 
     @Getter

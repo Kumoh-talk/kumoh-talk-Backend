@@ -1,9 +1,10 @@
 package com.example.demo.domain.report.service;
 
 import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.report.client.DiscordReportClient;
+import com.example.demo.domain.comment.repository.BoardCommentRepository;
+import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
 import com.example.demo.domain.report.client.DiscordMessage;
+import com.example.demo.domain.report.client.DiscordReportClient;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.report.domain.dto.ReportResponse;
 import com.example.demo.domain.report.repository.ReportRepository;
@@ -25,16 +26,28 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
+    private final BoardCommentRepository boardCommentRepository;
+    private final RecruitmentBoardCommentRepository recruitmentBoardCommentRepository;
     private final DiscordReportClient discordReportClient;
 
     @Transactional
-    public void report(Long commentId, Long userId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+    public void reportBoardComment(Long commentId, Long userId) {
+        Comment comment = boardCommentRepository.findById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
+        saveCommentReport(userId, comment);
+    }
+
+    @Transactional
+    public void reportRecruitmentBoardComment(Long commentId, Long userId) {
+        Comment comment = recruitmentBoardCommentRepository.findById(commentId).orElseThrow(() ->
+                new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
+        saveCommentReport(userId, comment);
+    }
+
+    private void saveCommentReport(Long userId, Comment comment) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        Report report = Report.from(user, comment);
+        Report report = comment.toReport(user);
         reportRepository.save(report);
         this.sendDiscordAlarm(user, comment);
     }

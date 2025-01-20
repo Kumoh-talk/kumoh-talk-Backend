@@ -5,7 +5,8 @@ import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.domain.dto.vo.BoardType;
 import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.comment.domain.entity.BoardComment;
+import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -26,7 +27,7 @@ import java.util.List;
 @Getter
 @SQLDelete(sql = "UPDATE boards SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-public class Board extends BaseEntity {
+public class Board extends BaseEntity implements GenericBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,8 +67,8 @@ public class Board extends BaseEntity {
     private User user;
 
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Comment> comments= new ArrayList<>();
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BoardComment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<ImageFile> imageFiles = new ArrayList<>();
@@ -77,6 +78,7 @@ public class Board extends BaseEntity {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<BoardCategory> boardCategories = new ArrayList<>();
+
 
     @Builder
     private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
