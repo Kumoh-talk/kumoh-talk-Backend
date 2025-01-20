@@ -121,8 +121,8 @@ jwt:
 cloud:
   aws:
     credentials:
-      access-key: AKIAU6VTTCYTKWHS5ZQA
-      secret-key: +7j0bXjnHUaa5zULfO/PDElzsfakAoOGXXG5Bm6v
+      access-key: dummy-aws-access-key
+      secret-key: dummy-aws-secret-key
 
     region:
       static: ap-northeast-2
