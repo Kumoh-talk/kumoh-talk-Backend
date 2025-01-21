@@ -10,7 +10,7 @@ import com.example.demo.domain.board.domain.dto.vo.Status;
 import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
-import com.example.demo.domain.board.service.service.ViewIncreaseService;
+import com.example.demo.domain.board.service.service.view.ViewIncreaseService;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
@@ -20,20 +20,32 @@ import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class BoardUseCase {
     private final BoardCommandService boardCommandService;
     private final BoardQueryService boardQueryService;
     private final ViewIncreaseService viewIncreaseService;
     private final UserService userService;
     private final ApplicationEventPublisher eventPublisher;
+
+    public BoardUseCase(BoardCommandService boardCommandService,
+        BoardQueryService boardQueryService,
+        @Qualifier("viewBulkUpdateService") ViewIncreaseService viewIncreaseService,
+        UserService userService,
+        ApplicationEventPublisher eventPublisher) {
+        this.boardCommandService = boardCommandService;
+        this.boardQueryService = boardQueryService;
+        this.viewIncreaseService = viewIncreaseService;
+        this.userService = userService;
+        this.eventPublisher = eventPublisher;
+    }
 
     @Transactional
     public BoardInfoResponse saveDraftBoard(Long userId, BoardCreateRequest boardCreateRequest) {
@@ -45,10 +57,11 @@ public class BoardUseCase {
         return boardCommandService.createDraftBoard(user, boardCreateRequest);
     }
 
-    @Transactional
+
     public BoardInfoResponse searchSingleBoard(Long boardId) {
+        BoardInfoResponse returnResponse = boardQueryService.searchSingleBoard(boardId);
         viewIncreaseService.increaseView(boardId);
-        return boardQueryService.searchSingleBoard(boardId);
+        return returnResponse;
     }
 
     @Transactional

@@ -58,7 +58,10 @@ public class Board extends BaseEntity implements GenericBoard {
     @NotBlank(message = "게시물 헤드 이미지는 빈 값일 수 없습니다.")
     private String headImageUrl;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @Column(nullable = false)
+    private Long viewCount;
+
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -75,10 +78,8 @@ public class Board extends BaseEntity implements GenericBoard {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<View> views = new ArrayList<>();
 
-    private Board(String title, String content, User user, BoardType boardType, Status status, String headImageUrl) {
+    private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
         this.title = title;
         this.content = content;
         this.user = user;
@@ -86,29 +87,30 @@ public class Board extends BaseEntity implements GenericBoard {
         this.status = status;
         this.attachFileUrl = null;
         this.headImageUrl = headImageUrl;
+        this.viewCount = 0L;
     }
 
-    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest) {
+    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
         Board board = new Board(boardCreateRequest.getTitle(),
-                boardCreateRequest.getContents(),
-                user,
-                boardCreateRequest.getBoardType(),
-                Status.DRAFT,
-                boardCreateRequest.getBoardHeadImageUrl());
+            boardCreateRequest.getContents(),
+            user,
+            boardCreateRequest.getBoardType(),
+            Status.DRAFT,
+            boardCreateRequest.getBoardHeadImageUrl());
         user.getBoards().add(board);
         return board;
     }
 
-    public void changeBoardInfo(BoardUpdateRequest boardUpdateRequest) {
+    public void changeBoardInfo(BoardUpdateRequest boardUpdateRequest){
         this.title = boardUpdateRequest.getTitle();
         this.content = boardUpdateRequest.getContents();
     }
 
-    public void publishBoard() {
+    public void publishBoard(){
         this.status = Status.PUBLISHED;
     }
 
-    public void changeAttachFileUrl(String attachFileUrl) {
+    public void changeAttachFileUrl(String attachFileUrl){
         this.attachFileUrl = attachFileUrl;
     }
 
