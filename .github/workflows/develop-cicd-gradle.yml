@@ -3,7 +3,7 @@ name: Java CI with Gradle and Deploy to Raspberry Pi
 on:
   push:
     branches: [ "develop" ]
-  pull_request_target:
+  pull_request:
     branches: [ "develop" ]
 
 permissions:
