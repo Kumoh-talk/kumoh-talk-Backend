@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ "develop" ]
 
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
 env:
   IMAGE_TAG: ${{ github.sha }}
   SSH_HOST: ${{ secrets.SSH_HOST }}  # GitHub Secrets에서 SSH 호스트 (IP)
@@ -14,8 +19,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout code
