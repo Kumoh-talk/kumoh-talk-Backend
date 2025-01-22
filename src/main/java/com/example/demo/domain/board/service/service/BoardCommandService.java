@@ -39,7 +39,6 @@ public class BoardCommandService {
                 savedBoard,
                 user.getNickname(),
                 0L,
-                0L,
                 boardCreateRequest.getCategoryName());
     }
 
@@ -65,7 +64,6 @@ public class BoardCommandService {
 
         return BoardInfoResponse.from(board,
                 board.getUser().getNickname(),
-                boardRepository.countViewsByBoardId(boardUpdateRequest.getId()),
                 boardRepository.countLikesByBoardId(boardUpdateRequest.getId()),
                 categoryNames);
     }

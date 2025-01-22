@@ -35,8 +35,8 @@ public class GlobalPageResponse<T> {
 	public static <T> GlobalPageResponse<T> create(
 			Page<T> pageDTO) {
 		return new GlobalPageResponse<>(
-                pageDTO.getNumber() + 1,
-                pageDTO.getSize(),
+				pageDTO.getSize(),
+			pageDTO.getNumber() + 1,
                 pageDTO.getTotalPages(),
                 pageDTO.getSort().toString(),
                 pageDTO.getContent());
