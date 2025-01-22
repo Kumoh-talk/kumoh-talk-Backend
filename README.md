@@ -24,12 +24,14 @@ Kumoh-Talk는 교내에서 학습한 기술과 지식을 나누기 위한 IT 기
 
 ---
 
+![image](https://github.com/user-attachments/assets/65ac8117-053a-4ce5-8d5e-5f07b0d606e0)
 
 
 ## 🎨 Infra
 
 ------------
 
+![image](https://github.com/user-attachments/assets/29d131be-6c29-40ae-af5e-7637ceefa0eb)
 
 
 
