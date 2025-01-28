@@ -16,10 +16,9 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     Optional<Category> findByName(String name);
 
     @Query("SELECT new com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse"
-        + "(b.id, b.title, b.user.nickname, b.boardType, COUNT(DISTINCT v), COUNT(DISTINCT l),b.headImageUrl, b.createdAt) "
+        + "(b.id, b.title, b.user.nickname, b.boardType, b.viewCount, COUNT(DISTINCT l),b.headImageUrl, b.createdAt) "
         + "FROM Board b "
         + "LEFT JOIN b.likes l "
-        + "LEFT JOIN b.views v "
         + "LEFT JOIN BoardCategory bc ON b.id = bc.board.id "
         + "LEFT JOIN Category c ON bc.category.id = c.id "
         + "WHERE c.name = :categoryName "
