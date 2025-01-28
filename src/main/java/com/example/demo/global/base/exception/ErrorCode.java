@@ -94,6 +94,10 @@ public enum ErrorCode {
     // RecruitmentApplicantAnswer
     OMIT_ESSENTIAL_QUESTION(HttpStatus.BAD_REQUEST, "APPLICANT_ANSWER_0001", "필수 답변을 입력해야합니다."),
 
+    // Notification
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION_0001", "알림 정보가 존재하지 않습니다."),
+    RECEIVER_NOT_MATCH(HttpStatus.NOT_FOUND, "NOTIFICATION_0002", "알림을 받을 사용자가 일치하지 않습니다."),
+
     // Enum Validation
     ENTIRE_BOARD_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0001", EntireBoardType.errorMsg),
     QUESTION_TYPE_PARSE_ERROR(HttpStatus.BAD_REQUEST, "BODY_ENUM_0002", QuestionType.errorMsg),
