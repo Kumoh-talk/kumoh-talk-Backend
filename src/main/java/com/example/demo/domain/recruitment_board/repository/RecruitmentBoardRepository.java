@@ -5,6 +5,7 @@ import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
     Optional<Long> findFirstDraftIdByUserId(Long userId);
 
     @Override
+    @Transactional(readOnly = true)
     default Optional<GenericBoard> doFindById(Long id) {
         Optional<RecruitmentBoard> recruitmentBoard = findById(id);
         if (recruitmentBoard.isPresent()) {
@@ -31,4 +33,10 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
             return Optional.empty();
         }
     }
+
+    @Override
+    @Query("SELECT rb FROM RecruitmentBoard rb " +
+            "JOIN FETCH rb.user " +
+            "WHERE rb.id = :id")
+    Optional<GenericBoard> findByIdWithUser(Long id);
 }

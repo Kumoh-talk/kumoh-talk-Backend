@@ -28,4 +28,6 @@ public interface CommonCommentRepository<T> {
     void softDeleteReplyCommentsById(Long commentId);
 
     Optional<Comment> findNotDeleteCommentById(Long boardId, Long commentId);
+
+    List<User> findUsersByParentCommentId(Long parentCommentId);
 }

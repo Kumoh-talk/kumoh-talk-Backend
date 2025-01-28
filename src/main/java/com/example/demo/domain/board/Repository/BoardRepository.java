@@ -80,6 +80,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, CommonBoard
                                                               Pageable pageable);
 
     @Override
+    @Transactional(readOnly = true)
     default Optional<GenericBoard> doFindById(Long id) {
         Optional<Board> board = findById(id);
         if (board.isPresent()) {
@@ -88,5 +89,11 @@ public interface BoardRepository extends JpaRepository<Board, Long>, CommonBoard
             return Optional.empty();
         }
     }
+
+    @Override
+    @Query("SELECT b FROM Board b " +
+            "JOIN FETCH b.user " +
+            "WHERE b.id = :id")
+    Optional<GenericBoard> findByIdWithUser(Long id);
 }
 

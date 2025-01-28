@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class AbstractCommentService {
 
     protected final UserService userService;
-//    protected final CommentNotificationService commentNotificationService;
+    protected final CommentNotificationService commentNotificationService;
 
     protected final CommonCommentRepository<?> commentRepository;
     protected final CommonBoardRepository boardRepository;
@@ -45,19 +45,18 @@ public abstract class AbstractCommentService {
 
     @Transactional
     public CommentInfoResponse saveComment(Long userId, Long boardId, CommentRequest commentRequest, NotificationType notificationType) {
+        GenericBoard commentBoard = boardRepository.findByIdWithUser(boardId).orElseThrow(() ->
+                new ServiceException(ErrorCode.BOARD_NOT_FOUND)
+        );
         User commentUser = userService.validateUser(userId);
-
         Comment parentComment = null;
         if (commentRequest.getGroupId() != null) {
             parentComment = commentRepository.findNotDeleteCommentById(boardId, commentRequest.getGroupId()).orElseThrow(() ->
                     new ServiceException(ErrorCode.PARENT_NOT_FOUND));
         }
-        GenericBoard commentBoard = boardRepository.doFindById(boardId).orElseThrow(() ->
-                new ServiceException(ErrorCode.BOARD_NOT_FOUND)
-        );
 
         Comment saved = commentRepository.doSave(commentUser, commentBoard, commentRequest, parentComment);
-//        commentNotificationService.saveCommentNotice(saved, notificationType);
+        commentNotificationService.saveCommentNotification(saved, notificationType, commentRepository);
         // TODO : 부모댓글 작성자뿐만 아니라, 그룹아이디가 같은 댓글 작성자에게도 알림 전송?
         return CommentInfoResponse.fromComment(saved);
     }
@@ -90,8 +89,5 @@ public abstract class AbstractCommentService {
 
         commentRepository.softDeleteReplyCommentsById(commentId);
         commentRepository.doDelete(comment);
-
-        // TODO : 같이 삭제되는 대댓글과 관련된 알림도 삭제?
-//        commentNotificationService.deleteCommentNoticeByInvoker(commentId, notificationType);
     }
 }
