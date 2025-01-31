@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-libs
           path: build/libs/*.jar
@@ -63,7 +63,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-libs
           path: build/libs
