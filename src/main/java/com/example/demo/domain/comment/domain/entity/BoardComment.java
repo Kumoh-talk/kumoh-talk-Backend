@@ -21,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLDelete(sql = "UPDATE board_comments SET deleted_at = NOW() where id = ?")
+@EntityListeners(CommentEntityListener.class)
 public class BoardComment extends BaseEntity implements Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

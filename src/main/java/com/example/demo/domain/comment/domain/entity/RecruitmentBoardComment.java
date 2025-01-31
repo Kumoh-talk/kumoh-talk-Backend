@@ -21,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLDelete(sql = "UPDATE recruitment_board_comments SET deleted_at = NOW() where id = ?")
+@EntityListeners(CommentEntityListener.class)
 public class RecruitmentBoardComment extends BaseEntity implements Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,7 +69,7 @@ public class RecruitmentBoardComment extends BaseEntity implements Comment {
                 .parentComment(parentComment)
                 .build();
     }
-    
+
     @Override
     public List<Comment> getReplyComments() {
         return new ArrayList<>(replyComments);
