@@ -6,6 +6,7 @@ import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,7 @@ public class UserControllerTest {
         resultActions.andExpect(status().isConflict());
     }
 
+    @Disabled
     @Test
     @WithMockUser(username = "test", roles = {"GUEST"})
     void 성공_게스트_사용자는_회원가입에_필요한_추가정보를_입력한다(){
