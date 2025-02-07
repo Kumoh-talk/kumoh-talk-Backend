@@ -37,7 +37,7 @@ public class UserController implements UserApi {
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_GUEST')")
     @GetMapping("/check-nickname")
     public ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(
-            @Param("nickname") @Pattern(regexp = NICKNAME_REGEXP, message = "닉네임 정규식을 맞춰주세요.") String nickname) {
+            @RequestParam("nickname") @Pattern(regexp = NICKNAME_REGEXP, message = "닉네임 정규식을 맞춰주세요.") String nickname) {
         userService.checkNicknameDuplicate(nickname);
         return ResponseEntity.ok(createSuccessResponse());
     }
