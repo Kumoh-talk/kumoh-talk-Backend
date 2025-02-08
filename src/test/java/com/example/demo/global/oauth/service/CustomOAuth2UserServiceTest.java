@@ -159,6 +159,8 @@ public class CustomOAuth2UserServiceTest {
             // when & then
             assertThatThrownBy(() -> oAuth2UserService.loadUser(userRequest))
                     .isInstanceOf(AuthenticationException.class);
+
+            mockServer.verify();
         }
 
         private ClientRegistration createGithubClientRegistration() {
@@ -245,6 +247,8 @@ public class CustomOAuth2UserServiceTest {
             // when & then
             assertThatThrownBy(() -> oAuth2UserService.loadUser(userRequest))
                     .isInstanceOf(AuthenticationException.class);
+
+            mockServer.verify();
         }
 
         private ClientRegistration createGoogleClientRegistration() {
@@ -344,6 +348,8 @@ public class CustomOAuth2UserServiceTest {
             // when & then
             assertThatThrownBy(() -> oAuth2UserService.loadUser(userRequest))
                     .isInstanceOf(AuthenticationException.class);
+
+            mockServer.verify();
         }
 
         private ClientRegistration createKakaoClientRegistration() {
@@ -446,6 +452,8 @@ public class CustomOAuth2UserServiceTest {
             // when & then
             assertThatThrownBy(() -> oAuth2UserService.loadUser(userRequest))
                     .isInstanceOf(AuthenticationException.class);
+
+            mockServer.verify();
         }
 
         private ClientRegistration createNaverClientRegistration() {
