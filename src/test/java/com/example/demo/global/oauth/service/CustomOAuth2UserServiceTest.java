@@ -7,6 +7,7 @@ import com.example.demo.global.oauth.user.github.GithubOAuth2UserInfo;
 import com.example.demo.global.oauth.user.google.GoogleOAuth2UserInfo;
 import com.example.demo.global.oauth.user.kakao.KakaoOAuth2UserInfo;
 import com.example.demo.global.oauth.user.naver.NaverOAuth2UserInfo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -59,6 +60,11 @@ public class CustomOAuth2UserServiceTest {
     void setUp() {
         // 외부로 HTTP 요청 후 응답을 가져오는 것이 아닌 모의 서버의 응답을 가져오도록 테스트용 RestTemplate 빈으로 교체
         ReflectionTestUtils.setField(oAuth2UserService, "restOperations", restTemplate);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockServer.reset();
     }
 
     @Nested
