@@ -166,15 +166,15 @@ public class CustomOAuth2UserServiceTest {
 
         private ClientRegistration createGithubClientRegistration() {
             return CommonOAuth2Provider.GITHUB.getBuilder(OAuth2Provider.GITHUB.getRegistrationId())
-                    .clientId("abcd")
-                    .clientSecret("secret")
+                    .clientId("dummy-github-client-id")
+                    .clientSecret("dummy-github-client-secret")
                     .build();
         }
 
         private OAuth2AccessToken createAccessToken() {
             return new OAuth2AccessToken(
                     OAuth2AccessToken.TokenType.BEARER,
-                    "testAccessToken",
+                    "dummy-github-access-token",
                     Instant.now(),
                     Instant.now().plusSeconds(3600)
             );
@@ -255,15 +255,15 @@ public class CustomOAuth2UserServiceTest {
         private ClientRegistration createGoogleClientRegistration() {
             return CommonOAuth2Provider.GOOGLE.getBuilder(OAuth2Provider.GOOGLE.getRegistrationId())
                     .scope("profile", "email")
-                    .clientId("abcd")
-                    .clientSecret("secret")
+                    .clientId("dummy-google-client-id")
+                    .clientSecret("dummy-google-client-secret")
                     .build();
         }
 
         private OAuth2AccessToken createAccessToken() {
             return new OAuth2AccessToken(
                     OAuth2AccessToken.TokenType.BEARER,
-                    "testAccessToken",
+                    "dummy-google-access-token",
                     Instant.now(),
                     Instant.now().plusSeconds(3600)
             );
@@ -365,15 +365,15 @@ public class CustomOAuth2UserServiceTest {
                     .userInfoUri("https://kapi.kakao.com/v2/user/me")
                     .userNameAttributeName("id")
                     .clientName("Kakao")
-                    .clientId("abcd")
-                    .clientSecret("secret")
+                    .clientId("dummy-kakao-client-id")
+                    .clientSecret("dummy-kakao-client-secret")
                     .build();
         }
 
         private OAuth2AccessToken createAccessToken() {
             return new OAuth2AccessToken(
                     OAuth2AccessToken.TokenType.BEARER,
-                    "testAccessToken",
+                    "dummy-kakao-access-token",
                     Instant.now(),
                     Instant.now().plusSeconds(3600)
             );
@@ -470,15 +470,15 @@ public class CustomOAuth2UserServiceTest {
                     .userInfoUri("https://openapi.naver.com/v1/nid/me")
                     .userNameAttributeName("response")
                     .clientName("Naver")
-                    .clientId("abcd")
-                    .clientSecret("secret")
+                    .clientId("dummy-naver-client-id")
+                    .clientSecret("dummy-naver-client-secret")
                     .build();
         }
 
         private OAuth2AccessToken createAccessToken() {
             return new OAuth2AccessToken(
                     OAuth2AccessToken.TokenType.BEARER,
-                    "testAccessToken",
+                    "dummy-naver-access-token",
                     Instant.now(),
                     Instant.now().plusSeconds(3600)
             );
