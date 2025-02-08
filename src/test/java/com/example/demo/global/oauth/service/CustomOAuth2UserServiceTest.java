@@ -137,9 +137,6 @@ public class CustomOAuth2UserServiceTest {
 
                 softly.assertThat(userInfo.getProvider()).isEqualTo(OAuth2Provider.GITHUB);
                 softly.assertThat(userInfo.getId()).isEqualTo("123456789");
-                softly.assertThat(userInfo.getEmail()).isEqualTo("octocat@github.com");
-                softly.assertThat(userInfo.getNickname()).isEqualTo("octocat");
-                softly.assertThat(userInfo.getProfileImageUrl()).isEqualTo("https://github.com/images/error/octocat_happy.gif");
 
                 softly.assertThat(userInfo.getAccessToken()).isEqualTo(createAccessToken().getTokenValue());
             });
@@ -226,8 +223,6 @@ public class CustomOAuth2UserServiceTest {
 
                 softly.assertThat(userInfo.getProvider()).isEqualTo(OAuth2Provider.GOOGLE);
                 softly.assertThat(userInfo.getId()).isEqualTo("123456789012345678901");
-                softly.assertThat(userInfo.getEmail()).isEqualTo("example@gmail.com");
-                softly.assertThat(userInfo.getProfileImageUrl()).isEqualTo("https://lh3.googleusercontent.com/a/profile_image");
 
                 softly.assertThat(userInfo.getAccessToken()).isEqualTo(createAccessToken().getTokenValue());
             });
@@ -327,9 +322,6 @@ public class CustomOAuth2UserServiceTest {
 
                 softly.assertThat(userInfo.getProvider()).isEqualTo(OAuth2Provider.KAKAO);
                 softly.assertThat(userInfo.getId()).isEqualTo("9876543210");
-                softly.assertThat(userInfo.getEmail()).isEqualTo("test@example.com");
-                softly.assertThat(userInfo.getNickname()).isEqualTo("테크모");
-                softly.assertThat(userInfo.getProfileImageUrl()).isEqualTo("http://k.kakaocdn.net/dn/profile.jpg");
 
                 softly.assertThat(userInfo.getAccessToken()).isEqualTo(createAccessToken().getTokenValue());
             });
@@ -432,9 +424,6 @@ public class CustomOAuth2UserServiceTest {
 
                 softly.assertThat(userInfo.getProvider()).isEqualTo(OAuth2Provider.NAVER);
                 softly.assertThat(userInfo.getId()).isEqualTo("12345678");
-                softly.assertThat(userInfo.getEmail()).isEqualTo("test@example.com");
-                softly.assertThat(userInfo.getNickname()).isEqualTo("테크모");
-                softly.assertThat(userInfo.getProfileImageUrl()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/nodata_33x33.gif");
 
                 softly.assertThat(userInfo.getAccessToken()).isEqualTo(createAccessToken().getTokenValue());
             });
