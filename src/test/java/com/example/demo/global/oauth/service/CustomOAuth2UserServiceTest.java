@@ -172,4 +172,93 @@ public class CustomOAuth2UserServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("Google 사용자 정보 획득")
+    class GetGoogleLoginUserInformation {
+        String endpointUri = "https://www.googleapis.com/oauth2/v3/userinfo";
+
+        // 모의 OAuth 서버의 클라이언트 정보 및 발급하는 액세스 토큰 설정
+        ClientRegistration clientRegistration = createGoogleClientRegistration();
+        OAuth2AccessToken accessToken = createAccessToken();
+        // 모의 OAuth 서버에 보낼 요청 설정
+        OAuth2UserRequest userRequest = new OAuth2UserRequest(clientRegistration, accessToken);
+
+        @Test
+        void 성공_사용자_정보를_얻을_수_있다() {
+            // given
+            // 모의 응답 설정
+            String mockResponse = "{"
+                    + "\"sub\": \"123456789012345678901\","
+                    + "\"name\": \"Kim Kumoh\","
+                    + "\"given_name\": \"Kumoh\","
+                    + "\"family_name\": \"Kim\","
+                    + "\"picture\": \"https://lh3.googleusercontent.com/a/profile_image\","
+                    + "\"email\": \"example@gmail.com\","
+                    + "\"email_verified\": true"
+                    + "}";
+
+            // 모의 OAuth 서버 설정
+            mockServer
+                    // 요청의 HTTP 메서드 및 URL 지정
+                    .expect(requestTo(endpointUri))
+                    .andExpect(method(HttpMethod.GET))
+                    // 해당 HTTP 메서드로 해당 URL에 요청이 오면 HTTP 상태 코드 200과 함께 모의 응답을 반환
+                    .andRespond(withSuccess(mockResponse, MediaType.APPLICATION_JSON));
+
+            // when
+            OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+            OAuth2UserPrincipal principal = (OAuth2UserPrincipal) oAuth2User;
+            GoogleOAuth2UserInfo userInfo = (GoogleOAuth2UserInfo) principal.getUserInfo();
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(oAuth2User).isInstanceOf(OAuth2UserPrincipal.class);
+                softly.assertThat(userInfo).isInstanceOf(OAuth2UserInfo.class);
+
+                softly.assertThat(userInfo.getProvider()).isEqualTo(OAuth2Provider.GOOGLE);
+                softly.assertThat(userInfo.getId()).isEqualTo("123456789012345678901");
+                softly.assertThat(userInfo.getEmail()).isEqualTo("example@gmail.com");
+                softly.assertThat(userInfo.getProfileImageUrl()).isEqualTo("https://lh3.googleusercontent.com/a/profile_image");
+
+                softly.assertThat(userInfo.getAccessToken()).isEqualTo(createAccessToken().getTokenValue());
+            });
+
+            mockServer.verify();
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = HttpStatus.class, names = { "BAD_REQUEST", "UNAUTHORIZED", "NOT_FOUND", "INTERNAL_SERVER_ERROR" })
+        void 실패_서버_오류가_반환돼_사용자_정보를_얻을_수_없다(HttpStatus httpStatus) {
+            // given
+            DefaultResponseCreator respond = withStatus(httpStatus);
+
+            // 모의 OAuth 서버 설정
+            mockServer
+                    .expect(requestTo(endpointUri))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(respond);
+
+            // when & then
+            assertThatThrownBy(() -> oAuth2UserService.loadUser(userRequest))
+                    .isInstanceOf(AuthenticationException.class);
+        }
+
+        private ClientRegistration createGoogleClientRegistration() {
+            return CommonOAuth2Provider.GOOGLE.getBuilder(OAuth2Provider.GOOGLE.getRegistrationId())
+                    .scope("profile", "email")
+                    .clientId("abcd")
+                    .clientSecret("secret")
+                    .build();
+        }
+
+        private OAuth2AccessToken createAccessToken() {
+            return new OAuth2AccessToken(
+                    OAuth2AccessToken.TokenType.BEARER,
+                    "testAccessToken",
+                    Instant.now(),
+                    Instant.now().plusSeconds(3600)
+            );
+        }
+    }
+
 }
