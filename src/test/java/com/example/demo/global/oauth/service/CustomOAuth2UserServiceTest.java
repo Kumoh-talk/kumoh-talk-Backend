@@ -23,6 +23,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.context.ActiveProfiles;
@@ -246,6 +248,116 @@ public class CustomOAuth2UserServiceTest {
         private ClientRegistration createGoogleClientRegistration() {
             return CommonOAuth2Provider.GOOGLE.getBuilder(OAuth2Provider.GOOGLE.getRegistrationId())
                     .scope("profile", "email")
+                    .clientId("abcd")
+                    .clientSecret("secret")
+                    .build();
+        }
+
+        private OAuth2AccessToken createAccessToken() {
+            return new OAuth2AccessToken(
+                    OAuth2AccessToken.TokenType.BEARER,
+                    "testAccessToken",
+                    Instant.now(),
+                    Instant.now().plusSeconds(3600)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("kakao 사용자 정보 획득")
+    class GetKakaoLoginUserInformation {
+        String endpointUri = "https://kapi.kakao.com/v2/user/me";
+
+        // 모의 OAuth 서버의 클라이언트 정보 및 발급하는 액세스 토큰 설정
+        ClientRegistration clientRegistration = createKakaoClientRegistration();
+        OAuth2AccessToken accessToken = createAccessToken();
+        // 모의 OAuth 서버에 보낼 요청 설정
+        OAuth2UserRequest userRequest = new OAuth2UserRequest(clientRegistration, accessToken);
+
+        @Test
+        void 성공_사용자_정보를_얻을_수_있다() {
+            // given
+            // 모의 응답 설정
+            String mockResponse = "{"
+                    + "\"id\": 9876543210,"
+                    + "\"connected_at\": \"2022-04-11T01:45:28Z\","
+                    + "\"kakao_account\": {"
+                    + "     \"profile_nickname_needs_agreement\": false,"
+                    + "     \"profile_image_needs_agreement\": false,"
+                    + "     \"profile\": {"
+                    + "         \"nickname\": \"테크모\","
+                    + "         \"thumbnail_image_url\": \"http://k.kakaocdn.net/dn/thumbnail.jpg\","
+                    + "         \"profile_image_url\": \"http://k.kakaocdn.net/dn/profile.jpg\","
+                    + "         \"is_default_image\": false,"
+                    + "         \"is_default_nickname\": false"
+                    + "     },"
+                    + "     \"name_needs_agreement\": false,"
+                    + "     \"name\": \"김금오\","
+                    + "     \"email_needs_agreement\": false,"
+                    + "     \"is_email_valid\": true,"
+                    + "     \"is_email_verified\": true,"
+                    + "     \"email\": \"test@example.com\""
+                    + "}"
+                    + "}";
+
+            // 모의 OAuth 서버 설정
+            mockServer
+                    // 요청의 HTTP 메서드 및 URL 지정
+                    .expect(requestTo(endpointUri))
+                    .andExpect(method(HttpMethod.GET))
+                    // 해당 HTTP 메서드로 해당 URL에 요청이 오면 HTTP 상태 코드 200과 함께 모의 응답을 반환
+                    .andRespond(withSuccess(mockResponse, MediaType.APPLICATION_JSON));
+
+            // when
+            OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+            OAuth2UserPrincipal principal = (OAuth2UserPrincipal) oAuth2User;
+            KakaoOAuth2UserInfo userInfo = (KakaoOAuth2UserInfo) principal.getUserInfo();
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(oAuth2User).isInstanceOf(OAuth2UserPrincipal.class);
+                softly.assertThat(userInfo).isInstanceOf(OAuth2UserInfo.class);
+
+                softly.assertThat(userInfo.getProvider()).isEqualTo(OAuth2Provider.KAKAO);
+                softly.assertThat(userInfo.getId()).isEqualTo("9876543210");
+                softly.assertThat(userInfo.getEmail()).isEqualTo("test@example.com");
+                softly.assertThat(userInfo.getNickname()).isEqualTo("테크모");
+                softly.assertThat(userInfo.getProfileImageUrl()).isEqualTo("http://k.kakaocdn.net/dn/profile.jpg");
+
+                softly.assertThat(userInfo.getAccessToken()).isEqualTo(createAccessToken().getTokenValue());
+            });
+
+            mockServer.verify();
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = HttpStatus.class, names = { "BAD_REQUEST", "UNAUTHORIZED" })
+        void 실패_서버_오류가_반환돼_사용자_정보를_얻을_수_없다(HttpStatus httpStatus) {
+            // given
+            DefaultResponseCreator respond = withStatus(httpStatus);
+
+            // 모의 OAuth 서버 설정
+            mockServer
+                    .expect(requestTo(endpointUri))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(respond);
+
+            // when & then
+            assertThatThrownBy(() -> oAuth2UserService.loadUser(userRequest))
+                    .isInstanceOf(AuthenticationException.class);
+        }
+
+        private ClientRegistration createKakaoClientRegistration() {
+            return ClientRegistration.withRegistrationId("kakao")
+                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                    .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                    .redirectUri("{baseUrl}/{action}/oauth2/code/{registrationId}")
+                    .scope("profile_nickname", "profile_image")
+                    .authorizationUri("https://kauth.kakao.com/oauth/authorize")
+                    .tokenUri("https://kauth.kakao.com/oauth/token")
+                    .userInfoUri("https://kapi.kakao.com/v2/user/me")
+                    .userNameAttributeName("id")
+                    .clientName("Kakao")
                     .clientId("abcd")
                     .clientSecret("secret")
                     .build();
