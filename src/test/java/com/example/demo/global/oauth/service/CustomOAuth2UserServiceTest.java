@@ -6,6 +6,7 @@ import com.example.demo.global.oauth.user.OAuth2UserInfo;
 import com.example.demo.global.oauth.user.github.GithubOAuth2UserInfo;
 import com.example.demo.global.oauth.user.google.GoogleOAuth2UserInfo;
 import com.example.demo.global.oauth.user.kakao.KakaoOAuth2UserInfo;
+import com.example.demo.global.oauth.user.naver.NaverOAuth2UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -358,6 +359,111 @@ public class CustomOAuth2UserServiceTest {
                     .userInfoUri("https://kapi.kakao.com/v2/user/me")
                     .userNameAttributeName("id")
                     .clientName("Kakao")
+                    .clientId("abcd")
+                    .clientSecret("secret")
+                    .build();
+        }
+
+        private OAuth2AccessToken createAccessToken() {
+            return new OAuth2AccessToken(
+                    OAuth2AccessToken.TokenType.BEARER,
+                    "testAccessToken",
+                    Instant.now(),
+                    Instant.now().plusSeconds(3600)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("NAVER 사용자 정보 획득")
+    class GetNaverLoginUserInformation {
+        String endpointUri = "https://openapi.naver.com/v1/nid/me";
+
+        // 모의 OAuth 서버의 클라이언트 정보 및 발급하는 액세스 토큰 설정
+        ClientRegistration clientRegistration = createNaverClientRegistration();
+        OAuth2AccessToken accessToken = createAccessToken();
+        // 모의 OAuth 서버에 보낼 요청 설정
+        OAuth2UserRequest userRequest = new OAuth2UserRequest(clientRegistration, accessToken);
+
+        @Test
+        void 성공_사용자_정보를_얻을_수_있다() {
+            // given
+            // 모의 응답 설정
+            String mockResponse = "{"
+                    + "  \"resultcode\": \"00\","
+                    + "  \"message\": \"success\","
+                    + "  \"response\": {"
+                    + "    \"email\": \"test@example.com\","
+                    + "    \"nickname\": \"테크모\","
+                    + "    \"profile_image\": \"https://ssl.pstatic.net/static/pwe/address/nodata_33x33.gif\","
+                    + "    \"age\": \"40-49\","
+                    + "    \"gender\": \"F\","
+                    + "    \"id\": \"12345678\","
+                    + "    \"name\": \"김금오\","
+                    + "    \"birthday\": \"10-01\","
+                    + "    \"birthyear\": \"1900\","
+                    + "    \"mobile\": \"010-0000-0000\""
+                    + "  }"
+                    + "}";
+
+            // 모의 OAuth 서버 설정
+            mockServer
+                    // 요청의 HTTP 메서드 및 URL 지정
+                    .expect(requestTo(endpointUri))
+                    .andExpect(method(HttpMethod.GET))
+                    // 해당 HTTP 메서드로 해당 URL에 요청이 오면 HTTP 상태 코드 200과 함께 모의 응답을 반환
+                    .andRespond(withSuccess(mockResponse, MediaType.APPLICATION_JSON));
+
+            // when
+            OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+            OAuth2UserPrincipal principal = (OAuth2UserPrincipal) oAuth2User;
+            NaverOAuth2UserInfo userInfo = (NaverOAuth2UserInfo) principal.getUserInfo();
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(oAuth2User).isInstanceOf(OAuth2UserPrincipal.class);
+                softly.assertThat(userInfo).isInstanceOf(OAuth2UserInfo.class);
+
+                softly.assertThat(userInfo.getProvider()).isEqualTo(OAuth2Provider.NAVER);
+                softly.assertThat(userInfo.getId()).isEqualTo("12345678");
+                softly.assertThat(userInfo.getEmail()).isEqualTo("test@example.com");
+                softly.assertThat(userInfo.getNickname()).isEqualTo("테크모");
+                softly.assertThat(userInfo.getProfileImageUrl()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/nodata_33x33.gif");
+
+                softly.assertThat(userInfo.getAccessToken()).isEqualTo(createAccessToken().getTokenValue());
+            });
+
+            mockServer.verify();
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = HttpStatus.class, names = { "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INTERNAL_SERVER_ERROR" })
+        void 실패_서버_오류가_반환돼_사용자_정보를_얻을_수_없다(HttpStatus httpStatus) {
+            // given
+            DefaultResponseCreator respond = withStatus(httpStatus);
+
+            // 모의 OAuth 서버 설정
+            mockServer
+                    .expect(requestTo(endpointUri))
+                    .andExpect(method(HttpMethod.GET))
+                    .andRespond(respond);
+
+            // when & then
+            assertThatThrownBy(() -> oAuth2UserService.loadUser(userRequest))
+                    .isInstanceOf(AuthenticationException.class);
+        }
+
+        private ClientRegistration createNaverClientRegistration() {
+            return ClientRegistration.withRegistrationId("naver")
+                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                    .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                    .redirectUri("{baseUrl}/{action}/oauth2/code/{registrationId}")
+                    .scope("name", "email", "profile_image")
+                    .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+                    .tokenUri("https://nid.naver.com/oauth2.0/token")
+                    .userInfoUri("https://openapi.naver.com/v1/nid/me")
+                    .userNameAttributeName("response")
+                    .clientName("Naver")
                     .clientId("abcd")
                     .clientSecret("secret")
                     .build();
