@@ -17,9 +17,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 
 public interface UserApi {
     @Operation(
@@ -35,7 +38,9 @@ public interface UserApi {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.EXIST_SAME_NICKNAME),
             }
     )
-    ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(@Parameter String nickname);
+    ResponseEntity<ResponseBody<Void>> checkNicknameDuplicate(
+            @Parameter(description = "닉네임", required = true)
+            @Pattern(regexp = NICKNAME_REGEXP, message = "닉네임 정규식을 맞춰주세요.") String nickname);
 
     @Operation(
             summary = "GUEST 사용자에 한해서 초기 추가정보를 입력받는 api",
