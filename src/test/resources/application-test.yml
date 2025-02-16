@@ -112,7 +112,7 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
 jwt:
-  secret-key: dummy-jwt-secret-key
+  secret-key: 01234567890123456789012345678901
   access-token-expire-in: 1800
   refresh-token-expire-in: 1209600
 
