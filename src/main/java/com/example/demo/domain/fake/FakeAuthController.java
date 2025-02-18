@@ -13,6 +13,7 @@ import com.example.demo.global.oauth.user.OAuth2Provider;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.demo.global.base.dto.ResponseUtil.createSuccessResponse;
 
+@Profile({"local", "dev"})
 @RestController
 @RequestMapping("/api/test/auth/login")
 @RequiredArgsConstructor
