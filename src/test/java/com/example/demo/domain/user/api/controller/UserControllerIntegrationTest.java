@@ -81,22 +81,35 @@ public class UserControllerIntegrationTest extends IntegrationTest {
             ResultActions resultActions =  mockMvc.perform(
                             get("/api/v1/users/check-nickname")
                                     .param("nickname", "javaGood"))
-                                    .andDo(MockMvcResultHandlers.print())
+                                    .andDo(print())
                                     .andExpect(status().isOk());
         }
 
         @Test
         @WithMockUser(username = "test", roles = "GUEST")
-        void 실패_게스트_사용자는_닉네임_중복_검사에_통과하지_못한다() throws Exception {
+        void 실패_중복된_닉네임은_중복검사에_실패한다() throws Exception {
             //  given
             // when & then
             ResultActions resultActions =  mockMvc.perform(
                             get("/api/v1/users/check-nickname")
                                     .param("nickname", savedUser.getNickname()))
-                                    .andDo(MockMvcResultHandlers.print())
+                                    .andDo(print())
                                     .andExpect(status().isConflict())
                                     .andExpect(jsonPath("$.code").value("AUTH_0005"))
                                     .andExpect(jsonPath("$.msg").value("이미 사용중인 닉네임 입니다."));
+        }
+
+        @Test
+        void 실패_회원이_아닌_유저는_닉네임은_중복검사를_할수없다() throws Exception {
+            //  given
+            // when & then
+            ResultActions resultActions =  mockMvc.perform(
+                            get("/api/v1/users/check-nickname")
+                                    .param("nickname", "name"))
+                    .andDo(print())
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.code").value("SECURITY_0002"))
+                    .andExpect(jsonPath("$.msg").value("권한이 없습니다."));
         }
     }
 
@@ -129,7 +142,7 @@ public class UserControllerIntegrationTest extends IntegrationTest {
                                     .header("Authorization", "Bearer " + jwtToken)
                                     .content(jsonRequest)
                                     .contentType(MediaType.APPLICATION_JSON))
-                                    .andDo(MockMvcResultHandlers.print())
+                                    .andDo(print())
                                     .andExpect(status().isOk());
 
             User updatedUser = userRepository.findById(user.getId()).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
@@ -163,7 +176,7 @@ public class UserControllerIntegrationTest extends IntegrationTest {
                                     .header("Authorization", "Bearer " + jwtToken)
                                     .content(jsonRequest)
                                     .contentType(MediaType.APPLICATION_JSON))
-                                    .andDo(MockMvcResultHandlers.print())
+                                    .andDo(print())
                                     .andExpect(status().isConflict())
                                     .andExpect(jsonPath("$.code").value("AUTH_0005"))
                                     .andExpect(jsonPath("$.msg").value("이미 사용중인 닉네임 입니다."));
@@ -194,8 +207,8 @@ public class UserControllerIntegrationTest extends IntegrationTest {
                             .header("Authorization", "Bearer " + jwtToken)
                             .param("userId",user.getId().toString())
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andDo(MockMvcResultHandlers.print())
-                    .andExpect(MockMvcResultMatchers.status().isOk());
+                    .andDo(print())
+                    .andExpect(status().isOk());
 
             assertThat(refreshTokenRepository.findById(savedUser.getId())).isNotPresent();
         }
