@@ -24,7 +24,7 @@ public class Notification extends BaseEntity {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(name = "invoker_type", nullable = false)
     private NotificationType invokerType;
 
     @Column(name = "invoker_id", nullable = false)

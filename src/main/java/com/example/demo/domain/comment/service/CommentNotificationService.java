@@ -6,51 +6,58 @@ import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.notification.domain.vo.NotificationType;
 import com.example.demo.domain.notification.repository.NotificationRepository;
-import com.example.demo.domain.notification.repository.NotificationUserRepository;
 import com.example.demo.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
 public class CommentNotificationService {
+
     private final NotificationRepository notificationRepository;
-    private final NotificationUserRepository notificationUserRepository;
 
     @Async
     @Transactional
-    public void saveCommentNotification(Comment comment, NotificationType notificationType, CommonCommentRepository<?> commentRepository) {
+    public CompletableFuture<Notification> saveCommentNotification(Comment comment, NotificationType notificationType, CommonCommentRepository<?> commentRepository) {
         Long parentCommentId = null;
         if (comment.getParentComment() != null) {
             parentCommentId = comment.getParentComment().getId();
         }
 
         Set<User> userList = new HashSet<>();
-        // 게시물 작성자
+
+        // 부모 댓글 작성시 알림 대상자 : 게시물 작성자 + 다른 부모 댓글 대상자
+        // 대댓글 작성 시 알림 대상자 : 게시물 작성자 + 부모 댓글 작성자 + 같은 부모를 가지는 대댓글 작성자
         if (!comment.getBoard().getUser().getId().equals(comment.getUser().getId())) {
             userList.add(comment.getBoard().getUser());
         }
-        // 댓글 그룹
-        commentRepository.findUsersByParentCommentId(parentCommentId)
+        commentRepository.findUsersByBoard_idByParentComment_id(comment.getBoard().getId(), parentCommentId)
                 .stream()
                 .filter(user -> !user.getId().equals(comment.getUser().getId()))
                 .forEach(userList::add);
         Notification notification = Notification.fromCommentEntity(comment, notificationType);
-        List<NotificationUser> notificationUserList = new ArrayList<>();
 
         for (User user : userList) {
-            notificationUserList.add(NotificationUser.from(notification, user));
+            notification.getNotificationUserList()
+                    .add(NotificationUser.from(notification, user));
+        }
+        if (!notification.getNotificationUserList().isEmpty()) {
+            return CompletableFuture.completedFuture(notificationRepository.save(notification));
+        } else {
+            return CompletableFuture.completedFuture(null);
         }
 
-        notificationRepository.save(notification);
-        // TODO : 벌크 Insert 쿼리로 성능 최적화?
-        notificationUserRepository.saveAll(notificationUserList);
+    }
+
+    @Async
+    @Transactional
+    public void deleteCommentNotification(Long invokerId, NotificationType invokerType) {
+        notificationRepository.deleteByInvokerIdAndInvokerType(invokerId, invokerType);
     }
 }
