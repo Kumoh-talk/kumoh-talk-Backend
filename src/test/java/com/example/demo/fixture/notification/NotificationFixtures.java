@@ -1,0 +1,36 @@
+package com.example.demo.fixture.notification;
+
+import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.domain.comment.domain.entity.BoardComment;
+import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
+import com.example.demo.domain.notification.domain.entity.Notification;
+import com.example.demo.domain.notification.domain.vo.NotificationType;
+
+public class NotificationFixtures {
+    public static Notification BOARD_COMMENT_NOTIFICATION(BoardComment boardComment) {
+        return Notification.builder()
+                .invokerType(NotificationType.BOARD_COMMENT)
+                .invokerId(boardComment.getId())
+                .boardId(boardComment.getBoard().getId())
+                .senderNickname(boardComment.getUser().getNickname())
+                .build();
+    }
+
+    public static Notification RECRUITMENT_BOARD_COMMENT_NOTIFICATION(RecruitmentBoardComment recruitmentBoardComment) {
+        return Notification.builder()
+                .invokerType(NotificationType.RECRUITMENT_BOARD_COMMENT)
+                .invokerId(recruitmentBoardComment.getId())
+                .boardId(recruitmentBoardComment.getBoard().getId())
+                .senderNickname(recruitmentBoardComment.getUser().getNickname())
+                .build();
+    }
+
+    public static Notification LIKE_NOTIFICATION(Like like) {
+        return Notification.builder()
+                .invokerType(NotificationType.BOARD_LIKE)
+                .invokerId(like.getId())
+                .boardId(like.getBoard().getId())
+                .senderNickname(like.getUser().getNickname())
+                .build();
+    }
+}
