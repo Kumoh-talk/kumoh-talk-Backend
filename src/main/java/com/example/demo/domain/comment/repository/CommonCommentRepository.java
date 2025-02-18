@@ -29,5 +29,5 @@ public interface CommonCommentRepository<T> {
 
     Optional<Comment> findNotDeleteCommentById(Long boardId, Long commentId);
 
-    List<User> findUsersByParentCommentId(Long parentCommentId);
+    List<User> findUsersByBoard_idByParentComment_id(Long boardId, Long parentCommentId);
 }
