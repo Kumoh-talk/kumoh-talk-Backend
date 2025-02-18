@@ -98,6 +98,12 @@ dependencies {
 
     // test-containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
+
+    // JSQLParser
+    implementation 'com.github.jsqlparser:jsqlparser:5.1'
+
+    // awaitility
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 dependencyManagement {

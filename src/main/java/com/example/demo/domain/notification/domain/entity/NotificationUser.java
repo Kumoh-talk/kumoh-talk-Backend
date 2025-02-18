@@ -1,6 +1,7 @@
 package com.example.demo.domain.notification.domain.entity;
 
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "notifications_users")
 @NoArgsConstructor
 @Getter
-public class NotificationUser {
+public class NotificationUser extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +30,7 @@ public class NotificationUser {
     private boolean isRead;
 
     @Builder
-    public NotificationUser(Long id, Notification notification, User user, boolean isRead) {
-        this.id = id;
+    public NotificationUser(Notification notification, User user, boolean isRead) {
         this.notification = notification;
         this.user = user;
         this.isRead = isRead;
