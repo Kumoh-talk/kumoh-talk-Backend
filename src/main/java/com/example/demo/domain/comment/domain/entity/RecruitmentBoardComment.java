@@ -44,7 +44,7 @@ public class RecruitmentBoardComment extends BaseEntity implements Comment {
     @JoinColumn(name = "group_id")
     private RecruitmentBoardComment parentComment;
 
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY)
     @OrderBy("createdAt ASC")
     private List<RecruitmentBoardComment> replyComments = new ArrayList<>();
 

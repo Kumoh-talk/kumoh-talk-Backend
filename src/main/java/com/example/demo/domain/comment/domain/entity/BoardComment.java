@@ -36,7 +36,6 @@ public class BoardComment extends BaseEntity implements Comment {
     @JoinColumn(name = "user_id", nullable = false)
     protected User user;
 
-    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
@@ -45,7 +44,7 @@ public class BoardComment extends BaseEntity implements Comment {
     @JoinColumn(name = "group_id")
     private BoardComment parentComment;
 
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY)
     @OrderBy("createdAt ASC")
     private List<BoardComment> replyComments = new ArrayList<>();
 

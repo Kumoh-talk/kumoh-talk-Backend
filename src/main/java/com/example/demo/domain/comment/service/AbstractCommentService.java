@@ -57,7 +57,6 @@ public abstract class AbstractCommentService {
 
         Comment saved = commentRepository.doSave(commentUser, commentBoard, commentRequest, parentComment);
         commentNotificationService.saveCommentNotification(saved, notificationType, commentRepository);
-        // TODO : 부모댓글 작성자뿐만 아니라, 그룹아이디가 같은 댓글 작성자에게도 알림 전송?
         return CommentInfoResponse.fromComment(saved);
     }
 
@@ -77,7 +76,7 @@ public abstract class AbstractCommentService {
     }
 
     @Transactional
-    public void deleteComment(Long userId, Long commentId, boolean isAuthorized, NotificationType notificationType) {
+    public void deleteComment(Long userId, Long commentId, boolean isAuthorized) {
         Comment comment = commentRepository.doFindById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
 
@@ -87,7 +86,6 @@ public abstract class AbstractCommentService {
             }
         }
 
-        commentRepository.softDeleteReplyCommentsById(commentId);
         commentRepository.doDelete(comment);
     }
 }
