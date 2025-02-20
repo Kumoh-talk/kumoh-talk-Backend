@@ -36,8 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@SpringBootTest
-@ActiveProfiles("test") // application-test.yml이 로드되도록 강제
 @AutoConfigureMockMvc
 public class UserControllerIntegrationTest extends IntegrationTest {
 
@@ -63,9 +61,6 @@ public class UserControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp(){
-        // db 비우기
-        userRepository.deleteAll();
-        refreshTokenRepository.deleteAll();
         // 미리 유저 한 명 저장해두기
         savedUser = testFixtureBuilder.buildUser(SEMINAR_WRITER_USER());
     }
@@ -115,7 +110,6 @@ public class UserControllerIntegrationTest extends IntegrationTest {
 
     @Nested
     @DisplayName("회원가입을 위한 게스트 사용자의 추가 정보 입력")
-    @Transactional
     class completeRegistration {
 
         @Test
@@ -186,7 +180,6 @@ public class UserControllerIntegrationTest extends IntegrationTest {
 
     @Nested
     @DisplayName("로그아웃")
-    @Transactional
     @Disabled
     class logout{
 
