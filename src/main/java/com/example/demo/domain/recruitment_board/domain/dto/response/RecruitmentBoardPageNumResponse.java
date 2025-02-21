@@ -34,8 +34,19 @@ public class RecruitmentBoardPageNumResponse {
                 .totalPage(recruitmentBoardList.getTotalPages())
                 .pageSort(recruitmentBoardList.getSort().toString())
                 .boardInfo(recruitmentBoardList.getContent().stream()
-                        .map(RecruitmentBoardNoOffsetResponse.RecruitmentBoardSummaryInfo::from)
+                        .map(RecruitmentBoardNoOffsetResponse.RecruitmentBoardSummaryInfo::fromEntity)
                         .collect(Collectors.toList()))
+                .build();
+    }
+
+    public static RecruitmentBoardPageNumResponse fromBoardInfo(Page<RecruitmentBoardNoOffsetResponse.RecruitmentBoardSummaryInfo> recruitmentBoardList) {
+
+        return RecruitmentBoardPageNumResponse.builder()
+                .pageSize(recruitmentBoardList.getSize())
+                .pageNum(recruitmentBoardList.getNumber() + 1)
+                .totalPage(recruitmentBoardList.getTotalPages())
+                .pageSort(recruitmentBoardList.getSort().toString())
+                .boardInfo(recruitmentBoardList.getContent())
                 .build();
     }
 }
