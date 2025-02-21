@@ -53,6 +53,7 @@ public class RecruitmentBoard extends BaseEntity implements GenericBoard {
     private RecruitmentBoardTag tag;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
     private Status status;
 
     @Column(length = 50)

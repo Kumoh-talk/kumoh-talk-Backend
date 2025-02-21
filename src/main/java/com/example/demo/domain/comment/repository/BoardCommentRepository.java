@@ -81,4 +81,11 @@ public interface BoardCommentRepository extends JpaRepository<BoardComment, Long
             "AND b.id = :boardId " +
             "AND bc.deletedAt IS NULL")
     Optional<Comment> findNotDeleteCommentById(Long boardId, Long commentId);
+
+    @Override
+    @Query("SELECT DISTINCT bc.user FROM BoardComment bc " +
+            "WHERE bc.board.id = :boardId " +
+            "AND (:parentCommentId IS NULL AND bc.parentComment IS NULL OR (bc.parentComment.id = :parentCommentId OR bc.id = :parentCommentId)) " +
+            "AND bc.deletedAt IS NULL")
+    List<User> findUsersByBoard_idByParentComment_id(Long boardId, Long parentCommentId);
 }

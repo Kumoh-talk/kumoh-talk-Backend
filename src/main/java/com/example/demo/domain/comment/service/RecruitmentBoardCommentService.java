@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 public class RecruitmentBoardCommentService extends AbstractCommentService {
     protected RecruitmentBoardCommentService(
             UserService userService,
-//            CommentNotificationService commentNotificationService,
+            CommentNotificationService commentNotificationService,
             @Qualifier("recruitmentBoardCommentRepository") CommonCommentRepository<RecruitmentBoardType> commentRepository,
             @Qualifier("recruitmentBoardRepository") CommonBoardRepository boardRepository) {
-        super(userService, commentRepository, boardRepository);
+        super(userService, commentNotificationService, commentRepository, boardRepository);
     }
 }

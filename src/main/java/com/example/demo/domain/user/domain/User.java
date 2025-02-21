@@ -4,6 +4,7 @@ import com.example.demo.domain.board.domain.entity.Board;
 import com.example.demo.domain.board.domain.entity.Like;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
+import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
 import com.example.demo.domain.user.domain.vo.Role;
@@ -77,6 +78,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SeminarApplication> seminarApplications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NotificationUser> notificationUsers = new ArrayList<>();
+
     @Builder
     public User(OAuth2Provider provider, String providerId, String nickname, Role role) {
         this.provider = provider;
@@ -137,5 +141,18 @@ public class User extends BaseEntity {
 
     public void setDefaultProfileUrl(String defaultImageUrl) {
         this.profileImageUrl = defaultImageUrl;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return id != null && id.equals(user.id);
     }
 }

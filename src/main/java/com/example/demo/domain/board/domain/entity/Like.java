@@ -14,6 +14,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Getter
 @SQLDelete(sql = "UPDATE likes SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
+@EntityListeners(LikeEntityListener.class)
 public class Like extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

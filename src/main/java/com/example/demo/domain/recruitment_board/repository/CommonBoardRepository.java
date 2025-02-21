@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface CommonBoardRepository {
     Optional<GenericBoard> doFindById(Long id);
+
+    Optional<GenericBoard> findByIdWithUser(Long id);
 }

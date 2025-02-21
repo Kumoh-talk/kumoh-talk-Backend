@@ -111,7 +111,7 @@ public class BoardCommentController extends AbstractBoardCommentApi {
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ResponseBody<Void>> deleteComment(Long userId, @PathVariable Long commentId) {
-        commentService.deleteComment(userId, commentId, false, NotificationType.BOARD_COMMENT);
+        commentService.deleteComment(userId, commentId, false);
         return ResponseEntity.ok().body(createSuccessResponse());
     }
 }

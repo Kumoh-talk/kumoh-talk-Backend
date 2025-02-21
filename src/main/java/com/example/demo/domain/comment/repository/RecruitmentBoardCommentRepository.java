@@ -80,5 +80,12 @@ public interface RecruitmentBoardCommentRepository extends JpaRepository<Recruit
             "AND b.id = :boardId " +
             "AND rbc.deletedAt IS NULL")
     Optional<Comment> findNotDeleteCommentById(Long boardId, Long commentId);
+
+    @Override
+    @Query("SELECT DISTINCT rbc.user FROM RecruitmentBoardComment rbc " +
+            "WHERE rbc.board.id = :boardId " +
+            "AND (:parentCommentId IS NULL AND rbc.parentComment IS NULL OR rbc.parentComment.id = :parentCommentId OR rbc.id = :parentCommentId) " +
+            "AND rbc.deletedAt IS NULL")
+    List<User> findUsersByBoard_idByParentComment_id(Long boardId, Long parentCommentId);
 }
 

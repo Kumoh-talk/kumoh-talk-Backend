@@ -21,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLDelete(sql = "UPDATE recruitment_board_comments SET deleted_at = NOW() where id = ?")
+@EntityListeners(CommentEntityListener.class)
 public class RecruitmentBoardComment extends BaseEntity implements Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +44,7 @@ public class RecruitmentBoardComment extends BaseEntity implements Comment {
     @JoinColumn(name = "group_id")
     private RecruitmentBoardComment parentComment;
 
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY)
     @OrderBy("createdAt ASC")
     private List<RecruitmentBoardComment> replyComments = new ArrayList<>();
 
@@ -68,7 +69,7 @@ public class RecruitmentBoardComment extends BaseEntity implements Comment {
                 .parentComment(parentComment)
                 .build();
     }
-    
+
     @Override
     public List<Comment> getReplyComments() {
         return new ArrayList<>(replyComments);
