@@ -62,39 +62,26 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public RecruitmentBoardNoOffsetResponse getPublishedBoardListByNoOffset(int size, Long lastBoardId, RecruitmentBoardType recruitmentBoardType) {
-        List<RecruitmentBoard> recruitmentBoardList;
+        List<RecruitmentBoardNoOffsetResponse.RecruitmentBoardSummaryInfo> recruitmentBoardList;
 
         // 최근 게시물 Id를 알 수 없을 때(첫 페이지를 조회할 때) -> 쿼리를 통해 첫 게시물 id를 가져온다.
         if (lastBoardId == null) {
-            List<Long> boardIdList;
-            Long firstId;
-            try {
-                boardIdList = recruitmentBoardRepository.findPublishedId(recruitmentBoardType);
-                if (boardIdList.isEmpty()) {
-                    throw new NullPointerException("can't find any Board");
-                }
-                firstId = boardIdList.get(0);
-            } catch (NullPointerException e) {
-                return RecruitmentBoardNoOffsetResponse.newEmptyListInstance(size);
-            }
-
-            RecruitmentBoard firstBoard = validateRecruitmentBoard(firstId);
             // firstId 이하 게시물을 찾기
-            recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByNoOffset(size, firstBoard, recruitmentBoardType, true);
+            recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByNoOffset(size, null, recruitmentBoardType);
         } else {
             RecruitmentBoard lastBoard = validateRecruitmentBoard(lastBoardId);
             // lastBoardId 미만 게시물을 찾기
-            recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByNoOffset(size, lastBoard, recruitmentBoardType, false);
+            recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByNoOffset(size, lastBoard, recruitmentBoardType);
         }
 
-        return RecruitmentBoardNoOffsetResponse.from(size, recruitmentBoardList);
+        return RecruitmentBoardNoOffsetResponse.fromBoardInfo(size, recruitmentBoardList);
     }
 
     @Transactional(readOnly = true)
     public RecruitmentBoardPageNumResponse getPublishedBoardListByPageNum(Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
-        Page<RecruitmentBoard> recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByPageNum(pageable, recruitmentBoardType);
+        Page<RecruitmentBoardNoOffsetResponse.RecruitmentBoardSummaryInfo> recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByPageNum(pageable, recruitmentBoardType);
 
-        return RecruitmentBoardPageNumResponse.from(recruitmentBoardList);
+        return RecruitmentBoardPageNumResponse.fromBoardInfo(recruitmentBoardList);
     }
 
     @Transactional(readOnly = true)
@@ -103,27 +90,21 @@ public class RecruitmentBoardService {
 
         List<RecruitmentBoard> recruitmentBoardList;
         if (lastBoardId == null) {
-            Long firstId;
-            try {
-                firstId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
-                        .orElseThrow(() -> new NullPointerException("게시물이 존재하지 않습니다."));
-            } catch (NullPointerException e) {
-                return RecruitmentBoardNoOffsetResponse.newEmptyListInstance(size);
-            }
-            recruitmentBoardList = recruitmentBoardRepository.findDraftPageByUserIdByNoOffset(userId, size, firstId, true);
+            recruitmentBoardList = recruitmentBoardRepository.findDraftPageByUserIdByNoOffset(userId, size, null);
         } else {
-            recruitmentBoardList = recruitmentBoardRepository.findDraftPageByUserIdByNoOffset(userId, size, lastBoardId, false);
+            validateRecruitmentBoard(lastBoardId);
+            recruitmentBoardList = recruitmentBoardRepository.findDraftPageByUserIdByNoOffset(userId, size, lastBoardId);
         }
 
-        return RecruitmentBoardNoOffsetResponse.from(size, recruitmentBoardList);
+        return RecruitmentBoardNoOffsetResponse.fromDraft(size, recruitmentBoardList);
     }
 
     @Transactional(readOnly = true)
     public RecruitmentBoardPageNumResponse getPublishedBoardListByUserId(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
         userService.validateUser(userId);
-        Page<RecruitmentBoard> recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByUserIdByPageNum(userId, pageable, recruitmentBoardType);
+        Page<RecruitmentBoardNoOffsetResponse.RecruitmentBoardSummaryInfo> recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByUserIdByPageNum(userId, pageable, recruitmentBoardType);
 
-        return RecruitmentBoardPageNumResponse.from(recruitmentBoardList);
+        return RecruitmentBoardPageNumResponse.fromBoardInfo(recruitmentBoardList);
     }
 
     @Transactional(readOnly = true)

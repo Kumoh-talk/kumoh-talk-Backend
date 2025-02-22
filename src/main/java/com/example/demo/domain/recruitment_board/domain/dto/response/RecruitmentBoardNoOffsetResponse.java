@@ -34,7 +34,20 @@ public class RecruitmentBoardNoOffsetResponse {
                 .build();
     }
 
-    public static RecruitmentBoardNoOffsetResponse from(int pageSize, List<RecruitmentBoard> recruitmentBoardList) {
+    public static RecruitmentBoardNoOffsetResponse fromBoardInfo(int pageSize, List<RecruitmentBoardSummaryInfo> recruitmentBoardSummaryInfoList) {
+        boolean nextPage = false;
+        if (recruitmentBoardSummaryInfoList.size() > pageSize) {
+            nextPage = true;
+            recruitmentBoardSummaryInfoList.remove(pageSize);
+        }
+        return RecruitmentBoardNoOffsetResponse.builder()
+                .nextPage(nextPage)
+                .pageSize(pageSize)
+                .boardInfo(recruitmentBoardSummaryInfoList)
+                .build();
+    }
+
+    public static RecruitmentBoardNoOffsetResponse fromDraft(int pageSize, List<RecruitmentBoard> recruitmentBoardList) {
         boolean nextPage = false;
         if (recruitmentBoardList.size() > pageSize) {
             nextPage = true;
@@ -44,7 +57,7 @@ public class RecruitmentBoardNoOffsetResponse {
                 .nextPage(nextPage)
                 .pageSize(pageSize)
                 .boardInfo(recruitmentBoardList.stream()
-                        .map(RecruitmentBoardSummaryInfo::from)
+                        .map(RecruitmentBoardSummaryInfo::fromDraft)
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -54,6 +67,8 @@ public class RecruitmentBoardNoOffsetResponse {
     @Builder
     @Schema(name = "RecruitmentBoardSummaryInfo", description = "모집 게시물 요약 정보 응답")
     public static class RecruitmentBoardSummaryInfo {
+        @Schema(description = "모집 게시물 댓글 수", example = "3")
+        private Long commentCount;
         @Schema(description = "모집 게시물 id 정보", example = "4")
         private Long boardId;
         @Schema(description = "모집 게시물 제목 정보", example = "board title")
@@ -77,8 +92,9 @@ public class RecruitmentBoardNoOffsetResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime recruitmentDeadline;
 
-        public static RecruitmentBoardSummaryInfo from(RecruitmentBoard recruitmentBoardEntity) {
+        public static RecruitmentBoardSummaryInfo fromDraft(RecruitmentBoard recruitmentBoardEntity) {
             return RecruitmentBoardSummaryInfo.builder()
+                    .commentCount(0L)
                     .boardId(recruitmentBoardEntity.getId())
                     .title(recruitmentBoardEntity.getTitle())
                     .summary(recruitmentBoardEntity.getSummary())
@@ -87,7 +103,23 @@ public class RecruitmentBoardNoOffsetResponse {
                     .recruitmentTarget(recruitmentBoardEntity.getRecruitmentTarget())
                     .recruitmentNum(recruitmentBoardEntity.getRecruitmentNum())
                     .currentMemberNum(recruitmentBoardEntity.getCurrentMemberNum())
-                    .recruitmentStart(recruitmentBoardEntity.getActivityStart())
+                    .recruitmentStart(recruitmentBoardEntity.getCreatedAt())
+                    .recruitmentDeadline(recruitmentBoardEntity.getRecruitmentDeadline())
+                    .build();
+        }
+
+        public static RecruitmentBoardSummaryInfo fromEntity(RecruitmentBoard recruitmentBoardEntity) {
+            return RecruitmentBoardSummaryInfo.builder()
+                    .commentCount((long) recruitmentBoardEntity.getCommentList().size())
+                    .boardId(recruitmentBoardEntity.getId())
+                    .title(recruitmentBoardEntity.getTitle())
+                    .summary(recruitmentBoardEntity.getSummary())
+                    .type(recruitmentBoardEntity.getType())
+                    .tag(recruitmentBoardEntity.getTag())
+                    .recruitmentTarget(recruitmentBoardEntity.getRecruitmentTarget())
+                    .recruitmentNum(recruitmentBoardEntity.getRecruitmentNum())
+                    .currentMemberNum(recruitmentBoardEntity.getCurrentMemberNum())
+                    .recruitmentStart(recruitmentBoardEntity.getCreatedAt())
                     .recruitmentDeadline(recruitmentBoardEntity.getRecruitmentDeadline())
                     .build();
         }
