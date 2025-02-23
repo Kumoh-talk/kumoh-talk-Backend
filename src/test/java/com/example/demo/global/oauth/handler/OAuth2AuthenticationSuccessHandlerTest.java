@@ -120,7 +120,7 @@ class OAuth2AuthenticationSuccessHandlerTest {
     }
 
     @Test
-    void 실패_OAuth_로그인에_실패하여_로그인할_수_없다() throws Exception {
+    void 실패_Principal_불러오기에_실패하여_로그인할_수_없다() throws Exception {
         // given
         MockHttpServletRequest request = createRequest(REDIRECT_URI, LOGIN_MODE);
         MockHttpServletResponse response = new MockHttpServletResponse();
