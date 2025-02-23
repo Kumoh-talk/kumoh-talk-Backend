@@ -1,22 +1,13 @@
 package com.example.demo.domain.board.service.service;
 
-import java.net.URL;
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.amazonaws.HttpMethod;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.Headers;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.Repository.ImageFileRepository;
-import com.example.demo.domain.board.domain.dto.request.FileRequest;
-import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.board.domain.entity.ImageFile;
+import com.example.demo.infra.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.ImageFileRepository;
+import com.example.demo.application.board.dto.request.FileRequest;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.board.entity.ImageFile;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 

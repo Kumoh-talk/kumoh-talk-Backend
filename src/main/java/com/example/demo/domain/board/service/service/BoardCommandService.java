@@ -1,15 +1,18 @@
 package com.example.demo.domain.board.service.service;
 
-import com.example.demo.domain.board.Repository.*;
-import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.board.domain.entity.BoardCategory;
-import com.example.demo.domain.board.domain.entity.Category;
-import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
-import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
-import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.board.entity.BoardCategory;
+import com.example.demo.infra.board.entity.Category;
+import com.example.demo.application.board.dto.request.BoardCreateRequest;
+import com.example.demo.application.board.dto.request.BoardUpdateRequest;
+import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.infra.board.Repository.BoardCategoryRepository;
+import com.example.demo.infra.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.CategoryRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;

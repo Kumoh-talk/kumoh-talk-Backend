@@ -1,7 +1,7 @@
 package com.example.demo.builder;
 
-import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.Repository.LikeRepository;
+import com.example.demo.infra.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.LikeRepository;
 import com.example.demo.domain.comment.repository.BoardCommentRepository;
 import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
 import com.example.demo.domain.notification.repository.NotificationRepository;

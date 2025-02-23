@@ -13,13 +13,13 @@ import java.util.Optional;
 public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long>, CommonBoardRepository, QueryDslRecruitmentBoardRepository {
     @Query("Select sb.id From RecruitmentBoard sb " +
             "where sb.recruitmentDeadline >= CURRENT_TIMESTAMP " +
-            "and sb.status = com.example.demo.domain.board.domain.dto.vo.Status.PUBLISHED " +
+            "and sb.status = com.example.demo.application.board.dto.vo.Status.PUBLISHED " +
             "and sb.type = :boardType " +
             "order by sb.recruitmentDeadline asc, sb.id asc")
     List<Long> findPublishedId(RecruitmentBoardType boardType);
 
     @Query("Select Max(id) From RecruitmentBoard " +
-            "where status = com.example.demo.domain.board.domain.dto.vo.Status.DRAFT " +
+            "where status = com.example.demo.application.board.dto.vo.Status.DRAFT " +
             "and user.id = :userId")
     Optional<Long> findFirstDraftIdByUserId(Long userId);
 

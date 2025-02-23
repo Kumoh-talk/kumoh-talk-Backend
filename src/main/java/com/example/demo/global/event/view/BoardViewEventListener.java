@@ -11,7 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.domain.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.BoardRepository;
 
 @Service
 public class BoardViewEventListener {

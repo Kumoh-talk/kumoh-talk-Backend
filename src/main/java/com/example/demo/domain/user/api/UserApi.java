@@ -1,6 +1,5 @@
 package com.example.demo.domain.user.api;
 
-import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;

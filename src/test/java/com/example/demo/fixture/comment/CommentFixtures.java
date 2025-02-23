@@ -1,6 +1,6 @@
 package com.example.demo.fixture.comment;
 
-import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;

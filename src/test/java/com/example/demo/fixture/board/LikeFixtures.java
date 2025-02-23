@@ -1,7 +1,7 @@
 package com.example.demo.fixture.board;
 
-import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.user.domain.User;
 
 public class LikeFixtures {

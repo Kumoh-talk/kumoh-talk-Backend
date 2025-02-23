@@ -1,6 +1,6 @@
 package com.example.demo.domain.comment.service;
 
-import com.example.demo.domain.board.domain.dto.vo.BoardType;
+import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.domain.comment.repository.CommonCommentRepository;
 import com.example.demo.domain.recruitment_board.repository.CommonBoardRepository;
 import com.example.demo.domain.user.service.UserService;

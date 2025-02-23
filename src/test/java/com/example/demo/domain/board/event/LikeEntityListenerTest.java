@@ -2,7 +2,7 @@ package com.example.demo.domain.board.event;
 
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.board.service.usecase.BoardUseCase;
 import com.example.demo.domain.board.service.usecase.LikeUseCase;
 import com.example.demo.domain.comment.TransactionalTask;

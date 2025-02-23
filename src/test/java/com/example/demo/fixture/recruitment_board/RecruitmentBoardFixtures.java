@@ -1,6 +1,6 @@
 package com.example.demo.fixture.recruitment_board;
 
-import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;

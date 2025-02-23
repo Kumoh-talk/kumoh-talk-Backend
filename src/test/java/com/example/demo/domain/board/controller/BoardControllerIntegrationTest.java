@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.demo.base.IntegrationTest;
-import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.application.board.dto.response.BoardInfoResponse;
+import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;

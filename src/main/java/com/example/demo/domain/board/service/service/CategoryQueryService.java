@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.domain.board.Repository.CategoryRepository;
-import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
+import com.example.demo.infra.board.Repository.CategoryRepository;
+import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;

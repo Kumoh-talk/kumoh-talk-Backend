@@ -1,9 +1,9 @@
 // package com.example.demo.domain.board.Repository;
 //
 // import com.example.demo.base.RepositoryTest;
-// import com.example.demo.domain.board.domain.entity.Board;
-// import com.example.demo.domain.board.domain.entity.BoardCategory;
-// import com.example.demo.domain.board.domain.entity.Category;
+// import com.example.demo.infra.board.entity.Board;
+// import com.example.demo.infra.board.entity.BoardCategory;
+// import com.example.demo.infra.board.entity.Category;
 // import com.example.demo.domain.board.domain.dto.vo.Status;
 // import com.example.demo.domain.board.domain.dto.vo.Tag;
 // import com.example.demo.domain.user.domain.User;

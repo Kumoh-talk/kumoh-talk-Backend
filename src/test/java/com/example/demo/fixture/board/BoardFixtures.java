@@ -1,8 +1,8 @@
 package com.example.demo.fixture.board;
 
-import com.example.demo.domain.board.domain.dto.vo.BoardType;
-import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.user.domain.User;
 
 public class BoardFixtures {

@@ -1,13 +1,13 @@
 package com.example.demo.domain.board.service.usecase;
 
-import com.example.demo.domain.board.domain.dto.request.BoardCreateRequest;
-import com.example.demo.domain.board.domain.dto.request.BoardUpdateRequest;
-import com.example.demo.domain.board.domain.dto.response.BoardInfoResponse;
-import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
-import com.example.demo.domain.board.domain.dto.response.DraftBoardTitleResponse;
-import com.example.demo.domain.board.domain.dto.vo.BoardType;
-import com.example.demo.domain.board.domain.dto.vo.Status;
-import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.application.board.dto.request.BoardCreateRequest;
+import com.example.demo.application.board.dto.request.BoardUpdateRequest;
+import com.example.demo.application.board.dto.response.BoardInfoResponse;
+import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
+import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.board.service.service.BoardCommandService;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.view.ViewIncreaseService;

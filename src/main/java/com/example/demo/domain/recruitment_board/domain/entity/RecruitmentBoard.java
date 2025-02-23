@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_board.domain.entity;
 
-import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;

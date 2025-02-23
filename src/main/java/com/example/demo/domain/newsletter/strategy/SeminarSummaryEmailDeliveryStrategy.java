@@ -1,7 +1,7 @@
 package com.example.demo.domain.newsletter.strategy;
 
-import com.example.demo.domain.board.domain.dto.vo.BoardType;
-import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.infra.board.entity.Board;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

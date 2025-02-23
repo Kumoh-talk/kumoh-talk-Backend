@@ -1,10 +1,10 @@
 package com.example.demo.domain.board.service.service;
 
-import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.Repository.LikeRepository;
-import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
-import com.example.demo.domain.board.domain.entity.Board;
-import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.infra.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.LikeRepository;
+import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;

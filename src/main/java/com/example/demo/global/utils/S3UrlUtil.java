@@ -8,7 +8,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.domain.board.domain.dto.request.PresignedUrlRequest;
+import com.example.demo.application.board.dto.request.PresignedUrlRequest;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 
