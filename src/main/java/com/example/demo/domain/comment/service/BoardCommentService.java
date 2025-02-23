@@ -13,7 +13,7 @@ public class BoardCommentService extends AbstractCommentService {
             UserService userService,
             CommentNotificationService commentNotificationService,
             @Qualifier("boardCommentRepository") CommonCommentRepository<BoardType> commentRepository,
-            @Qualifier("boardRepository") CommonBoardRepository boardRepository) {
+            @Qualifier("boardJpaRepository") CommonBoardRepository boardRepository) {
         super(userService, commentNotificationService, commentRepository, boardRepository);
     }
 }

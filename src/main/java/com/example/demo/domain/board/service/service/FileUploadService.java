@@ -3,7 +3,7 @@ package com.example.demo.domain.board.service.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.infra.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.Repository.ImageFileRepository;
 import com.example.demo.application.board.dto.request.FileRequest;
 import com.example.demo.infra.board.entity.Board;
@@ -17,19 +17,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileUploadService {
 	private final ImageFileRepository imageFileRepository;
-	private final BoardRepository boardRepository;
+	private final BoardJpaRepository boardJpaRepository;
 
 
 	@Transactional
 	public void changeAttachFileUrl(String url, Board board) {
 		board.changeAttachFileUrl(url);
-		boardRepository.save(board);
+		boardJpaRepository.save(board);
 	}
 
 	@Transactional
 	public void saveImageFileUrl(String url, Board board) {
 		ImageFile imageFile = ImageFile.of(url, board);
-		boardRepository.save(board);
+		boardJpaRepository.save(board);
 		imageFileRepository.save(imageFile);
 	}
 

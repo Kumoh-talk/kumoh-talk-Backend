@@ -6,7 +6,7 @@ import com.example.demo.infra.board.entity.BoardCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface BoardCategoryRepository extends JpaRepository<BoardCategory,Long> {
+public interface BoardCategoryJpaRepository extends JpaRepository<BoardCategory,Long> {
 
 
     @Query("SELECT COUNT(bc) FROM BoardCategory bc WHERE bc.category.id = :categoryId")

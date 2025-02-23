@@ -1,5 +1,6 @@
 package com.example.demo.application.board.dto.response;
 
+import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.infra.board.entity.Board;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,12 +43,12 @@ public class BoardInfoResponse {
     private final LocalDateTime createdAt;
 
     @Builder
-    public BoardInfoResponse(Long boardId, String username, String title, String contents, String tag, String status, Long view, Long like, List<String> categoryNames,String boardHeadImageUrl, LocalDateTime updatedAt, LocalDateTime createdAt) {
+    public BoardInfoResponse(Long boardId, String username, String title, String contents, String boardType, String status, Long view, Long like, List<String> categoryNames,String boardHeadImageUrl, LocalDateTime updatedAt, LocalDateTime createdAt) {
         this.boardId = boardId;
         this.username = username;
         this.title = title;
         this.contents = contents;
-        this.boardType = tag;
+        this.boardType = boardType;
         this.status = status;
         this.view = view;
         this.like = like;
@@ -63,7 +64,7 @@ public class BoardInfoResponse {
                 .username(username)
                 .title(board.getTitle())
                 .contents(board.getContent())
-                .tag(board.getBoardType().name())
+                .boardType(board.getBoardType().name())
                 .status(board.getStatus().name())
                 .view(board.getViewCount())
                 .like(like)
@@ -74,4 +75,20 @@ public class BoardInfoResponse {
                 .build();
     }
 
+    public static BoardInfoResponse of(BoardInfo boardInfo) {
+        return BoardInfoResponse.builder()
+                .boardId(boardInfo.getBoardId())
+                .username(boardInfo.getUserTarget().getNickName())
+                .title(boardInfo.getBoardCore().getTitle())
+                .contents(boardInfo.getBoardCore().getContents())
+                .boardType(boardInfo.getBoardCore().getBoardType().toString())
+                .status(boardInfo.getBoardCore().getBoardStatus().toString())
+                .view(boardInfo.getViewCount())
+                .like(boardInfo.getLikeCount())
+                .categoryNames(boardInfo.getBoardCategoryNames().getCategories())
+                .boardHeadImageUrl(boardInfo.getBoardCore().getBoardHeadImageUrl())
+                .createdAt(boardInfo.getCreatedAt())
+                .updatedAt(boardInfo.getUpdatedAt())
+                .build();
+    }
 }

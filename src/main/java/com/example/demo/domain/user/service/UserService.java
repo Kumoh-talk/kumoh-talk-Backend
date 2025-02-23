@@ -7,7 +7,7 @@ import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationReque
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
 import com.example.demo.domain.user.domain.dto.response.UserInfo;
 import com.example.demo.domain.user.domain.dto.response.UserProfile;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
@@ -23,13 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtHandler jwtHandler;
     private final S3UrlUtil s3UrlUtil;
 
     public void checkNicknameDuplicate(String nickname) {
-        if(userRepository.existsByNickname(nickname)){
+        if(userJpaRepository.existsByNickname(nickname)){
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
         }
     }
@@ -37,7 +37,7 @@ public class UserService {
     @Transactional
     public TokenResponse completeRegistration(Long userId, CompleteRegistrationRequest request) {
         User user = this.validateUser(userId);
-        if(userRepository.existsByNickname(request.nickname())){
+        if(userJpaRepository.existsByNickname(request.nickname())){
             throw new ServiceException(ErrorCode.EXIST_SAME_NICKNAME);
         }
         user.setInitialInfo(request.nickname(), request.name(), s3UrlUtil.getDefaultImageUrl());
@@ -50,7 +50,7 @@ public class UserService {
     }
 
     public User validateUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        return userJpaRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional

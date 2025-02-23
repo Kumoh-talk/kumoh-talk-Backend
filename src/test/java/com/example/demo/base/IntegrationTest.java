@@ -1,9 +1,7 @@
 package com.example.demo.base;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.base.config.RedisContainerConfig;
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.domain.board.service.usecase.BoardUseCase;
+import com.example.demo.domain.board.service.usecase.BoardService;
 
 @SpringJUnitConfig // Spring 테스트 컨텍스트 활성화
 @SpringBootTest
@@ -36,6 +34,6 @@ public abstract class IntegrationTest {
 	protected ApplicationEvents events;
 
 	@Autowired
-	protected BoardUseCase boardUseCase;
+	protected BoardService boardService;
 
 }

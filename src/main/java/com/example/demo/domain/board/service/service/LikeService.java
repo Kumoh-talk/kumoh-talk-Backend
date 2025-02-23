@@ -1,12 +1,12 @@
 package com.example.demo.domain.board.service.service;
 
-import com.example.demo.infra.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.Repository.LikeRepository;
 import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LikeService {
     private final LikeRepository likeRepository;
-    private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
+    private final BoardJpaRepository boardJpaRepository;
+    private final UserJpaRepository userJpaRepository;
     private final LikeNotificationService likeNotificationService;
 
     @Transactional
     public void increaseLike(Long userId, Long boardId) {
-        Board board = (Board) boardRepository.findByIdWithUser(boardId).orElseThrow
+        Board board = (Board) boardJpaRepository.findByIdWithUser(boardId).orElseThrow
                 (() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         User user = validateUser(userId);
         if (likeRepository.existsByBoardIdAndUserId(boardId, userId)) {
@@ -43,12 +43,12 @@ public class LikeService {
     }
 
     private User validateUser(Long userId) {
-        return userRepository.findById(userId)
+        return userJpaRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.LIKE_USER_NOT_FOUND));
     }
 
     private Board validateBoard(Long boardId) {
-        return boardRepository.findById(boardId)
+        return boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
     }
 

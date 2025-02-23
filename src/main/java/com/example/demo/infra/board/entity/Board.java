@@ -92,12 +92,12 @@ public class Board extends BaseEntity implements GenericBoard {
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
-        Board board = new Board(boardCreateRequest.getTitle(),
-            boardCreateRequest.getContents(),
+        Board board = new Board(boardCreateRequest.title(),
+            boardCreateRequest.contents(),
             user,
-            boardCreateRequest.getBoardType(),
+            boardCreateRequest.boardType(),
             Status.DRAFT,
-            boardCreateRequest.getBoardHeadImageUrl());
+            boardCreateRequest.boardHeadImageUrl());
         user.getBoards().add(board);
         return board;
     }

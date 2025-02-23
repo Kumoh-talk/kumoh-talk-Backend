@@ -50,7 +50,7 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 			Board publishedBOARD = testFixtureBuilder.buildBoard(PUBLISHED_SEMINAR_BOARD(savedUser));
 
 			// when
-			BoardInfoResponse boardInfoResponse = boardUseCase.searchSingleBoard(publishedBOARD.getId());
+			BoardInfoResponse boardInfoResponse = boardService.searchSingleBoard(publishedBOARD.getId());
 
 			// then
 			assertSoftly(softly -> {
@@ -80,7 +80,7 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 			SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(JwtUserClaim.create(savedUser)));
 
 			// when
-			BoardInfoResponse boardInfoResponse = boardUseCase.searchSingleBoard(draftBoard.getId());
+			BoardInfoResponse boardInfoResponse = boardService.searchSingleBoard(draftBoard.getId());
 
 			// then
 			assertSoftly(softly -> {
@@ -117,7 +117,7 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
 			// when -> then
 			assertSoftly(softly -> {
-				softly.assertThatThrownBy(() -> boardUseCase.searchSingleBoard(draftBoard.getId()))
+				softly.assertThatThrownBy(() -> boardService.searchSingleBoard(draftBoard.getId()))
 					.isInstanceOf(ServiceException.class)
 					.hasFieldOrPropertyWithValue("errorCode", ErrorCode.DRAFT_NOT_ACCESS_USER);
 				softly.assertThat(redisTemplate.opsForValue().get(BOARD_VIEW_KEY + draftBoard.getId()))
@@ -133,7 +133,7 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
 			// when -> then
 			assertSoftly(softly -> {
-				softly.assertThatThrownBy(() -> boardUseCase.searchSingleBoard(draftBoard.getId() + 1))
+				softly.assertThatThrownBy(() -> boardService.searchSingleBoard(draftBoard.getId() + 1))
 					.isInstanceOf(ServiceException.class)
 					.hasFieldOrPropertyWithValue("errorCode", ErrorCode.BOARD_NOT_FOUND);
 				softly.assertThat(redisTemplate.opsForValue().get(BOARD_VIEW_KEY + draftBoard.getId()))

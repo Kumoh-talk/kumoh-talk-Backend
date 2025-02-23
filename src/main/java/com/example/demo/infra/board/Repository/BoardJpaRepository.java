@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface BoardRepository extends JpaRepository<Board, Long>, CommonBoardRepository {
+public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBoardRepository {
     @Query("SELECT b FROM Board b JOIN FETCH b.comments q WHERE b.id = :id")
     Optional<Board> findPostByIdWithComments(@Param("id") Long id);
 

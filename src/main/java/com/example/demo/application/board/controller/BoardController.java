@@ -10,7 +10,8 @@ import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
 import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.domain.board.service.usecase.BoardUseCase;
+import com.example.demo.domain.board.service.entity.BoardInfo;
+import com.example.demo.domain.board.service.usecase.BoardService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -29,14 +30,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardController implements BoardApi {
-    private final BoardUseCase boardUsecase;
+    private final BoardService boardUsecase;
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @PostMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> saveDraftSeminar(Long userId,
-                                                  @RequestBody @Valid BoardCreateRequest boardCreateRequest)  {
-            return ResponseEntity.ok(createSuccessResponse(boardUsecase.saveDraftBoard(userId, boardCreateRequest)));
+        @RequestBody @Valid BoardCreateRequest boardCreateRequest) {
+
+        return ResponseEntity.ok(createSuccessResponse(
+            BoardInfoResponse.of(
+                boardUsecase.saveDraftBoard(
+            userId,
+            boardCreateRequest.toBoardCore(),
+            boardCreateRequest.toBoardCategoryNames()))));
     }
 
     @GetMapping("/v1/boards/{boardId}")

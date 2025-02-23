@@ -1,6 +1,6 @@
 package com.example.demo.domain.board.service.service;
 
-import com.example.demo.infra.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
 import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
@@ -26,11 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BoardQueryService {
-    private final BoardRepository boardRepository;
+    private final BoardJpaRepository boardJpaRepository;
 
     @Transactional(readOnly = true)
     public BoardInfoResponse searchSingleBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId)
+        Board board = boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         validateBoardStatus(board); // 임시저장 게시물은 작성자만 조회 가능하기 때문에 작성자인지 확인
         validateReportedBoard(board);  //TODO : [Board]report 기능 추가 시 로직 변경
@@ -39,13 +39,13 @@ public class BoardQueryService {
         return BoardInfoResponse.from(
                 board,
                 board.getUser().getNickname(),
-                boardRepository.countLikesByBoardId(boardId),
-                boardRepository.findCategoryNameByBoardId(boardId));
+                boardJpaRepository.countLikesByBoardId(boardId),
+                boardJpaRepository.findCategoryNameByBoardId(boardId));
     }
 
     @Transactional(readOnly = true)
 	public GlobalPageResponse<BoardTitleInfoResponse> findBoardPageList(BoardType boardType, Pageable pageable) {
-        Page<BoardTitleInfoResponse> boardByPage = boardRepository.findBoardByPage(boardType,pageable);
+        Page<BoardTitleInfoResponse> boardByPage = boardJpaRepository.findBoardByPage(boardType,pageable);
         return GlobalPageResponse.create(boardByPage);
     }
 
@@ -71,7 +71,7 @@ public class BoardQueryService {
 
     @Transactional(readOnly = true)
     public Board validateBoard(Long boardId) {
-        return boardRepository.findById(boardId)
+        return boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
     }
 
@@ -89,13 +89,13 @@ public class BoardQueryService {
     }
 
     public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardPageList(Long userId,Pageable pageable) {
-        return GlobalPageResponse.create(boardRepository.findDraftBoardByPage(userId,pageable));
+        return GlobalPageResponse.create(boardJpaRepository.findDraftBoardByPage(userId,pageable));
     }
 
     @Transactional(readOnly = true)
     public GlobalPageResponse<BoardTitleInfoResponse> findPublishedBoardListByUser(Long userId,
         BoardType boardType,
         Pageable pageable) {
-        return GlobalPageResponse.create(boardRepository.findPublishedBoardListByUser(userId,boardType,pageable));
+        return GlobalPageResponse.create(boardJpaRepository.findPublishedBoardListByUser(userId,boardType,pageable));
     }
 }

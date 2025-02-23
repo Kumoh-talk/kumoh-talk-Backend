@@ -3,9 +3,9 @@ package com.example.demo.domain.user.service;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
 import com.example.demo.domain.user.domain.dto.response.UserInfo;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
-import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +19,11 @@ import java.util.Optional;
 @Service
 public class UserAdminService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final UserService userService;
 
     public Boolean isAdmin(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<User> userOptional = userJpaRepository.findById(userId);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -34,7 +34,7 @@ public class UserAdminService {
     }
 
     public GlobalPageResponse<UserInfo> getAllUsers(Pageable pageable) {
-        Page<UserInfo> userInfoPage = userRepository.findAll(pageable).map(UserInfo::from);
+        Page<UserInfo> userInfoPage = userJpaRepository.findAll(pageable).map(UserInfo::from);
         return GlobalPageResponse.create(userInfoPage);
     }
 
@@ -47,6 +47,6 @@ public class UserAdminService {
 
     @Transactional
     public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+        userJpaRepository.deleteById(userId);
     }
 }
