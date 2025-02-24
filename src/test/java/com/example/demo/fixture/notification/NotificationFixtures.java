@@ -1,6 +1,6 @@
 package com.example.demo.fixture.notification;
 
-import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.notification.domain.entity.Notification;

@@ -1,6 +1,6 @@
 package com.example.demo.domain.board.service.service;
 
-import com.example.demo.domain.board.domain.entity.Like;
+import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.notification.domain.vo.NotificationType;

@@ -2,8 +2,8 @@ package com.example.demo.domain.board.event;
 
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.domain.board.domain.entity.Like;
-import com.example.demo.domain.board.service.usecase.BoardUseCase;
+import com.example.demo.infra.board.entity.Like;
+import com.example.demo.domain.board.service.usecase.BoardService;
 import com.example.demo.domain.board.service.usecase.LikeUseCase;
 import com.example.demo.domain.comment.TransactionalTask;
 import com.example.demo.domain.notification.domain.entity.Notification;
@@ -38,7 +38,7 @@ class LikeEntityListenerTest {
     @Autowired
     private LikeUseCase likeUseCase;
     @Autowired
-    private BoardUseCase boardUseCase;
+    private BoardService boardService;
 
 
     @Nested
@@ -84,7 +84,7 @@ class LikeEntityListenerTest {
             assertTrue(notificationRepository.existsById(savedNotification.getId()));
 
             // when
-            boardUseCase.deleteBoard(savedLike.getBoard().getUser().getId(), savedLike.getBoard().getId());
+            boardService.deleteBoard(savedLike.getBoard().getUser().getId(), savedLike.getBoard().getId());
 
             // then
             Awaitility.await().untilAsserted(() -> {

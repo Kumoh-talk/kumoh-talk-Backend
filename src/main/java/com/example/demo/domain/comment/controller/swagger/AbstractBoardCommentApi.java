@@ -1,6 +1,6 @@
 package com.example.demo.domain.comment.controller.swagger;
 
-import com.example.demo.domain.board.domain.dto.vo.BoardType;
+import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
 import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
 import com.example.demo.domain.comment.domain.dto.response.CommentResponse;

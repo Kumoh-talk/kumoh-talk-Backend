@@ -1,7 +1,7 @@
 // package com.example.demo.domain.comment.service;
 //
-// import com.example.demo.domain.board.Repository.BoardRepository;
-// import com.example.demo.domain.board.domain.entity.Board;
+// import com.example.demo.infra.board.Repository.BoardRepository;
+// import com.example.demo.infra.board.entity.Board;
 // import com.example.demo.domain.comment.domain.entity.Comment;
 // import com.example.demo.domain.comment.domain.response.CommentInfo;
 // import com.example.demo.domain.comment.domain.response.CommentResponse;

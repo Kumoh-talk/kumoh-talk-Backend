@@ -5,7 +5,7 @@ import com.example.demo.base.IntegrationTest;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
@@ -13,20 +13,14 @@ import com.example.demo.global.jwt.JwtProperties;
 import com.example.demo.global.jwt.JwtUserClaim;
 import com.example.demo.global.utils.S3UrlUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static com.example.demo.fixture.user.UserFixtures.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
@@ -40,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     private User savedUser;
 
@@ -139,7 +133,7 @@ public class UserControllerIntegrationTest extends IntegrationTest {
                                     .andDo(print())
                                     .andExpect(status().isOk());
 
-            User updatedUser = userRepository.findById(user.getId()).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+            User updatedUser = userJpaRepository.findById(user.getId()).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
             assertSoftly(softly -> {
                 softly.assertThat(updatedUser.getProfileImageUrl()).isEqualTo(defaultUrl);

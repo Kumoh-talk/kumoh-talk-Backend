@@ -3,9 +3,9 @@
 //
 // import com.example.demo.DemoApplication;
 // import com.example.demo.base.RepositoryTest;
-// import com.example.demo.domain.board.Repository.BoardRepository;
+// import com.example.demo.infra.board.Repository.BoardRepository;
 // import com.example.demo.domain.board.domain.BoardStatus;
-// import com.example.demo.domain.board.domain.entity.Board;
+// import com.example.demo.infra.board.entity.Board;
 // import com.example.demo.domain.comment.domain.entity.Comment;
 // import com.example.demo.domain.user.domain.User;
 // import com.example.demo.domain.user.domain.vo.Status;

@@ -11,21 +11,21 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.domain.board.Repository.BoardRepository;
+import com.example.demo.infra.board.Repository.BoardJpaRepository;
 
 @Service
 public class BoardViewEventListener {
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 	private final ConcurrentHashMap<Long, ScheduledFuture<?>> taskMap = new ConcurrentHashMap<>();
 
-	private final BoardRepository boardRepository;
+	private final BoardJpaRepository boardJpaRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
 
 	private static final String BOARD_VIEW_KEY = "board:view:";
 
 	@Autowired
-	public BoardViewEventListener(BoardRepository boardRepository, RedisTemplate<String, Object> redisTemplate) {
-		this.boardRepository = boardRepository;
+	public BoardViewEventListener(BoardJpaRepository boardJpaRepository, RedisTemplate<String, Object> redisTemplate) {
+		this.boardJpaRepository = boardJpaRepository;
 		this.redisTemplate = redisTemplate;
 	}
 
@@ -60,7 +60,7 @@ public class BoardViewEventListener {
 		redisTemplate.opsForValue().decrement(boardViewKey, viewCount);
 
 
-		boardRepository.increaseViewCount(boardId, viewCount);
+		boardJpaRepository.increaseViewCount(boardId, viewCount);
 
 		// 작업 완료 후 해당 boardId의 예약 제거
 		taskMap.remove(boardId);

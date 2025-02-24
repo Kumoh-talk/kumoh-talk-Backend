@@ -7,7 +7,7 @@ import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
 import org.springframework.security.core.Authentication;
@@ -40,7 +40,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtHandler jwtHandler;
 
@@ -101,7 +101,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String providerId = principal.getUserInfo().getId();
         OAuth2Provider provider = principal.getUserInfo().getProvider();
 
-        User user = userRepository.findByProviderAndProviderId(provider, providerId)
+        User user = userJpaRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseGet(() -> {
                     isNewUser.set(true);
                     return createAndSaveNewUser(providerId, provider);
@@ -128,7 +128,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .role(Role.ROLE_GUEST)
                 .build();
 
-        return userRepository.save(user);
+        return userJpaRepository.save(user);
     }
 
     private String handleUnlink(OAuth2UserPrincipal principal, String targetUrl) {
@@ -136,9 +136,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         oAuth2UserUnlinkManager.unlink(provider, principal.getUserInfo().getAccessToken());
 
-        userRepository.findByProviderAndProviderId(provider, principal.getUserInfo().getId())
+        userJpaRepository.findByProviderAndProviderId(provider, principal.getUserInfo().getId())
                 .ifPresent(user -> {
-                    userRepository.delete(user);
+                    userJpaRepository.delete(user);
                     refreshTokenRepository.deleteById(user.getId());
                 });
 

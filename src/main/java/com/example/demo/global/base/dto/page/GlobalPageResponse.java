@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

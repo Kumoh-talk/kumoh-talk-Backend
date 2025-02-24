@@ -2,7 +2,7 @@
 //
 //
 //import com.example.demo.base.RepositoryTest;
-//import com.example.demo.domain.board.domain.entity.Category;
+//import com.example.demo.infra.board.entity.Category;
 //import org.assertj.core.api.Assertions;
 //import org.junit.jupiter.api.AfterEach;
 //import org.junit.jupiter.api.BeforeEach;
