@@ -1,6 +1,5 @@
 package com.example.demo.domain.user.controller;
 
-import com.example.demo.domain.board.domain.dto.request.FileRequest;
 import com.example.demo.domain.user.api.UserFileApi;
 import com.example.demo.domain.user.domain.dto.request.ChangeProfileUrlRequest;
 import com.example.demo.domain.user.domain.dto.request.ProfilePresignedUrlRequest;

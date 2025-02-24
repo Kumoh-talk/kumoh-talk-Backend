@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.event;
 
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.domain.board.service.usecase.BoardUseCase;
+import com.example.demo.domain.board.service.usecase.BoardService;
 import com.example.demo.domain.comment.TransactionalTask;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
@@ -44,7 +44,7 @@ class CommentEntityListenerTest {
     @Autowired
     private AbstractCommentService commentService;
     @Autowired
-    private BoardUseCase boardUseCase;
+    private BoardService boardService;
     @Autowired
     private RecruitmentBoardService recruitmentBoardService;
 
@@ -89,7 +89,7 @@ class CommentEntityListenerTest {
             assertTrue(notificationRepository.existsById(savedNotification.getId()));
 
             // when
-            boardUseCase.deleteBoard(savedComment.getBoard().getUser().getId(), savedComment.getBoard().getId());
+            boardService.deleteBoard(savedComment.getBoard().getUser().getId(), savedComment.getBoard().getId());
 
             // then
             Awaitility.await().untilAsserted(() -> {

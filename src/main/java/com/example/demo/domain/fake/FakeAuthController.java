@@ -3,7 +3,7 @@ package com.example.demo.domain.fake;
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.domain.user_addtional_info.domain.vo.StudentStatus;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -28,7 +28,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RequiredArgsConstructor
 public class FakeAuthController implements FakeAuthApi {
     private final JwtHandler jwtHandler;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private volatile Long fakeUserId = null;
     private final Role fakeUserRole = Role.ROLE_ADMIN;
 
@@ -43,7 +43,7 @@ public class FakeAuthController implements FakeAuthApi {
         if (fakeUserId == null) {
             String fakeProviderId = "fake-provider-id";
 
-            userRepository.findByProviderAndProviderId(OAuth2Provider.GOOGLE, fakeProviderId).ifPresent(user -> {
+            userJpaRepository.findByProviderAndProviderId(OAuth2Provider.GOOGLE, fakeProviderId).ifPresent(user -> {
                 fakeUserId = user.getId();
             });
             if (fakeUserId == null) {
@@ -62,7 +62,7 @@ public class FakeAuthController implements FakeAuthApi {
                         .phoneNumber("01000000000")
                         .isUpdated(true).build();
                 fakeUser.mapAdditionalInfo(fakeUserAdditionalInfo);
-                User saveFakeUser = userRepository.save(fakeUser);
+                User saveFakeUser = userJpaRepository.save(fakeUser);
                 fakeUserId = saveFakeUser.getId();
             }
         }

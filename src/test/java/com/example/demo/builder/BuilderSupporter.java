@@ -1,12 +1,12 @@
 package com.example.demo.builder;
 
-import com.example.demo.domain.board.Repository.BoardRepository;
-import com.example.demo.domain.board.Repository.LikeRepository;
+import com.example.demo.infra.board.Repository.BoardJpaRepository;
+import com.example.demo.infra.board.Repository.LikeRepository;
 import com.example.demo.domain.comment.repository.BoardCommentRepository;
 import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
 import com.example.demo.domain.notification.repository.NotificationRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 public class BuilderSupporter {
 
     @Autowired
-    private BoardRepository boardRepository;
+    private BoardJpaRepository boardJpaRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private LikeRepository likeRepository;
@@ -35,12 +35,12 @@ public class BuilderSupporter {
     private NotificationRepository notificationRepository;
 
 
-    public BoardRepository boardRepository() {
-        return boardRepository;
+    public BoardJpaRepository boardRepository() {
+        return boardJpaRepository;
     }
 
-    public UserRepository userRepository() {
-        return userRepository;
+    public UserJpaRepository userRepository() {
+        return userJpaRepository;
     }
 
     public LikeRepository likeRepository() {

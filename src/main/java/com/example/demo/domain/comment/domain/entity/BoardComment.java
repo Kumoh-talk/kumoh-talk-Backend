@@ -1,6 +1,6 @@
 package com.example.demo.domain.comment.domain.entity;
 
-import com.example.demo.domain.board.domain.entity.Board;
+import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.user.domain.User;

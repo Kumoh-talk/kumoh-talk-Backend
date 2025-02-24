@@ -1,6 +1,6 @@
 package com.example.demo.domain.comment.service;
 
-import com.example.demo.domain.board.domain.dto.vo.BoardType;
+import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.domain.comment.repository.CommonCommentRepository;
 import com.example.demo.domain.recruitment_board.repository.CommonBoardRepository;
 import com.example.demo.domain.user.service.UserService;
@@ -13,7 +13,7 @@ public class BoardCommentService extends AbstractCommentService {
             UserService userService,
             CommentNotificationService commentNotificationService,
             @Qualifier("boardCommentRepository") CommonCommentRepository<BoardType> commentRepository,
-            @Qualifier("boardRepository") CommonBoardRepository boardRepository) {
+            @Qualifier("boardJpaRepository") CommonBoardRepository boardRepository) {
         super(userService, commentNotificationService, commentRepository, boardRepository);
     }
 }

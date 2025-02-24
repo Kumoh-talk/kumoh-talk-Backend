@@ -4,7 +4,6 @@ package com.example.demo.domain.user.controller;
 import static com.example.demo.global.base.dto.ResponseUtil.*;
 import static com.example.demo.global.regex.UserRegex.NICKNAME_REGEXP;
 
-import com.example.demo.domain.board.api.BoardFileApi;
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.api.UserApi;
 import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
@@ -15,7 +14,6 @@ import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationReque
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;

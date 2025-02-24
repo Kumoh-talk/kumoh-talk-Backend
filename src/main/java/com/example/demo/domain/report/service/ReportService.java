@@ -9,7 +9,7 @@ import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.report.domain.dto.ReportResponse;
 import com.example.demo.domain.report.repository.ReportRepository;
 import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportService {
 
     private final ReportRepository reportRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final BoardCommentRepository boardCommentRepository;
     private final RecruitmentBoardCommentRepository recruitmentBoardCommentRepository;
     private final DiscordReportClient discordReportClient;
@@ -45,7 +45,7 @@ public class ReportService {
     }
 
     private void saveCommentReport(Long userId, Comment comment) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        User user = userJpaRepository.findById(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         Report report = comment.toReport(user);
         reportRepository.save(report);
