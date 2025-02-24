@@ -2,6 +2,7 @@ package com.example.demo.global.oauth.handler;
 
 import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.fixture.user.UserFixtures;
 import com.example.demo.global.jwt.JwtHandler;
@@ -52,7 +53,7 @@ class OAuth2AuthenticationSuccessHandlerTest {
     private OAuth2UserUnlinkManager unlinkManager;
 
     @Mock
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Mock
     private JwtHandler jwtHandler;
@@ -69,11 +70,11 @@ class OAuth2AuthenticationSuccessHandlerTest {
         // OAuth 로그인 후 데이터베이스에 해당 회원을 찾을 수 없도록 설정
         OAuth2UserPrincipal principal = createMockPrincipal(GENERAL_PROVIDER_ID, NAVER_OAUTH_PROVIDER, GENERAL_PROVIDER_ACCESS_TOKEN);
         Authentication authentication = createAuthentication(principal);
-        when(userRepository.findByProviderAndProviderId(NAVER_OAUTH_PROVIDER, GENERAL_PROVIDER_ID)).thenReturn(Optional.empty());
+        when(userJpaRepository.findByProviderAndProviderId(NAVER_OAUTH_PROVIDER, GENERAL_PROVIDER_ID)).thenReturn(Optional.empty());
 
         // userRepository.save() 메서드 실행 시 지정한 회원을 반환하도록 설정
         User newUser = UserFixtures.SEMINAR_WRITER_USER();
-        when(userRepository.save(any(User.class))).thenReturn(newUser);
+        when(userJpaRepository.save(any(User.class))).thenReturn(newUser);
 
         // jwtHandler.createTokens() 메서드 실행 시 지정한 토큰을 반환하도록 설정
         TokenResponse tokenResponse = new TokenResponse(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
@@ -101,7 +102,7 @@ class OAuth2AuthenticationSuccessHandlerTest {
         OAuth2UserPrincipal principal = createMockPrincipal(GENERAL_PROVIDER_ID, NAVER_OAUTH_PROVIDER, GENERAL_PROVIDER_ACCESS_TOKEN);
         Authentication authentication = createAuthentication(principal);
         User existingUser = UserFixtures.SEMINAR_WRITER_USER();
-        when(userRepository.findByProviderAndProviderId(NAVER_OAUTH_PROVIDER, GENERAL_PROVIDER_ID)).thenReturn(Optional.ofNullable(existingUser));
+        when(userJpaRepository.findByProviderAndProviderId(NAVER_OAUTH_PROVIDER, GENERAL_PROVIDER_ID)).thenReturn(Optional.ofNullable(existingUser));
 
         // jwtHandler.createTokens() 메서드 실행 시 지정한 토큰을 반환하도록 설정
         TokenResponse tokenResponse = new TokenResponse(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
