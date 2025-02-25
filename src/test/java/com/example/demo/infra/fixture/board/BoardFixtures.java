@@ -1,4 +1,4 @@
-package com.example.demo.fixture.board;
+package com.example.demo.infra.fixture.board;
 
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;

@@ -1,4 +1,4 @@
-package com.example.demo.fixture.board;
+package com.example.demo.infra.fixture.board;
 
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;

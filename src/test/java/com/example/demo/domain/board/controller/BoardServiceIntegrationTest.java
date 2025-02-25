@@ -1,9 +1,6 @@
 package com.example.demo.domain.board.controller;
 
-
-
-
-import static com.example.demo.fixture.board.BoardFixtures.*;
+import static com.example.demo.infra.fixture.board.BoardFixtures.*;
 import static com.example.demo.fixture.user.UserFixtures.*;
 import static org.assertj.core.api.SoftAssertions.*;
 
@@ -12,19 +9,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.demo.base.IntegrationTest;
-import com.example.demo.application.board.dto.response.BoardInfoResponse;
-import com.example.demo.infra.board.entity.Board;
+import com.example.demo.domain.board.service.entity.BoardContent;
+import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.global.event.view.BoardViewEvent;
-import com.example.demo.global.jwt.JwtAuthentication;
-import com.example.demo.global.jwt.JwtUserClaim;
+import com.example.demo.domain.board.service.view.BoardViewEvent;
+import com.example.demo.infra.board.entity.Board;
 
-public class BoardControllerIntegrationTest extends IntegrationTest {
+public class BoardServiceIntegrationTest extends IntegrationTest {
 
 
 	@Nested
@@ -50,19 +46,20 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 			Board publishedBOARD = testFixtureBuilder.buildBoard(PUBLISHED_SEMINAR_BOARD(savedUser));
 
 			// when
-			BoardInfoResponse boardInfoResponse = boardService.searchSingleBoard(publishedBOARD.getId());
+			BoardInfo boardInfo = boardService.searchSingleBoard(null,publishedBOARD.getId());
+			BoardContent boardContent = boardInfo.getBoardContent();
 
 			// then
 			assertSoftly(softly -> {
-				softly.assertThat(boardInfoResponse.getBoardId()).isEqualTo(publishedBOARD.getId());
-				softly.assertThat(boardInfoResponse.getTitle()).isEqualTo(publishedBOARD.getTitle());
-				softly.assertThat(boardInfoResponse.getContents()).isEqualTo(publishedBOARD.getContent());
-				softly.assertThat(boardInfoResponse.getBoardType()).isEqualTo(publishedBOARD.getBoardType().toString());
-				softly.assertThat(boardInfoResponse.getStatus()).isEqualTo(publishedBOARD.getStatus().toString());
-				softly.assertThat(boardInfoResponse.getView()).isEqualTo(publishedBOARD.getViewCount());
-				softly.assertThat(boardInfoResponse.getLike()).isEqualTo(publishedBOARD.getLikes().size());
-				softly.assertThat(boardInfoResponse.getCreatedAt()).isEqualTo(publishedBOARD.getCreatedAt());
-				softly.assertThat(boardInfoResponse.getUpdatedAt()).isEqualTo(publishedBOARD.getUpdatedAt());
+				softly.assertThat(boardInfo.getBoardId()).isEqualTo(publishedBOARD.getId());
+				softly.assertThat(boardContent.getTitle()).isEqualTo(publishedBOARD.getTitle());
+				softly.assertThat(boardContent.getContents()).isEqualTo(publishedBOARD.getContent());
+				softly.assertThat(boardContent.getBoardType()).isEqualTo(publishedBOARD.getBoardType());
+				softly.assertThat(boardContent.getBoardStatus()).isEqualTo(publishedBOARD.getStatus());
+				softly.assertThat(boardInfo.getViewCount()).isEqualTo(publishedBOARD.getViewCount());
+				softly.assertThat(boardInfo.getLikeCount()).isEqualTo(publishedBOARD.getLikes().size());
+				softly.assertThat(boardInfo.getCreatedAt()).isEqualTo(publishedBOARD.getCreatedAt());
+				softly.assertThat(boardInfo.getUpdatedAt()).isEqualTo(publishedBOARD.getUpdatedAt());
 			});
 
 			assertSoftly(softly -> {
@@ -77,22 +74,25 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 		void 성공_임시저장_게시물은_게시물_소유자만_조회할_수_있다() {
 			// given
 			Board draftBoard = testFixtureBuilder.buildBoard(DRAFT_SEMINAR_BOARD(savedUser));
-			SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(JwtUserClaim.create(savedUser)));
 
 			// when
-			BoardInfoResponse boardInfoResponse = boardService.searchSingleBoard(draftBoard.getId());
-
+			BoardInfo boardInfo = boardService.searchSingleBoard(savedUser.getId(),draftBoard.getId());
+			BoardContent boardContent = boardInfo.getBoardContent();
+			UserTarget userTarget = boardInfo.getUserTarget();
 			// then
 			assertSoftly(softly -> {
-				softly.assertThat(boardInfoResponse.getBoardId()).isEqualTo(draftBoard.getId());
-				softly.assertThat(boardInfoResponse.getTitle()).isEqualTo(draftBoard.getTitle());
-				softly.assertThat(boardInfoResponse.getContents()).isEqualTo(draftBoard.getContent());
-				softly.assertThat(boardInfoResponse.getBoardType()).isEqualTo(draftBoard.getBoardType().toString());
-				softly.assertThat(boardInfoResponse.getStatus()).isEqualTo(draftBoard.getStatus().toString());
-				softly.assertThat(boardInfoResponse.getView()).isEqualTo(draftBoard.getViewCount());
-				softly.assertThat(boardInfoResponse.getLike()).isEqualTo(draftBoard.getLikes().size());
-				softly.assertThat(boardInfoResponse.getCreatedAt()).isEqualTo(draftBoard.getCreatedAt());
-				softly.assertThat(boardInfoResponse.getUpdatedAt()).isEqualTo(draftBoard.getUpdatedAt());
+				softly.assertThat(boardInfo.getBoardId()).isEqualTo(draftBoard.getId());
+				softly.assertThat(boardContent.getTitle()).isEqualTo(draftBoard.getTitle());
+				softly.assertThat(boardContent.getContents()).isEqualTo(draftBoard.getContent());
+				softly.assertThat(boardContent.getBoardType()).isEqualTo(draftBoard.getBoardType());
+				softly.assertThat(boardContent.getBoardStatus()).isEqualTo(draftBoard.getStatus());
+				softly.assertThat(boardInfo.getViewCount()).isEqualTo(draftBoard.getViewCount());
+				softly.assertThat(boardInfo.getLikeCount()).isEqualTo(draftBoard.getLikes().size());
+				softly.assertThat(boardInfo.getCreatedAt()).isEqualTo(draftBoard.getCreatedAt());
+				softly.assertThat(boardInfo.getUpdatedAt()).isEqualTo(draftBoard.getUpdatedAt());
+				softly.assertThat(userTarget.getUserId()).isEqualTo(savedUser.getId());
+				softly.assertThat(userTarget.getNickName()).isEqualTo(savedUser.getNickname());
+				softly.assertThat(userTarget.getUserRole()).isEqualTo(savedUser.getRole());
 			});
 
 			assertSoftly(softly -> {
@@ -103,21 +103,15 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 		}
 
 		@Test
-		void 실패_임시저장_게시물은_게시물_소유자만_조회할_수_있다() {
+		void 실패_임시저장_게시물은_게시물_소유자가_아니면_실패한다() {
 			// given
 			Board draftBoard = testFixtureBuilder.buildBoard(DRAFT_SEMINAR_BOARD(savedUser));
 
 
 
-
-			SecurityContextHolder.getContext()
-				.setAuthentication(
-					new JwtAuthentication(JwtUserClaim.create(testFixtureBuilder.buildUser(SEMINAR_WRITER_USER()))));
-
-
 			// when -> then
 			assertSoftly(softly -> {
-				softly.assertThatThrownBy(() -> boardService.searchSingleBoard(draftBoard.getId()))
+				softly.assertThatThrownBy(() -> boardService.searchSingleBoard(999L,draftBoard.getId()))
 					.isInstanceOf(ServiceException.class)
 					.hasFieldOrPropertyWithValue("errorCode", ErrorCode.DRAFT_NOT_ACCESS_USER);
 				softly.assertThat(redisTemplate.opsForValue().get(BOARD_VIEW_KEY + draftBoard.getId()))
@@ -133,7 +127,7 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
 			// when -> then
 			assertSoftly(softly -> {
-				softly.assertThatThrownBy(() -> boardService.searchSingleBoard(draftBoard.getId() + 1))
+				softly.assertThatThrownBy(() -> boardService.searchSingleBoard(savedUser.getId(), draftBoard.getId() + 1))
 					.isInstanceOf(ServiceException.class)
 					.hasFieldOrPropertyWithValue("errorCode", ErrorCode.BOARD_NOT_FOUND);
 				softly.assertThat(redisTemplate.opsForValue().get(BOARD_VIEW_KEY + draftBoard.getId()))

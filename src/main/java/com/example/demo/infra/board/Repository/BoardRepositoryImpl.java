@@ -1,10 +1,11 @@
 package com.example.demo.infra.board.Repository;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.domain.board.service.entity.BoardCore;
+import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.repository.BoardCategoryRepository;
 import com.example.demo.domain.board.service.repository.BoardRepository;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.repository.UserJpaRepository;
@@ -19,23 +20,35 @@ public class BoardRepositoryImpl implements BoardRepository {
 	private final UserJpaRepository userJpaRepository;
 
 	@Override
-	public BoardInfo saveBoard(UserTarget userTarget, BoardCore boardCore) {
+	public BoardInfo saveBoard(UserTarget userTarget, BoardContent boardContent) {
 		Board board = boardJpaRepository.save(Board.builder()
-			.title(boardCore.getTitle())
-			.content(boardCore.getContents())
-			.boardType(boardCore.getBoardType())
-			.status(boardCore.getBoardStatus())
+			.title(boardContent.getTitle())
+			.content(boardContent.getContents())
+			.boardType(boardContent.getBoardType())
+			.status(boardContent.getBoardStatus())
 			.user(userJpaRepository.findById(userTarget.getUserId()).get())
-			.headImageUrl(boardCore.getBoardHeadImageUrl())
+			.headImageUrl(boardContent.getBoardHeadImageUrl())
 			.build());
 		return BoardInfo.builder()
 			.boardId(board.getId())
-			.boardCore(boardCore)
+			.boardContent(boardContent)
 			.viewCount(board.getViewCount())
 			.likeCount(0L)
 			.createdAt(board.getCreatedAt())
 			.updatedAt(board.getUpdatedAt())
 			.userTarget(userTarget)
 			.build();
+	}
+
+	@Override
+	public Optional<BoardInfo> findBoardInfo(Long boardId) {
+		return boardJpaRepository
+			.findBoardAndUserAndCategory(boardId)
+			.map(value -> Board.toBoardInfo(value, boardJpaRepository.countLikesByBoardId(boardId)));
+	}
+
+	@Override
+	public void countBoardView(Long boardId,Integer viewCount) {
+		boardJpaRepository.increaseViewCount(boardId, viewCount);
 	}
 }
