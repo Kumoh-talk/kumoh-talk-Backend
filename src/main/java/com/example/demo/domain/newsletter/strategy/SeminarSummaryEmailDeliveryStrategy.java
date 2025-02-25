@@ -1,6 +1,7 @@
 package com.example.demo.domain.newsletter.strategy;
 
 import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.infra.board.entity.Board;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,13 +39,13 @@ public class SeminarSummaryEmailDeliveryStrategy extends BaseEmailDeliveryStrate
         return "[야밤의금오톡] '세미나 발표 정리' 새 글 알림";
     }
 
-    public static SeminarSummaryEmailDeliveryStrategy create(Board board) {
-        if (!board.getBoardType().equals(BoardType.SEMINAR)) {
+    public static SeminarSummaryEmailDeliveryStrategy create(BoardInfo boardInfo) {
+        if (!boardInfo.getBoardContent().getBoardType().equals(BoardType.SEMINAR)) {
             throw new IllegalArgumentException("세미나 내용 정리에 대한 이메일 알림만 허용합니다.");
         }
         return new SeminarSummaryEmailDeliveryStrategy(// TODO. 프론트 배포 후 수정 필요
-                board.getTitle(),
-                board.getUser().getNickname(),
+            boardInfo.getBoardContent().getTitle(),
+                boardInfo.getUserTarget().getNickName(),
                 "https://프론트도메인/~"
         );
     }
