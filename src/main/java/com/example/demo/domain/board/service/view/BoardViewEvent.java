@@ -1,4 +1,4 @@
-package com.example.demo.global.event.view;
+package com.example.demo.domain.board.service.view;
 
 import org.springframework.context.ApplicationEvent;
 

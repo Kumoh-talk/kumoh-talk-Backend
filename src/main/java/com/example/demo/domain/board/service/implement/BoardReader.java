@@ -1,5 +1,9 @@
-package com.example.demo.domain.board.service.service;
+package com.example.demo.domain.board.service.implement;
 
+import java.util.Optional;
+
+import com.example.demo.domain.board.service.entity.BoardInfo;
+import com.example.demo.domain.board.service.repository.BoardRepository;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
@@ -7,7 +11,6 @@ import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.infra.board.entity.Board;
-import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -25,22 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BoardQueryService {
+public class BoardReader {
     private final BoardJpaRepository boardJpaRepository;
+    private final BoardRepository boardRepository;
 
     @Transactional(readOnly = true)
-    public BoardInfoResponse searchSingleBoard(Long boardId) {
-        Board board = boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        validateBoardStatus(board); // 임시저장 게시물은 작성자만 조회 가능하기 때문에 작성자인지 확인
-        validateReportedBoard(board);  //TODO : [Board]report 기능 추가 시 로직 변경
-
-
-        return BoardInfoResponse.from(
-                board,
-                board.getUser().getNickname(),
-                boardJpaRepository.countLikesByBoardId(boardId),
-                boardJpaRepository.findCategoryNameByBoardId(boardId));
+    public Optional<BoardInfo> searchSingleBoard(Long boardId) {
+        return boardRepository.findBoardInfo(boardId);
     }
 
     @Transactional(readOnly = true)
@@ -49,25 +43,6 @@ public class BoardQueryService {
         return GlobalPageResponse.create(boardByPage);
     }
 
-    private void validateReportedBoard(Board board) { //TODO : [Board]report 기능 추가 시 로직 추가
-    }
-
-    // 임시저장 게시물은 작성자만 조회 가능하기 때문에 작성자인지 확인
-    private void validateBoardStatus(Board board) {
-        if(board.getStatus().equals(Status.DRAFT)) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (authentication.isAuthenticated() && authentication instanceof JwtAuthentication) {
-                Long userId = (Long) authentication.getPrincipal();
-                if(!board.getUser().getId().equals(userId)) {
-                    throw new ServiceException(ErrorCode.DRAFT_NOT_ACCESS_USER);
-                }
-            } else {
-                throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
-            }
-
-        }
-    }
 
     @Transactional(readOnly = true)
     public Board validateBoard(Long boardId) {

@@ -5,9 +5,13 @@ import com.example.demo.application.board.dto.request.BoardCreateRequest;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.BoardCategoryNames;
+import com.example.demo.domain.board.service.entity.BoardContent;
+import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -102,6 +106,7 @@ public class Board extends BaseEntity implements GenericBoard {
         return board;
     }
 
+
     public void changeBoardInfo(BoardUpdateRequest boardUpdateRequest){
         this.title = boardUpdateRequest.getTitle();
         this.content = boardUpdateRequest.getContents();
@@ -117,5 +122,28 @@ public class Board extends BaseEntity implements GenericBoard {
 
     public void changeHeadImageUrl(String boardHeadImageUrl) {
         this.headImageUrl = boardHeadImageUrl;
+    }
+    public static BoardInfo toBoardInfo(Board board,Long likeCount) {
+        BoardContent boardContent = new BoardContent(board.getTitle(), board.getContent(), board.getBoardType(), board.getHeadImageUrl(),board.status);
+        UserTarget userTarget = UserTarget.builder()
+            .userId(board.getUser().getId())
+            .nickName(board.getUser().getNickname())
+            .userRole(board.getUser().getRole())
+            .build();
+        List<String> categoryNames = new ArrayList<>();
+        for (BoardCategory boardCategory : board.getBoardCategories()) {
+            categoryNames.add(boardCategory.getCategory().getName());
+        }
+        BoardCategoryNames boardCategoryNames = new BoardCategoryNames(categoryNames);
+        return BoardInfo.builder()
+            .boardId(board.getId())
+            .boardContent(boardContent)
+            .viewCount(board.getViewCount())
+            .likeCount(likeCount)
+            .createdAt(board.getCreatedAt())
+            .updatedAt(board.getUpdatedAt())
+            .userTarget(userTarget)
+            .boardCategoryNames(boardCategoryNames)
+            .build();
     }
 }

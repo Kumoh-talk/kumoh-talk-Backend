@@ -42,13 +42,16 @@ public class BoardController implements BoardApi {
             BoardInfoResponse.of(
                 boardUsecase.saveDraftBoard(
             userId,
-            boardCreateRequest.toBoardCore(),
+            boardCreateRequest.toBoardContent(),
             boardCreateRequest.toBoardCategoryNames()))));
     }
 
+    @AssignUserId
     @GetMapping("/v1/boards/{boardId}")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.searchSingleBoard(boardId)));
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> search(Long userId, @PathVariable Long boardId) {
+        BoardInfo boardInfo = boardUsecase.searchSingleBoard(userId, boardId);
+        return ResponseEntity.ok(createSuccessResponse(
+            BoardInfoResponse.of(boardInfo)));
     }
 
 

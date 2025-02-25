@@ -65,7 +65,7 @@ public interface BoardApi {
 			@ApiErrorResponseExplanation(errorCode = ErrorCode.NOT_ACCESS_USER),
 		}
 	)
-	ResponseEntity<ResponseBody<BoardInfoResponse>> search( @PathVariable Long boardId);
+	ResponseEntity<ResponseBody<BoardInfoResponse>> search(@Parameter(hidden = true) Long userId, @PathVariable Long boardId);
 
 	@Operation(
 		summary = "게시글 수정",

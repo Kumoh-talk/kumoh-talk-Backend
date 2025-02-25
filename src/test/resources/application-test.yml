@@ -1,4 +1,8 @@
 spring:
+
+  flyway:
+    enabled: false
+
 #  config:
 #    import: classpath:../../main/resources/security/application-s3.yml
   mail:

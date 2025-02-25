@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class BoardInfo {
 	private final Long boardId;
-	private final BoardCore boardCore;
+	private final BoardContent boardContent;
 	private final Long viewCount;
 	private final Long LikeCount;
 	private final LocalDateTime createdAt;
@@ -19,10 +19,10 @@ public class BoardInfo {
 	private BoardCategoryNames boardCategoryNames;
 
 	@Builder
-	private BoardInfo(Long boardId, BoardCore boardCore, Long viewCount, Long likeCount, LocalDateTime createdAt, LocalDateTime updatedAt, UserTarget userTarget,
+	private BoardInfo(Long boardId, BoardContent boardContent, Long viewCount, Long likeCount, LocalDateTime createdAt, LocalDateTime updatedAt, UserTarget userTarget,
 		BoardCategoryNames boardCategoryNames) {
 		this.boardId = boardId;
-		this.boardCore = boardCore;
+		this.boardContent = boardContent;
 		this.viewCount = viewCount;
 		this.LikeCount = likeCount;
 		this.createdAt = createdAt;

@@ -7,15 +7,16 @@ import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
-import com.example.demo.domain.board.service.entity.BoardCore;
+import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.implement.BoardCategoryWriter;
+import com.example.demo.domain.board.service.implement.BoardValidator;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.board.service.implement.BoardWriter;
-import com.example.demo.domain.board.service.service.BoardQueryService;
-import com.example.demo.domain.board.service.service.view.ViewIncreaseService;
+import com.example.demo.domain.board.service.implement.BoardReader;
+import com.example.demo.domain.board.service.view.implement.ViewCounter;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
@@ -24,65 +25,62 @@ import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class BoardService {
     private final BoardWriter boardWriter;
-    private final BoardQueryService boardQueryService;
-    private final ViewIncreaseService viewIncreaseService;
+    private final BoardReader boardReader;
+    private final ViewCounter viewCounter;
     private final ApplicationEventPublisher eventPublisher;
     private final UserReader userReader;
     private final BoardCategoryWriter boardCategoryWriter;
+    private final BoardValidator boardValidator;
 
-    public BoardService(BoardWriter boardWriter,
-        BoardQueryService boardQueryService,
-        @Qualifier("viewBulkUpdateService") ViewIncreaseService viewIncreaseService,
-        UserReader userReader,
-        ApplicationEventPublisher eventPublisher, BoardCategoryWriter boardCategoryWriter) {
-        this.boardWriter = boardWriter;
-        this.boardQueryService = boardQueryService;
-        this.viewIncreaseService = viewIncreaseService;
-        this.userReader = userReader;
-        this.eventPublisher = eventPublisher;
-		this.boardCategoryWriter = boardCategoryWriter;
-	}
+
 
     @Transactional
-    public BoardInfo saveDraftBoard(Long userId, BoardCore boardCore , BoardCategoryNames boardCategoryNames) {
+    public BoardInfo saveDraftBoard(Long userId, BoardContent boardContent, BoardCategoryNames boardCategoryNames) {
         UserTarget userTarget = userReader.findUser(userId)
             .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         // 공지사항은 관리자만 작성 가능
-        if (isAdminAndNotice(boardCore, userTarget)) {
+        if (isAdminAndNotice(boardContent, userTarget)) {
             throw new ServiceException(ErrorCode.NOT_AUTHORIZED_WRITE_NOTICE);
         }
-        BoardInfo draftBoard = boardWriter.createDraftBoard(userTarget, boardCore.draftBoard());
+        BoardInfo draftBoard = boardWriter.createDraftBoard(userTarget, boardContent.draftBoard());
 
         boardCategoryWriter.saveCategoryNames(draftBoard, boardCategoryNames);
         draftBoard.setBoardCategoryNames(boardCategoryNames);
 
         return draftBoard;
-
     }
 
-    private boolean isAdminAndNotice(BoardCore boardCore, UserTarget userTarget) {
-        return boardCore.getBoardType().equals(BoardType.NOTICE) && !userTarget.getUserRole().equals(Role.ROLE_ADMIN);
+    private boolean isAdminAndNotice(BoardContent boardContent, UserTarget userTarget) {
+        return boardContent.getBoardType().equals(BoardType.NOTICE) && !userTarget.getUserRole().equals(Role.ROLE_ADMIN);
     }
 
-    public BoardInfoResponse searchSingleBoard(Long boardId) {
-        BoardInfoResponse returnResponse = boardQueryService.searchSingleBoard(boardId);
-        viewIncreaseService.increaseView(boardId);
-        return returnResponse;
+    @Transactional(readOnly = true)
+    public BoardInfo searchSingleBoard(Long userId, Long boardId) {
+        BoardInfo boardInfo = boardReader.searchSingleBoard(boardId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        boardValidator.validateDraftBoardIsOwner(userId, boardInfo);
+
+        viewCounter.increaseView(boardId);
+        return boardInfo;
     }
 
     @Transactional
     public BoardInfoResponse updateBoard(Long userId, BoardUpdateRequest boardUpdateRequest) {
-        Board board = boardQueryService.validateBoardForUpdate(boardUpdateRequest, userId);
+        Board board = boardReader.validateBoardForUpdate(boardUpdateRequest, userId);
         BoardInfoResponse boardInfoResponse = boardWriter.updateBoard(boardUpdateRequest, board);
 
         // 게시 상태로 변경이면 뉴스레터 전송
@@ -104,17 +102,17 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(BoardType boardType , Pageable pageable) {
-        return boardQueryService.findBoardPageList(boardType,pageable);
+        return boardReader.findBoardPageList(boardType,pageable);
     }
 
     public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardList(Long userId, Pageable pageable) {
-        return boardQueryService.findDraftBoardPageList(userId,pageable);
+        return boardReader.findDraftBoardPageList(userId,pageable);
     }
 
     @Transactional(readOnly = true)
     public GlobalPageResponse<BoardTitleInfoResponse> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
         userReader.findUser(userId)
             .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
-        return boardQueryService.findPublishedBoardListByUser(userId,boardType, pageable);
+        return boardReader.findPublishedBoardListByUser(userId,boardType, pageable);
     }
 }

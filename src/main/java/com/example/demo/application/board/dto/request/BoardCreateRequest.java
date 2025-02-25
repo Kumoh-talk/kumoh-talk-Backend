@@ -4,8 +4,9 @@ package com.example.demo.application.board.dto.request;
 import static com.example.demo.global.regex.S3UrlRegex.*;
 
 import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
-import com.example.demo.domain.board.service.entity.BoardCore;
+import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.global.aop.valid.ValidEnum;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,12 +45,13 @@ public record BoardCreateRequest (
     @Pattern(regexp = S3_BOARD_FILE_URL)
     String boardHeadImageUrl
 ){
-    public BoardCore toBoardCore(){
-        return new BoardCore(
+    public BoardContent toBoardContent(){
+        return new BoardContent(
             this.title,
             this.contents,
             this.boardType,
-            this.boardHeadImageUrl
+            this.boardHeadImageUrl,
+            Status.DRAFT
         );
     }
 

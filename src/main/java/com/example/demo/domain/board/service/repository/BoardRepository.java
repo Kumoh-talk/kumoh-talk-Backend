@@ -1,9 +1,15 @@
 package com.example.demo.domain.board.service.repository;
 
-import com.example.demo.domain.board.service.entity.BoardCore;
+import java.util.Optional;
+
+import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.user.domain.UserTarget;
 
 public interface BoardRepository {
-	BoardInfo saveBoard(UserTarget userTarget, BoardCore boardCore);
+	BoardInfo saveBoard(UserTarget userTarget, BoardContent boardContent);
+
+	Optional<BoardInfo> findBoardInfo(Long boardId);
+
+	void countBoardView(Long boardId, Integer viewCount);
 }

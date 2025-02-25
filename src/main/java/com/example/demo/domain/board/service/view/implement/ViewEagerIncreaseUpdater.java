@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service.service.view;
+package com.example.demo.domain.board.service.view.implement;
 
 
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ViewIncreaseUpdateService implements ViewIncreaseService {
+public class ViewEagerIncreaseUpdater implements ViewCounter {
 	private final BoardJpaRepository boardJpaRepository;
 
 	@Override

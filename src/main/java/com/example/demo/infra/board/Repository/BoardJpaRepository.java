@@ -6,6 +6,8 @@ import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.recruitment_board.repository.CommonBoardRepository;
+import com.example.demo.infra.board.querydsl.BoardDslRepository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBoardRepository {
+public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBoardRepository, BoardDslRepository {
     @Query("SELECT b FROM Board b JOIN FETCH b.comments q WHERE b.id = :id")
     Optional<Board> findPostByIdWithComments(@Param("id") Long id);
 
@@ -59,11 +61,6 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBo
     @Modifying
     @Query("UPDATE Board b SET b.viewCount = b.viewCount + 1 WHERE b.id = :boardId")
     void increaseViewCount(@Param("boardId") Long boardId);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE Board b SET b.viewCount = b.viewCount + :viewCount WHERE b.id = :boardId")
-    void increaseViewCount(@Param("boardId") Long boardId, @Param("viewCount") int viewCount);
 
     @Override
     @Transactional(readOnly = true)

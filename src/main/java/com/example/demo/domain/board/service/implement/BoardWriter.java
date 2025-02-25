@@ -1,6 +1,6 @@
 package com.example.demo.domain.board.service.implement;
 
-import com.example.demo.domain.board.service.entity.BoardCore;
+import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.repository.BoardRepository;
 import com.example.demo.domain.user.domain.UserTarget;
@@ -32,7 +32,7 @@ public class BoardWriter {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public BoardInfo createDraftBoard(UserTarget userTarget, BoardCore draftBoardCore) {
+    public BoardInfo createDraftBoard(UserTarget userTarget, BoardContent draftBoardCore) {
         return boardRepository.saveBoard(userTarget, draftBoardCore);
     }
 

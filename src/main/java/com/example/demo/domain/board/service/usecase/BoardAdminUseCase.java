@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.board.service.implement.BoardWriter;
-import com.example.demo.domain.board.service.service.BoardQueryService;
+import com.example.demo.domain.board.service.implement.BoardReader;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,11 +13,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardAdminUseCase {
 	private final BoardWriter boardWriter;
-	private final BoardQueryService boardQueryService;
+	private final BoardReader boardReader;
 
 	@Transactional
 	public Void deleteBoard(Long boardId) {
-		Board board = boardQueryService.validateBoard(boardId);
+		Board board = boardReader.validateBoard(boardId);
 
 		boardWriter.removeBoard(board);
 		return null;

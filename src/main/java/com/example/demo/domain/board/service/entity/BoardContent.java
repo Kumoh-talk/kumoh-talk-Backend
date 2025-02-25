@@ -6,7 +6,7 @@ import com.example.demo.application.board.dto.vo.Status;
 import lombok.Getter;
 
 @Getter
-public class BoardCore {
+public class BoardContent {
 	private final String title;
 
 	private final String contents;
@@ -17,20 +17,20 @@ public class BoardCore {
 
 	private Status boardStatus;
 
-	public BoardCore(String title, String contents, BoardType boardType, String boardHeadImageUrl) {
+	public BoardContent(String title, String contents, BoardType boardType, String boardHeadImageUrl, Status boardStatus) {
 		this.title = title;
 		this.contents = contents;
 		this.boardType = boardType;
 		this.boardHeadImageUrl = boardHeadImageUrl;
-		this.boardStatus = Status.DRAFT;
+		this.boardStatus = boardStatus;
 	}
 
-	public BoardCore publishBoard() {
+	public BoardContent publishBoard() {
 		this.boardStatus = Status.PUBLISHED;
 		return this;
 	}
 
-	public BoardCore draftBoard() {
+	public BoardContent draftBoard() {
 		this.boardStatus = Status.DRAFT;
 		return this;
 	}
