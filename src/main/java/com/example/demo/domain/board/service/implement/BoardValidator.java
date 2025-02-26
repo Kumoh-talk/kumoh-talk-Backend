@@ -1,15 +1,11 @@
 package com.example.demo.domain.board.service.implement;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.global.jwt.JwtAuthentication;
-import com.example.demo.infra.board.entity.Board;
 
 import lombok.RequiredArgsConstructor;
 

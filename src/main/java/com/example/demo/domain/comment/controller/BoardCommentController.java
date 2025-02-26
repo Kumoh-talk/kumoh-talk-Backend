@@ -1,7 +1,7 @@
 package com.example.demo.domain.comment.controller;
 
 
-import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.comment.controller.swagger.AbstractBoardCommentApi;
 import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
 import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;

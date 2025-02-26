@@ -1,7 +1,7 @@
 package com.example.demo.domain.board.service.entity;
 
-import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
 
 import lombok.Getter;
 

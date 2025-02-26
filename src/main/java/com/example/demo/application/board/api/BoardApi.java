@@ -16,7 +16,7 @@ import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
-import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;

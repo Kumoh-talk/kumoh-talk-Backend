@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.base.IntegrationTest;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
@@ -21,7 +21,6 @@ import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.fixture.board.BoardDomainFixtures;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.domain.board.service.view.BoardViewEvent;

@@ -2,8 +2,8 @@ package com.example.demo.fixture.board;
 
 import java.util.List;
 
-import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 

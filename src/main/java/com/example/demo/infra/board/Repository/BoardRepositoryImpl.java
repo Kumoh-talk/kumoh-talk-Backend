@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;

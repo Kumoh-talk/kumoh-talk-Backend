@@ -2,9 +2,8 @@ package com.example.demo.infra.board.entity;
 
 
 import com.example.demo.application.board.dto.request.BoardCreateRequest;
-import com.example.demo.application.board.dto.request.BoardUpdateRequest;
-import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;

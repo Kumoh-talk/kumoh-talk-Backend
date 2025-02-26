@@ -1,15 +1,10 @@
 package com.example.demo.infra.board.Repository;
 
-import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.domain.board.service.entity.DraftBoardTitle;
-import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.recruitment_board.repository.CommonBoardRepository;
 import com.example.demo.infra.board.querydsl.BoardDslRepository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

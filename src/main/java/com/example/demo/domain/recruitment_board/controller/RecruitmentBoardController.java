@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_board.controller;
 
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.recruitment_board.controller.swagger.RecruitmentBoardApi;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.response.*;

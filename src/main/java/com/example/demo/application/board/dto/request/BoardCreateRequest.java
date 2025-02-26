@@ -3,14 +3,13 @@ package com.example.demo.application.board.dto.request;
 
 import static com.example.demo.global.regex.S3UrlRegex.*;
 
-import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.global.aop.valid.ValidEnum;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 
 import java.util.List;

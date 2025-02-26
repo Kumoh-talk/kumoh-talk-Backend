@@ -1,6 +1,6 @@
 package com.example.demo.global.converter;
 
-import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import org.springframework.core.convert.converter.Converter;

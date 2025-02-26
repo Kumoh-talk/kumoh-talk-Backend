@@ -2,7 +2,7 @@ package com.example.demo.domain.board.service.entity;
 
 import java.time.LocalDateTime;
 
-import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

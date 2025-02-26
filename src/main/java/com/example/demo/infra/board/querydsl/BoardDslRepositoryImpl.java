@@ -8,8 +8,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.user.domain.QUser;

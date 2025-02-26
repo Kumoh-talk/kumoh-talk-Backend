@@ -1,31 +1,30 @@
 package com.example.demo.domain.board.service.usecase;
 
-import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.domain.board.service.entity.DraftBoardTitle;
-import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.application.board.dto.vo.Status;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.implement.BoardCategoryWriter;
-import com.example.demo.domain.board.service.implement.BoardValidator;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.domain.user.implement.UserReader;
-import com.example.demo.domain.board.service.implement.BoardWriter;
 import com.example.demo.domain.board.service.implement.BoardReader;
+import com.example.demo.domain.board.service.implement.BoardValidator;
+import com.example.demo.domain.board.service.implement.BoardWriter;
 import com.example.demo.domain.board.service.view.implement.ViewCounter;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
+import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.global.base.dto.page.GlobalPageResponse;
+import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +80,7 @@ public class BoardService {
         BoardInfo contentModifiedBoardInfo = boardWriter.modifyBoarContent(savedBoardInfo,updateBoardContent,isPublished);
         BoardInfo modifiedBoardInfo = boardCategoryWriter.modifyBoardCategories(contentModifiedBoardInfo,updateBoardCategoryNames);
 
-        // 세미나 게시물이 게시 상태로 변경이면 뉴스레터 전송
+        // 세미나 게시물이 게시 상태로 변경이면 뉴스레터 전송 TODO : 추후 뉴스레터 전송 Implement Layer로 전환 필요
         if (isSeminarBoardModifiedToPublished(isPublished,savedBoardInfo.getBoardContent(), modifiedBoardInfo.getBoardContent())) {
             eventPublisher.publishEvent(EmailNotificationEvent.create(
                     EntireBoardType.SEMINAR_SUMMARY,
