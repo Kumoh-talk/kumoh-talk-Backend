@@ -17,7 +17,6 @@ import com.example.demo.global.base.exception.ServiceException;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,9 +63,10 @@ public class BoardReader {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardListByUser(Long userId,
+    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardListByUser(Long userId,
         BoardType boardType,
-        Pageable pageable) {
-        return GlobalPageResponse.create(boardJpaRepository.findPublishedBoardListByUser(userId,boardType,pageable));
+        GlobalPageableDto pageableDto) {
+        pageableDto.setPage(boardJpaRepository.findPublishedBoardListByUser(userId,boardType,pageableDto.getPageable()));
+        return pageableDto;
     }
 }

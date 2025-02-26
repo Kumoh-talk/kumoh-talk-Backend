@@ -24,7 +24,6 @@ import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,7 +118,7 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
+    public GlobalPageableDto<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, GlobalPageableDto pageable) {
         userReader.findUser(userId)
             .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
         return boardReader.findPublishedBoardListByUser(userId,boardType, pageable);

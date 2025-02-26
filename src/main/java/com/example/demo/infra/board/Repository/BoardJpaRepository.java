@@ -32,16 +32,6 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBo
             "where b.id = :id")
     List<String> findCategoryNameByBoardId(@Param("id") Long id);
 
-    @Query("SELECT new com.example.demo.domain.board.service.entity.BoardTitleInfo"
-    + "(b.id, b.title, b.user.nickname, b.boardType,b.viewCount, COUNT(DISTINCT l),b.headImageUrl ,b.createdAt) "
-    + "FROM Board b "
-    + "LEFT JOIN b.likes l "
-    + "WHERE b.status = 'PUBLISHED' AND b.user.id = :userId AND b.boardType = :boardType "
-    + "GROUP BY b.id, b.title, b.user.nickname, b.boardType, b.createdAt")
-    Page<BoardTitleInfo> findPublishedBoardListByUser(@Param("userId") Long userId,
-        @Param("boardType") BoardType boardType,
-        Pageable pageable);
-
     @Transactional
     @Modifying
     @Query("UPDATE Board b SET b.viewCount = b.viewCount + 1 WHERE b.id = :boardId")

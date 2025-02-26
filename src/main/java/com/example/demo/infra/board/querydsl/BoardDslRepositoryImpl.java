@@ -34,6 +34,7 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 	private final QBoardCategory boardCategory = QBoardCategory.boardCategory;
 	private final QCategory category = QCategory.category;
 	private final QUser user = QUser.user;
+	private final QLike like = QLike.like;
 
 
 	public Optional<Board> findBoardAndUserAndCategory(Long boardId) {
@@ -58,8 +59,6 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 	}
 
 	public Page<BoardTitleInfo> findBoardByPage(BoardType boardType, Pageable pageable) {
-		QLike like = QLike.like;
-
 		JPQLQuery<BoardTitleInfo> contentQuery = createContentQuery(boardType, board, like);
 		List<BoardTitleInfo> content = fetchPagedContent(contentQuery, pageable);
 
@@ -130,5 +129,40 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
 	}
+
+	@Override
+	public Page<BoardTitleInfo> findPublishedBoardListByUser(Long userId, BoardType boardType, Pageable pageable) {
+		JPQLQuery<BoardTitleInfo> query = queryFactory
+			.select(Projections.constructor(BoardTitleInfo.class,
+				board.id,
+				board.title,
+				user.nickname,
+				board.boardType,
+				board.viewCount,
+				like.countDistinct(),
+				board.headImageUrl,
+				board.createdAt
+			))
+			.from(board)
+			.leftJoin(board.likes, like)
+			.join(board.user, user)
+			.where(
+				board.status.eq(Status.PUBLISHED)
+					.and(board.user.id.eq(userId))
+					.and(board.boardType.eq(boardType))
+			)
+			.groupBy(
+				board.id, board.title, user.nickname, board.boardType, board.createdAt
+			);
+
+		// 페이징 적용
+		QueryResults<BoardTitleInfo> results = query
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetchResults();
+
+		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+	}
+
 
 }

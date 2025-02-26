@@ -104,7 +104,8 @@ public class BoardController implements BoardApi {
         Long userId,
         @RequestParam(defaultValue = "SEMINAR") BoardType boardType,
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(boardService.findMyBoardPageList(userId,boardType,pageable)));
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
+            boardService.findMyBoardPageList(userId,boardType,GlobalPageableDto.create(pageable)))));
     }
 
 }
