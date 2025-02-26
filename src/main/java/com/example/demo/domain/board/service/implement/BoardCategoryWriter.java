@@ -52,4 +52,8 @@ public class BoardCategoryWriter {
 			.filter(name -> !updated.contains(name))
 			.collect(Collectors.toSet());
 	}
+
+	public void removeBoardCategories(BoardInfo savedBoardInfo) {
+		boardCategoryRepository.deleteBoardCategories(savedBoardInfo.getBoardId());
+	}
 }

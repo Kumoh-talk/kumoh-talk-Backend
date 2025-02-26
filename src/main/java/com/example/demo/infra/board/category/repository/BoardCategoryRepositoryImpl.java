@@ -1,5 +1,7 @@
 package com.example.demo.infra.board.category.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +54,11 @@ public class BoardCategoryRepositoryImpl implements BoardCategoryRepository {
 			.findBoardCategoryFetchjoinBoardAndCategory(boardId, categoryName);
 		boardCategory.removeAssosiationBoardAndCategory();
 		boardCategoryJpaRepository.delete(boardCategory); //TODO : Category 삭제 로직 스케줄링 할 지 고민
+	}
+
+	@Override
+	public void deleteBoardCategories(Long boardId) {
+		boardCategoryJpaRepository.deleteBoardCategoriesByBoardId(boardId);
 	}
 
 	private void saveCategoryAndBoardCategory(Board board, String categoryName) {

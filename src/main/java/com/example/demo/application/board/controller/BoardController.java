@@ -74,6 +74,7 @@ public class BoardController implements BoardApi {
     @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
         boardUsecase.deleteBoard(userId,boardId);
+        System.out.println("lsdkfjsdlfjslfjsljflsdfldf");
         return ResponseEntity.ok(createSuccessResponse());
     }
 

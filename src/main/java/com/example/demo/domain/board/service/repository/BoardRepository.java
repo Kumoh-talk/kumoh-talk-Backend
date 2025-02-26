@@ -14,4 +14,6 @@ public interface BoardRepository {
 	void countBoardView(Long boardId, Integer viewCount);
 
 	void updateBoardContent(Long boardId, BoardContent updateBoardContent);
+
+	void deleteBoard(Long boardId);
 }

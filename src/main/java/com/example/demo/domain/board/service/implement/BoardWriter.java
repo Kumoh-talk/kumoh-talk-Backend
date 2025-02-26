@@ -1,16 +1,12 @@
 package com.example.demo.domain.board.service.implement;
 
-import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.repository.BoardCategoryRepository;
 import com.example.demo.domain.board.service.repository.BoardRepository;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 import com.example.demo.infra.board.category.entity.Category;
-import com.example.demo.application.board.dto.request.BoardUpdateRequest;
-import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
@@ -22,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -94,5 +87,7 @@ public class BoardWriter {
         }
     }
 
-
+    public void removeBoardContent(BoardInfo savedBoardInfo) {
+        boardRepository.deleteBoard(savedBoardInfo.getBoardId());
+    }
 }

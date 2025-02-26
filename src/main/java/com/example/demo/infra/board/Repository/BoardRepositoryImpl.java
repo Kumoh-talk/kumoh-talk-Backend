@@ -59,4 +59,9 @@ public class BoardRepositoryImpl implements BoardRepository {
 				board.changeBoardInfo(updateBoardContent);
 			});
 	}
+
+	@Override
+	public void deleteBoard(Long boardId) {
+		boardJpaRepository.deleteById(boardId);
+	}
 }

@@ -11,7 +11,6 @@ import com.example.demo.domain.board.service.implement.BoardCategoryWriter;
 import com.example.demo.domain.board.service.implement.BoardValidator;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.implement.UserReader;
-import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.board.service.implement.BoardWriter;
 import com.example.demo.domain.board.service.implement.BoardReader;
 import com.example.demo.domain.board.service.view.implement.ViewCounter;
@@ -64,7 +63,6 @@ public class BoardService {
         return boardContent.getBoardType().equals(BoardType.NOTICE) && !userTarget.getUserRole().equals(Role.ROLE_ADMIN);
     }
 
-    @Transactional(readOnly = true)
     public BoardInfo searchSingleBoard(Long userId, Long boardId) {
         BoardInfo boardInfo = boardReader.searchSingleBoard(boardId)
             .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
@@ -101,11 +99,13 @@ public class BoardService {
     }
 
 
-
-    @Transactional
     public void deleteBoard(Long userId, Long boardId) {
-        Board board = boardWriter.validateBoardForDelete(userId, boardId);
-        boardWriter.removeBoard(board);
+        BoardInfo savedBoardInfo = boardReader.searchSingleBoard(boardId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        boardValidator.validateUserEqualBoardUser(userId, savedBoardInfo);
+
+        boardCategoryWriter.removeBoardCategories(savedBoardInfo);
+        boardWriter.removeBoardContent(savedBoardInfo);
     }
 
     @Transactional(readOnly = true)
