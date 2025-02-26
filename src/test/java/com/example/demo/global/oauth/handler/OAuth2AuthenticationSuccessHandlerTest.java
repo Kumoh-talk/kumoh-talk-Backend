@@ -1,8 +1,6 @@
 package com.example.demo.global.oauth.handler;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserJpaRepository;
+
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.fixture.user.UserFixtures;
 import com.example.demo.global.jwt.JwtHandler;
@@ -12,6 +10,8 @@ import com.example.demo.global.oauth.user.OAuth2Provider;
 import com.example.demo.global.oauth.user.OAuth2UserInfo;
 import com.example.demo.global.oauth.service.OAuth2UserPrincipal;
 import com.example.demo.global.oauth.user.OAuth2UserUnlinkManager;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import jakarta.servlet.http.Cookie;
 import java.util.Optional;
 

@@ -1,21 +1,19 @@
 package com.example.demo.domain.board.service.usecase;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.demo.application.board.dto.request.FileRequest;
 import com.example.demo.application.board.dto.request.PresignedUrlRequest;
-import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.FileUploadService;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.utils.S3PresignedUrlUtil;
 import com.example.demo.global.utils.S3UrlUtil;
-
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

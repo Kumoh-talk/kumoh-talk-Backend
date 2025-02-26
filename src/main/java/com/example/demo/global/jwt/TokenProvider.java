@@ -1,22 +1,20 @@
 package com.example.demo.global.jwt;
 
-import com.example.demo.domain.user.domain.vo.Role;
+import com.example.demo.application.user.dto.vo.Role;
+import com.example.demo.application.user_additional_info.dto.response.UserAdditionalInfoResponse;
 import com.example.demo.domain.user.service.UserAdminService;
-import com.example.demo.domain.user_addtional_info.domain.dto.response.UserAdditionalInfoResponse;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.jwt.exception.AdditionalInfoNotUpdatedException;
 import com.example.demo.global.jwt.exception.JwtAccessDeniedException;
+import com.example.demo.global.jwt.exception.JwtTokenExpiredException;
+import com.example.demo.global.jwt.exception.JwtTokenInvalidException;
+import io.jsonwebtoken.ExpiredJwtException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-
-import com.example.demo.global.jwt.exception.JwtTokenExpiredException;
-import com.example.demo.global.jwt.exception.JwtTokenInvalidException;
-
-import io.jsonwebtoken.ExpiredJwtException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor

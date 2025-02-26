@@ -1,15 +1,16 @@
 package com.example.demo.domain.fake;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.repository.UserJpaRepository;
-import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
-import com.example.demo.domain.user_addtional_info.domain.vo.StudentStatus;
+
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.application.user.dto.vo.Role;
+import com.example.demo.application.user_additional_info.dto.vo.StudentStatus;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
 import com.example.demo.global.oauth.user.OAuth2Provider;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
+import com.example.demo.infra.user_additional_info.entity.UserAdditionalInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

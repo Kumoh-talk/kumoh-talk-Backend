@@ -1,14 +1,14 @@
 package com.example.demo.domain.comment.repository;
 
 import com.example.demo.application.board.dto.vo.BoardType;
-import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
 import com.example.demo.domain.comment.domain.dto.response.MyCommentResponse;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,10 +1,10 @@
 package com.example.demo.infra.board.Repository;
 
-import java.util.Optional;
-
 import com.example.demo.infra.board.entity.BoardCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 public interface BoardCategoryJpaRepository extends JpaRepository<BoardCategory,Long> {
 

@@ -1,16 +1,13 @@
 package com.example.demo.infra.board.Repository;
 
-import org.springframework.stereotype.Repository;
-
 import com.example.demo.domain.board.service.entity.BoardCore;
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.repository.BoardCategoryRepository;
 import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.domain.user.repository.UserJpaRepository;
+import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.infra.board.entity.Board;
-
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor

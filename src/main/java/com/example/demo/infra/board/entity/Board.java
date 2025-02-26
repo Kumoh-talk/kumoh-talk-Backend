@@ -7,8 +7,8 @@ import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -80,7 +80,7 @@ public class Board extends BaseEntity implements GenericBoard {
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
     @Builder
-    private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
+    private Board(String title, String content, User user, BoardType boardType, Status status, String headImageUrl) {
         this.title = title;
         this.content = content;
         this.user = user;

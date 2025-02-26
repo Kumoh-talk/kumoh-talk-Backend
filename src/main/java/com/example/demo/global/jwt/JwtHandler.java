@@ -9,11 +9,11 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.vo.Role;
 
-import com.example.demo.domain.token.domain.RefreshToken;
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.application.user.dto.vo.Role;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
+import com.example.demo.infra.token.entity.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

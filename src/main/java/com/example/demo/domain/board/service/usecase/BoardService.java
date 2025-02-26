@@ -6,24 +6,23 @@ import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
 import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.application.user.dto.vo.Role;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardCore;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.implement.BoardCategoryWriter;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.domain.user.implement.UserReader;
-import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.board.service.implement.BoardWriter;
 import com.example.demo.domain.board.service.service.BoardQueryService;
 import com.example.demo.domain.board.service.service.view.ViewIncreaseService;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
-import com.example.demo.domain.user.domain.vo.Role;
+import com.example.demo.domain.user.entity.UserTarget;
+import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-
+import com.example.demo.infra.board.entity.Board;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +53,7 @@ public class BoardService {
 
     @Transactional
     public BoardInfo saveDraftBoard(Long userId, BoardCore boardCore , BoardCategoryNames boardCategoryNames) {
-        UserTarget userTarget = userReader.findUser(userId)
+        UserTarget userTarget = userReader.findUserTarget(userId)
             .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         // 공지사항은 관리자만 작성 가능

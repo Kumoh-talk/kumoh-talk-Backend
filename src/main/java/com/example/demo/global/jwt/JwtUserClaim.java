@@ -1,7 +1,8 @@
 package com.example.demo.global.jwt;
 
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
+
+import com.example.demo.application.user.dto.vo.Role;
+import com.example.demo.infra.user.entity.User;
 
 public record  JwtUserClaim(
 	Long userId,

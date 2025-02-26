@@ -2,7 +2,6 @@ package com.example.demo.infra.board.Repository;
 
 import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
 import com.example.demo.infra.board.entity.Category;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

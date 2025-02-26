@@ -1,17 +1,16 @@
 package com.example.demo.domain.seminar_application.controller;
 
+import com.example.demo.application.token.dto.TokenResponse;
 import com.example.demo.domain.seminar_application.api.SeminarApplicationApi;
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationRequest;
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationUpdateRequest;
 import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
 import com.example.demo.domain.seminar_application.service.SeminarApplicationService;
-import com.example.demo.domain.token.domain.dto.TokenResponse;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

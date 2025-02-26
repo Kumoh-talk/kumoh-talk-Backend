@@ -26,7 +26,8 @@ import static com.example.demo.domain.comment.domain.entity.QRecruitmentBoardCom
 import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentBoard.recruitmentBoard;
 import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentFormAnswer.recruitmentFormAnswer;
 import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentFormQuestion.recruitmentFormQuestion;
-import static com.example.demo.domain.user.domain.QUser.user;
+
+import static com.example.demo.infra.user.entity.QUser.user;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor

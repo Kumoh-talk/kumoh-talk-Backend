@@ -1,10 +1,10 @@
 package com.example.demo.domain.comment.domain.entity;
 
-import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
 import com.example.demo.domain.report.domain.Report;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;

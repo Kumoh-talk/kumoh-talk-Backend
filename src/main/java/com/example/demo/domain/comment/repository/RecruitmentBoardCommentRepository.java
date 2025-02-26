@@ -8,7 +8,7 @@ import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

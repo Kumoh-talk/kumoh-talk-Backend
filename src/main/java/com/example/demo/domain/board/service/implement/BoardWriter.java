@@ -1,22 +1,20 @@
 package com.example.demo.domain.board.service.implement;
 
+import com.example.demo.application.board.dto.request.BoardUpdateRequest;
+import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.entity.BoardCore;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.infra.board.entity.BoardCategory;
-import com.example.demo.infra.board.entity.Category;
-import com.example.demo.application.board.dto.request.BoardUpdateRequest;
-import com.example.demo.application.board.dto.response.BoardInfoResponse;
+import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.infra.board.Repository.BoardCategoryJpaRepository;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.Repository.CategoryJpaRepository;
-
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.board.entity.BoardCategory;
+import com.example.demo.infra.board.entity.Category;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
