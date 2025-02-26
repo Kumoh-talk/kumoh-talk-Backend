@@ -2,13 +2,13 @@ package com.example.demo.domain.board.event;
 
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.board.service.usecase.BoardService;
 import com.example.demo.domain.board.service.usecase.LikeUseCase;
 import com.example.demo.domain.comment.TransactionalTask;
 import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.notification.repository.NotificationRepository;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.board.entity.Like;
+import com.example.demo.infra.user.entity.User;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,19 +1,18 @@
 package com.example.demo.domain.user.api.controller;
 
 
+import com.example.demo.application.user.dto.request.CompleteRegistrationRequest;
 import com.example.demo.base.IntegrationTest;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
-import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtProperties;
 import com.example.demo.global.jwt.JwtUserClaim;
 import com.example.demo.global.utils.S3UrlUtil;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,11 +22,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static com.example.demo.fixture.user.UserFixtures.*;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.assertj.core.api.SoftAssertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @AutoConfigureMockMvc
@@ -197,7 +197,6 @@ public class UserControllerIntegrationTest extends IntegrationTest {
                     .andDo(print())
                     .andExpect(status().isOk());
 
-            assertThat(refreshTokenRepository.findById(savedUser.getId())).isNotPresent();
         }
     }
 

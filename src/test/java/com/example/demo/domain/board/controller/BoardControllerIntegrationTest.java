@@ -1,28 +1,23 @@
 package com.example.demo.domain.board.controller;
 
 
-
-
-import static com.example.demo.fixture.board.BoardFixtures.*;
-import static com.example.demo.fixture.user.UserFixtures.*;
-import static org.assertj.core.api.SoftAssertions.*;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import com.example.demo.base.IntegrationTest;
 import com.example.demo.application.board.dto.response.BoardInfoResponse;
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.base.IntegrationTest;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.event.view.BoardViewEvent;
 import com.example.demo.global.jwt.JwtAuthentication;
 import com.example.demo.global.jwt.JwtUserClaim;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.user.entity.User;
+import org.junit.jupiter.api.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import static com.example.demo.fixture.board.BoardFixtures.DRAFT_SEMINAR_BOARD;
+import static com.example.demo.fixture.board.BoardFixtures.PUBLISHED_SEMINAR_BOARD;
+import static com.example.demo.fixture.user.UserFixtures.ADMIN_USER;
+import static com.example.demo.fixture.user.UserFixtures.SEMINAR_WRITER_USER;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 public class BoardControllerIntegrationTest extends IntegrationTest {
 
