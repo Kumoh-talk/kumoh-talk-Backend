@@ -36,24 +36,10 @@ public class BoardReader {
         return pageableDto;
     }
 
-
     @Transactional(readOnly = true)
     public Board validateBoard(Long boardId) {
         return boardJpaRepository.findById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
-    public Board validateBoardForUpdate(BoardUpdateRequest boardUpdateRequest, Long userId) {
-        Board board = validateBoard(boardUpdateRequest.id());
-        validateUserEqualBoardUser(userId, board);
-        return board;
-    }
-
-    private void validateUserEqualBoardUser(Long userId, Board board) {
-        if(!board.getUser().getId().equals(userId)) {
-            throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
-        }
     }
 
     public GlobalPageableDto<DraftBoardTitle> findDraftBoardPageList(Long userId, GlobalPageableDto pageableDto) {

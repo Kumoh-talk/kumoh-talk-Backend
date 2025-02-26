@@ -1,24 +1,22 @@
 package com.example.demo.domain.board.service.implement;
 
-import com.example.demo.domain.board.service.entity.BoardContent;
-import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.infra.board.category.entity.BoardCategory;
-import com.example.demo.infra.board.category.entity.Category;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
-import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.example.demo.domain.board.service.entity.BoardContent;
+import com.example.demo.domain.board.service.entity.BoardInfo;
+import com.example.demo.domain.board.service.repository.BoardRepository;
+import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.infra.board.Repository.BoardJpaRepository;
+import com.example.demo.infra.board.category.entity.BoardCategory;
+import com.example.demo.infra.board.category.entity.Category;
+import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
+import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
+import com.example.demo.infra.board.entity.Board;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -68,23 +66,6 @@ public class BoardWriter {
                 boardCategoryJpaRepository.delete(boardCategory);
             });
         boardJpaRepository.delete(board);
-    }
-
-    public Board validateBoardForDelete(Long userId, Long boardId) {
-        Board board = validateBoard(boardId);
-        validateUserEqualBoardUser(userId, board);
-        return board;
-    }
-
-    private Board validateBoard(Long boardId) {
-		return boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-    }
-
-    private void validateUserEqualBoardUser(Long userId, Board board) {
-        if(!board.getUser().getId().equals(userId)) {
-            throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
-        }
     }
 
     public void removeBoardContent(BoardInfo savedBoardInfo) {
