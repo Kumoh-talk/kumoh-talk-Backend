@@ -11,7 +11,7 @@ public class BoardContent {
 
 	private final String contents;
 
-	private final BoardType boardType;
+	private BoardType boardType;
 
 	private final String boardHeadImageUrl;
 
@@ -33,5 +33,9 @@ public class BoardContent {
 	public BoardContent draftBoard() {
 		this.boardStatus = Status.DRAFT;
 		return this;
+	}
+
+	public void setBoardType(BoardType boardType) {
+		this.boardType = boardType;
 	}
 }

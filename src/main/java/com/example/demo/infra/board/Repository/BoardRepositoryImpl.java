@@ -51,4 +51,12 @@ public class BoardRepositoryImpl implements BoardRepository {
 	public void countBoardView(Long boardId,Integer viewCount) {
 		boardJpaRepository.increaseViewCount(boardId, viewCount);
 	}
+
+	@Override
+	public void updateBoardContent(Long boardId, BoardContent updateBoardContent) {
+		boardJpaRepository.findById(boardId)
+			.ifPresent(board -> {
+				board.changeBoardInfo(updateBoardContent);
+			});
+	}
 }

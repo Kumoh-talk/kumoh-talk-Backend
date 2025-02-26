@@ -1,7 +1,9 @@
-package com.example.demo.infra.board.entity;
+package com.example.demo.infra.board.category.entity;
 
 
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.board.entity.Board;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -41,7 +43,9 @@ public class BoardCategory extends BaseEntity {
         category.getBoardCategories().add(this);
     }
 
-    public void setAssociateNull() {
+    public void removeAssosiationBoardAndCategory() {
+        this.board.getBoardCategories().remove(this);
+        this.category.getBoardCategories().remove(this);
         this.board = null;
         this.category = null;
     }

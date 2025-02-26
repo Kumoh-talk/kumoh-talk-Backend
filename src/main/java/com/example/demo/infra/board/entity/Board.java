@@ -13,6 +13,8 @@ import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.board.category.entity.BoardCategory;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -105,11 +107,12 @@ public class Board extends BaseEntity implements GenericBoard {
         user.getBoards().add(board);
         return board;
     }
+    public void changeBoardInfo(BoardContent boardContent){
+        this.title = boardContent.getTitle();
+        this.content = boardContent.getContents();
+        this.status = boardContent.getBoardStatus();
+        this.headImageUrl = boardContent.getBoardHeadImageUrl();
 
-
-    public void changeBoardInfo(BoardUpdateRequest boardUpdateRequest){
-        this.title = boardUpdateRequest.getTitle();
-        this.content = boardUpdateRequest.getContents();
     }
 
     public void publishBoard(){

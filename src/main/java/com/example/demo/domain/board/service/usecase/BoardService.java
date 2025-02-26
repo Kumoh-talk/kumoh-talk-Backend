@@ -1,7 +1,5 @@
 package com.example.demo.domain.board.service.usecase;
 
-import com.example.demo.application.board.dto.request.BoardUpdateRequest;
-import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
 import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
@@ -59,9 +57,7 @@ public class BoardService {
         BoardInfo draftBoard = boardWriter.createDraftBoard(userTarget, boardContent.draftBoard());
 
         boardCategoryWriter.saveCategoryNames(draftBoard, boardCategoryNames);
-        draftBoard.setBoardCategoryNames(boardCategoryNames);
-
-        return draftBoard;
+        return draftBoard.setBoardCategoryNames(boardCategoryNames);
     }
 
     private boolean isAdminAndNotice(BoardContent boardContent, UserTarget userTarget) {
@@ -79,20 +75,32 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardInfoResponse updateBoard(Long userId, BoardUpdateRequest boardUpdateRequest) {
-        Board board = boardReader.validateBoardForUpdate(boardUpdateRequest, userId);
-        BoardInfoResponse boardInfoResponse = boardWriter.updateBoard(boardUpdateRequest, board);
+    public BoardInfo updateBoard(Long userId,Long boardId, BoardContent updateBoardContent, BoardCategoryNames updateBoardCategoryNames, Boolean isPublished) {
+        BoardInfo savedBoardInfo = boardReader.searchSingleBoard(boardId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        boardValidator.validateUserEqualBoardUser(userId, savedBoardInfo);
 
-        // 게시 상태로 변경이면 뉴스레터 전송
-        if (boardUpdateRequest.getIsPublished() && board.getBoardType().equals(BoardType.SEMINAR) && board.getStatus().equals(Status.DRAFT)) {
+        BoardInfo contentModifiedBoardInfo = boardWriter.modifyBoarContent(savedBoardInfo,updateBoardContent,isPublished);
+        BoardInfo modifiedBoardInfo = boardCategoryWriter.modifyBoardCategories(contentModifiedBoardInfo,updateBoardCategoryNames);
+
+        // 세미나 게시물이 게시 상태로 변경이면 뉴스레터 전송
+        if (isSeminarBoardModifiedToPublished(isPublished,savedBoardInfo.getBoardContent(), modifiedBoardInfo.getBoardContent())) {
             eventPublisher.publishEvent(EmailNotificationEvent.create(
                     EntireBoardType.SEMINAR_SUMMARY,
-                    SeminarSummaryEmailDeliveryStrategy.create(board)
+                    SeminarSummaryEmailDeliveryStrategy.create(modifiedBoardInfo)
             ));
         }
 
-        return boardInfoResponse;
+        return modifiedBoardInfo;
     }
+
+    private Boolean isSeminarBoardModifiedToPublished(Boolean isPublished,BoardContent previousBoardContent, BoardContent modifiedBoardContent) {
+        return modifiedBoardContent.getBoardType().equals(BoardType.SEMINAR)
+            && previousBoardContent.getBoardStatus().equals(Status.DRAFT)
+            && isPublished;
+    }
+
+
 
     @Transactional
     public void deleteBoard(Long userId, Long boardId) {
@@ -115,4 +123,5 @@ public class BoardService {
             .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
         return boardReader.findPublishedBoardListByUser(userId,boardType, pageable);
     }
+
 }

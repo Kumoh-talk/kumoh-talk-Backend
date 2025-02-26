@@ -12,4 +12,6 @@ public interface BoardRepository {
 	Optional<BoardInfo> findBoardInfo(Long boardId);
 
 	void countBoardView(Long boardId, Integer viewCount);
+
+	void updateBoardContent(Long boardId, BoardContent updateBoardContent);
 }

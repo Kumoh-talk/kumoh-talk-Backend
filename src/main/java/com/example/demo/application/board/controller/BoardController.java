@@ -60,7 +60,13 @@ public class BoardController implements BoardApi {
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.updateBoard(userId,boardUpdateRequest)));
+        return ResponseEntity.ok(createSuccessResponse(
+            BoardInfoResponse.of(
+            boardUsecase.updateBoard(
+                userId,boardUpdateRequest.id(),
+                boardUpdateRequest.toBoardContent(),
+                boardUpdateRequest.toBoardCategoryNames(),
+                boardUpdateRequest.isPublished()))));
     }
 
     @AssignUserId

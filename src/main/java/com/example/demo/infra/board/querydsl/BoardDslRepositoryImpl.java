@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.domain.user.domain.QUser;
+import com.example.demo.infra.board.category.entity.QBoardCategory;
+import com.example.demo.infra.board.category.entity.QCategory;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.QBoard;
-import com.example.demo.infra.board.entity.QBoardCategory;
-import com.example.demo.infra.board.entity.QCategory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -27,13 +27,14 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 		Board result = queryFactory
 			.selectFrom(board)
 			.join(board.user, user).fetchJoin()
-			.leftJoin(board.boardCategories, boardCategory).fetchJoin()
-			.leftJoin(boardCategory.category, category).fetchJoin()
+			.leftJoin(boardCategory).on(board.id.eq(boardCategory.board.id)).fetchJoin()
+			.leftJoin(category).on(boardCategory.category.id.eq(category.id)).fetchJoin()
 			.where(board.id.eq(boardId))
 			.fetchOne();
 
 		return Optional.ofNullable(result);
 	}
+
 
 	public void increaseViewCount(Long boardId, Integer viewCount) {
 		queryFactory

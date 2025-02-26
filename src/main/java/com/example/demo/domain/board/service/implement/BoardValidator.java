@@ -37,4 +37,11 @@ public class BoardValidator {
 	private static boolean isDraftBoard(BoardInfo boardInfo) {
 		return boardInfo.getBoardContent().getBoardStatus().equals(Status.DRAFT);
 	}
+
+	// 게시물 작성자인지 확인
+	public void validateUserEqualBoardUser(Long userId, BoardInfo boardInfo) {
+		if(!boardInfo.getUserTarget().getUserId().equals(userId)) {
+			throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
+		}
+	}
 }

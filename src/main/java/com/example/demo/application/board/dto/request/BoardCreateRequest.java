@@ -31,7 +31,7 @@ public record BoardCreateRequest (
         description = "게시물 카테고리 이름 리스트",
         example = "[\"카테고리1\", \"카테고리2\"]"
     )
-    @Nullable
+    @NotNull
     @Size(max = 5,message = "카테고리는 최대 5개까지 가능합니다.")
     List<String> categoryName,
 

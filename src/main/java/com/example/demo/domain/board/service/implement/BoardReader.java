@@ -52,7 +52,7 @@ public class BoardReader {
 
     @Transactional(readOnly = true)
     public Board validateBoardForUpdate(BoardUpdateRequest boardUpdateRequest, Long userId) {
-        Board board = validateBoard(boardUpdateRequest.getId());
+        Board board = validateBoard(boardUpdateRequest.id());
         validateUserEqualBoardUser(userId, board);
         return board;
     }

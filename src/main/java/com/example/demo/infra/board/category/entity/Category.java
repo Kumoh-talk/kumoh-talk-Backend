@@ -1,4 +1,4 @@
-package com.example.demo.infra.board.entity;
+package com.example.demo.infra.board.category.entity;
 
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
