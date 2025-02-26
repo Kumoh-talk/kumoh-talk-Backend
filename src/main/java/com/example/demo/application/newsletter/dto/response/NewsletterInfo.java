@@ -1,6 +1,6 @@
-package com.example.demo.domain.newsletter.domain.dto.response;
+package com.example.demo.application.newsletter.dto.response;
 
-import com.example.demo.domain.newsletter.domain.Newsletter;
+import com.example.demo.infra.newsletter.entity.Newsletter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;

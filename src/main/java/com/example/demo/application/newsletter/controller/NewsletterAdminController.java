@@ -1,17 +1,12 @@
-package com.example.demo.domain.newsletter.controller;
+package com.example.demo.application.newsletter.controller;
 
-import com.example.demo.domain.newsletter.api.NewsletterAdminApi;
-import com.example.demo.domain.newsletter.domain.dto.request.EmailNoticeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.response.SeminarNoticeBasicForm;
+import com.example.demo.application.newsletter.api.NewsletterAdminApi;
+import com.example.demo.application.newsletter.dto.request.EmailNoticeRequest;
+import com.example.demo.application.newsletter.dto.response.SeminarNoticeBasicForm;
 import com.example.demo.domain.newsletter.service.NewsletterAdminService;
-import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +37,6 @@ public class NewsletterAdminController implements NewsletterAdminApi {
      */
     @GetMapping("/seminar-notice-basicFrom")
     public ResponseEntity<ResponseBody<SeminarNoticeBasicForm>> getSeminarNoticeBasicForm() {
-        return ResponseEntity.ok(createSuccessResponse(newsletterAdminService.getSeminarNoticeBasicForm()));
+        return ResponseEntity.ok(createSuccessResponse(new SeminarNoticeBasicForm(newsletterAdminService.getSeminarNoticeBasicForm().getHtmlContent())));
     }
 }

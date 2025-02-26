@@ -1,4 +1,4 @@
-package com.example.demo.domain.newsletter.domain.dto.request;
+package com.example.demo.application.newsletter.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import org.jsoup.Jsoup;

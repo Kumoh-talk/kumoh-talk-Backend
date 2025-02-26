@@ -1,4 +1,4 @@
-package com.example.demo.domain.newsletter.domain.dto.response;
+package com.example.demo.application.newsletter.dto.response;
 
 public record SeminarNoticeBasicForm(
         String seminarNoticeBasicFrom
