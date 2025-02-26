@@ -1,5 +1,8 @@
 package com.example.demo.builder;
 
+import java.util.List;
+
+import com.example.demo.infra.board.category.entity.Category;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
@@ -42,4 +45,6 @@ public class TestFixtureBuilder {
     public Notification buildNotification(Notification notification) {
         return bs.notificationRepository().save(notification);
     }
+
+
 }

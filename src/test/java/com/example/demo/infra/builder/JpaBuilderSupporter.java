@@ -10,6 +10,8 @@ import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepo
 import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.Repository.LikeRepository;
+import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
+import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
 
 @Component
 public class JpaBuilderSupporter {
@@ -34,6 +36,11 @@ public class JpaBuilderSupporter {
 	@Autowired
 	private NotificationRepository notificationRepository;
 
+	@Autowired
+	private CategoryJpaRepository categoryJpaRepository;
+
+	@Autowired
+	private BoardCategoryJpaRepository boardCategoryJpaRepository;
 
 	public BoardJpaRepository boardRepository() {
 		return boardJpaRepository;
@@ -61,5 +68,14 @@ public class JpaBuilderSupporter {
 
 	public NotificationRepository notificationRepository() {
 		return notificationRepository;
+	}
+
+
+	public CategoryJpaRepository categoryJpaRepository() {
+		return categoryJpaRepository;
+	}
+
+	public BoardCategoryJpaRepository boardCategoryJpaRepository() {
+		return boardCategoryJpaRepository;
 	}
 }

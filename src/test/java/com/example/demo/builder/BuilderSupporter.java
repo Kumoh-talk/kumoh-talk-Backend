@@ -7,6 +7,8 @@ import com.example.demo.domain.comment.repository.RecruitmentBoardCommentReposit
 import com.example.demo.domain.notification.repository.NotificationRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.repository.UserJpaRepository;
+import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +35,9 @@ public class BuilderSupporter {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private CategoryJpaRepository categoryJpaRepository;
 
 
     public BoardJpaRepository boardRepository() {
@@ -62,5 +67,7 @@ public class BuilderSupporter {
     public NotificationRepository notificationRepository() {
         return notificationRepository;
     }
+
+
 
 }
