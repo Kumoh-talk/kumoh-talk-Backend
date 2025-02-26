@@ -364,18 +364,56 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 	@Nested
 	@DisplayName("<세미나/공지사항 게시물 삭제>")
 	class deleteBoardTest{
+		private User savedUser;
+
+		@BeforeEach
+		void setUp() {
+			savedUser = testFixtureBuilder.buildUser(ADMIN_USER());
+		}
 
 		@Test
 		void 성공_게시물_삭제가_성공한다() {
+			// given
+			Board draftBoard = testFixtureBuilder.buildBoard(DRAFT_SEMINAR_BOARD(savedUser));
+			List<String> categoryNames = List.of("category1", "category2");
+			List<Category> categories = jpaTestFixtureBuilder.buildCategories(categoryNames);
+			jpaTestFixtureBuilder.buildBoardCategories(draftBoard, categories);
 
+			// when
+			boardService.deleteBoard(savedUser.getId(), draftBoard.getId());
+
+			// then
+			assertSoftly(softly -> {
+				softly.assertThatThrownBy(() -> boardService.searchSingleBoard(savedUser.getId(), draftBoard.getId()))
+					.isInstanceOf(ServiceException.class)
+					.hasFieldOrPropertyWithValue("errorCode", ErrorCode.BOARD_NOT_FOUND);
+			});
 		}
 
 		@Test
 		void 실패_게시물_삭제는_게시물_작성자가_아니면_실패한다() {
+			// given
+			Board draftBoard = testFixtureBuilder.buildBoard(DRAFT_SEMINAR_BOARD(savedUser));
+
+			// when -> then
+			assertSoftly(softly -> {
+				softly.assertThatThrownBy(() -> boardService.deleteBoard(999L, draftBoard.getId()))
+					.isInstanceOf(ServiceException.class)
+					.hasFieldOrPropertyWithValue("errorCode", ErrorCode.NOT_ACCESS_USER);
+			});
 		}
 
 		@Test
 		void 실패_게시물_삭제는_유효하지_않은_게시물이면_실패한다() {
+			// given
+			Board draftBoard = testFixtureBuilder.buildBoard(DRAFT_SEMINAR_BOARD(savedUser));
+
+			// when -> then
+			assertSoftly(softly -> {
+				softly.assertThatThrownBy(() -> boardService.deleteBoard(savedUser.getId(), draftBoard.getId() + 1))
+					.isInstanceOf(ServiceException.class)
+					.hasFieldOrPropertyWithValue("errorCode", ErrorCode.BOARD_NOT_FOUND);
+			});
 		}
 	}
 
