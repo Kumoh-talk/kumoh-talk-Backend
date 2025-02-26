@@ -1,7 +1,7 @@
 package com.example.demo.domain.board.service.usecase;
 
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.domain.base.page.GlobalPageableDto;
@@ -114,8 +114,8 @@ public class BoardService {
         return boardReader.findPublishedBoardPageList(boardType,pageableDto);
     }
 
-    public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardList(Long userId, Pageable pageable) {
-        return boardReader.findDraftBoardPageList(userId,pageable);
+    public GlobalPageableDto<DraftBoardTitle> findDraftBoardList(Long userId, GlobalPageableDto pageableDto) {
+        return boardReader.findDraftBoardPageList(userId,pageableDto);
     }
 
     @Transactional(readOnly = true)

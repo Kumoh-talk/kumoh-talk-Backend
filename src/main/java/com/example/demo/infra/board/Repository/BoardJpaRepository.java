@@ -1,7 +1,7 @@
 package com.example.demo.infra.board.Repository;
 
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
@@ -31,12 +31,6 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBo
             "left join bc.category c on bc.category.id = c.id " +
             "where b.id = :id")
     List<String> findCategoryNameByBoardId(@Param("id") Long id);
-
-    @Query("SELECT new com.example.demo.application.board.dto.response.DraftBoardTitleResponse "
-    + "(b.id, b.title, b.createdAt, b.updatedAt) "
-    + "FROM Board b "
-    + "WHERE b.user.id = :userId AND b.status = 'DRAFT'")
-    Page<DraftBoardTitleResponse> findDraftBoardByPage(Long userId, Pageable pageable);
 
     @Query("SELECT new com.example.demo.domain.board.service.entity.BoardTitleInfo"
     + "(b.id, b.title, b.user.nickname, b.boardType,b.viewCount, COUNT(DISTINCT l),b.headImageUrl ,b.createdAt) "

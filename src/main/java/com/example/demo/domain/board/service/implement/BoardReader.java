@@ -8,7 +8,7 @@ import com.example.demo.domain.board.service.repository.BoardRepository;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.infra.board.entity.Board;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class BoardReader {
     private final BoardJpaRepository boardJpaRepository;
     private final BoardRepository boardRepository;
@@ -59,8 +58,9 @@ public class BoardReader {
         }
     }
 
-    public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardPageList(Long userId,Pageable pageable) {
-        return GlobalPageResponse.create(boardJpaRepository.findDraftBoardByPage(userId,pageable));
+    public GlobalPageableDto<DraftBoardTitle> findDraftBoardPageList(Long userId, GlobalPageableDto pageableDto) {
+        pageableDto.setPage(boardRepository.findDraftBoardByPage(userId, pageableDto));
+        return pageableDto;
     }
 
     @Transactional(readOnly = true)

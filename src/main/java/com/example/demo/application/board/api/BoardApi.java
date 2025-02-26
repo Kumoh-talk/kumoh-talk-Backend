@@ -15,7 +15,7 @@ import com.example.demo.application.board.dto.request.BoardCreateRequest;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -124,14 +124,14 @@ public interface BoardApi {
 		description = "해당 사용자가 작성한 임시 저장 게시글 목록을 조회합니다."
 	)
 	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class)))
-	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = DraftBoardTitleResponse.class)))
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = DraftBoardTitle.class)))
 	@ApiResponseExplanations(
 		success = @ApiSuccessResponseExplanation(
 			responseClass = GlobalPageResponse.class,
 			description = "임시 저장 게시글 목록 조회 성공\n"
 				+ "해당 사용자가 작성한 임시 저장 게시글 목록을 반환합니다.")
 	)
-	ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitleResponse>>> findDraftBoardPageList(
+	ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitle>>> findDraftBoardPageList(
 		@Parameter(hidden = true) Long userId,
 		@ParameterObject Pageable pageable);
 

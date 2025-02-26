@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.infra.board.entity.Board;
 
 public interface BoardDslRepository {
@@ -15,4 +16,6 @@ public interface BoardDslRepository {
 	void increaseViewCount(Long boardId, Integer viewCount);
 
 	Page<BoardTitleInfo> findBoardByPage(BoardType boardType, Pageable pageable);
+
+	Page<DraftBoardTitle> findDraftBoardByPage(Long userId, Pageable pageable);
 }

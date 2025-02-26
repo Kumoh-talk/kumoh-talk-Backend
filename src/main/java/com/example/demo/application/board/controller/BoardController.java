@@ -8,7 +8,7 @@ import com.example.demo.application.board.dto.request.BoardCreateRequest;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardInfo;
@@ -90,10 +90,11 @@ public class BoardController implements BoardApi {
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @GetMapping("/v1/boards/draft")
-    public ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitleResponse>>> findDraftBoardPageList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitle>>> findDraftBoardPageList(
         Long userId,
         @PageableDefault(page=0, size=10,sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(boardService.findDraftBoardList(userId,pageable)));
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
+            boardService.findDraftBoardList(userId,GlobalPageableDto.create(pageable)))));
     }
 
     @AssignUserId

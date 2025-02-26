@@ -11,12 +11,14 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.user.domain.QUser;
 import com.example.demo.infra.board.category.entity.QBoardCategory;
 import com.example.demo.infra.board.category.entity.QCategory;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.QBoard;
 import com.example.demo.infra.board.entity.QLike;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
@@ -56,7 +58,6 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 	}
 
 	public Page<BoardTitleInfo> findBoardByPage(BoardType boardType, Pageable pageable) {
-		QBoard board = QBoard.board;
 		QLike like = QLike.like;
 
 		JPQLQuery<BoardTitleInfo> contentQuery = createContentQuery(boardType, board, like);
@@ -106,4 +107,28 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 			.limit(pageable.getPageSize())
 			.fetch();
 	}
+
+	//TODO : 최적화 필요
+	public Page<DraftBoardTitle> findDraftBoardByPage(Long userId, Pageable pageable) {
+
+		JPQLQuery<DraftBoardTitle> query = queryFactory
+			.select(Projections.constructor(DraftBoardTitle.class,
+				board.id,
+				board.title,
+				board.createdAt,
+				board.updatedAt
+			))
+			.from(board)
+			.where(board.user.id.eq(userId)
+				.and(board.status.eq(Status.DRAFT)));
+
+		// Pageable 적용
+		QueryResults<DraftBoardTitle> results = query
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetchResults();
+
+		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+	}
+
 }

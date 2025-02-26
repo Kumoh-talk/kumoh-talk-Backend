@@ -23,4 +23,6 @@ public interface BoardRepository {
 	void deleteBoard(Long boardId);
 
 	Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, GlobalPageableDto pageableDto);
+
+	Page findDraftBoardByPage(Long userId, GlobalPageableDto pageableDto);
 }
