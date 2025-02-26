@@ -79,4 +79,9 @@ public class BoardRepositoryImpl implements BoardRepository {
 	public Page<DraftBoardTitle> findDraftBoardByPage(Long userId, GlobalPageableDto pageableDto) {
 		return boardJpaRepository.findDraftBoardByPage(userId, pageableDto.getPageable());
 	}
+
+	@Override
+	public Boolean isExistBoard(Long boardId) {
+		return boardJpaRepository.existsById(boardId); // TODO : exist 가 어떻게 동작하는지 확인해야함
+	}
 }

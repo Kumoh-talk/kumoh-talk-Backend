@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.controller;
+package com.example.demo.application.board.integration;
 
 import static com.example.demo.fixture.board.BoardDomainFixtures.*;
 import static com.example.demo.infra.fixture.board.BoardFixtures.*;

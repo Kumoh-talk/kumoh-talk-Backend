@@ -25,4 +25,6 @@ public interface BoardRepository {
 	Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, GlobalPageableDto pageableDto);
 
 	Page findDraftBoardByPage(Long userId, GlobalPageableDto pageableDto);
+
+	Boolean isExistBoard(Long boardId);
 }
