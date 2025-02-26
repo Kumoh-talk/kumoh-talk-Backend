@@ -1,20 +1,18 @@
 package com.example.demo.global.oauth.handler;
 
 
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.application.token.dto.TokenResponse;
 import com.example.demo.fixture.user.UserFixtures;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
 import com.example.demo.global.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.example.demo.global.oauth.service.OAuth2UserPrincipal;
 import com.example.demo.global.oauth.user.OAuth2Provider;
 import com.example.demo.global.oauth.user.OAuth2UserInfo;
-import com.example.demo.global.oauth.service.OAuth2UserPrincipal;
 import com.example.demo.global.oauth.user.OAuth2UserUnlinkManager;
 import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.user.repository.UserJpaRepository;
 import jakarta.servlet.http.Cookie;
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,8 +23,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.SoftAssertions.*;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
