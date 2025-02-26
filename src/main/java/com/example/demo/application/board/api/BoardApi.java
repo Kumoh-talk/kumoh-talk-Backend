@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.demo.application.board.dto.request.BoardCreateRequest;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.response.BoardInfoResponse;
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -106,7 +106,7 @@ public interface BoardApi {
 	)
 	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class))
 	)
-	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoardTitleInfoResponse.class))
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoardTitleInfo.class))
 	)
 	@ApiResponseExplanations(
 		success = @ApiSuccessResponseExplanation(
@@ -114,7 +114,7 @@ public interface BoardApi {
 			description = "게시글 목록 조회 성공\n"
 				+ "게시글 목록을 반환합니다.")
 	)
-	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findBoardPageList(
+	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> findBoardPageList(
 		@Schema(name="boardType",description = "게시물 타입 SEMINAR/NOTICE 중에 선택해야 합니다.",example = "SEMINAR") BoardType boardType,
 		@ParameterObject
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
@@ -141,7 +141,7 @@ public interface BoardApi {
 		description = "해당 사용자가 작성한 게시글 목록을 조회합니다. 공개 게시글만 조회됩니다."
 	)
 	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class)))
-	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoardTitleInfoResponse.class)))
+	@ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoardTitleInfo.class)))
 	@ApiResponseExplanations(
 		success = @ApiSuccessResponseExplanation(
 			responseClass = GlobalPageResponse.class,
@@ -152,7 +152,7 @@ public interface BoardApi {
 			@ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND),
 		}
 	)
-	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findMyBoardPageList(
+	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> findMyBoardPageList(
 		@Parameter(hidden = true) Long userId,
 		@Schema(name="boardType",description = "게시물 타입 SEMINAR/NOTICE 중에 선택해야 합니다.",example = "SEMINAR") BoardType boardType,
 		@ParameterObject Pageable pageable);

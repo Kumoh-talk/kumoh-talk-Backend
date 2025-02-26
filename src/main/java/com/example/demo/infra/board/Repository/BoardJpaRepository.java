@@ -1,6 +1,6 @@
 package com.example.demo.infra.board.Repository;
 
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.infra.board.entity.Board;
@@ -32,28 +32,19 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBo
             "where b.id = :id")
     List<String> findCategoryNameByBoardId(@Param("id") Long id);
 
-    @Query("SELECT new com.example.demo.application.board.dto.response.BoardTitleInfoResponse"
-        + "(b.id, b.title, b.user.nickname, b.boardType, b.viewCount, COUNT(DISTINCT l),b.headImageUrl ,b.createdAt) "
-        + "FROM Board b "
-        + "LEFT JOIN b.likes l "
-        + "WHERE b.status = 'PUBLISHED' AND b.boardType = :boardType "
-        + "GROUP BY b.id, b.title, b.user.nickname, b.boardType, b.createdAt")
-    Page<BoardTitleInfoResponse> findBoardByPage(@Param("boardType") BoardType boardType, Pageable pageable);//TODO : 추후 QueryDSL로 변경
-
-
     @Query("SELECT new com.example.demo.application.board.dto.response.DraftBoardTitleResponse "
     + "(b.id, b.title, b.createdAt, b.updatedAt) "
     + "FROM Board b "
     + "WHERE b.user.id = :userId AND b.status = 'DRAFT'")
     Page<DraftBoardTitleResponse> findDraftBoardByPage(Long userId, Pageable pageable);
 
-    @Query("SELECT new com.example.demo.application.board.dto.response.BoardTitleInfoResponse"
+    @Query("SELECT new com.example.demo.domain.board.service.entity.BoardTitleInfo"
     + "(b.id, b.title, b.user.nickname, b.boardType,b.viewCount, COUNT(DISTINCT l),b.headImageUrl ,b.createdAt) "
     + "FROM Board b "
     + "LEFT JOIN b.likes l "
     + "WHERE b.status = 'PUBLISHED' AND b.user.id = :userId AND b.boardType = :boardType "
     + "GROUP BY b.id, b.title, b.user.nickname, b.boardType, b.createdAt")
-    Page<BoardTitleInfoResponse> findPublishedBoardListByUser(@Param("userId") Long userId,
+    Page<BoardTitleInfo> findPublishedBoardListByUser(@Param("userId") Long userId,
         @Param("boardType") BoardType boardType,
         Pageable pageable);
 

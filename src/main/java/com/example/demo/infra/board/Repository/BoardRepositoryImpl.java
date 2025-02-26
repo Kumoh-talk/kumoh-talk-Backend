@@ -2,10 +2,14 @@ package com.example.demo.infra.board.Repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.repository.BoardRepository;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.repository.UserJpaRepository;
@@ -63,5 +67,10 @@ public class BoardRepositoryImpl implements BoardRepository {
 	@Override
 	public void deleteBoard(Long boardId) {
 		boardJpaRepository.deleteById(boardId);
+	}
+
+	@Override
+	public Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, GlobalPageableDto pageableDto) {
+		return boardJpaRepository.findBoardByPage(boardType,pageableDto.getPageable());
 	}
 }

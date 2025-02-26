@@ -2,8 +2,13 @@ package com.example.demo.domain.board.service.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+
+import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.user.domain.UserTarget;
 
 public interface BoardRepository {
@@ -16,4 +21,6 @@ public interface BoardRepository {
 	void updateBoardContent(Long boardId, BoardContent updateBoardContent);
 
 	void deleteBoard(Long boardId);
+
+	Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, GlobalPageableDto pageableDto);
 }

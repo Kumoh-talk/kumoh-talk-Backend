@@ -372,7 +372,7 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 		}
 
 		@Test
-		void 성공_게시물_삭제가_성공한다() {
+		void  성공_게시물_삭제가_성공한다() {
 			// given
 			Board draftBoard = testFixtureBuilder.buildBoard(DRAFT_SEMINAR_BOARD(savedUser));
 			List<String> categoryNames = List.of("category1", "category2");

@@ -2,7 +2,7 @@ package com.example.demo.infra.board.Repository;
 
 import java.util.Optional;
 
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.infra.board.entity.Like;
 
 import org.springframework.data.domain.Page;
@@ -17,11 +17,11 @@ public interface LikeRepository extends JpaRepository<Like,Long> {
 
 	Optional<Like> findByBoardIdAndUserId(Long boardId, Long userId);
 
-	@Query("SELECT new com.example.demo.application.board.dto.response.BoardTitleInfoResponse"
+	@Query("SELECT new com.example.demo.domain.board.service.entity.BoardTitleInfo"
 		+ "(b.id, b.title, b.user.nickname, b.boardType, b.viewCount, COUNT(DISTINCT l.id),b.headImageUrl, b.createdAt) "
 		+ "FROM Board b "
 		+ "JOIN b.likes l "
 		+ "WHERE l.user.id = :userId "
 		+ "GROUP BY b.id, b.title, b.user.nickname, b.boardType, b.createdAt")
-	Page<BoardTitleInfoResponse> findBoardsByUserId(Long userId, Pageable pageable);
+	Page<BoardTitleInfo> findBoardsByUserId(Long userId, Pageable pageable);
 }

@@ -1,9 +1,10 @@
 package com.example.demo.domain.board.service.usecase;
 
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
 import com.example.demo.application.board.dto.vo.BoardType;
 import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
@@ -109,8 +110,8 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfoResponse> findBoardList(BoardType boardType , Pageable pageable) {
-        return boardReader.findBoardPageList(boardType,pageable);
+    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardList(BoardType boardType , GlobalPageableDto pageableDto) {
+        return boardReader.findPublishedBoardPageList(boardType,pageableDto);
     }
 
     public GlobalPageResponse<DraftBoardTitleResponse> findDraftBoardList(Long userId, Pageable pageable) {
@@ -118,7 +119,7 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfoResponse> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
+    public GlobalPageResponse<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
         userReader.findUser(userId)
             .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
         return boardReader.findPublishedBoardListByUser(userId,boardType, pageable);

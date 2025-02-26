@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.application.board.api.CategoryApi;
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.usecase.CategoryUseCase;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -33,7 +33,7 @@ public class CategoryController implements CategoryApi {
 	}
 
 	@GetMapping("/v1/categories/boards")
-	public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> getBoardsByCategoryName(
+	public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> getBoardsByCategoryName(
 		@RequestParam("categoryName") String categoryName,
 		@PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok(createSuccessResponse(categoryUseCase.getBoardsByCategoryName(categoryName,pageable)));
