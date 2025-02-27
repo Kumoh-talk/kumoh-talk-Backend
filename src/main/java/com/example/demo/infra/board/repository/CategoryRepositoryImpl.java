@@ -1,4 +1,4 @@
-package com.example.demo.infra.board.Repository;
+package com.example.demo.infra.board.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.repository.CategoryRepository;
 import com.example.demo.domain.user.domain.QUser;
 import com.example.demo.infra.board.category.entity.QBoardCategory;
@@ -45,7 +46,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 		return pageableDto;
 	}
 
-	public Page<BoardTitleInfo> findBoardPageByCategoryName(String categoryName, Pageable pageable) { //TODO : 해당 위치 추후 수정
+	public Page<BoardTitleInfo> findBoardPageByCategoryName(String categoryName, Pageable pageable) {
 		QBoard board = QBoard.board;
 		QLike like = QLike.like;
 		QUser user = QUser.user;
@@ -59,16 +60,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 				user.nickname,
 				board.boardType,
 				board.viewCount,
-				like.countDistinct(),
+				like.id.countDistinct(),
 				board.headImageUrl,
 				board.createdAt
 			))
 			.from(board)
-			.leftJoin(board.likes, like)
+			.leftJoin(like).on(like.board.eq(board)) // Like에서 Board를 참조
 			.join(board.user, user)
 			.leftJoin(boardCategory).on(board.id.eq(boardCategory.board.id))
 			.leftJoin(category).on(boardCategory.category.id.eq(category.id))
-			.where(category.name.eq(categoryName))
+			.where(category.name.eq(categoryName).and(board.status.eq(Status.PUBLISHED)))
 			.groupBy(board.id, board.title, user.nickname, board.boardType, board.createdAt);
 
 		// 페이징 적용
@@ -79,4 +80,5 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
 	}
+
 }

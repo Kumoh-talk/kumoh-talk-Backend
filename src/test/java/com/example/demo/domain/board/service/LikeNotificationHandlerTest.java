@@ -2,7 +2,7 @@ package com.example.demo.domain.board.service;
 
 import com.example.demo.builder.TestFixtureBuilder;
 import com.example.demo.infra.board.entity.Like;
-import com.example.demo.domain.board.service.service.LikeNotificationService;
+import com.example.demo.domain.board.service.implement.LikeNotificationHandler;
 import com.example.demo.domain.comment.TransactionalTask;
 import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.notification.domain.entity.NotificationUser;
@@ -24,12 +24,12 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @SpringBootTest
 @ActiveProfiles("test")
 @Import(value = {TestFixtureBuilder.class, TransactionalTask.class})
-public class LikeNotificationServiceTest {
+public class LikeNotificationHandlerTest {
     @Autowired
     private TransactionalTask transactionalTask;
 
     @Autowired
-    private LikeNotificationService likeNotificationService;
+    private LikeNotificationHandler likeNotificationHandler;
 
     @Nested
     @DisplayName("<좋아요 생성 시 연관 알림 생성 통합 테스트>")
@@ -52,7 +52,7 @@ public class LikeNotificationServiceTest {
         @Test
         void 성공_좋아요_저장_시_알림도_저장된다() {
             // when
-            CompletableFuture<Notification> completableFuture = likeNotificationService.saveLikeNotification(savedLike);
+            CompletableFuture<Notification> completableFuture = likeNotificationHandler.saveLikeNotification(savedLike);
 
             // then
             Notification notification = completableFuture.join();

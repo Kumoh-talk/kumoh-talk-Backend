@@ -1,14 +1,12 @@
 package com.example.demo.infra.board.category.repository;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.repository.BoardCategoryRepository;
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
+import com.example.demo.infra.board.repository.BoardJpaRepository;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 import com.example.demo.infra.board.category.entity.Category;

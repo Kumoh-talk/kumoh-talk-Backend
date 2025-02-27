@@ -12,7 +12,7 @@ import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.usecase.BoardService;
+import com.example.demo.domain.board.service.service.BoardService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;

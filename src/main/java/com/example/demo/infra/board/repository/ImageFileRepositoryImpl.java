@@ -1,6 +1,4 @@
-package com.example.demo.infra.board.Repository;
-
-import java.util.Optional;
+package com.example.demo.infra.board.repository;
 
 import org.springframework.stereotype.Repository;
 

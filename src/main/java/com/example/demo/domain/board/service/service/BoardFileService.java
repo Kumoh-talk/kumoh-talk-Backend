@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service.usecase;
+package com.example.demo.domain.board.service.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -75,8 +75,6 @@ public class Board extends BaseEntity implements GenericBoard {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardCategory> boardCategories = new ArrayList<>();
@@ -97,16 +95,6 @@ public class Board extends BaseEntity implements GenericBoard {
         this.id = id;
     }
 
-    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
-        Board board = new Board(boardCreateRequest.title(),
-            boardCreateRequest.contents(),
-            user,
-            boardCreateRequest.boardType(),
-            Status.DRAFT,
-            boardCreateRequest.boardHeadImageUrl());
-        user.getBoards().add(board);
-        return board;
-    }
     public void changeBoardInfo(BoardContent boardContent){
         this.title = boardContent.getTitle();
         this.content = boardContent.getContents();
@@ -115,17 +103,10 @@ public class Board extends BaseEntity implements GenericBoard {
 
     }
 
-    public void publishBoard(){
-        this.status = Status.PUBLISHED;
-    }
-
     public void changeAttachFileUrl(String attachFileUrl){
         this.attachFileUrl = attachFileUrl;
     }
 
-    public void changeHeadImageUrl(String boardHeadImageUrl) {
-        this.headImageUrl = boardHeadImageUrl;
-    }
     public static BoardInfo toBoardInfo(Board board,Long likeCount) {
         BoardContent boardContent = new BoardContent(board.getTitle(), board.getContent(), board.getBoardType(), board.getHeadImageUrl(),board.status);
         UserTarget userTarget = UserTarget.builder()

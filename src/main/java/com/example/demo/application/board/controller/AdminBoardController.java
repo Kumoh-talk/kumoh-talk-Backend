@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.application.board.api.AdminBoardApi;
-import com.example.demo.domain.board.service.usecase.BoardAdminService;
+import com.example.demo.domain.board.service.service.BoardAdminService;
 import com.example.demo.global.base.dto.ResponseBody;
 
 import lombok.RequiredArgsConstructor;

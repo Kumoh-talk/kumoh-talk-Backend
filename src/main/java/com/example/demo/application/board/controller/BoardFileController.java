@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.application.board.api.BoardFileApi;
 import com.example.demo.application.board.dto.request.FileRequest;
 import com.example.demo.application.board.dto.request.PresignedUrlRequest;
-import com.example.demo.domain.board.service.usecase.BoardFileService;
+import com.example.demo.domain.board.service.service.BoardFileService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 

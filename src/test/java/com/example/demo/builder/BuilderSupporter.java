@@ -1,7 +1,7 @@
 package com.example.demo.builder;
 
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
-import com.example.demo.infra.board.Repository.LikeRepository;
+import com.example.demo.infra.board.repository.BoardJpaRepository;
+import com.example.demo.infra.board.repository.LikeJpaRepository;
 import com.example.demo.domain.comment.repository.BoardCommentRepository;
 import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
 import com.example.demo.domain.notification.repository.NotificationRepository;
@@ -22,7 +22,7 @@ public class BuilderSupporter {
     private UserJpaRepository userJpaRepository;
 
     @Autowired
-    private LikeRepository likeRepository;
+    private LikeJpaRepository likeJpaRepository;
 
     @Autowired
     private RecruitmentBoardRepository recruitmentBoardRepository;
@@ -48,8 +48,8 @@ public class BuilderSupporter {
         return userJpaRepository;
     }
 
-    public LikeRepository likeRepository() {
-        return likeRepository;
+    public LikeJpaRepository likeRepository() {
+        return likeJpaRepository;
     }
 
     public RecruitmentBoardRepository recruitmentBoardRepository() {

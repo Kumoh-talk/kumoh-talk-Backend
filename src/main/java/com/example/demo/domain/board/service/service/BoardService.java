@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service.usecase;
+package com.example.demo.domain.board.service.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

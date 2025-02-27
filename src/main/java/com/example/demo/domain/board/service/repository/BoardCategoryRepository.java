@@ -1,7 +1,5 @@
 package com.example.demo.domain.board.service.repository;
 
-import java.util.List;
-
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 

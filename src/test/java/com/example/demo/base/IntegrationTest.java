@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.base.config.RedisContainerConfig;
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.domain.board.service.usecase.BoardAdminService;
-import com.example.demo.domain.board.service.usecase.BoardService;
+import com.example.demo.domain.board.service.service.BoardAdminService;
+import com.example.demo.domain.board.service.service.BoardService;
 import com.example.demo.infra.builder.JpaBuilderSupporter;
 import com.example.demo.infra.builder.JpaTestFixtureBuilder;
 

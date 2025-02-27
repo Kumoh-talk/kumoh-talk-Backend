@@ -2,7 +2,7 @@ package com.example.demo.domain.comment.event;
 
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.domain.board.service.usecase.BoardService;
+import com.example.demo.domain.board.service.service.BoardService;
 import com.example.demo.domain.comment.TransactionalTask;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
