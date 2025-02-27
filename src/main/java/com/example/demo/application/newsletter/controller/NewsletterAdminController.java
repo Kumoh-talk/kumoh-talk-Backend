@@ -37,6 +37,6 @@ public class NewsletterAdminController implements NewsletterAdminApi {
      */
     @GetMapping("/seminar-notice-basicFrom")
     public ResponseEntity<ResponseBody<SeminarNoticeBasicForm>> getSeminarNoticeBasicForm() {
-        return ResponseEntity.ok(createSuccessResponse(new SeminarNoticeBasicForm(newsletterAdminService.getSeminarNoticeBasicForm().getHtmlContent())));
+        return ResponseEntity.ok(createSuccessResponse(SeminarNoticeBasicForm.of(newsletterAdminService.getSeminarNoticeBasicForm())));
     }
 }
