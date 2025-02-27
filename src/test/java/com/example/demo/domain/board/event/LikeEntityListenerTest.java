@@ -4,7 +4,7 @@ import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.board.service.usecase.BoardService;
-import com.example.demo.domain.board.service.usecase.LikeUseCase;
+import com.example.demo.domain.board.service.usecase.LikeService;
 import com.example.demo.domain.comment.TransactionalTask;
 import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.notification.repository.NotificationRepository;
@@ -36,7 +36,7 @@ class LikeEntityListenerTest {
     private NotificationRepository notificationRepository;
 
     @Autowired
-    private LikeUseCase likeUseCase;
+    private LikeService likeService;
     @Autowired
     private BoardService boardService;
 
@@ -70,7 +70,7 @@ class LikeEntityListenerTest {
             assertTrue(notificationRepository.existsById(savedNotification.getId()));
 
             // when
-            likeUseCase.unlikeBoard(savedLike.getUser().getId(), savedLike.getBoard().getId());
+            likeService.unlikeBoard(savedLike.getUser().getId(), savedLike.getBoard().getId());
 
             // then
             Awaitility.await().untilAsserted(() -> {

@@ -5,17 +5,17 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
-import com.example.demo.domain.board.service.service.LikeService;
+import com.example.demo.domain.board.service.implement.LikeHandler;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class LikeUseCase {
-	private final LikeService likeService;
+public class LikeService {
+	private final LikeHandler likeHandler;
 
 	public void likeBoard(Long userId, Long boardId) {
-		likeService.increaseLike(userId, boardId);
+		likeHandler.increaseLike(userId, boardId);
 	}
 
 	/**
@@ -25,10 +25,10 @@ public class LikeUseCase {
 	 * @return BoardPageResponse
 	 */
 	public GlobalPageResponse<BoardTitleInfo> getLikes(Long userId, Pageable pageable) {
-		return likeService.getLikes(userId, pageable);
+		return likeHandler.getLikes(userId, pageable);
 	}
 
 	public void unlikeBoard(Long userId, Long boardId) {
-		likeService.decreaseLike(userId, boardId);
+		likeHandler.decreaseLike(userId, boardId);
 	}
 }

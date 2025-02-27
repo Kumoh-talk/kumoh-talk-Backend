@@ -11,14 +11,12 @@ import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class BoardReader {
-    private final BoardJpaRepository boardJpaRepository;
     private final BoardRepository boardRepository;
 
     @Transactional(readOnly = true)
@@ -41,7 +39,7 @@ public class BoardReader {
     public GlobalPageableDto<BoardTitleInfo> findPublishedBoardListByUser(Long userId,
         BoardType boardType,
         GlobalPageableDto pageableDto) {
-        pageableDto.setPage(boardJpaRepository.findPublishedBoardListByUser(userId,boardType,pageableDto.getPageable()));
+        pageableDto.setPage(boardRepository.findPublishedBoardListByUser(userId,boardType,pageableDto.getPageable()));
         return pageableDto;
     }
 

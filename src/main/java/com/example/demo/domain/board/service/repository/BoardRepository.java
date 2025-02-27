@@ -3,8 +3,8 @@ package com.example.demo.domain.board.service.repository;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import com.example.demo.domain.board.service.entity.BoardFileInfo;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
@@ -32,4 +32,6 @@ public interface BoardRepository {
 	void changeAttachFileUrl(String attachFileUrl, BoardInfo boardInfo);
 
 	String getBoardAttachFileUrl(Long boardId);
+
+	Page findPublishedBoardListByUser(Long userId, BoardType boardType, Pageable pageable);
 }

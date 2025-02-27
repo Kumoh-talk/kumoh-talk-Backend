@@ -3,6 +3,7 @@ package com.example.demo.infra.board.Repository;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.domain.board.service.entity.BoardFileInfo;
@@ -97,5 +98,10 @@ public class BoardRepositoryImpl implements BoardRepository {
 	@Override
 	public String getBoardAttachFileUrl(Long boardId) {
 		return boardJpaRepository.getAttachFileUrl(boardId);
+	}
+
+	@Override
+	public Page findPublishedBoardListByUser(Long userId, BoardType boardType, Pageable pageable) {
+		return boardJpaRepository.findPublishedBoardListByUser(userId, boardType, pageable);
 	}
 }

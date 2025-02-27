@@ -1,5 +1,6 @@
-package com.example.demo.domain.board.service.service;
+package com.example.demo.domain.board.service.implement;
 
+import com.example.demo.domain.board.service.service.LikeNotificationService;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.Repository.LikeRepository;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-public class LikeService {
+public class LikeHandler {
     private final LikeRepository likeRepository;
     private final BoardJpaRepository boardJpaRepository;
     private final UserJpaRepository userJpaRepository;
