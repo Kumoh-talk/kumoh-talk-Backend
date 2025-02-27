@@ -2,8 +2,11 @@ package com.example.demo.domain.newsletter.implement;
 
 import com.example.demo.domain.newsletter.entity.NewsletterSubscription;
 import com.example.demo.domain.newsletter.repository.NewsletterRepository;
+import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import static com.example.demo.global.base.exception.ErrorCode.SUBSCRIBE_EMAIL_CONFLICT;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +25,7 @@ public class NewsletterHandler {
         newsletterRepository.deleteNewsletterSubscription(email);
     }
 
-    public void validateNewsletterSubscription(String email) {
-        newsletterRepository.validateNewsletterSubscription(email);
+    public boolean existsNewsletterSubscription(String email) {
+        return newsletterRepository.existsNewsletterSubscription(email);
     }
 }

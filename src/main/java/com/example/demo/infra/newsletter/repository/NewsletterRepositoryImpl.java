@@ -2,16 +2,12 @@ package com.example.demo.infra.newsletter.repository;
 
 import com.example.demo.domain.newsletter.entity.NewsletterSubscription;
 import com.example.demo.domain.newsletter.repository.NewsletterRepository;
-import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.infra.newsletter.entity.Newsletter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.example.demo.global.base.exception.ErrorCode.SUBSCRIBE_EMAIL_CONFLICT;
-import static com.example.demo.global.base.exception.ErrorCode.SUBSCRIBE_NOT_FOUND;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,30 +28,25 @@ public class NewsletterRepositoryImpl implements NewsletterRepository {
     @Override
     @Transactional
     public void updateNewsletterSubscription(NewsletterSubscription newsletterSubscription) {
-        Newsletter newsletter = newsletterJpaRepository.findByEmail(newsletterSubscription.getEmail())
-                .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
-
-        newsletter.updateNewsletter(newsletterSubscription.getEmail(),
-                newsletterSubscription.getSeminarContentNotice(),
-                newsletterSubscription.getStudyNotice(),
-                newsletterSubscription.getProjectNotice(),
-                newsletterSubscription.getMentoringNotice());
+        newsletterJpaRepository.findByEmail(newsletterSubscription.getEmail())
+                .ifPresent(newsletter -> {
+                    newsletter.updateNewsletter(newsletterSubscription.getEmail(),
+                            newsletterSubscription.getSeminarContentNotice(),
+                            newsletterSubscription.getStudyNotice(),
+                            newsletterSubscription.getProjectNotice(),
+                            newsletterSubscription.getMentoringNotice());
+                });
     }
 
     @Override
     @Transactional
     public void deleteNewsletterSubscription(String email) {
-        Newsletter newsletter = newsletterJpaRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
-
-        newsletterJpaRepository.delete(newsletter);
+        newsletterJpaRepository.deleteByEmail(email);
     }
 
     @Override
-    public void validateNewsletterSubscription(String email) {
-        if (newsletterJpaRepository.existsByEmail(email)) {
-            throw new ServiceException(SUBSCRIBE_EMAIL_CONFLICT);
-        }
+    public boolean existsNewsletterSubscription(String email) {
+        return newsletterJpaRepository.existsByEmail(email);
     }
 
     @Override

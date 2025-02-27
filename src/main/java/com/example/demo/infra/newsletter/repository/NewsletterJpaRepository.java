@@ -20,4 +20,6 @@ public interface NewsletterJpaRepository extends JpaRepository<Newsletter, Long>
     List<String> findSubscriberEmails(@Param("postType") String postType);
 
     Optional<Newsletter> findByEmail(String email);
+
+    void deleteByEmail(String email);
 }

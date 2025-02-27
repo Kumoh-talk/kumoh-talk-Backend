@@ -11,7 +11,7 @@ public interface NewsletterRepository {
 
     void deleteNewsletterSubscription(String email);
 
-    void validateNewsletterSubscription(String email);
+    boolean existsNewsletterSubscription(String email);
 
     List<String> findSubscriberEmails(String postType);
 }
