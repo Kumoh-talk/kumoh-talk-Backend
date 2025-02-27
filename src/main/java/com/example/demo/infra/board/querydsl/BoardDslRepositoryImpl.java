@@ -164,5 +164,13 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
 	}
 
+	@Override
+	public String getAttachFileUrl(Long boardId) {
+		return queryFactory
+			.select(board.headImageUrl)
+			.from(board)
+			.where(board.id.eq(boardId))
+			.fetchOne();
+	}
 
 }

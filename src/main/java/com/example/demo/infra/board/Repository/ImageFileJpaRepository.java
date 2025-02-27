@@ -9,6 +9,6 @@ import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.ImageFile;
 
 @Repository
-public interface ImageFileRepository extends JpaRepository<ImageFile, Long> {
+public interface ImageFileJpaRepository extends JpaRepository<ImageFile, Long> {
 	Optional<ImageFile> findByUrlAndBoard(String url, Board board);
 }

@@ -11,10 +11,7 @@ import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
-import com.example.demo.infra.board.entity.Board;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,12 +32,6 @@ public class BoardReader {
         return pageableDto;
     }
 
-    @Transactional(readOnly = true)
-    public Board validateBoard(Long boardId) {
-        return boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-    }
-
     public GlobalPageableDto<DraftBoardTitle> findDraftBoardPageList(Long userId, GlobalPageableDto pageableDto) {
         pageableDto.setPage(boardRepository.findDraftBoardByPage(userId, pageableDto));
         return pageableDto;
@@ -52,5 +43,9 @@ public class BoardReader {
         GlobalPageableDto pageableDto) {
         pageableDto.setPage(boardJpaRepository.findPublishedBoardListByUser(userId,boardType,pageableDto.getPageable()));
         return pageableDto;
+    }
+
+    public String readBoardAttachFileUrl(Long boardId) {
+        return boardRepository.getBoardAttachFileUrl(boardId);
     }
 }

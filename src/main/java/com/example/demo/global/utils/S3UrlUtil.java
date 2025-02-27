@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.application.board.dto.request.PresignedUrlRequest;
+import com.example.demo.domain.board.service.entity.BoardFileInfo;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 
@@ -45,15 +46,16 @@ public class S3UrlUtil {
 	/**
 	 * S3 컨벤션에 맞는 경로 설정을 위한 메서드입니다.
 	 * Board 에 관한 S3 경로를 생성합니다.
-	 * @param presignedUrlRequest
+	 * @param boardId
+	 * @param boardFileInfo
 	 * @return Board 관련 S3 경로 문자열
 	 */
-	public String generateBoardS3Path(PresignedUrlRequest presignedUrlRequest) {
+	public String generateBoardS3Path(Long boardId, BoardFileInfo boardFileInfo) {
 		return String.format(BOARD_S3_PATH_FORMAT,
-			presignedUrlRequest.getBoardId(),
-			changeLowerCase(presignedUrlRequest.getFileType().toString()),
+			boardId,
+			changeLowerCase(boardFileInfo.getFileType().toString()),
 			creaeteUUID(),
-			presignedUrlRequest.getFileName());
+			boardFileInfo.getFileName());
 	}
 
 	/**

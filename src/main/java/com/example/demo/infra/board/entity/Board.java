@@ -76,9 +76,6 @@ public class Board extends BaseEntity implements GenericBoard {
     private List<BoardComment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ImageFile> imageFiles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -94,6 +91,10 @@ public class Board extends BaseEntity implements GenericBoard {
         this.attachFileUrl = null;
         this.headImageUrl = headImageUrl;
         this.viewCount = 0L;
+    }
+
+    public Board(Long id) {
+        this.id = id;
     }
 
     public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){

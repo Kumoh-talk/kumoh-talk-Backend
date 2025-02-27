@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
+import com.example.demo.domain.board.service.entity.BoardFileInfo;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
@@ -27,4 +28,8 @@ public interface BoardRepository {
 	Page findDraftBoardByPage(Long userId, GlobalPageableDto pageableDto);
 
 	Boolean isExistBoard(Long boardId);
+
+	void changeAttachFileUrl(String attachFileUrl, BoardInfo boardInfo);
+
+	String getBoardAttachFileUrl(Long boardId);
 }

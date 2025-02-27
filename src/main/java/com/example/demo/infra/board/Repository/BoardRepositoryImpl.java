@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.domain.board.service.entity.BoardFileInfo;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
@@ -83,5 +84,18 @@ public class BoardRepositoryImpl implements BoardRepository {
 	@Override
 	public Boolean isExistBoard(Long boardId) {
 		return boardJpaRepository.existsById(boardId); // TODO : exist 가 어떻게 동작하는지 확인해야함
+	}
+
+	@Override
+	public void changeAttachFileUrl(String attachFileUrl, BoardInfo boardInfo) {
+		boardJpaRepository.findById(boardInfo.getBoardId())
+			.ifPresent(board -> {
+				board.changeAttachFileUrl(attachFileUrl);
+			});
+	}
+
+	@Override
+	public String getBoardAttachFileUrl(Long boardId) {
+		return boardJpaRepository.getAttachFileUrl(boardId);
 	}
 }
