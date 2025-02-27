@@ -77,18 +77,18 @@ public class BoardInfoResponse {
 
     public static BoardInfoResponse of(BoardInfo boardInfo) {
         return BoardInfoResponse.builder()
-                .boardId(boardInfo.getBoardId())
-                .username(boardInfo.getUserTarget().getNickName())
-                .title(boardInfo.getBoardCore().getTitle())
-                .contents(boardInfo.getBoardCore().getContents())
-                .boardType(boardInfo.getBoardCore().getBoardType().toString())
-                .status(boardInfo.getBoardCore().getBoardStatus().toString())
-                .view(boardInfo.getViewCount())
-                .like(boardInfo.getLikeCount())
-                .categoryNames(boardInfo.getBoardCategoryNames().getCategories())
-                .boardHeadImageUrl(boardInfo.getBoardCore().getBoardHeadImageUrl())
-                .createdAt(boardInfo.getCreatedAt())
-                .updatedAt(boardInfo.getUpdatedAt())
-                .build();
+            .boardId(boardInfo.getBoardId())
+            .username(boardInfo.getUserTarget().getNickName())
+            .title(boardInfo.getBoardContent().getTitle())
+            .contents(boardInfo.getBoardContent().getContents())
+            .boardType(boardInfo.getBoardContent().getBoardType().toString())
+            .status(boardInfo.getBoardContent().getBoardStatus().toString())
+            .view(boardInfo.getViewCount())
+            .like(boardInfo.getLikeCount())
+            .categoryNames(boardInfo.getBoardCategoryNames().getCategories())
+            .boardHeadImageUrl(boardInfo.getBoardContent().getBoardHeadImageUrl())
+            .createdAt(boardInfo.getCreatedAt())
+            .updatedAt(boardInfo.getUpdatedAt())
+            .build();
     }
 }

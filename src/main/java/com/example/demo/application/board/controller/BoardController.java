@@ -7,9 +7,10 @@ import com.example.demo.application.board.api.BoardApi;
 import com.example.demo.application.board.dto.request.BoardCreateRequest;
 import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.application.board.dto.response.BoardInfoResponse;
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
-import com.example.demo.application.board.dto.response.DraftBoardTitleResponse;
-import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
+import com.example.demo.domain.board.service.entity.DraftBoardTitle;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.usecase.BoardService;
 import com.example.demo.global.aop.AssignUserId;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardController implements BoardApi {
-    private final BoardService boardUsecase;
+    private final BoardService boardService;
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
@@ -40,15 +41,18 @@ public class BoardController implements BoardApi {
 
         return ResponseEntity.ok(createSuccessResponse(
             BoardInfoResponse.of(
-                boardUsecase.saveDraftBoard(
+                boardService.saveDraftBoard(
             userId,
-            boardCreateRequest.toBoardCore(),
+            boardCreateRequest.toBoardContent(),
             boardCreateRequest.toBoardCategoryNames()))));
     }
 
+    @AssignUserId
     @GetMapping("/v1/boards/{boardId}")
-    public ResponseEntity<ResponseBody<BoardInfoResponse>> search(@PathVariable Long boardId) {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.searchSingleBoard(boardId)));
+    public ResponseEntity<ResponseBody<BoardInfoResponse>> search(Long userId, @PathVariable Long boardId) {
+        BoardInfo boardInfo = boardService.searchSingleBoard(userId, boardId);
+        return ResponseEntity.ok(createSuccessResponse(
+            BoardInfoResponse.of(boardInfo)));
     }
 
 
@@ -57,42 +61,51 @@ public class BoardController implements BoardApi {
     @PatchMapping("/v1/boards")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> update(Long userId,
                                                         @RequestBody @Valid BoardUpdateRequest boardUpdateRequest)  {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.updateBoard(userId,boardUpdateRequest)));
+        return ResponseEntity.ok(createSuccessResponse(
+            BoardInfoResponse.of(
+            boardService.updateBoard(
+                userId,boardUpdateRequest.id(),
+                boardUpdateRequest.toBoardContent(),
+                boardUpdateRequest.toBoardCategoryNames(),
+                boardUpdateRequest.isPublished()))));
     }
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @DeleteMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<Void>> delete(Long userId,@PathVariable Long boardId) {
-        boardUsecase.deleteBoard(userId,boardId);
+        boardService.deleteBoard(userId,boardId);
         return ResponseEntity.ok(createSuccessResponse());
     }
 
 
     @GetMapping("/v1/boards")
-    public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findBoardPageList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> findBoardPageList(
         @RequestParam(defaultValue = "SEMINAR") BoardType boardType,
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findBoardList(boardType,pageable)));
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
+            boardService.findPublishedBoardList(boardType, GlobalPageableDto.create(pageable)))));
     }
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @GetMapping("/v1/boards/draft")
-    public ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitleResponse>>> findDraftBoardPageList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitle>>> findDraftBoardPageList(
         Long userId,
         @PageableDefault(page=0, size=10,sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findDraftBoardList(userId,pageable)));
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
+            boardService.findDraftBoardList(userId,GlobalPageableDto.create(pageable)))));
     }
 
     @AssignUserId
     @PreAuthorize("hasRole('ROLE_SEMINAR_WRITER') and isAuthenticated()")
     @GetMapping("/v1/boards/me")
-    public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> findMyBoardPageList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> findMyBoardPageList(
         Long userId,
         @RequestParam(defaultValue = "SEMINAR") BoardType boardType,
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(boardUsecase.findMyBoardPageList(userId,boardType,pageable)));
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
+            boardService.findMyBoardPageList(userId,boardType,GlobalPageableDto.create(pageable)))));
     }
 
 }

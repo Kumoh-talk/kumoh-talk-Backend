@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.infra.board.Repository.CategoryJpaRepository;
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class CategoryQueryService {
 	}
 
 	@Transactional(readOnly = true)
-	public GlobalPageResponse<BoardTitleInfoResponse> getBoardPageByCategoryName(String categoryName, Pageable pageable) {
+	public GlobalPageResponse<BoardTitleInfo> getBoardPageByCategoryName(String categoryName, Pageable pageable) {
 		return GlobalPageResponse.create(categoryJpaRepository.findBoardByPage(categoryName,pageable));
 	}
 }

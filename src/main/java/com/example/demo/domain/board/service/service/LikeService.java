@@ -2,7 +2,7 @@ package com.example.demo.domain.board.service.service;
 
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.Repository.LikeRepository;
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.user.domain.User;
@@ -38,7 +38,7 @@ public class LikeService {
 
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfoResponse> getLikes(Long userId, Pageable pageable) {
+    public GlobalPageResponse<BoardTitleInfo> getLikes(Long userId, Pageable pageable) {
         return GlobalPageResponse.create(likeRepository.findBoardsByUserId(userId, pageable));
     }
 

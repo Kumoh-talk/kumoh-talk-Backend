@@ -3,7 +3,7 @@ package com.example.demo.domain.board.service.usecase;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.domain.board.service.service.LikeService;
 
@@ -24,7 +24,7 @@ public class LikeUseCase {
 	 * @param pageable
 	 * @return BoardPageResponse
 	 */
-	public GlobalPageResponse<BoardTitleInfoResponse> getLikes(Long userId, Pageable pageable) {
+	public GlobalPageResponse<BoardTitleInfo> getLikes(Long userId, Pageable pageable) {
 		return likeService.getLikes(userId, pageable);
 	}
 
