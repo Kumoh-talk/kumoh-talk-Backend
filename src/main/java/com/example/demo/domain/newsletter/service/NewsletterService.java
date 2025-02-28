@@ -1,12 +1,8 @@
 package com.example.demo.domain.newsletter.service;
 
-import com.example.demo.domain.newsletter.domain.Newsletter;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
-import com.example.demo.domain.newsletter.repository.NewsletterRepository;
-import com.example.demo.domain.user.service.UserService;
+import com.example.demo.domain.newsletter.entity.NewsletterSubscription;
+import com.example.demo.domain.newsletter.implement.NewsletterHandler;
 import com.example.demo.global.base.exception.ServiceException;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,20 +14,12 @@ import static com.example.demo.global.base.exception.ErrorCode.SUBSCRIBE_NOT_FOU
 @Transactional(readOnly = true)
 @Service
 public class NewsletterService {
-
-    private final UserService userService;
-    private final NewsletterRepository newsletterRepository;
+    private final NewsletterHandler newsletterHandler;
 
     @Transactional
-    public void subscribe(NewsletterSubscribeRequest request) {
-        this.validateSubscribe(request.email());
-        newsletterRepository.save(Newsletter.from(request));
-    }
-    
-    public void validateSubscribe(String email) {
-        if (newsletterRepository.existsByEmail(email)) {
-            throw new ServiceException(SUBSCRIBE_EMAIL_CONFLICT);
-        }
+    public void subscribe(NewsletterSubscription newsletterSubscription) {
+        validateNewsletterSubscriptionNotExists(newsletterSubscription.getEmail());
+        newsletterHandler.saveNewsletterSubscription(newsletterSubscription);
     }
 
 //    public NewsletterInfo getNewsletterInfo(Long userId) {
@@ -50,18 +38,25 @@ public class NewsletterService {
 //        newsletter.updateNewsletter(request);
 //    }
 
-    @Transactional
-    public void updateNewsletterNotify(String email, NewsletterUpdateNotifyRequest request) {
-        Newsletter newsletter = newsletterRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
-        this.validateSubscribe(request.email());
-        newsletter.updateNewsletter(request);
+    public void updateNewsletterNotify(NewsletterSubscription newsletterSubscription) {
+        validateNewsletterSubscriptionExists(newsletterSubscription.getEmail());
+        newsletterHandler.updateNewsletterSubscription(newsletterSubscription);
     }
 
-    @Transactional
     public void deleteNewsletterInfo(String email) {
-        Newsletter newsletter = newsletterRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException(SUBSCRIBE_NOT_FOUND));
-        newsletterRepository.delete(newsletter);
+        validateNewsletterSubscriptionExists(email);
+        newsletterHandler.deleteNewsletterSubscription(email);
+    }
+
+    private void validateNewsletterSubscriptionNotExists(String email) {
+        if (newsletterHandler.existsNewsletterSubscription(email)) {
+            throw new ServiceException(SUBSCRIBE_EMAIL_CONFLICT);
+        }
+    }
+
+    private void validateNewsletterSubscriptionExists(String email) {
+        if (!newsletterHandler.existsNewsletterSubscription(email)) {
+            throw new ServiceException(SUBSCRIBE_NOT_FOUND);
+        }
     }
 }

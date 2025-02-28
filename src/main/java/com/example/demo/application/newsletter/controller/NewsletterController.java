@@ -1,8 +1,8 @@
-package com.example.demo.domain.newsletter.controller;
+package com.example.demo.application.newsletter.controller;
 
-import com.example.demo.domain.newsletter.api.NewsletterApi;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
+import com.example.demo.application.newsletter.api.NewsletterApi;
+import com.example.demo.application.newsletter.dto.request.NewsletterSubscribeRequest;
+import com.example.demo.application.newsletter.dto.request.NewsletterUpdateNotifyRequest;
 import com.example.demo.domain.newsletter.service.NewsletterService;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ public class NewsletterController implements NewsletterApi {
 
     @PostMapping("/subscribe")
     public ResponseEntity<ResponseBody<Void>> subscribe(@RequestBody @Valid NewsletterSubscribeRequest request) {
-        newsletterService.subscribe(request);
+        newsletterService.subscribe(request.toNewsletterSubscription());
         return ResponseEntity.ok(createSuccessResponse());
     }
 
@@ -41,9 +41,8 @@ public class NewsletterController implements NewsletterApi {
 //    }
 
     @PatchMapping("/subscribe")
-    public ResponseEntity<ResponseBody<Void>> updateNewsletterNotify(@RequestParam @Pattern(regexp = EMAIL_REGEXP, message = "이메일 정규식을 맞춰주세요.") String email,
-                                                                     @RequestBody @Valid NewsletterUpdateNotifyRequest request) {
-        newsletterService.updateNewsletterNotify(email, request);
+    public ResponseEntity<ResponseBody<Void>> updateNewsletterNotify(@RequestBody @Valid NewsletterUpdateNotifyRequest request) {
+        newsletterService.updateNewsletterNotify(request.toNewsletterSubscription());
         return ResponseEntity.ok(createSuccessResponse());
     }
 

@@ -12,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class NewsletterEventListener {
-
     private final NewsletterRepository newsletterRepository;
     private final EmailService emailService;
 

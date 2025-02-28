@@ -1,10 +1,8 @@
-package com.example.demo.domain.newsletter.api;
+package com.example.demo.application.newsletter.api;
 
-import com.example.demo.domain.newsletter.domain.dto.request.EmailNoticeRequest;
-import com.example.demo.domain.newsletter.domain.dto.response.SeminarNoticeBasicForm;
+import com.example.demo.application.newsletter.dto.request.EmailNoticeRequest;
+import com.example.demo.application.newsletter.dto.response.SeminarNoticeBasicForm;
 import com.example.demo.global.base.dto.ResponseBody;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
 import com.example.demo.global.config.swagger.ApiSuccessResponseExplanation;
 import io.swagger.v3.oas.annotations.Operation;

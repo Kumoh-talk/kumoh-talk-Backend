@@ -1,5 +1,6 @@
-package com.example.demo.domain.newsletter.domain.dto.request;
+package com.example.demo.application.newsletter.dto.request;
 
+import com.example.demo.domain.newsletter.entity.NewsletterSubscription;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -12,4 +13,13 @@ public record NewsletterUpdateNotifyRequest(
         @NotNull(message = "프로젝트 새 글 업데이트 알림 여/부를 선택해주세요.") Boolean projectNotice,
         @NotNull(message = "멘토링 새 글 업데이트 알림 여/부를 선택해주세요.") Boolean mentoringNotice
 ) {
+    public NewsletterSubscription toNewsletterSubscription() {
+        return new NewsletterSubscription(
+                this.email,
+                this.seminarContentNotice,
+                this.studyNotice,
+                this.projectNotice,
+                this.mentoringNotice
+        );
+    }
 }

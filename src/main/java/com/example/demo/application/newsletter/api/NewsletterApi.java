@@ -1,7 +1,7 @@
-package com.example.demo.domain.newsletter.api;
+package com.example.demo.application.newsletter.api;
 
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterSubscribeRequest;
-import com.example.demo.domain.newsletter.domain.dto.request.NewsletterUpdateNotifyRequest;
+import com.example.demo.application.newsletter.dto.request.NewsletterSubscribeRequest;
+import com.example.demo.application.newsletter.dto.request.NewsletterUpdateNotifyRequest;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
@@ -49,8 +49,7 @@ public interface NewsletterApi {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.SUBSCRIBE_EMAIL_CONFLICT),
             }
     )
-    ResponseEntity<ResponseBody<Void>> updateNewsletterNotify(@RequestParam @Pattern(regexp = EMAIL_REGEXP, message = "이메일 정규식을 맞춰주세요.") String email,
-                                                              @RequestBody @Valid NewsletterUpdateNotifyRequest request);
+    ResponseEntity<ResponseBody<Void>> updateNewsletterNotify(@RequestBody @Valid NewsletterUpdateNotifyRequest request);
 
     @Operation(
             summary = "모든 사용자에 대해 뉴스레터를 삭제하는 api",
