@@ -10,7 +10,6 @@ import com.example.demo.domain.board.service.implement.BoardValidator;
 import com.example.demo.domain.board.service.implement.FileWriter;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.implement.UserReader;
-import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.utils.S3PresignedUrlUtil;
@@ -22,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardFileService {
 	private final BoardReader boardReader;
-	private final UserService userService;
 	private final S3UrlUtil s3UrlUtil;
 	private final S3PresignedUrlUtil s3PresignedUrlUtil;
 	private final FileWriter fileWriter;
