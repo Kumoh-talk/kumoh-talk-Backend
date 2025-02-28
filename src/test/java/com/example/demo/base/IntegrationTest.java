@@ -14,12 +14,15 @@ import com.example.demo.base.config.RedisContainerConfig;
 import com.example.demo.builder.BuilderSupporter;
 import com.example.demo.builder.TestFixtureBuilder;
 import com.example.demo.domain.board.service.usecase.BoardService;
+import com.example.demo.infra.builder.JpaBuilderSupporter;
+import com.example.demo.infra.builder.JpaTestFixtureBuilder;
 
 @SpringJUnitConfig // Spring 테스트 컨텍스트 활성화
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-@Import(value = {TestFixtureBuilder.class, BuilderSupporter.class, RedisContainerConfig.class})
+@Import(value = {TestFixtureBuilder.class, BuilderSupporter.class, RedisContainerConfig.class, JpaTestFixtureBuilder.class,
+	JpaBuilderSupporter.class})
 @RecordApplicationEvents // 애플리케이션 이벤트 기록 활성화
 public abstract class IntegrationTest {
 
@@ -35,5 +38,8 @@ public abstract class IntegrationTest {
 
 	@Autowired
 	protected BoardService boardService;
+
+	@Autowired
+	protected JpaTestFixtureBuilder jpaTestFixtureBuilder;
 
 }

@@ -3,13 +3,13 @@ package com.example.demo.application.board.dto.request;
 
 import static com.example.demo.global.regex.S3UrlRegex.*;
 
-import com.example.demo.application.board.dto.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
-import com.example.demo.domain.board.service.entity.BoardCore;
+import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.global.aop.valid.ValidEnum;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public record BoardCreateRequest (
         description = "게시물 카테고리 이름 리스트",
         example = "[\"카테고리1\", \"카테고리2\"]"
     )
-    @Nullable
+    @NotNull
     @Size(max = 5,message = "카테고리는 최대 5개까지 가능합니다.")
     List<String> categoryName,
 
@@ -44,12 +44,13 @@ public record BoardCreateRequest (
     @Pattern(regexp = S3_BOARD_FILE_URL)
     String boardHeadImageUrl
 ){
-    public BoardCore toBoardCore(){
-        return new BoardCore(
+    public BoardContent toBoardContent(){
+        return new BoardContent(
             this.title,
             this.contents,
             this.boardType,
-            this.boardHeadImageUrl
+            this.boardHeadImageUrl,
+            Status.DRAFT
         );
     }
 

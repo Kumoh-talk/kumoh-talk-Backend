@@ -1,6 +1,6 @@
 package com.example.demo.domain.user.domain.dto.request;
 
-import com.example.demo.application.board.dto.vo.FileType;
+import com.example.demo.domain.board.service.entity.vo.FileType;
 import com.example.demo.global.aop.valid.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

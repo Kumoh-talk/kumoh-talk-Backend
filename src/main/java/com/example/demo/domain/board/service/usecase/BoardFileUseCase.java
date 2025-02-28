@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.application.board.dto.request.FileRequest;
 import com.example.demo.application.board.dto.request.PresignedUrlRequest;
 import com.example.demo.infra.board.entity.Board;
-import com.example.demo.domain.board.service.service.BoardQueryService;
+import com.example.demo.domain.board.service.implement.BoardReader;
 import com.example.demo.domain.board.service.service.FileUploadService;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BoardFileUseCase {
-	private final BoardQueryService boardQueryService;
+	private final BoardReader boardReader;
 	private final UserService userService;
 	private final S3UrlUtil s3UrlUtil;
 	private final S3PresignedUrlUtil s3PresignedUrlUtil;
@@ -28,7 +28,7 @@ public class BoardFileUseCase {
 
 	@Transactional(readOnly = true)
 	public String getPresignedUrl(Long userId, PresignedUrlRequest presignedUrlRequest) {
-		Board board = boardQueryService.validateBoard(presignedUrlRequest.getBoardId());
+		Board board = boardReader.validateBoard(presignedUrlRequest.getBoardId());
 		User user = userService.validateUser(userId);
 		if(!board.getUser().getId().equals(user.getId())) {
 			throw new ServiceException(ErrorCode.NOT_ACCESS_USER);
@@ -46,7 +46,7 @@ public class BoardFileUseCase {
 
 	@Transactional(readOnly = true)
 	public String getAttachFileUrl(Long boardId) {
-		Board board = boardQueryService.validateBoard(boardId);
+		Board board = boardReader.validateBoard(boardId);
 		return board.getAttachFileUrl();
 	}
 
@@ -64,7 +64,7 @@ public class BoardFileUseCase {
 
 	private Board validateUserAndBoardAndFileUrl(Long userId, FileRequest fileRequest) {
 		s3UrlUtil.validateBoardS3Url(fileRequest.getUrl());
-		Board board = boardQueryService.validateBoard(fileRequest.getBoardId());
+		Board board = boardReader.validateBoard(fileRequest.getBoardId());
 		User user = userService.validateUser(userId);
 		if(!board.getUser().getId().equals(user.getId())) {
 			throw new ServiceException(ErrorCode.NOT_ACCESS_USER);

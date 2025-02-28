@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_board.service;
 
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.MentoringNoticeEmailDeliveryStrategy;
 import com.example.demo.domain.newsletter.strategy.ProjectNoticeEmailDeliveryStrategy;

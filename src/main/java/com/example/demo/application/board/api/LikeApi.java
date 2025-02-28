@@ -8,7 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.example.demo.application.board.dto.response.BoardTitleInfoResponse;
+import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -58,7 +58,7 @@ public interface LikeApi {
 			responseClass = GlobalPageResponse.class,
 			description = "좋아요 목록 조회 성공")
 	)
-	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfoResponse>>> getLikes(
+	ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> getLikes(
 		@Parameter(hidden = true) Long userId,
 		@ParameterObject
 		@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);

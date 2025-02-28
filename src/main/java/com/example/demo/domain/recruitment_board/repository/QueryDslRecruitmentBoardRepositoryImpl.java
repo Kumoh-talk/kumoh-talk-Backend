@@ -1,6 +1,6 @@
 package com.example.demo.domain.recruitment_board.repository;
 
-import com.example.demo.application.board.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.recruitment_board.domain.dto.response.RecruitmentBoardNoOffsetResponse;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
