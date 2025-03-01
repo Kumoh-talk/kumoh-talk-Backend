@@ -1,4 +1,4 @@
-package com.example.demo.domain.comment.controller.swagger;
+package com.example.demo.application.comment.api;
 
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;

@@ -1,5 +1,6 @@
-package com.example.demo.domain.comment.domain.dto.response;
+package com.example.demo.application.comment.dto.response;
 
+import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,13 @@ public class MyCommentResponse {
             Long boardId, String title, LocalDateTime boardCreatedAt, LocalDateTime boardUpdatedAt) {
         this.comment = new MyCommentInfoResponse(commentId, content, commentCreatedAt, commentUpdatedAt);
         this.board = new CommentBoardInfoResponse(boardId, title, boardCreatedAt, boardUpdatedAt);
+    }
+
+    public static MyCommentResponse from(MyCommentInfo myCommentInfo) {
+        return new MyCommentResponse(
+                myCommentInfo.getCommentId(), myCommentInfo.getCommentContent(), myCommentInfo.getCommentCreatedAt(), myCommentInfo.getCommentUpdatedAt(),
+                myCommentInfo.getBoardId(), myCommentInfo.getBoardTitle(), myCommentInfo.getBoardCreatedAt(), myCommentInfo.getBoardUpdatedAt()
+        );
     }
 
     @Getter

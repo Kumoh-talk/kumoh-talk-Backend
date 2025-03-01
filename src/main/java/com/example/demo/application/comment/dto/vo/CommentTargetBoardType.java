@@ -1,4 +1,4 @@
-package com.example.demo.domain.comment.domain.vo;
+package com.example.demo.application.comment.dto.vo;
 
 public enum CommentTargetBoardType {
     BASIC,

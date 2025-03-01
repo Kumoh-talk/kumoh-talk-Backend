@@ -1,6 +1,6 @@
-package com.example.demo.domain.comment.domain.dto.response;
+package com.example.demo.application.comment.dto.response;
 
-import com.example.demo.domain.comment.domain.entity.Comment;
+import com.example.demo.domain.comment.entity.CommentInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,9 +19,9 @@ public class CommentResponse {
     @Schema(description = "댓글 정보 리스트")
     private List<CommentInfoResponse> commentInfoResponseList;
 
-    public static CommentResponse fromComment(List<Comment> commentEntityList) {
+    public static CommentResponse from(List<CommentInfo> commentEntityList) {
         List<CommentInfoResponse> commentInfoResponseList = commentEntityList.stream()
-                .map(CommentInfoResponse::fromComment)
+                .map(CommentInfoResponse::from)
                 .collect(Collectors.toList());
 
         int replyCommentsCount = 0;

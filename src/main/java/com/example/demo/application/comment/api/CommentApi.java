@@ -1,9 +1,9 @@
-package com.example.demo.domain.comment.controller.swagger;
+package com.example.demo.application.comment.api;
 
-import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
-import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
-import com.example.demo.domain.comment.domain.dto.response.CommentResponse;
-import com.example.demo.domain.comment.domain.dto.response.MyCommentResponse;
+import com.example.demo.application.comment.dto.request.CommentRequest;
+import com.example.demo.application.comment.dto.response.CommentInfoResponse;
+import com.example.demo.application.comment.dto.response.CommentResponse;
+import com.example.demo.application.comment.dto.response.MyCommentResponse;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import jakarta.validation.Valid;
@@ -24,12 +24,12 @@ public interface CommentApi<T> {
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam T boardType);
 
-    ResponseEntity<ResponseBody<CommentInfoResponse>> createComment(
+    ResponseEntity<ResponseBody<CommentInfoResponse>> postComment(
             Long userId,
             @PathVariable Long boardId,
             @RequestBody @Valid CommentRequest commentRequest);
 
-    ResponseEntity<ResponseBody<CommentInfoResponse>> updateComment(
+    ResponseEntity<ResponseBody<CommentInfoResponse>> patchComment(
             Long userId,
             @PathVariable Long commentId,
             @RequestBody @Valid CommentRequest commentRequest);

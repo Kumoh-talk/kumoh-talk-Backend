@@ -1,9 +1,9 @@
-package com.example.demo.domain.comment.controller;
+package com.example.demo.application.comment.controller;
 
-import com.example.demo.domain.comment.controller.swagger.AdminCommentApi;
-import com.example.demo.domain.comment.service.AbstractCommentService;
+import com.example.demo.application.comment.api.AdminCommentApi;
+import com.example.demo.domain.comment.service.BoardCommentService;
+import com.example.demo.domain.comment.service.RecruitmentBoardCommentService;
 import com.example.demo.global.base.dto.ResponseBody;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,12 +16,12 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminCommentController implements AdminCommentApi {
-    private final AbstractCommentService boardCommentService;
-    private final AbstractCommentService recruitmentBoardCommentService;
+    private final BoardCommentService boardCommentService;
+    private final RecruitmentBoardCommentService recruitmentBoardCommentService;
 
     public AdminCommentController(
-            @Qualifier("boardCommentService") AbstractCommentService boardCommentService,
-            @Qualifier("recruitmentBoardCommentService") AbstractCommentService recruitmentBoardCommentService) {
+            BoardCommentService boardCommentService,
+            RecruitmentBoardCommentService recruitmentBoardCommentService) {
         this.boardCommentService = boardCommentService;
         this.recruitmentBoardCommentService = recruitmentBoardCommentService;
     }

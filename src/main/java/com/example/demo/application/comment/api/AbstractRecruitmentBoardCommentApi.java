@@ -1,9 +1,9 @@
-package com.example.demo.domain.comment.controller.swagger;
+package com.example.demo.application.comment.api;
 
-import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
-import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
-import com.example.demo.domain.comment.domain.dto.response.CommentResponse;
-import com.example.demo.domain.comment.domain.dto.response.MyCommentResponse;
+import com.example.demo.application.comment.dto.request.CommentRequest;
+import com.example.demo.application.comment.dto.response.CommentInfoResponse;
+import com.example.demo.application.comment.dto.response.CommentResponse;
+import com.example.demo.application.comment.dto.response.MyCommentResponse;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -84,7 +84,7 @@ public abstract class AbstractRecruitmentBoardCommentApi implements CommentApi<R
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
             }
     )
-    public abstract ResponseEntity<ResponseBody<CommentInfoResponse>> createComment(
+    public abstract ResponseEntity<ResponseBody<CommentInfoResponse>> postComment(
             @Parameter(hidden = true) Long userId,
             @PathVariable Long boardId,
             @RequestBody @Valid CommentRequest commentRequest);
@@ -105,7 +105,7 @@ public abstract class AbstractRecruitmentBoardCommentApi implements CommentApi<R
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
             }
     )
-    public abstract ResponseEntity<ResponseBody<CommentInfoResponse>> updateComment(
+    public abstract ResponseEntity<ResponseBody<CommentInfoResponse>> patchComment(
             @Parameter(hidden = true) Long userId,
             @PathVariable Long commentId,
             @RequestBody @Valid CommentRequest commentRequest);
