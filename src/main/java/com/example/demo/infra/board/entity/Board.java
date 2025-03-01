@@ -2,18 +2,17 @@ package com.example.demo.infra.board.entity;
 
 
 import com.example.demo.application.board.dto.request.BoardCreateRequest;
-import com.example.demo.domain.board.service.entity.vo.BoardType;
-import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.comment.domain.entity.BoardComment;
-import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
+import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.board.category.entity.BoardCategory;
-
+import com.example.demo.infra.comment.entity.BoardComment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,7 +31,7 @@ import java.util.List;
 @Getter
 @SQLDelete(sql = "UPDATE boards SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-public class Board extends BaseEntity implements GenericBoard {
+public class Board extends BaseEntity implements CommentBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,7 +66,7 @@ public class Board extends BaseEntity implements GenericBoard {
     @Column(nullable = false)
     private Long viewCount;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -85,7 +84,7 @@ public class Board extends BaseEntity implements GenericBoard {
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
     @Builder
-    private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
+    private Board(String title, String content, User user, BoardType boardType, Status status, String headImageUrl) {
         this.title = title;
         this.content = content;
         this.user = user;
@@ -96,17 +95,18 @@ public class Board extends BaseEntity implements GenericBoard {
         this.viewCount = 0L;
     }
 
-    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest){
+    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest) {
         Board board = new Board(boardCreateRequest.title(),
-            boardCreateRequest.contents(),
-            user,
-            boardCreateRequest.boardType(),
-            Status.DRAFT,
-            boardCreateRequest.boardHeadImageUrl());
+                boardCreateRequest.contents(),
+                user,
+                boardCreateRequest.boardType(),
+                Status.DRAFT,
+                boardCreateRequest.boardHeadImageUrl());
         user.getBoards().add(board);
         return board;
     }
-    public void changeBoardInfo(BoardContent boardContent){
+
+    public void changeBoardInfo(BoardContent boardContent) {
         this.title = boardContent.getTitle();
         this.content = boardContent.getContents();
         this.status = boardContent.getBoardStatus();
@@ -114,38 +114,39 @@ public class Board extends BaseEntity implements GenericBoard {
 
     }
 
-    public void publishBoard(){
+    public void publishBoard() {
         this.status = Status.PUBLISHED;
     }
 
-    public void changeAttachFileUrl(String attachFileUrl){
+    public void changeAttachFileUrl(String attachFileUrl) {
         this.attachFileUrl = attachFileUrl;
     }
 
     public void changeHeadImageUrl(String boardHeadImageUrl) {
         this.headImageUrl = boardHeadImageUrl;
     }
-    public static BoardInfo toBoardInfo(Board board,Long likeCount) {
-        BoardContent boardContent = new BoardContent(board.getTitle(), board.getContent(), board.getBoardType(), board.getHeadImageUrl(),board.status);
+
+    public static BoardInfo toBoardInfo(Board board, Long likeCount) {
+        BoardContent boardContent = new BoardContent(board.getTitle(), board.getContent(), board.getBoardType(), board.getHeadImageUrl(), board.status);
         UserTarget userTarget = UserTarget.builder()
-            .userId(board.getUser().getId())
-            .nickName(board.getUser().getNickname())
-            .userRole(board.getUser().getRole())
-            .build();
+                .userId(board.getUser().getId())
+                .nickName(board.getUser().getNickname())
+                .userRole(board.getUser().getRole())
+                .build();
         List<String> categoryNames = new ArrayList<>();
         for (BoardCategory boardCategory : board.getBoardCategories()) {
             categoryNames.add(boardCategory.getCategory().getName());
         }
         BoardCategoryNames boardCategoryNames = new BoardCategoryNames(categoryNames);
         return BoardInfo.builder()
-            .boardId(board.getId())
-            .boardContent(boardContent)
-            .viewCount(board.getViewCount())
-            .likeCount(likeCount)
-            .createdAt(board.getCreatedAt())
-            .updatedAt(board.getUpdatedAt())
-            .userTarget(userTarget)
-            .boardCategoryNames(boardCategoryNames)
-            .build();
+                .boardId(board.getId())
+                .boardContent(boardContent)
+                .viewCount(board.getViewCount())
+                .likeCount(likeCount)
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
+                .userTarget(userTarget)
+                .boardCategoryNames(boardCategoryNames)
+                .build();
     }
 }
