@@ -1,6 +1,8 @@
-package com.example.demo.domain.comment.domain.entity;
+package com.example.demo.infra.comment.entity;
 
-import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
+import com.example.demo.domain.comment.entity.CommentInfo;
+import com.example.demo.domain.comment.entity.MyCommentInfo;
+import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.user.domain.User;
 
@@ -14,7 +16,7 @@ public interface Comment {
 
     User getUser();
 
-    GenericBoard getBoard();
+    CommentBoard getBoard();
 
     Comment getParentComment();
 
@@ -29,4 +31,8 @@ public interface Comment {
     void changeContent(String newContent);
 
     Report toReport(User user);
+
+    CommentInfo toCommentInfoDomain();
+
+    MyCommentInfo toMyCommentInfoDomain();
 }

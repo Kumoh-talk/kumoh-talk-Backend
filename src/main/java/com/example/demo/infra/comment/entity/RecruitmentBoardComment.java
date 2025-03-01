@@ -1,6 +1,9 @@
-package com.example.demo.domain.comment.domain.entity;
+package com.example.demo.infra.comment.entity;
 
-import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
+import com.example.demo.domain.comment.entity.CommentInfo;
+import com.example.demo.domain.comment.entity.CommentUserInfo;
+import com.example.demo.domain.comment.entity.MyCommentInfo;
+import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.user.domain.User;
@@ -21,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLDelete(sql = "UPDATE recruitment_board_comments SET deleted_at = NOW() where id = ?")
-@EntityListeners(CommentEntityListener.class)
+//@EntityListeners(CommentEntityListener.class)
 public class RecruitmentBoardComment extends BaseEntity implements Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,17 +59,12 @@ public class RecruitmentBoardComment extends BaseEntity implements Comment {
         this.parentComment = parentComment;
     }
 
-    public static RecruitmentBoardComment fromRecruitmentBoardCommentRequest(
-            User user,
-            RecruitmentBoard recruitmentBoard,
-            CommentRequest commentRequest,
-            RecruitmentBoardComment parentComment) {
-
+    public static RecruitmentBoardComment of(CommentInfo commentInfo, User commentUser, CommentBoard commentBoard, Comment parentComment) {
         return RecruitmentBoardComment.builder()
-                .content(commentRequest.getContent())
-                .recruitmentBoard(recruitmentBoard)
-                .user(user)
-                .parentComment(parentComment)
+                .content(commentInfo.getContent())
+                .user(commentUser)
+                .recruitmentBoard((RecruitmentBoard) commentBoard)
+                .parentComment((RecruitmentBoardComment) parentComment)
                 .build();
     }
 
@@ -83,5 +81,36 @@ public class RecruitmentBoardComment extends BaseEntity implements Comment {
     @Override
     public Report toReport(User user) {
         return Report.fromRecruitmentBoardComment(user, this);
+    }
+
+    @Override
+    public CommentInfo toCommentInfoDomain() {
+        return CommentInfo.builder()
+                .commentId(id)
+                .groupId(parentComment == null ? null : parentComment.getId())
+                .commentUserInfo(CommentUserInfo.from(user))
+                .content(content)
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .deletedAt(getDeletedAt())
+                .replyComments(replyComments.stream()
+                        .map(RecruitmentBoardComment::toCommentInfoDomain)
+                        .toList())
+                .boardId(board.getId())
+                .build();
+    }
+
+    @Override
+    public MyCommentInfo toMyCommentInfoDomain() {
+        return MyCommentInfo.builder()
+                .commentId(id)
+                .commentContent(content)
+                .commentCreatedAt(getCreatedAt())
+                .commentUpdatedAt(getUpdatedAt())
+                .boardId(board.getId())
+                .boardTitle(board.getTitle())
+                .boardCreatedAt(board.getCreatedAt())
+                .boardUpdatedAt(board.getUpdatedAt())
+                .build();
     }
 }

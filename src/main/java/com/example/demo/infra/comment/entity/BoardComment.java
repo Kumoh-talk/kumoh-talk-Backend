@@ -1,10 +1,13 @@
-package com.example.demo.domain.comment.domain.entity;
+package com.example.demo.infra.comment.entity;
 
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.domain.comment.domain.dto.request.CommentRequest;
+import com.example.demo.domain.comment.entity.CommentInfo;
+import com.example.demo.domain.comment.entity.CommentUserInfo;
+import com.example.demo.domain.comment.entity.MyCommentInfo;
+import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.board.entity.Board;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -21,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLDelete(sql = "UPDATE board_comments SET deleted_at = NOW() where id = ?")
-@EntityListeners(CommentEntityListener.class)
+//@EntityListeners(CommentEntityListener.class)
 public class BoardComment extends BaseEntity implements Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,21 +59,15 @@ public class BoardComment extends BaseEntity implements Comment {
         this.parentComment = parentComment;
     }
 
-    public static BoardComment fromBoardCommentRequest(
-            User user,
-            Board board,
-            CommentRequest commentRequest,
-            BoardComment parentComment) {
-
+    public static BoardComment of(CommentInfo commentInfo, User commentUser, CommentBoard commentBoard, Comment parentComment) {
         return BoardComment.builder()
-                .content(commentRequest.getContent())
-                .board(board)
-                .user(user)
-                .parentComment(parentComment)
+                .content(commentInfo.getContent())
+                .user(commentUser)
+                .board((Board) commentBoard)
+                .parentComment((BoardComment) parentComment)
                 .build();
     }
 
-    @Override
     public List<Comment> getReplyComments() {
         return new ArrayList<>(replyComments);
     }
@@ -83,5 +80,36 @@ public class BoardComment extends BaseEntity implements Comment {
     @Override
     public Report toReport(User user) {
         return Report.fromBoardComment(user, this);
+    }
+
+    @Override
+    public CommentInfo toCommentInfoDomain() {
+        return CommentInfo.builder()
+                .commentId(id)
+                .groupId(parentComment == null ? null : parentComment.getId())
+                .commentUserInfo(CommentUserInfo.from(user))
+                .content(content)
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .deletedAt(getDeletedAt())
+                .replyComments(replyComments.stream()
+                        .map(BoardComment::toCommentInfoDomain)
+                        .toList())
+                .boardId(board.getId())
+                .build();
+    }
+
+    @Override
+    public MyCommentInfo toMyCommentInfoDomain() {
+        return MyCommentInfo.builder()
+                .commentId(id)
+                .commentContent(content)
+                .commentCreatedAt(getCreatedAt())
+                .commentUpdatedAt(getUpdatedAt())
+                .boardId(board.getId())
+                .boardTitle(board.getTitle())
+                .boardCreatedAt(board.getCreatedAt())
+                .boardUpdatedAt(board.getUpdatedAt())
+                .build();
     }
 }
