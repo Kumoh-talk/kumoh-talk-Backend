@@ -60,8 +60,7 @@ public class Board extends BaseEntity implements GenericBoard {
     @NotNull(message = "게시판 상태는 빈 값일 수 없습니다.")
     private Status status;
 
-    @Column(nullable = false, length = 500)
-    @NotBlank(message = "게시물 헤드 이미지는 빈 값일 수 없습니다.")
+    @Column(nullable = true, length = 500)
     private String headImageUrl;
 
     @Column(nullable = false)

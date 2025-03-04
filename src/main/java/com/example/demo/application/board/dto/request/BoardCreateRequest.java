@@ -40,7 +40,6 @@ public record BoardCreateRequest (
     BoardType boardType,
 
     @Schema(description = "게시물 대표 이미지 URL", example = "https://kumoh-talk-bucket.s3.ap-northeast-2.amazonaws.com/board/15/image/54599f59-1d5b-4167-b9f7-96f84d3c452d/example.jpg")
-    @NotBlank(message = "게시물 대표 이미지는 필수 항목입니다.")
     @Pattern(regexp = S3_BOARD_FILE_URL)
     String boardHeadImageUrl
 ){
