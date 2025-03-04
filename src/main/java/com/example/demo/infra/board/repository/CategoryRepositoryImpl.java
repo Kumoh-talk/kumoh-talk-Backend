@@ -8,11 +8,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.repository.CategoryRepository;
 import com.example.demo.domain.user.domain.QUser;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.infra.board.category.entity.QBoardCategory;
 import com.example.demo.infra.board.category.entity.QCategory;
 import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
@@ -39,11 +39,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 	}
 
 	@Override
-	public GlobalPageableDto<BoardTitleInfo> findBoardPaegByCategoryName(String categoryName,
-		GlobalPageableDto pageableDto) {
-		Page<BoardTitleInfo> boardByPage = findBoardPageByCategoryName(categoryName, pageableDto.getPageable());
-		pageableDto.setPage(boardByPage);
-		return pageableDto;
+	public Page<BoardTitleInfo> findBoardPaegByCategoryName(String categoryName,
+		Pageable pageable) {
+		return findBoardPageByCategoryName(categoryName, pageable);
 	}
 
 	public Page<BoardTitleInfo> findBoardPageByCategoryName(String categoryName, Pageable pageable) {

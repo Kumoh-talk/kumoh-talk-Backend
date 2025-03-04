@@ -1,6 +1,8 @@
 package com.example.demo.domain.board.service.repository;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 
 public interface LikeRepository {
@@ -10,5 +12,5 @@ public interface LikeRepository {
 
 	void deleteLike(Long userId, Long boardId);
 
-	GlobalPageableDto<BoardTitleInfo> findLikedBoardPageByUserId(Long userId, GlobalPageableDto pageableDto);
+	Page<BoardTitleInfo> findLikedBoardPageByUserId(Long userId, Pageable pageable);
 }

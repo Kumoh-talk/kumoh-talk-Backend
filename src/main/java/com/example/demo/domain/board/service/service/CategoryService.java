@@ -2,11 +2,12 @@ package com.example.demo.domain.board.service.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.implement.CategoryReader;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +20,7 @@ public class CategoryService {
 		return categoryReader.getCategories();
 	}
 
-	public GlobalPageableDto<BoardTitleInfo> getBoardsByCategoryName(String categoryName, GlobalPageableDto pageableDto) {
-		return categoryReader.getBoardPageByCategoryName(categoryName,pageableDto);
+	public GlobalPageResponse<BoardTitleInfo> getBoardsByCategoryName(String categoryName, Pageable pageable) {
+		return categoryReader.getBoardPageByCategoryName(categoryName,pageable);
 	}
 }

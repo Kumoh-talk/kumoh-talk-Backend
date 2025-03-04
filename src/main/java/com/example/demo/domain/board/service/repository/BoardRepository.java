@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
@@ -23,9 +22,9 @@ public interface BoardRepository {
 
 	void deleteBoard(Long boardId);
 
-	Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, GlobalPageableDto pageableDto);
+	Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, Pageable pageableDto);
 
-	Page findDraftBoardByPage(Long userId, GlobalPageableDto pageableDto);
+	Page findDraftBoardByPage(Long userId, Pageable pageableDto);
 
 	Boolean isExistBoard(Long boardId);
 

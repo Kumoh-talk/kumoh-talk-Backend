@@ -1,11 +1,12 @@
 package com.example.demo.domain.board.service.implement;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.repository.LikeRepository;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 
@@ -23,8 +24,8 @@ public class LikeHandler {
 
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> getLikes(Long userId, GlobalPageableDto pageableDto) {
-        return likeRepository.findLikedBoardPageByUserId(userId, pageableDto);
+    public GlobalPageResponse<BoardTitleInfo> getLikes(Long userId, Pageable pageable) {
+        return GlobalPageResponse.create(likeRepository.findLikedBoardPageByUserId(userId, pageable));
     }
 
 

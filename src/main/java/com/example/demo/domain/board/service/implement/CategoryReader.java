@@ -2,12 +2,13 @@ package com.example.demo.domain.board.service.implement;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.repository.CategoryRepository;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +25,7 @@ public class CategoryReader {
 	}
 
 	@Transactional(readOnly = true)
-	public GlobalPageableDto<BoardTitleInfo> getBoardPageByCategoryName(String categoryName, GlobalPageableDto pageableDto) {
-		return categoryRepository.findBoardPaegByCategoryName(categoryName, pageableDto);
+	public GlobalPageResponse<BoardTitleInfo> getBoardPageByCategoryName(String categoryName, Pageable pageable) {
+		return GlobalPageResponse.create(categoryRepository.findBoardPaegByCategoryName(categoryName, pageable));
 	}
 }

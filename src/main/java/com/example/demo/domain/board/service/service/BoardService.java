@@ -1,12 +1,13 @@
 package com.example.demo.domain.board.service.service;
 
+
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
@@ -23,6 +24,7 @@ import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.implement.UserReader;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 
@@ -108,16 +110,16 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardList(BoardType boardType , GlobalPageableDto pageableDto) {
-        return boardReader.findPublishedBoardPageList(boardType,pageableDto);
+    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardList(BoardType boardType , Pageable pageable) {
+        return boardReader.findPublishedBoardPageList(boardType,pageable);
     }
 
-    public GlobalPageableDto<DraftBoardTitle> findDraftBoardList(Long userId, GlobalPageableDto pageableDto) {
-        return boardReader.findDraftBoardPageList(userId,pageableDto);
+    public GlobalPageResponse<DraftBoardTitle> findDraftBoardList(Long userId, Pageable pageable) {
+        return boardReader.findDraftBoardPageList(userId,pageable);
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, GlobalPageableDto pageable) {
+    public GlobalPageResponse<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
         userReader.findUser(userId)
             .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
         return boardReader.findPublishedBoardListByUser(userId,boardType, pageable);

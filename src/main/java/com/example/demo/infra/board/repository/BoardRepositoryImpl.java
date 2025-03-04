@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
@@ -72,13 +71,13 @@ public class BoardRepositoryImpl implements BoardRepository {
 	}
 
 	@Override
-	public Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, GlobalPageableDto pageableDto) {
-		return boardJpaRepository.findBoardByPage(boardType,pageableDto.getPageable());
+	public Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, Pageable pageable) {
+		return boardJpaRepository.findBoardByPage(boardType,pageable);
 	}
 
 	@Override
-	public Page<DraftBoardTitle> findDraftBoardByPage(Long userId, GlobalPageableDto pageableDto) {
-		return boardJpaRepository.findDraftBoardByPage(userId, pageableDto.getPageable());
+	public Page<DraftBoardTitle> findDraftBoardByPage(Long userId, Pageable pageable) {
+		return boardJpaRepository.findDraftBoardByPage(userId, pageable);
 	}
 
 	@Override

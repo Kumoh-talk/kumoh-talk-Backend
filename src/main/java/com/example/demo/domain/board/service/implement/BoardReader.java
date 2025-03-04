@@ -2,15 +2,16 @@ package com.example.demo.domain.board.service.implement;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.repository.BoardRepository;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,22 +26,19 @@ public class BoardReader {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardPageList(BoardType boardType, GlobalPageableDto pageableDto) {
-        pageableDto.setPage(boardRepository.findBoardTitleInfoPage(boardType, pageableDto));
-        return pageableDto;
+    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardPageList(BoardType boardType, Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findBoardTitleInfoPage(boardType, pageable));
     }
 
-    public GlobalPageableDto<DraftBoardTitle> findDraftBoardPageList(Long userId, GlobalPageableDto pageableDto) {
-        pageableDto.setPage(boardRepository.findDraftBoardByPage(userId, pageableDto));
-        return pageableDto;
+    public GlobalPageResponse<DraftBoardTitle> findDraftBoardPageList(Long userId, Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findDraftBoardByPage(userId, pageable));
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardListByUser(Long userId,
+    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardListByUser(Long userId,
         BoardType boardType,
-        GlobalPageableDto pageableDto) {
-        pageableDto.setPage(boardRepository.findPublishedBoardListByUser(userId,boardType,pageableDto.getPageable()));
-        return pageableDto;
+        Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findPublishedBoardListByUser(userId,boardType,pageable));
     }
 
     public String readBoardAttachFileUrl(Long boardId) {
