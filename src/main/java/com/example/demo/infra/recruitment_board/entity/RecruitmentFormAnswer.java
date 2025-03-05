@@ -1,6 +1,6 @@
-package com.example.demo.domain.recruitment_board.domain.entity;
+package com.example.demo.infra.recruitment_board.entity;
 
-import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormAnswerRequest;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentFormAnswerInfo;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -37,17 +37,23 @@ public class RecruitmentFormAnswer extends BaseEntity {
         this.recruitmentFormQuestion = recruitmentFormQuestion;
     }
 
-    public static RecruitmentFormAnswer from(
-            RecruitmentFormAnswerRequest answerRequest,
-            RecruitmentFormQuestion recruitmentFormQuestion) {
+    public static RecruitmentFormAnswer from(RecruitmentFormAnswerInfo recruitmentFormAnswerInfo, RecruitmentFormQuestion recruitmentFormQuestion) {
         return RecruitmentFormAnswer.builder()
-                .number(answerRequest.getNumber())
-                .answer(answerRequest.getAnswer())
+                .number(recruitmentFormAnswerInfo.getNumber())
+                .answer(recruitmentFormAnswerInfo.getAnswer())
                 .recruitmentFormQuestion(recruitmentFormQuestion)
                 .build();
     }
 
-    public void updateFromRequest(RecruitmentFormAnswerRequest recruitmentFormAnswerRequest) {
+    public RecruitmentFormAnswerInfo toDomain() {
+        return RecruitmentFormAnswerInfo.builder()
+                .answerId(id)
+                .number(number)
+                .answer(answer)
+                .build();
+    }
+
+    public void update(RecruitmentFormAnswerInfo recruitmentFormAnswerRequest) {
         this.number = recruitmentFormAnswerRequest.getNumber();
         this.answer = recruitmentFormAnswerRequest.getAnswer();
     }

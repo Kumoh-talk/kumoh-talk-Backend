@@ -1,6 +1,6 @@
-package com.example.demo.domain.recruitment_board.repository;
+package com.example.demo.infra.recruitment_board.repository.jpa;
 
-import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
+import com.example.demo.infra.recruitment_board.entity.CommentBoard;
 
 import java.util.Optional;
 

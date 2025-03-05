@@ -1,4 +1,4 @@
-package com.example.demo.domain.recruitment_board.domain.entity;
+package com.example.demo.infra.recruitment_board.entity;
 
 import com.example.demo.domain.user.domain.User;
 
