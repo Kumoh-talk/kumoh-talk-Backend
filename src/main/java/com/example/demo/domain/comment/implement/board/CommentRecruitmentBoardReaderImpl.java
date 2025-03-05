@@ -1,6 +1,6 @@
 package com.example.demo.domain.comment.implement.board;
 
-import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -12,18 +12,17 @@ import org.springframework.stereotype.Component;
 public class CommentRecruitmentBoardReaderImpl implements GenericCommentBoardReader {
     private final RecruitmentBoardRepository recruitmentBoardRepository;
 
-    // TODO : RecruitmentBoard 리팩토링 후 다시 손 봐야함
     @Override
     public Long getById(Long id) {
-        CommentBoard recruitmentBoard = recruitmentBoardRepository.doFindById(id)
+        RecruitmentBoardInfo recruitmentBoard = recruitmentBoardRepository.getById(id)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        return recruitmentBoard.getId();
+        return recruitmentBoard.getBoardId();
     }
 
     @Override
     public Long getByIdWithUser(Long id) {
-        CommentBoard recruitmentBoard = recruitmentBoardRepository.findByIdWithUser(id)
+        RecruitmentBoardInfo recruitmentBoard = recruitmentBoardRepository.getByIdWithUser(id)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        return recruitmentBoard.getId();
+        return recruitmentBoard.getBoardId();
     }
 }

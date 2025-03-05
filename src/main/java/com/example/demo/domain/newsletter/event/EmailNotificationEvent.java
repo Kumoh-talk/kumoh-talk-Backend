@@ -1,7 +1,7 @@
 package com.example.demo.domain.newsletter.event;
 
 import com.example.demo.domain.newsletter.strategy.EmailDeliveryStrategy;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

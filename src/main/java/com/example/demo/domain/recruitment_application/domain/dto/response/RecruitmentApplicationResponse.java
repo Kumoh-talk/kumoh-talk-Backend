@@ -3,8 +3,8 @@ package com.example.demo.domain.recruitment_application.domain.dto.response;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantDescriptiveAnswer;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicantOptionalAnswer;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
+import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
+import com.example.demo.infra.recruitment_board.entity.RecruitmentFormQuestion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,7 +39,7 @@ public class RecruitmentApplicationResponse {
             boolean shouldContinue = false;
             for (RecruitmentApplicantDescriptiveAnswer descriptiveAnswer : saveApplicantDescriptiveAnswerList) {
                 if (descriptiveAnswer.getRecruitmentFormQuestion().getId().equals(recruitmentFormQuestion.getId())) {
-                    response.applicantAnswer.add(RecruitmentApplicantAnswerInfoResponse.from(descriptiveAnswer));
+                    response.applicantAnswer.add(RecruitmentApplicantAnswerInfoResponse.fromDescriptive(descriptiveAnswer));
                     shouldContinue = true;
                     break;
                 }
@@ -54,10 +54,10 @@ public class RecruitmentApplicationResponse {
             for (RecruitmentApplicantOptionalAnswer optionalAnswer : saveApplicantOptionalAnswerList) {
                 if (optionalAnswer.getRecruitmentFormAnswer().getRecruitmentFormQuestion().getId().equals(recruitmentFormQuestion.getId())) {
                     if (currentQuestionResponse == null) {
-                        currentQuestionResponse = RecruitmentApplicantAnswerInfoResponse.from(optionalAnswer);
+                        currentQuestionResponse = RecruitmentApplicantAnswerInfoResponse.fromOptional(optionalAnswer);
                         response.applicantAnswer.add(currentQuestionResponse);
                     } else {
-                        currentQuestionResponse.getAnswerList().add(RecruitmentApplicantAnswerInfoResponse.Answer.from(optionalAnswer));
+                        currentQuestionResponse.getAnswerList().add(RecruitmentApplicantAnswerInfoResponse.Answer.fromOptional(optionalAnswer));
                     }
                 }
             }
@@ -67,7 +67,7 @@ public class RecruitmentApplicationResponse {
             }
 
             // 답변이 존재하지 않을 경우 신청자가 답변하지 않은 경우이므로 빈 답변 리스트를 넣음
-            response.applicantAnswer.add(RecruitmentApplicantAnswerInfoResponse.from(recruitmentFormQuestion));
+            response.applicantAnswer.add(RecruitmentApplicantAnswerInfoResponse.fromQuestion(recruitmentFormQuestion));
         }
 
         return response;

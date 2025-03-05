@@ -1,7 +1,7 @@
 package com.example.demo.domain.newsletter.strategy;
 
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -42,15 +42,15 @@ public class MentoringNoticeEmailDeliveryStrategy extends BaseEmailDeliveryStrat
         return "[야밤의금오톡] '멘토링 공고' 새 글 알림";
     }
 
-    public static MentoringNoticeEmailDeliveryStrategy create(RecruitmentBoard recruitmentBoard) {
-        if (!recruitmentBoard.getType().equals(RecruitmentBoardType.MENTORING)) {
+    public static MentoringNoticeEmailDeliveryStrategy create(RecruitmentBoardInfo recruitmentBoardInfo) {
+        if (!recruitmentBoardInfo.getType().equals(RecruitmentBoardType.MENTORING)) {
             throw new IllegalArgumentException("멘토링에 대한 이메일 알림만 허용합니다.");
         }
         return new MentoringNoticeEmailDeliveryStrategy(
-                recruitmentBoard.getType().name(),
-                recruitmentBoard.getTag().name(),
-                recruitmentBoard.getTitle(),
-                recruitmentBoard.getUser().getNickname(),
+                recruitmentBoardInfo.getType().name(),
+                recruitmentBoardInfo.getTag().name(),
+                recruitmentBoardInfo.getTitle(),
+                recruitmentBoardInfo.getUserNickname(),
                 "https://프론트도메인/~" // TODO. 수정 필요
         );
     }

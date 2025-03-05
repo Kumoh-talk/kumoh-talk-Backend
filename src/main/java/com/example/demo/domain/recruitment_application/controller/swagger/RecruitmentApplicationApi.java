@@ -4,7 +4,7 @@ import com.example.demo.domain.recruitment_application.domain.dto.request.Recrui
 import com.example.demo.domain.recruitment_application.domain.dto.response.MyRecruitmentApplicationPageResponse;
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
 import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;

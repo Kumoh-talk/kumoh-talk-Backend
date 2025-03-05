@@ -1,17 +1,9 @@
 package com.example.demo.domain.board.service.usecase;
 
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.example.demo.domain.base.page.GlobalPageableDto;
+import com.example.demo.domain.board.service.entity.*;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.base.page.GlobalPageableDto;
-import com.example.demo.domain.board.service.entity.BoardCategoryNames;
-import com.example.demo.domain.board.service.entity.BoardContent;
-import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.implement.BoardCategoryWriter;
 import com.example.demo.domain.board.service.implement.BoardReader;
 import com.example.demo.domain.board.service.implement.BoardValidator;
@@ -19,15 +11,17 @@ import com.example.demo.domain.board.service.implement.BoardWriter;
 import com.example.demo.domain.board.service.view.implement.ViewCounter;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
 import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -42,11 +36,10 @@ public class BoardService {
     private final BoardValidator boardValidator;
 
 
-
     @Transactional
     public BoardInfo saveDraftBoard(Long userId, BoardContent boardContent, BoardCategoryNames boardCategoryNames) {
         UserTarget userTarget = userReader.findUser(userId)
-            .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         // 공지사항은 관리자만 작성 가능
         if (isAdminAndNotice(boardContent, userTarget)) {
@@ -64,7 +57,7 @@ public class BoardService {
 
     public BoardInfo searchSingleBoard(Long userId, Long boardId) {
         BoardInfo boardInfo = boardReader.searchSingleBoard(boardId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         boardValidator.validateDraftBoardIsOwner(userId, boardInfo);
 
         viewCounter.increaseView(boardId);
@@ -72,16 +65,16 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardInfo updateBoard(Long userId,Long boardId, BoardContent updateBoardContent, BoardCategoryNames updateBoardCategoryNames, Boolean isPublished) {
+    public BoardInfo updateBoard(Long userId, Long boardId, BoardContent updateBoardContent, BoardCategoryNames updateBoardCategoryNames, Boolean isPublished) {
         BoardInfo savedBoardInfo = boardReader.searchSingleBoard(boardId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         boardValidator.validateUserEqualBoardUser(userId, savedBoardInfo);
 
-        BoardInfo contentModifiedBoardInfo = boardWriter.modifyBoarContent(savedBoardInfo,updateBoardContent,isPublished);
-        BoardInfo modifiedBoardInfo = boardCategoryWriter.modifyBoardCategories(contentModifiedBoardInfo,updateBoardCategoryNames);
+        BoardInfo contentModifiedBoardInfo = boardWriter.modifyBoarContent(savedBoardInfo, updateBoardContent, isPublished);
+        BoardInfo modifiedBoardInfo = boardCategoryWriter.modifyBoardCategories(contentModifiedBoardInfo, updateBoardCategoryNames);
 
         // 세미나 게시물이 게시 상태로 변경이면 뉴스레터 전송 TODO : 추후 뉴스레터 전송 Implement Layer로 전환 필요
-        if (isSeminarBoardModifiedToPublished(isPublished,savedBoardInfo.getBoardContent(), modifiedBoardInfo.getBoardContent())) {
+        if (isSeminarBoardModifiedToPublished(isPublished, savedBoardInfo.getBoardContent(), modifiedBoardInfo.getBoardContent())) {
             eventPublisher.publishEvent(EmailNotificationEvent.create(
                     EntireBoardType.SEMINAR_SUMMARY,
                     SeminarSummaryEmailDeliveryStrategy.create(modifiedBoardInfo)
@@ -91,16 +84,16 @@ public class BoardService {
         return modifiedBoardInfo;
     }
 
-    private Boolean isSeminarBoardModifiedToPublished(Boolean isPublished,BoardContent previousBoardContent, BoardContent modifiedBoardContent) {
+    private Boolean isSeminarBoardModifiedToPublished(Boolean isPublished, BoardContent previousBoardContent, BoardContent modifiedBoardContent) {
         return modifiedBoardContent.getBoardType().equals(BoardType.SEMINAR)
-            && previousBoardContent.getBoardStatus().equals(Status.DRAFT)
-            && isPublished;
+                && previousBoardContent.getBoardStatus().equals(Status.DRAFT)
+                && isPublished;
     }
 
 
     public void deleteBoard(Long userId, Long boardId) {
         BoardInfo savedBoardInfo = boardReader.searchSingleBoard(boardId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         boardValidator.validateUserEqualBoardUser(userId, savedBoardInfo);
 
         boardCategoryWriter.removeBoardCategories(savedBoardInfo);
@@ -108,19 +101,19 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardList(BoardType boardType , GlobalPageableDto pageableDto) {
-        return boardReader.findPublishedBoardPageList(boardType,pageableDto);
+    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardList(BoardType boardType, GlobalPageableDto pageableDto) {
+        return boardReader.findPublishedBoardPageList(boardType, pageableDto);
     }
 
     public GlobalPageableDto<DraftBoardTitle> findDraftBoardList(Long userId, GlobalPageableDto pageableDto) {
-        return boardReader.findDraftBoardPageList(userId,pageableDto);
+        return boardReader.findDraftBoardPageList(userId, pageableDto);
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, GlobalPageableDto pageable) {
+    public GlobalPageableDto<BoardTitleInfo> findMyBoardPageList(Long userId, BoardType boardType, GlobalPageableDto pageable) {
         userReader.findUser(userId)
-            .orElseThrow(()-> new ServiceException(ErrorCode.USER_NOT_FOUND));
-        return boardReader.findPublishedBoardListByUser(userId,boardType, pageable);
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        return boardReader.findPublishedBoardListByUser(userId, boardType, pageable);
     }
 
 }

@@ -4,7 +4,7 @@ import com.example.demo.domain.newsletter.entity.SeminarNoticeContent;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.event.NewsletterEventPublisher;
 import com.example.demo.domain.newsletter.strategy.ByPassEmailDeliveryStrategy;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

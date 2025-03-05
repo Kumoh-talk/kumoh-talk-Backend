@@ -1,9 +1,9 @@
 package com.example.demo.infra.board.Repository;
 
-import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
-import com.example.demo.domain.recruitment_board.repository.CommentBoardJpaRepository;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.querydsl.BoardDslRepository;
+import com.example.demo.infra.recruitment_board.entity.CommentBoard;
+import com.example.demo.infra.recruitment_board.repository.jpa.CommentBoardJpaRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

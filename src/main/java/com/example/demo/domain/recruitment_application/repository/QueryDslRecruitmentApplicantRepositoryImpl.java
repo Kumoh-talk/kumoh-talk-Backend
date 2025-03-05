@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_application.repository;
 
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.global.utils.QueryDslUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.domain.recruitment_application.domain.entity.QRecruitmentApplicant.recruitmentApplicant;
-import static com.example.demo.domain.recruitment_board.domain.entity.QRecruitmentBoard.recruitmentBoard;
+import static com.example.demo.infra.recruitment_board.entity.QRecruitmentBoard.recruitmentBoard;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor

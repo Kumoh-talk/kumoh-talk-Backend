@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_application.domain.entity;
 
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormAnswer;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.recruitment_board.entity.RecruitmentFormAnswer;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
