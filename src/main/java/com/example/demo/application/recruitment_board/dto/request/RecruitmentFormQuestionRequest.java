@@ -1,6 +1,7 @@
-package com.example.demo.domain.recruitment_board.domain.dto.request;
+package com.example.demo.application.recruitment_board.dto.request;
 
-import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentFormQuestionInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.QuestionType;
 import com.example.demo.global.aop.valid.ValidAnswerList;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -38,4 +39,16 @@ public class RecruitmentFormQuestionRequest {
     @Schema(description = "신청폼 질문 선택형 답안 리스트(description 질문일 경우 빈 리스트를 삽입([]))")
     @Valid
     private List<RecruitmentFormAnswerRequest> answerList = new ArrayList<>();
+
+    public RecruitmentFormQuestionInfo toDomain() {
+        return RecruitmentFormQuestionInfo.builder()
+                .number(number)
+                .question(question)
+                .type(type)
+                .isEssential(isEssential)
+                .answerList(answerList.stream()
+                        .map(RecruitmentFormAnswerRequest::toDomain)
+                        .toList())
+                .build();
+    }
 }

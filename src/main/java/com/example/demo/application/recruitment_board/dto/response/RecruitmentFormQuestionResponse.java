@@ -1,8 +1,8 @@
-package com.example.demo.domain.recruitment_board.domain.dto.response;
+package com.example.demo.application.recruitment_board.dto.response;
 
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormAnswer;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
-import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentFormAnswerInfo;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentFormQuestionInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.QuestionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,14 +32,14 @@ public class RecruitmentFormQuestionResponse {
     private List<RecruitmentFormAnswerResponse> answerList;
 
     public static RecruitmentFormQuestionResponse from(
-            RecruitmentFormQuestion recruitmentFormQuestionEntity) {
+            RecruitmentFormQuestionInfo recruitmentFormQuestionInfo) {
         return RecruitmentFormQuestionResponse.builder()
-                .questionId(recruitmentFormQuestionEntity.getId())
-                .number(recruitmentFormQuestionEntity.getNumber())
-                .question(recruitmentFormQuestionEntity.getQuestion())
-                .type(recruitmentFormQuestionEntity.getType())
-                .isEssential(recruitmentFormQuestionEntity.getIsEssential())
-                .answerList(recruitmentFormQuestionEntity.getRecruitmentFormAnswerList().stream()
+                .questionId(recruitmentFormQuestionInfo.getQuestionId())
+                .number(recruitmentFormQuestionInfo.getNumber())
+                .question(recruitmentFormQuestionInfo.getQuestion())
+                .type(recruitmentFormQuestionInfo.getType())
+                .isEssential(recruitmentFormQuestionInfo.getIsEssential())
+                .answerList(recruitmentFormQuestionInfo.getAnswerList().stream()
                         .map(RecruitmentFormAnswerResponse::from)
                         .collect(Collectors.toList()))
                 .build();
@@ -58,11 +58,11 @@ public class RecruitmentFormQuestionResponse {
         private String answer;
 
         public static RecruitmentFormAnswerResponse from(
-                RecruitmentFormAnswer recruitmentFormAnswerEntity) {
+                RecruitmentFormAnswerInfo recruitmentFormAnswerInfo) {
             return RecruitmentFormAnswerResponse.builder()
-                    .answerId(recruitmentFormAnswerEntity.getId())
-                    .number(recruitmentFormAnswerEntity.getNumber())
-                    .answer(recruitmentFormAnswerEntity.getAnswer())
+                    .answerId(recruitmentFormAnswerInfo.getAnswerId())
+                    .number(recruitmentFormAnswerInfo.getNumber())
+                    .answer(recruitmentFormAnswerInfo.getAnswer())
                     .build();
         }
     }

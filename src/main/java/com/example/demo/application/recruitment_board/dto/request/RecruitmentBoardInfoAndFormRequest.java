@@ -1,5 +1,7 @@
-package com.example.demo.domain.recruitment_board.domain.dto.request;
+package com.example.demo.application.recruitment_board.dto.request;
 
+import com.example.demo.domain.board.service.entity.vo.Status;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardAndFormInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -24,4 +26,13 @@ public class RecruitmentBoardInfoAndFormRequest {
     @Size(min = 1, message = "질문을 1개 이상 등록해야합니다.")
     @Valid
     private List<RecruitmentFormQuestionRequest> form = new ArrayList<>();
+
+    public RecruitmentBoardAndFormInfo toDomain(Long boardId, Long userId, Status status) {
+        return RecruitmentBoardAndFormInfo.builder()
+                .board(board.toDomain(boardId, userId, status))
+                .form(form.stream()
+                        .map(RecruitmentFormQuestionRequest::toDomain)
+                        .toList())
+                .build();
+    }
 }

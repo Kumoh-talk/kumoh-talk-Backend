@@ -1,5 +1,6 @@
-package com.example.demo.domain.recruitment_board.domain.dto.request;
+package com.example.demo.application.recruitment_board.dto.request;
 
+import com.example.demo.domain.recruitment_board.entity.RecruitmentFormAnswerInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,4 +20,11 @@ public class RecruitmentFormAnswerRequest {
     @NotBlank(message = "지정 답안을 작성해야합니다.")
     @Size(min = 1, max = 50, message = "객관식 선택지 최대 길이는 50글자 입니다.")
     private String answer;
+
+    public RecruitmentFormAnswerInfo toDomain() {
+        return RecruitmentFormAnswerInfo.builder()
+                .number(number)
+                .answer(answer)
+                .build();
+    }
 }

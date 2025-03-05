@@ -1,6 +1,6 @@
-package com.example.demo.domain.recruitment_board.controller;
+package com.example.demo.application.recruitment_board.controller;
 
-import com.example.demo.domain.recruitment_board.controller.swagger.AdminRecruitmentBoardApi;
+import com.example.demo.application.recruitment_board.api.AdminRecruitmentBoardApi;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
 import com.example.demo.global.base.dto.ResponseBody;
 import lombok.RequiredArgsConstructor;

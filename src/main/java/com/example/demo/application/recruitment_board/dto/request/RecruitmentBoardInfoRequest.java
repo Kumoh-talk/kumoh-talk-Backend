@@ -1,7 +1,9 @@
-package com.example.demo.domain.recruitment_board.domain.dto.request;
+package com.example.demo.application.recruitment_board.dto.request;
 
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -72,4 +74,25 @@ public class RecruitmentBoardInfoRequest {
     @NotBlank(message = "활동 주기를 작성해야합니다.")
     @Size(min = 1, max = 50, message = "활동 주기 최대 길이는 50글자 입니다.")
     private String activityCycle;
+
+    public RecruitmentBoardInfo toDomain(Long boardId, Long userId, Status status) {
+        return RecruitmentBoardInfo.builder()
+                .boardId(boardId)
+                .title(title)
+                .userId(userId)
+                .summary(summary)
+                .host(host)
+                .content(content)
+                .type(type)
+                .tag(tag)
+                .status(status)
+                .recruitmentTarget(recruitmentTarget)
+                .recruitmentNum(recruitmentNum)
+                .currentMemberNum(currentMemberNum)
+                .recruitmentDeadline(recruitmentDeadline)
+                .activityStart(activityStart)
+                .activityFinish(activityFinish)
+                .activityCycle(activityCycle)
+                .build();
+    }
 }

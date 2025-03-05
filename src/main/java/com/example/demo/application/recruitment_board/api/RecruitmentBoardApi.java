@@ -1,10 +1,15 @@
-package com.example.demo.domain.recruitment_board.controller.swagger;
+package com.example.demo.application.recruitment_board.api;
 
+import com.example.demo.application.recruitment_board.dto.request.RecruitmentBoardInfoAndFormRequest;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentBoardInfoAndFormResponse;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentBoardInfoResponse;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentBoardSummaryResponse;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentFormQuestionResponse;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
-import com.example.demo.domain.recruitment_board.domain.dto.response.*;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalNoOffsetPageResponse;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
@@ -43,7 +48,7 @@ public interface RecruitmentBoardApi {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> createRecruitmentBoardAndForm(
+    ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> postRecruitmentBoardAndForm(
             @Parameter(hidden = true) Long userId,
             @Parameter(description = "게시물 상태(draft, published)", example = "published") @RequestParam Status status,
             @RequestBody RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) throws MethodArgumentNotValidException;
@@ -52,13 +57,14 @@ public interface RecruitmentBoardApi {
             summary = "no-offset 방식 모집 게시물 페이지 조회",
             description = "무한스크롤이 필요한 홈 화면에서 출력될 모집 게시물 페이지를 조회합니다."
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardNoOffsetResponse.class)))
+    @ApiResponse(content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = RecruitmentBoardSummaryResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = RecruitmentBoardNoOffsetResponse.class,
+                    responseClass = GlobalNoOffsetPageResponse.class,
                     description = "모집 게시물 페이지 조회 성공")
     )
-    ResponseEntity<ResponseBody<RecruitmentBoardNoOffsetResponse>> getRecruitmentBoardListByNoOffset(
+    ResponseEntity<ResponseBody<GlobalNoOffsetPageResponse<RecruitmentBoardSummaryResponse>>> getRecruitmentBoardListByNoOffset(
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "이전 페이지의 가장 마지막 게시물 id(첫 페이지 조회 시 입력 x)", example = "11") @RequestParam(required = false) Long lastBoardId,
             @Parameter(description = "모집 게시물 타입(study, project, mentoring)", example = "study") @RequestParam RecruitmentBoardType recruitmentBoardType
@@ -68,13 +74,14 @@ public interface RecruitmentBoardApi {
             summary = "페이지 번호 방식 모집 게시물 페이지 조회",
             description = "페이지 번호가 필요한 모집 게시물 더보기 화면에서 출력될 모집 게시물 페이지를 조회합니다."
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardPageNumResponse.class)))
+    @ApiResponse(content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = RecruitmentBoardSummaryResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = RecruitmentBoardPageNumResponse.class,
+                    responseClass = GlobalPageResponse.class,
                     description = "모집 게시물 페이지 조회 성공")
     )
-    ResponseEntity<ResponseBody<RecruitmentBoardPageNumResponse>> getRecruitmentBoardListByPageNum(
+    ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentBoardSummaryResponse>>> getRecruitmentBoardListByPageNum(
             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "recruitmentDeadline", direction = Sort.Direction.ASC) Pageable pageable,
             @Parameter(description = "모집 게시물 타입(study, project, mentoring)", example = "study") @RequestParam RecruitmentBoardType recruitmentBoardType
     );
@@ -136,7 +143,7 @@ public interface RecruitmentBoardApi {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> updateRecruitmentBoardAndForm(
+    ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> patchRecruitmentBoardAndForm(
             @Parameter(hidden = true) Long userId,
             @PathVariable Long recruitmentBoardId,
             @Parameter(description = "게시물 상태(draft, published)", example = "published") @RequestParam Status status,
@@ -179,16 +186,17 @@ public interface RecruitmentBoardApi {
             summary = "no-offset 방식 사용자 임시저장 모집 게시물 페이지 조회",
             description = "무한스크롤이 가능한 방식으로 사용자의 임시저장 모집 게시물 목록 페이지를 조회합니다."
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardNoOffsetResponse.class)))
+    @ApiResponse(content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = RecruitmentBoardSummaryResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = RecruitmentBoardNoOffsetResponse.class,
+                    responseClass = GlobalNoOffsetPageResponse.class,
                     description = "사용자 임시저장 모집 게시물 페이지 조회 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentBoardNoOffsetResponse>> getDraftRecruitmentBoardList(
+    ResponseEntity<ResponseBody<GlobalNoOffsetPageResponse<RecruitmentBoardSummaryResponse>>> getDraftRecruitmentBoardList(
             @Parameter(hidden = true) Long userId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "이전 페이지의 가장 마지막 게시물 id(첫 페이지 조회 시 입력 x)", example = "11") @RequestParam(required = false) Long lastBoardId);
@@ -198,16 +206,17 @@ public interface RecruitmentBoardApi {
             summary = "페이지 번호 방식 사용자 작성 모집 게시물 페이지 조회",
             description = "페이지 번호를 통해 사용자가 작성한 모집 게시물 목록 페이지를 조회합니다."
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentBoardPageNumResponse.class)))
+    @ApiResponse(content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = RecruitmentBoardSummaryResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = RecruitmentBoardPageNumResponse.class,
+                    responseClass = GlobalPageResponse.class,
                     description = "사용자 작성 시모집 게시물 페이지 조회 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentBoardPageNumResponse>> getPublishedUserRecruitmentBoardList(
+    ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentBoardSummaryResponse>>> getPublishedUserRecruitmentBoardList(
             @Parameter(hidden = true) Long userId,
             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @Parameter(description = "모집 게시물 타입(study, project, mentoring)", example = "study") @RequestParam RecruitmentBoardType recruitmentBoardType);

@@ -1,6 +1,6 @@
-package com.example.demo.domain.recruitment_board.domain.dto.response;
+package com.example.demo.application.recruitment_board.dto.response;
 
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardAndFormInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,11 +22,11 @@ public class RecruitmentBoardInfoAndFormResponse {
     @Schema(description = "모집 게시물 신청폼")
     private List<RecruitmentFormQuestionResponse> form;
 
-    public static RecruitmentBoardInfoAndFormResponse from(RecruitmentBoard recruitmentBoard) {
+    public static RecruitmentBoardInfoAndFormResponse from(RecruitmentBoardAndFormInfo recruitmentBoardInfo) {
         return RecruitmentBoardInfoAndFormResponse
                 .builder()
-                .board(RecruitmentBoardInfoResponse.from(recruitmentBoard))
-                .form(recruitmentBoard.getRecruitmentFormQuestionList().stream()
+                .board(RecruitmentBoardInfoResponse.from(recruitmentBoardInfo.getBoard()))
+                .form(recruitmentBoardInfo.getForm().stream()
                         .map(RecruitmentFormQuestionResponse::from)
                         .collect(Collectors.toList()))
                 .build();

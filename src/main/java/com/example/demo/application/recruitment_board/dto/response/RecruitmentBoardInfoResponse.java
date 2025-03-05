@@ -1,9 +1,9 @@
-package com.example.demo.domain.recruitment_board.domain.dto.response;
+package com.example.demo.application.recruitment_board.dto.response;
 
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -58,25 +58,25 @@ public class RecruitmentBoardInfoResponse {
     @Schema(description = "활동 주기", example = "twice a week")
     private String activityCycle;
 
-    public static RecruitmentBoardInfoResponse from(RecruitmentBoard recruitmentBoardEntity) {
+    public static RecruitmentBoardInfoResponse from(RecruitmentBoardInfo recruitmentBoardInfo) {
         return RecruitmentBoardInfoResponse.builder()
-                .boardId(recruitmentBoardEntity.getId())
-                .userId(recruitmentBoardEntity.getUser().getId())
-                .title(recruitmentBoardEntity.getTitle())
-                .summary(recruitmentBoardEntity.getSummary())
-                .host(recruitmentBoardEntity.getHost())
-                .content(recruitmentBoardEntity.getContent())
-                .type(recruitmentBoardEntity.getType())
-                .tag(recruitmentBoardEntity.getTag())
-                .status(recruitmentBoardEntity.getStatus())
-                .recruitmentTarget(recruitmentBoardEntity.getRecruitmentTarget())
-                .recruitmentNum(recruitmentBoardEntity.getRecruitmentNum())
-                .currentMemberNum(recruitmentBoardEntity.getCurrentMemberNum())
-                .recruitmentStart(recruitmentBoardEntity.getActivityStart())
-                .recruitmentDeadline(recruitmentBoardEntity.getRecruitmentDeadline())
-                .activityStart(recruitmentBoardEntity.getActivityStart())
-                .activityFinish(recruitmentBoardEntity.getActivityFinish())
-                .activityCycle(recruitmentBoardEntity.getActivityCycle())
+                .boardId(recruitmentBoardInfo.getBoardId())
+                .userId(recruitmentBoardInfo.getUserId())
+                .title(recruitmentBoardInfo.getTitle())
+                .summary(recruitmentBoardInfo.getSummary())
+                .host(recruitmentBoardInfo.getHost())
+                .content(recruitmentBoardInfo.getContent())
+                .type(recruitmentBoardInfo.getType())
+                .tag(recruitmentBoardInfo.getTag())
+                .status(recruitmentBoardInfo.getStatus())
+                .recruitmentTarget(recruitmentBoardInfo.getRecruitmentTarget())
+                .recruitmentNum(recruitmentBoardInfo.getRecruitmentNum())
+                .currentMemberNum(recruitmentBoardInfo.getCurrentMemberNum())
+                .recruitmentStart(recruitmentBoardInfo.getActivityStart())
+                .recruitmentDeadline(recruitmentBoardInfo.getRecruitmentDeadline())
+                .activityStart(recruitmentBoardInfo.getActivityStart())
+                .activityFinish(recruitmentBoardInfo.getActivityFinish())
+                .activityCycle(recruitmentBoardInfo.getActivityCycle())
                 .build();
     }
 }

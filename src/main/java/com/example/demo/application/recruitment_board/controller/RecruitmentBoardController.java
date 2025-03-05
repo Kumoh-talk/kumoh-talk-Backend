@@ -1,16 +1,23 @@
-package com.example.demo.domain.recruitment_board.controller;
+package com.example.demo.application.recruitment_board.controller;
 
+import com.example.demo.application.recruitment_board.api.RecruitmentBoardApi;
+import com.example.demo.application.recruitment_board.dto.request.RecruitmentBoardInfoAndFormRequest;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentBoardInfoAndFormResponse;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentBoardInfoResponse;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentBoardSummaryResponse;
+import com.example.demo.application.recruitment_board.dto.response.RecruitmentFormQuestionResponse;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.recruitment_board.controller.swagger.RecruitmentBoardApi;
-import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
-import com.example.demo.domain.recruitment_board.domain.dto.response.*;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalNoOffsetPageResponse;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -22,8 +29,10 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.example.demo.global.base.dto.ResponseUtil.createSuccessResponse;
 
@@ -46,13 +55,14 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @PostMapping()
-    public ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> createRecruitmentBoardAndForm(
+    public ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> postRecruitmentBoardAndForm(
             Long userId,
             @RequestParam Status status,
             @RequestBody RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) throws MethodArgumentNotValidException {
         validateRecruitmentBoardInfoAndFormRequest(status, recruitmentBoardInfoAndFormRequest);
 
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.saveBoardAndForm(userId, status, recruitmentBoardInfoAndFormRequest)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentBoardInfoAndFormResponse.from(recruitmentBoardService.postBoardAndForm(recruitmentBoardInfoAndFormRequest.toDomain(null, userId, status)))));
     }
 
     /**
@@ -68,13 +78,16 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
      * 3. 정렬 기준 : 모집 마감일 오름차순
      */
     @GetMapping("/no-offset")
-    public ResponseEntity<ResponseBody<RecruitmentBoardNoOffsetResponse>> getRecruitmentBoardListByNoOffset(
+    public ResponseEntity<ResponseBody<GlobalNoOffsetPageResponse<RecruitmentBoardSummaryResponse>>> getRecruitmentBoardListByNoOffset(
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long lastBoardId,
             @RequestParam RecruitmentBoardType recruitmentBoardType
     ) {
         // TODO : 차단 기능 추가
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, recruitmentBoardType)));
+        List<RecruitmentBoardInfo> RecruitmentBoardInfoList = recruitmentBoardService.getPublishedBoardListByNoOffset(size, lastBoardId, recruitmentBoardType);
+
+        return ResponseEntity.ok(createSuccessResponse(
+                GlobalNoOffsetPageResponse.from(size, RecruitmentBoardInfoList.stream().map(RecruitmentBoardSummaryResponse::from).collect(Collectors.toList()))));
     }
 
     /**
@@ -87,11 +100,13 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
      * @param recruitmentBoardType [study, project, mentoring]
      */
     @GetMapping("/page-num")
-    public ResponseEntity<ResponseBody<RecruitmentBoardPageNumResponse>> getRecruitmentBoardListByPageNum(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentBoardSummaryResponse>>> getRecruitmentBoardListByPageNum(
             @PageableDefault(page = 0, size = 10, sort = "recruitmentDeadline", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam RecruitmentBoardType recruitmentBoardType
     ) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getPublishedBoardListByPageNum(pageable, recruitmentBoardType)));
+        Page<RecruitmentBoardInfo> recruitmentBoardInfoPage = recruitmentBoardService.getPublishedBoardListByPageNum(pageable, recruitmentBoardType);
+        return ResponseEntity.ok(createSuccessResponse(
+                GlobalPageResponse.create(recruitmentBoardInfoPage.map(RecruitmentBoardSummaryResponse::from))));
     }
 
     /**
@@ -103,7 +118,8 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     @AssignUserId(required = false)
     @GetMapping("/{recruitmentBoardId}/board")
     public ResponseEntity<ResponseBody<RecruitmentBoardInfoResponse>> getRecruitmentBoardInfo(Long userId, @PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getBoardInfo(userId, recruitmentBoardId)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentBoardInfoResponse.from(recruitmentBoardService.getBoardInfo(userId, recruitmentBoardId))));
     }
 
     /**
@@ -117,7 +133,12 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/{recruitmentBoardId}/form")
     public ResponseEntity<ResponseBody<List<RecruitmentFormQuestionResponse>>> getRecruitmentFormInfo(Long userId, @PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getFormInfoList(userId, recruitmentBoardId)));
+        return ResponseEntity.ok(createSuccessResponse(
+                recruitmentBoardService.getFormInfoList(userId, recruitmentBoardId)
+                        .stream()
+                        .map(RecruitmentFormQuestionResponse::from)
+                        .sorted(Comparator.comparing(RecruitmentFormQuestionResponse::getNumber))
+                        .collect(Collectors.toList())));
     }
 
     /**
@@ -135,14 +156,15 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @PatchMapping("/{recruitmentBoardId}")
-    public ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> updateRecruitmentBoardAndForm(
+    public ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> patchRecruitmentBoardAndForm(
             Long userId,
             @PathVariable Long recruitmentBoardId,
             @RequestParam Status status,
             @RequestBody RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) throws MethodArgumentNotValidException {
         validateRecruitmentBoardInfoAndFormRequest(status, recruitmentBoardInfoAndFormRequest);
 
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.updateBoardAndForm(userId, recruitmentBoardId, status, recruitmentBoardInfoAndFormRequest)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentBoardInfoAndFormResponse.from(recruitmentBoardService.patchBoardAndForm(recruitmentBoardInfoAndFormRequest.toDomain(recruitmentBoardId, userId, status)))));
     }
 
     /**
@@ -172,7 +194,8 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     @GetMapping("/draft/latest")
     public ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> getDraftRecruitmentBoard(
             Long userId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getLatestDraftBoardAndForm(userId)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentBoardInfoAndFormResponse.from(recruitmentBoardService.getLatestDraftBoardAndForm(userId))));
     }
 
     /**
@@ -187,11 +210,13 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/draft")
-    public ResponseEntity<ResponseBody<RecruitmentBoardNoOffsetResponse>> getDraftRecruitmentBoardList(
+    public ResponseEntity<ResponseBody<GlobalNoOffsetPageResponse<RecruitmentBoardSummaryResponse>>> getDraftRecruitmentBoardList(
             Long userId,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long lastBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentBoardService.getDraftBoardListByUserId(userId, size, lastBoardId)));
+        List<RecruitmentBoardInfo> recruitmentBoardInfoList = recruitmentBoardService.getDraftBoardListByUserId(userId, size, lastBoardId);
+        return ResponseEntity.ok(createSuccessResponse(
+                GlobalNoOffsetPageResponse.from(size, recruitmentBoardInfoList.stream().map(RecruitmentBoardSummaryResponse::from).collect(Collectors.toList()))));
     }
 
     /**
@@ -206,12 +231,13 @@ public class RecruitmentBoardController implements RecruitmentBoardApi {
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/my-boards")
-    public ResponseEntity<ResponseBody<RecruitmentBoardPageNumResponse>> getPublishedUserRecruitmentBoardList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentBoardSummaryResponse>>> getPublishedUserRecruitmentBoardList(
             Long userId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam RecruitmentBoardType recruitmentBoardType) {
+        Page<RecruitmentBoardInfo> recruitmentBoardInfoPage = recruitmentBoardService.getPublishedBoardListByUserId(userId, pageable, recruitmentBoardType);
         return ResponseEntity.ok(createSuccessResponse(
-                recruitmentBoardService.getPublishedBoardListByUserId(userId, pageable, recruitmentBoardType)));
+                GlobalPageResponse.create(recruitmentBoardInfoPage.map(RecruitmentBoardSummaryResponse::from))));
     }
 
     // Valid 검사 메서드

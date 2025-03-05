@@ -1,4 +1,4 @@
-package com.example.demo.domain.recruitment_board.controller.swagger;
+package com.example.demo.application.recruitment_board.api;
 
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
