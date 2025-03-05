@@ -4,16 +4,15 @@ import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.comment.entity.CommentUserInfo;
 import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
-import com.example.demo.domain.recruitment_board.repository.CommentBoardJpaRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.infra.base.EntityFinder;
 import com.example.demo.infra.comment.entity.Comment;
 import com.example.demo.infra.comment.repository.jpa.CommentJpaRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.example.demo.infra.recruitment_board.entity.CommentBoard;
+import com.example.demo.infra.recruitment_board.repository.jpa.CommentBoardJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,8 +31,7 @@ public abstract class AbstractCommentRepositoryImpl<T> implements CommentReposit
     protected final Class<? extends CommentBoard> boardClass;
     protected final Class<? extends Comment> commentClass;
 
-    @PersistenceContext
-    protected EntityManager entityManager;
+    protected final EntityFinder entityFinder;
 
     @Override
     public Optional<CommentInfo> getById(Long id) {
@@ -76,8 +74,8 @@ public abstract class AbstractCommentRepositoryImpl<T> implements CommentReposit
 
     @Override
     public CommentInfo post(CommentInfo commentInfo) {
-        User commentUser = findUserById(commentInfo.getCommentUserInfo().getUserId());
-        CommentBoard commentBoard = findBoardById(commentInfo.getBoardId());
+        User commentUser = entityFinder.findUserById(commentInfo.getCommentUserInfo().getUserId());
+        CommentBoard commentBoard = findCommentBoardById(commentInfo.getBoardId());
 
         Comment parentComment = null;
         if (commentInfo.getGroupId() != null) {
@@ -100,25 +98,14 @@ public abstract class AbstractCommentRepositoryImpl<T> implements CommentReposit
         return Optional.of(origin.toCommentInfoDomain());
     }
 
-
-    protected <K> K findById(Class<K> entityClass, Long id) {
-        return entityManager.find(entityClass, id);
-    }
-
-    protected User findUserById(Long userId) {
-        User user = findById(User.class, userId);
-        return user != null ? user : userJpaRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
-    }
-
-    protected CommentBoard findBoardById(Long boardId) {
-        CommentBoard board = findById(boardClass, boardId);
+    protected CommentBoard findCommentBoardById(Long boardId) {
+        CommentBoard board = entityFinder.findById(boardClass, boardId);
         return board != null ? board : commentBoardJpaRepository.doFindById(boardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
     }
 
     protected Comment findCommentById(Long commentId) {
-        Comment comment = findById(commentClass, commentId);
+        Comment comment = entityFinder.findById(commentClass, commentId);
         return comment != null ? comment : commentJpaRepository.doFindById(commentId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
     }

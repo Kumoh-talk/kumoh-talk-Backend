@@ -2,6 +2,7 @@ package com.example.demo.infra.comment.repository.impl;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.user.repository.UserJpaRepository;
+import com.example.demo.infra.base.EntityFinder;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.comment.entity.BoardComment;
@@ -13,7 +14,8 @@ public class BoardCommentRepositoryImpl extends AbstractCommentRepositoryImpl<Bo
     public BoardCommentRepositoryImpl(
             BoardCommentJpaRepository commentJpaRepository,
             UserJpaRepository userJpaRepository,
-            BoardJpaRepository boardJpaRepository) {
-        super(commentJpaRepository, userJpaRepository, boardJpaRepository, Board.class, BoardComment.class);
+            BoardJpaRepository boardJpaRepository,
+            EntityFinder entityFinder) {
+        super(commentJpaRepository, userJpaRepository, boardJpaRepository, Board.class, BoardComment.class, entityFinder);
     }
 }
