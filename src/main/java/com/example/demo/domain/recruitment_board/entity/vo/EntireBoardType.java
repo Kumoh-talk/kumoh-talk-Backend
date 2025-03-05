@@ -1,4 +1,4 @@
-package com.example.demo.domain.recruitment_board.domain.vo;
+package com.example.demo.domain.recruitment_board.entity.vo;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.global.base.exception.ErrorCode;
