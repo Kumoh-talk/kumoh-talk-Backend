@@ -1,16 +1,17 @@
-package com.example.demo.domain.user.domain;
+package com.example.demo.infra.user.entity;
 
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.infra.board.entity.Like;
+import com.example.demo.domain.user.entity.UpdateUserInfo;
+import com.example.demo.domain.user.vo.Role;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
-import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
-import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
+import com.example.demo.domain.user.entity.UserInfo;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.oauth.user.OAuth2Provider;
+import com.example.demo.infra.board.entity.Board;
+import com.example.demo.infra.board.entity.Like;
+import com.example.demo.infra.user_additional_info.entity.UserAdditionalInfo;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -128,11 +129,11 @@ public class User extends BaseEntity {
         return Role.ROLE_ADMIN.equals(this.role);
     }
 
-    public void updateUserInfo(UpdateUserInfoRequest request) {
-        this.nickname = request.nickname();
-        this.name = request.name();
-        this.profileImageUrl = request.profileImageUrl();
-        this.role = request.role();
+    public void updateUserInfo(UpdateUserInfo request) {
+        this.nickname = request.getNickname();
+        this.name = request.getName();
+        this.profileImageUrl = request.getProfileImageUrl();
+        this.role = request.getRole();
     }
 
 //    public boolean hasNewsletter() {
@@ -155,4 +156,18 @@ public class User extends BaseEntity {
         User user = (User) obj;
         return id != null && id.equals(user.id);
     }
+
+    public UserInfo toUserInfo(User user) {
+        return UserInfo.builder()
+                .id(user.getId())
+                .provider(user.getProvider())
+                .nickname(user.getNickname())
+                .name(user.getName())
+                .profileImageUrl(user.getProfileImageUrl())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .build();
+    }
+
 }
