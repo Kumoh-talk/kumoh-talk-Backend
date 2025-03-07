@@ -1,6 +1,6 @@
-package com.example.demo.domain.user_addtional_info.scheduler;
+package com.example.demo.infra.user_additional_info.scheduler;
 
-import com.example.demo.domain.user_addtional_info.repository.UserAdditionalInfoRepository;
+import com.example.demo.infra.user_additional_info.repository.UserAdditionalInfoJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Component
 public class UserAdditionalInfoScheduler {
 
-    private final UserAdditionalInfoRepository userAdditionalInfoRepository;
+    private final UserAdditionalInfoJpaRepository userAdditionalInfoJpaRepository;;
 
     // 3월 첫 월요일에 실행
     @Scheduled(cron = "0 0 0 1-7 3 ?")
@@ -33,7 +33,7 @@ public class UserAdditionalInfoScheduler {
     }
 
     private void updateUserAcademicInfoStatus() {
-        userAdditionalInfoRepository.updateAllIsUpdatedToFalse();
+        userAdditionalInfoJpaRepository.updateAllIsUpdatedToFalse();
         log.info("모든 학생들의 학적 정보 변경 여/부가 false 로 변경되었습니다.");
     }
 }
