@@ -55,15 +55,15 @@ public class FakeAuthController implements FakeAuthApi {
                         .role(fakeUserRole)
                         .nickname("fake-admin-nickname")
                         .build();
-//                UserAdditionalInfo fakeUserAdditionalInfo = UserAdditionalInfo.builder()
-//                        .email("fakeEmail@")
-//                        .department("Computer Science")
-//                        .studentId(20000000)
-//                        .grade(4)
-//                        .studentStatus(StudentStatus.ENROLLED)
-//                        .phoneNumber("01000000000")
-//                        .isUpdated(true).build();
-//                fakeUser.mapAdditionalInfo(fakeUserAdditionalInfo);
+                UserAdditionalInfo fakeUserAdditionalInfo = UserAdditionalInfo.builder()
+                        .email("fakeEmail@")
+                        .department("Computer Science")
+                        .studentId(20000000)
+                        .grade(4)
+                        .studentStatus(StudentStatus.ENROLLED)
+                        .phoneNumber("01000000000")
+                        .isUpdated(true).build();
+                fakeUser.mapAdditionalInfo(fakeUserAdditionalInfo);
                 User saveFakeUser = userJpaRepository.save(fakeUser);
                 fakeUserId = saveFakeUser.getId();
             }
