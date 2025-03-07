@@ -1,9 +1,10 @@
-package com.example.demo.domain.user_addtional_info.api;
+package com.example.demo.application.user_additional_info.api;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user_addtional_info.domain.dto.request.CreateUserAdditionalInfoRequest;
-import com.example.demo.domain.user_addtional_info.domain.dto.request.UpdateUserAcademicInfoRequest;
-import com.example.demo.domain.user_addtional_info.domain.dto.response.UserAdditionalInfoResponse;
+
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.application.user_additional_info.dto.request.CreateUserAdditionalInfoRequest;
+import com.example.demo.application.user_additional_info.dto.request.UpdateUserAcademicInfoRequest;
+import com.example.demo.application.user_additional_info.dto.response.UserAdditionalInfoResponse;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;

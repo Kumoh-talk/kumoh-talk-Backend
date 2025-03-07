@@ -1,15 +1,20 @@
-package com.example.demo.domain.user_addtional_info.controller;
+package com.example.demo.application.user_additional_info.controller;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user_addtional_info.api.UserAdditionalInfoApi;
-import com.example.demo.domain.user_addtional_info.domain.dto.request.CreateUserAdditionalInfoRequest;
-import com.example.demo.domain.user_addtional_info.domain.dto.request.UpdateUserAcademicInfoRequest;
-import com.example.demo.domain.user_addtional_info.domain.dto.response.UserAdditionalInfoResponse;
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.application.user_additional_info.api.UserAdditionalInfoApi;
+import com.example.demo.application.user_additional_info.dto.request.CreateUserAdditionalInfoRequest;
+import com.example.demo.application.user_additional_info.dto.request.UpdateUserAcademicInfoRequest;
+import com.example.demo.application.user_additional_info.dto.response.UserAdditionalInfoResponse;
+import com.example.demo.domain.token.entity.Token;
+import com.example.demo.domain.user_addtional_info.entity.UpdateUserAcademicInfo;
+import com.example.demo.domain.user_addtional_info.entity.UserAdditionalInfoData;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,7 @@ import static com.example.demo.global.base.dto.ResponseUtil.createSuccessRespons
 @RequestMapping("/api/v1/userAdditionalInfos")
 public class UserAdditionalInfoController implements UserAdditionalInfoApi {
 
+    private static final Logger log = LoggerFactory.getLogger(UserAdditionalInfoController.class);
     private final UserAdditionalInfoService userAdditionalInfoService;
 
     /**
@@ -32,7 +38,8 @@ public class UserAdditionalInfoController implements UserAdditionalInfoApi {
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @GetMapping("/me")
     public ResponseEntity<ResponseBody<UserAdditionalInfoResponse>> getUserAdditionalInfo(Long userId) {
-        return ResponseEntity.ok(createSuccessResponse(userAdditionalInfoService.getUserAdditionalInfo(userId)));
+        UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoService.getUserAdditionalInfoData(userId);
+        return ResponseEntity.ok(createSuccessResponse(UserAdditionalInfoResponse.toUserAdditionalInfoResponse(userAdditionalInfoData)));
     }
 
     /**
@@ -45,7 +52,9 @@ public class UserAdditionalInfoController implements UserAdditionalInfoApi {
     @PostMapping("/me")
     public ResponseEntity<ResponseBody<TokenResponse>> createUserAdditionalInfo(Long userId,
                                                                                 @RequestBody @Valid CreateUserAdditionalInfoRequest request) {
-        return ResponseEntity.ok(createSuccessResponse( userAdditionalInfoService.createUserAdditionalInfo(userId, request)));
+        UserAdditionalInfoData userAdditionalInfoData = CreateUserAdditionalInfoRequest.toUserAdditionalInfoData(request);
+        Token token = userAdditionalInfoService.createUserAdditionalInfo(userId, userAdditionalInfoData);
+        return ResponseEntity.ok(createSuccessResponse(TokenResponse.create(token.getAccessToken(), token.getRefreshToken())));
     }
 
     /**
@@ -57,7 +66,8 @@ public class UserAdditionalInfoController implements UserAdditionalInfoApi {
     @PatchMapping("/academic-info")
     public ResponseEntity<ResponseBody<Void>> updateUserAcademicInfo(Long userId,
                                                                      @RequestBody @Valid UpdateUserAcademicInfoRequest request) {
-        userAdditionalInfoService.updateUserAcademicInfo(userId, request);
+        UpdateUserAcademicInfo updateUserAcademicInfo = UpdateUserAcademicInfoRequest.toUpdateUserAcademicInfo(request);
+        userAdditionalInfoService.updateUserAcademicInfo(userId, updateUserAcademicInfo);
         return ResponseEntity.ok(createSuccessResponse());
     }
 }

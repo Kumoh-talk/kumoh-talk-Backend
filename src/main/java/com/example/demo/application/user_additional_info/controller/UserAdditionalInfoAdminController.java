@@ -1,15 +1,10 @@
-package com.example.demo.domain.user_addtional_info.controller;
+package com.example.demo.application.user_additional_info.controller;
 
-import com.example.demo.domain.user.domain.dto.response.UserInfo;
-import com.example.demo.domain.user_addtional_info.api.UserAdditionalInfoAdminApi;
-import com.example.demo.domain.user_addtional_info.domain.dto.response.UserAdditionalInfoResponse;
+import com.example.demo.application.user_additional_info.api.UserAdditionalInfoAdminApi;
+import com.example.demo.application.user_additional_info.dto.response.UserAdditionalInfoResponse;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoAdminService;
 import com.example.demo.global.base.dto.ResponseBody;
-import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +31,9 @@ public class UserAdditionalInfoAdminController implements UserAdditionalInfoAdmi
 
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseBody<UserAdditionalInfoResponse>> getUserAdditionalInfo (@PathVariable Long userId) {
-        return ResponseEntity.ok(createSuccessResponse(userAdditionalInfoAdminService.getUserAdditionalInfo(userId)));
+        return ResponseEntity.ok(createSuccessResponse(
+                UserAdditionalInfoResponse.toUserAdditionalInfoResponse(userAdditionalInfoAdminService.getUserAdditionalInfo(userId)))
+        );
     }
 
 

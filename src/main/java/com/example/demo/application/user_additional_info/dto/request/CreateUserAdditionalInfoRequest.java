@@ -1,6 +1,7 @@
-package com.example.demo.domain.user_addtional_info.domain.dto.request;
+package com.example.demo.application.user_additional_info.dto.request;
 
-import com.example.demo.domain.user_addtional_info.domain.vo.StudentStatus;
+import com.example.demo.domain.user_addtional_info.entity.UserAdditionalInfoData;
+import com.example.demo.domain.user_addtional_info.vo.StudentStatus;
 import com.example.demo.global.aop.valid.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,4 +17,14 @@ public record CreateUserAdditionalInfoRequest(
         @ValidEnum(enumClass = StudentStatus.class,message = "재학 상태는 휴학, 재학, 졸업 중 하나여야 합니다.") StudentStatus studentStatus,
         @NotBlank(message = "전화번호는 빈 값일 수 없습니다.") String phoneNumber
 ) {
+    public static UserAdditionalInfoData toUserAdditionalInfoData(CreateUserAdditionalInfoRequest request) {
+        return UserAdditionalInfoData.builder()
+                .email(request.email)
+                .department(request.department)
+                .studentId(request.studentId)
+                .grade(request.grade)
+                .studentStatus(StudentStatus.valueOf(request.studentStatus.name()))
+                .phoneNumber(request.phoneNumber)
+                .build();
+    }
 }
