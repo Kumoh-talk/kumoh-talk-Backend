@@ -1,4 +1,4 @@
-package com.example.demo.domain.user.domain.vo;
+package com.example.demo.domain.user.vo;
 
 public enum Role {
     ROLE_GUEST, // 정보가 존재하지 않는 첫 로그인한 사용자

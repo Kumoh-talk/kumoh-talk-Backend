@@ -1,7 +1,6 @@
-package com.example.demo.domain.user.domain;
+package com.example.demo.domain.user.entity;
 
-import com.example.demo.domain.user.domain.vo.Role;
-
+import com.example.demo.domain.user.vo.Role;
 import lombok.Builder;
 import lombok.Getter;
 
