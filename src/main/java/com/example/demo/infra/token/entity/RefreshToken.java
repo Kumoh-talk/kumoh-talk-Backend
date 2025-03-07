@@ -1,4 +1,4 @@
-package com.example.demo.domain.token.domain;
+package com.example.demo.infra.token.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
