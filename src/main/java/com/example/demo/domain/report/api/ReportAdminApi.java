@@ -1,7 +1,6 @@
 package com.example.demo.domain.report.api;
 
 import com.example.demo.domain.report.domain.dto.ReportResponse;
-import com.example.demo.domain.user.domain.dto.response.UserInfo;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;

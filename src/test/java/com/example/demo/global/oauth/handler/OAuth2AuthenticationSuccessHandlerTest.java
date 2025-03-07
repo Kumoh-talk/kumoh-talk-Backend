@@ -1,9 +1,7 @@
 package com.example.demo.global.oauth.handler;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserJpaRepository;
-import com.example.demo.domain.user.repository.UserRepository;
+
+import com.example.demo.application.token.dto.TokenResponse;
 import com.example.demo.fixture.user.UserFixtures;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
@@ -12,6 +10,8 @@ import com.example.demo.global.oauth.user.OAuth2Provider;
 import com.example.demo.global.oauth.user.OAuth2UserInfo;
 import com.example.demo.global.oauth.service.OAuth2UserPrincipal;
 import com.example.demo.global.oauth.user.OAuth2UserUnlinkManager;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import jakarta.servlet.http.Cookie;
 import java.util.Optional;
 
@@ -78,7 +78,7 @@ class OAuth2AuthenticationSuccessHandlerTest {
 
         // jwtHandler.createTokens() 메서드 실행 시 지정한 토큰을 반환하도록 설정
         TokenResponse tokenResponse = new TokenResponse(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
-        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(tokenResponse);
+//        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(tokenResponse);
 
         // when
         successHandler.onAuthenticationSuccess(request, response, authentication);
@@ -106,7 +106,7 @@ class OAuth2AuthenticationSuccessHandlerTest {
 
         // jwtHandler.createTokens() 메서드 실행 시 지정한 토큰을 반환하도록 설정
         TokenResponse tokenResponse = new TokenResponse(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
-        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(tokenResponse);
+//        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(tokenResponse);
 
         // when
         successHandler.onAuthenticationSuccess(request, response, authentication);

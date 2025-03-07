@@ -2,6 +2,7 @@ package com.example.demo.domain.board.service.repository;
 
 import java.util.Optional;
 
+import com.example.demo.domain.user.entity.UserTarget;
 import org.springframework.data.domain.Page;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
@@ -9,7 +10,6 @@ import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.domain.user.domain.UserTarget;
 
 public interface BoardRepository {
 	BoardInfo saveBoard(UserTarget userTarget, BoardContent boardContent);

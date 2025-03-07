@@ -1,15 +1,17 @@
 package com.example.demo.domain.fake;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.repository.UserJpaRepository;
-import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
-import com.example.demo.domain.user_addtional_info.domain.vo.StudentStatus;
+
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.domain.token.entity.Token;
+import com.example.demo.domain.user.vo.Role;
+import com.example.demo.domain.user_addtional_info.vo.StudentStatus;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
 import com.example.demo.global.oauth.user.OAuth2Provider;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
+import com.example.demo.infra.user_additional_info.entity.UserAdditionalInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,7 @@ public class FakeAuthController implements FakeAuthApi {
     private final JwtHandler jwtHandler;
     private final UserJpaRepository userJpaRepository;
     private volatile Long fakeUserId = null;
-    private final Role fakeUserRole = Role.ROLE_ADMIN;
+    private final Role fakeUserRole = Role.ROLE_GUEST;
 
     /**
      * [가짜 계정 로그인] <br>
@@ -53,22 +55,22 @@ public class FakeAuthController implements FakeAuthApi {
                         .role(fakeUserRole)
                         .nickname("fake-admin-nickname")
                         .build();
-                UserAdditionalInfo fakeUserAdditionalInfo = UserAdditionalInfo.builder()
-                        .email("fakeEmail@")
-                        .department("Computer Science")
-                        .studentId(20000000)
-                        .grade(4)
-                        .studentStatus(StudentStatus.ENROLLED)
-                        .phoneNumber("01000000000")
-                        .isUpdated(true).build();
-                fakeUser.mapAdditionalInfo(fakeUserAdditionalInfo);
+//                UserAdditionalInfo fakeUserAdditionalInfo = UserAdditionalInfo.builder()
+//                        .email("fakeEmail@")
+//                        .department("Computer Science")
+//                        .studentId(20000000)
+//                        .grade(4)
+//                        .studentStatus(StudentStatus.ENROLLED)
+//                        .phoneNumber("01000000000")
+//                        .isUpdated(true).build();
+//                fakeUser.mapAdditionalInfo(fakeUserAdditionalInfo);
                 User saveFakeUser = userJpaRepository.save(fakeUser);
                 fakeUserId = saveFakeUser.getId();
             }
         }
         JwtUserClaim claim = new JwtUserClaim(fakeUserId, fakeUserRole);
-        TokenResponse tokens = jwtHandler.createTokens(claim);
-        LoginResponse response = new LoginResponse(tokens.accessToken());
+        Token tokens = jwtHandler.createTokens(claim);
+        LoginResponse response = new LoginResponse(tokens.getAccessToken());
 
         return ResponseEntity
                 .status(HttpStatus.OK)

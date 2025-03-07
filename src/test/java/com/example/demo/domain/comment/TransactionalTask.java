@@ -6,7 +6,7 @@ import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.metamodel.EntityType;

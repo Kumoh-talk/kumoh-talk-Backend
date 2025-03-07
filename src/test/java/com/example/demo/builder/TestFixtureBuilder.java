@@ -9,7 +9,7 @@ import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

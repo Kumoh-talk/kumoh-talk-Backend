@@ -6,13 +6,13 @@ import static org.assertj.core.api.SoftAssertions.*;
 
 import java.util.Optional;
 
+import com.example.demo.infra.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.demo.base.RepositoryTest;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.entity.Board;
 
 public class BoardJpaRepositoryTest extends RepositoryTest {

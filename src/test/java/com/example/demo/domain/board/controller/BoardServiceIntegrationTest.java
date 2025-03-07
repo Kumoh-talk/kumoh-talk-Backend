@@ -7,6 +7,8 @@ import static org.assertj.core.api.SoftAssertions.*;
 
 import java.util.List;
 
+import com.example.demo.domain.user.entity.UserTarget;
+import com.example.demo.infra.user.entity.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +21,6 @@ import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.domain.board.service.view.BoardViewEvent;

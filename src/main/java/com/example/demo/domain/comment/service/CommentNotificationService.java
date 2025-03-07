@@ -6,7 +6,7 @@ import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.notification.domain.vo.NotificationType;
 import com.example.demo.domain.notification.repository.NotificationRepository;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

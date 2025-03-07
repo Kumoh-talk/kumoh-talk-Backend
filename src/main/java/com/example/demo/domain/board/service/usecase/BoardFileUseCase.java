@@ -1,5 +1,6 @@
 package com.example.demo.domain.board.service.usecase;
 
+import com.example.demo.infra.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,7 +9,6 @@ import com.example.demo.application.board.dto.request.PresignedUrlRequest;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.board.service.implement.BoardReader;
 import com.example.demo.domain.board.service.service.FileUploadService;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;

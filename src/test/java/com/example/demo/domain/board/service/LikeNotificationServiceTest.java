@@ -7,7 +7,7 @@ import com.example.demo.domain.comment.TransactionalTask;
 import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.notification.domain.vo.NotificationType;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

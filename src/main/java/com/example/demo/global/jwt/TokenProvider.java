@@ -1,8 +1,9 @@
 package com.example.demo.global.jwt;
 
-import com.example.demo.domain.user.domain.vo.Role;
+import com.example.demo.application.user_additional_info.dto.response.UserAdditionalInfoResponse;
 import com.example.demo.domain.user.service.UserAdminService;
-import com.example.demo.domain.user_addtional_info.domain.dto.response.UserAdditionalInfoResponse;
+import com.example.demo.domain.user.vo.Role;
+import com.example.demo.domain.user_addtional_info.entity.UserAdditionalInfoData;
 import com.example.demo.domain.user_addtional_info.service.UserAdditionalInfoService;
 import com.example.demo.global.jwt.exception.AdditionalInfoNotUpdatedException;
 import com.example.demo.global.jwt.exception.JwtAccessDeniedException;
@@ -63,8 +64,8 @@ public class TokenProvider implements AuthenticationProvider {
 	private void validateUserAdditionalInfo(JwtUserClaim claims) {
 		// ROLE_USER 이상의 권한 확인
 		if (Role.ROLE_ACTIVE_USER.equals(claims.role()) || Role.ROLE_SEMINAR_WRITER.equals(claims.role()) || Role.ROLE_ADMIN.equals(claims.role())) {
-			UserAdditionalInfoResponse additionalInfoResponse = userAdditionalInfoService.getUserAdditionalInfo(claims.userId());
-			if (additionalInfoResponse != null && !additionalInfoResponse.isUpdated()) {
+			UserAdditionalInfoData additionalInfoData = userAdditionalInfoService.getUserAdditionalInfoData(claims.userId());
+			if (additionalInfoData != null && !additionalInfoData.isUpdated()) {
 				throw new AdditionalInfoNotUpdatedException();
 			}
 		}

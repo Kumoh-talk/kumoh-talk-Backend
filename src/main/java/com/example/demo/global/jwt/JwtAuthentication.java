@@ -3,11 +3,11 @@ package com.example.demo.global.jwt;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.example.demo.domain.user.vo.Role;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.global.jwt.JwtUserClaim;
 
 public record JwtAuthentication(

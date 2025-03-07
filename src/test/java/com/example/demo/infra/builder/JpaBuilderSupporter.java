@@ -1,5 +1,6 @@
 package com.example.demo.infra.builder;
 
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -7,7 +8,6 @@ import com.example.demo.domain.comment.repository.BoardCommentRepository;
 import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
 import com.example.demo.domain.notification.repository.NotificationRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.infra.board.Repository.BoardJpaRepository;
 import com.example.demo.infra.board.Repository.LikeRepository;
 import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;

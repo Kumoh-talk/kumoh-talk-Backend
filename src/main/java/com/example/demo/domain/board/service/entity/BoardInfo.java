@@ -2,8 +2,8 @@ package com.example.demo.domain.board.service.entity;
 
 import java.time.LocalDateTime;
 
-import com.example.demo.domain.user.domain.UserTarget;
 
+import com.example.demo.domain.user.entity.UserTarget;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

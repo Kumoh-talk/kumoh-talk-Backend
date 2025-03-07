@@ -19,10 +19,10 @@ import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepo
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.infra.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
