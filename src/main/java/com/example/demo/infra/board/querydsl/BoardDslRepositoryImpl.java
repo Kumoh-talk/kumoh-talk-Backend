@@ -3,6 +3,7 @@ package com.example.demo.infra.board.querydsl;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.demo.infra.user.entity.QUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,6 @@ import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
-import com.example.demo.domain.user.domain.QUser;
 import com.example.demo.infra.board.category.entity.QBoardCategory;
 import com.example.demo.infra.board.category.entity.QCategory;
 import com.example.demo.infra.board.entity.Board;
