@@ -1,10 +1,11 @@
-package com.example.demo.domain.token.controller;
+package com.example.demo.application.token.controller;
 
-import com.example.demo.domain.token.api.TokenApi;
-import com.example.demo.global.base.dto.ResponseBody;
-import com.example.demo.domain.token.domain.dto.TokenRequest;
-import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.application.token.api.TokenApi;
+import com.example.demo.application.token.dto.TokenRequest;
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.domain.token.entity.Token;
 import com.example.demo.domain.token.service.TokenService;
+import com.example.demo.global.base.dto.ResponseBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ public class TokenController implements TokenApi {
 
     @PostMapping("/refresh")
     public ResponseEntity<ResponseBody<TokenResponse>> refresh(@RequestBody @Valid TokenRequest tokenRequest) {
-
-        return ResponseEntity.ok(createSuccessResponse(tokenService.refresh(tokenRequest)));
+        Token token = new Token(tokenRequest.accessToken(), tokenRequest.refreshToken());
+        Token response = tokenService.refresh(token);
+        return ResponseEntity.ok(createSuccessResponse(TokenResponse.create(response.getAccessToken(), response.getRefreshToken())));
     }
 }

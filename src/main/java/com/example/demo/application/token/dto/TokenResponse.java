@@ -1,4 +1,4 @@
-package com.example.demo.domain.token.domain.dto;
+package com.example.demo.application.token.dto;
 
 public record TokenResponse(
         String accessToken,
