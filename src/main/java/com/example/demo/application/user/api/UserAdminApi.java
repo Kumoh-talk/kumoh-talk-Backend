@@ -1,7 +1,8 @@
-package com.example.demo.domain.user.api;
+package com.example.demo.application.user.api;
 
-import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
-import com.example.demo.domain.user.domain.dto.response.UserInfo;
+
+import com.example.demo.application.user.dto.request.UpdateUserInfoRequest;
+import com.example.demo.application.user.dto.response.UserInfoResponse;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -28,7 +29,7 @@ public interface UserAdminApi {
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class))
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserInfo.class))
+    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoResponse.class))
     )
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
@@ -36,7 +37,7 @@ public interface UserAdminApi {
                     description = "ADMIN 권한 사용자가 사용할 수 있습니다.\n"
                             + "모든 사용자의 정보를 반환합니다.")
     )
-    ResponseEntity<ResponseBody<GlobalPageResponse<UserInfo>>> getAllUsers (
+    ResponseEntity<ResponseBody<GlobalPageResponse<UserInfoResponse>>> getAllUsers (
             @ParameterObject
             @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     );

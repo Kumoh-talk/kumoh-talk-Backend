@@ -1,8 +1,9 @@
-package com.example.demo.domain.user.controller;
+package com.example.demo.application.user.controller;
 
-import com.example.demo.domain.user.api.UserFileApi;
-import com.example.demo.domain.user.domain.dto.request.ChangeProfileUrlRequest;
-import com.example.demo.domain.user.domain.dto.request.ProfilePresignedUrlRequest;
+import com.example.demo.application.user.api.UserFileApi;
+import com.example.demo.application.user.dto.request.ChangeProfileUrlRequest;
+import com.example.demo.application.user.dto.request.ProfilePresignedUrlRequest;
+import com.example.demo.domain.user.entity.ProfilePresignedUrl;
 import com.example.demo.domain.user.service.UserFileService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -26,14 +27,15 @@ public class UserFileController implements UserFileApi {
     @PostMapping("/presigned-url")
     public ResponseEntity<ResponseBody<String>> getPresignedUrl(Long userId,
                                                                 @RequestBody @Valid ProfilePresignedUrlRequest request) {
-        return ResponseEntity.ok(createSuccessResponse(userFileService.getPresignedUrl(userId, request)));
+        ProfilePresignedUrl profilePresignedUrl = request.toProfilePresignedUrl(request);
+        return ResponseEntity.ok(createSuccessResponse(userFileService.getPresignedUrl(userId, profilePresignedUrl)));
     }
 
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
     @PatchMapping("/profile")
     public ResponseEntity<ResponseBody<Void>> changeProfileUrl(Long userId,@RequestBody @Valid ChangeProfileUrlRequest request) {
-        userFileService.changeProfileUrl(userId, request);
+        userFileService.changeProfileUrl(userId, request.url());
         return ResponseEntity.ok(createSuccessResponse());
     }
 

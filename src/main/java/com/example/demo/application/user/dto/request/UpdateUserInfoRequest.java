@@ -1,6 +1,7 @@
-package com.example.demo.domain.user.domain.dto.request;
+package com.example.demo.application.user.dto.request;
 
-import com.example.demo.domain.user.domain.vo.Role;
+import com.example.demo.domain.user.entity.UpdateUserInfo;
+import com.example.demo.domain.user.vo.Role;
 import com.example.demo.global.aop.valid.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -14,4 +15,12 @@ public record UpdateUserInfoRequest(
         @Pattern(regexp = S3_PROFILE_FILE_URL) String profileImageUrl,
         @ValidEnum(enumClass = Role.class) Role role
 ) {
+    public static UpdateUserInfo toUpdateUserInfo(UpdateUserInfoRequest request) {
+        return UpdateUserInfo.builder()
+                .nickname(request.nickname)
+                .name(request.name)
+                .profileImageUrl(request.profileImageUrl)
+                .role(request.role)
+                .build();
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.domain.user.domain.dto.request;
+package com.example.demo.application.user.dto.request;
 
 import jakarta.validation.constraints.Pattern;
 

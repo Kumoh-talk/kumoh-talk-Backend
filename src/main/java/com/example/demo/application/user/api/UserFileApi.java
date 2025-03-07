@@ -1,7 +1,8 @@
-package com.example.demo.domain.user.api;
+package com.example.demo.application.user.api;
 
-import com.example.demo.domain.user.domain.dto.request.ChangeProfileUrlRequest;
-import com.example.demo.domain.user.domain.dto.request.ProfilePresignedUrlRequest;
+
+import com.example.demo.application.user.dto.request.ChangeProfileUrlRequest;
+import com.example.demo.application.user.dto.request.ProfilePresignedUrlRequest;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;

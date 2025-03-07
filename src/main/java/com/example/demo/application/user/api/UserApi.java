@@ -1,10 +1,10 @@
-package com.example.demo.domain.user.api;
+package com.example.demo.application.user.api;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.dto.request.CompleteRegistrationRequest;
-import com.example.demo.domain.user.domain.dto.request.UpdateNicknameRequest;
-import com.example.demo.domain.user.domain.dto.response.UserInfo;
-import com.example.demo.domain.user.domain.dto.response.UserProfile;
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.application.user.dto.request.CompleteRegistrationRequest;
+import com.example.demo.application.user.dto.request.UpdateNicknameRequest;
+import com.example.demo.application.user.dto.response.UserInfoResponse;
+import com.example.demo.application.user.dto.response.UserProfileResponse;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
@@ -91,31 +91,31 @@ public interface UserApi {
             summary = "내 정보 확인 api",
             description = "USER 이상의 권한에 대해서 자신의 사용자 정보를 확인합니다."
     )
-    @ApiResponse( content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserInfo.class)))
+    @ApiResponse( content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = UserInfo.class,
+                    responseClass = UserInfoResponse.class,
                     description = "USER 이상의 권한을 가진 사용자에 대해서만 사용할 수 있습니다.\n"
                             + "내 기본 정보를 확인할 수 있습니다."),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND),
             }
     )
-    ResponseEntity<ResponseBody<UserInfo>> getUserInfo(@Parameter(hidden = true) Long userId);
+    ResponseEntity<ResponseBody<UserInfoResponse>> getUserInfo(@Parameter(hidden = true) Long userId);
 
     @Operation(
             summary = "내 프로필 정보 확인 api",
             description = "모든 사용자 대해서 다른 사용자의 프로필 정보를 확인합니다."
     )
-    @ApiResponse( content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfile.class)))
+    @ApiResponse( content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfileResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = UserProfile.class,
+                    responseClass = UserProfileResponse.class,
                     description = "모든 사용자가 사용할 수 있습니다.\n"
                             + "내 기본 프로필 정보를 확인할 수 있습니다."),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND),
             }
     )
-    ResponseEntity<ResponseBody<UserProfile>> getUserProfile(@PathVariable Long userId);
+    ResponseEntity<ResponseBody<UserProfileResponse>> getUserProfile(@PathVariable Long userId);
 }
