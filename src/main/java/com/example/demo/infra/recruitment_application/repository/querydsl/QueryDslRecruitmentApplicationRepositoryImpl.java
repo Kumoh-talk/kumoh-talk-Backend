@@ -1,8 +1,8 @@
-package com.example.demo.domain.recruitment_application.repository;
+package com.example.demo.infra.recruitment_application.repository.querydsl;
 
-import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.global.utils.QueryDslUtils;
+import com.example.demo.infra.recruitment_application.entity.RecruitmentApplication;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,32 +15,34 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.demo.domain.recruitment_application.domain.entity.QRecruitmentApplicant.recruitmentApplicant;
+import static com.example.demo.domain.user.domain.QUser.user;
+import static com.example.demo.infra.recruitment_application.entity.QRecruitmentApplication.recruitmentApplication;
 import static com.example.demo.infra.recruitment_board.entity.QRecruitmentBoard.recruitmentBoard;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor
-public class QueryDslRecruitmentApplicantRepositoryImpl implements QueryDslRecruitmentApplicantRepository {
+public class QueryDslRecruitmentApplicationRepositoryImpl implements QueryDslRecruitmentApplicationRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<RecruitmentApplicant> findByUser_IdFetchRecruitmentBoard(Long userId, Pageable pageable, RecruitmentBoardType boardType) {
+    public Page<RecruitmentApplication> findPageByUserIdWithRecruitmentBoard(Long userId, Pageable pageable, RecruitmentBoardType boardType) {
         List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
 
-        List<RecruitmentApplicant> content = jpaQueryFactory
-                .selectFrom(recruitmentApplicant)
-                .join(recruitmentApplicant.recruitmentBoard, recruitmentBoard).fetchJoin()
-                .where(recruitmentApplicant.recruitmentBoard.type.eq(boardType),
-                        recruitmentApplicant.user.id.eq(userId))
+        List<RecruitmentApplication> content = jpaQueryFactory
+                .selectFrom(recruitmentApplication)
+                .join(recruitmentApplication.user, user).fetchJoin()
+                .join(recruitmentApplication.recruitmentBoard, recruitmentBoard).fetchJoin()
+                .where(recruitmentApplication.recruitmentBoard.type.eq(boardType),
+                        recruitmentApplication.user.id.eq(userId))
                 .orderBy(ORDERS.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         Long totalCount = jpaQueryFactory
-                .select(recruitmentApplicant.count())
-                .from(recruitmentApplicant)
-                .where(recruitmentApplicant.recruitmentBoard.type.eq(boardType),
-                        recruitmentApplicant.user.id.eq(userId))
+                .select(recruitmentApplication.count())
+                .from(recruitmentApplication)
+                .where(recruitmentApplication.recruitmentBoard.type.eq(boardType),
+                        recruitmentApplication.user.id.eq(userId))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, totalCount);
@@ -54,7 +56,7 @@ public class QueryDslRecruitmentApplicantRepositoryImpl implements QueryDslRecru
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
                 switch (order.getProperty()) {
                     case "createdAt":
-                        OrderSpecifier<?> orderId = QueryDslUtils.getSortedColumn(direction, recruitmentApplicant, "createdAt");
+                        OrderSpecifier<?> orderId = QueryDslUtils.getSortedColumn(direction, recruitmentApplication, "createdAt");
                         orderSpecifierList.add(orderId);
                         break;
                     default:
