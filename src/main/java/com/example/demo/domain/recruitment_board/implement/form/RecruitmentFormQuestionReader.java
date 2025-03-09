@@ -15,4 +15,8 @@ public class RecruitmentFormQuestionReader {
     public List<RecruitmentFormQuestionInfo> getByBoarIdWithAnswerList(Long recruitmentBoardId) {
         return recruitmentFormQuestionRepository.getByBoardIdWithAnswerList(recruitmentBoardId);
     }
+
+    public List<Long> getEssentialListByRecruitmentBoardId(Long boardId) {
+        return recruitmentFormQuestionRepository.getEssentialListByRecruitmentBoardId(boardId);
+    }
 }
