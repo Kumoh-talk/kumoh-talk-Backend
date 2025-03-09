@@ -1,7 +1,6 @@
 package com.example.demo.infra.recruitment_board.entity;
 
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardAndFormInfo;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentFormQuestionInfo;
@@ -10,6 +9,7 @@ import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
+import com.example.demo.infra.recruitment_application.entity.RecruitmentApplication;
 import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentFormAnswerJpaRepository;
 import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentFormQuestionJpaRepository;
 import jakarta.persistence.*;
@@ -87,7 +87,7 @@ public class RecruitmentBoard extends BaseEntity implements CommentBoard {
     private List<RecruitmentBoardComment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<RecruitmentApplicant> applicantList = new ArrayList<>();
+    private List<RecruitmentApplication> applicationList = new ArrayList<>();
 
     @Builder
     public RecruitmentBoard(String title, String summary, String host, String content, RecruitmentBoardType type, RecruitmentBoardTag tag, Status status,
@@ -161,7 +161,7 @@ public class RecruitmentBoard extends BaseEntity implements CommentBoard {
         return RecruitmentBoardAndFormInfo.builder()
                 .board(toBoardInfoDomain())
                 .form(recruitmentFormQuestionList.stream()
-                        .map(RecruitmentFormQuestion::toDomain)
+                        .map(RecruitmentFormQuestion::toFormDomain)
                         .collect(Collectors.toList()))
                 .build();
     }
