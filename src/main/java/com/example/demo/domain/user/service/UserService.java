@@ -82,10 +82,10 @@ public class UserService {
         return userReader.getUserInfo(userId);
     }
 
-    public Optional<UserProfile> getUserProfile(Long userId) {
+    public UserProfile getUserProfile(Long userId) {
         // 프로필 정보를 만들어서 리턴
         this.validateUserExists(userId);
-        return userReader.getUserProfile(userId);
+        return userReader.getUserProfile(userId).get();
 //        return UserProfileResponse.create(this.validateUser(userId));
     }
 }

@@ -4,6 +4,9 @@ package com.example.demo.domain.user.api.controller;
 import com.example.demo.application.user.dto.request.CompleteRegistrationRequest;
 import com.example.demo.base.IntegrationTest;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
+import com.example.demo.domain.user_addtional_info.entity.UserAdditionalInfoData;
+import com.example.demo.domain.user_addtional_info.implement.UserAdditionalInfoWriter;
+import com.example.demo.domain.user_addtional_info.vo.StudentStatus;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
@@ -12,8 +15,12 @@ import com.example.demo.global.jwt.JwtUserClaim;
 import com.example.demo.global.utils.S3UrlUtil;
 import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.user.repository.UserJpaRepository;
+import com.example.demo.infra.user_additional_info.entity.UserAdditionalInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -52,6 +59,12 @@ public class UserControllerIntegrationTest extends IntegrationTest {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private UserAdditionalInfoWriter userAdditionalInfoWriter;
 
     @BeforeEach
     void setUp(){
@@ -209,15 +222,34 @@ public class UserControllerIntegrationTest extends IntegrationTest {
         void 성공_다른_사용자의_정보를_확인한다() throws Exception {
             // given
             Long id = savedUser.getId();
+            savedUser.setInitialInfo("testnAme", "tttt", "erwr");
+            UserAdditionalInfo request = UserAdditionalInfo.builder()
+                    .email("fakeEmail@")
+                    .department("Computer Science")
+                    .studentId(20000000)
+                    .grade(4)
+                    .studentStatus(StudentStatus.ENROLLED)
+                    .phoneNumber("01000000000")
+                    .isUpdated(true).build();
+            UserAdditionalInfoData a = UserAdditionalInfo.toUserAdditionalInfoData(request);
+            userAdditionalInfoWriter.createUserAdditionalInfo(id, a);
+            entityManager.flush();
+            entityManager.clear();
+
+
 
             // when & then
             mockMvc.perform(get("/api/v1/users/{id}", id))
                     .andDo(print())
-                    .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.name").value(savedUser.getName()))
                     .andExpect(jsonPath("$.data.nickname").value(savedUser.getNickname()))
                     .andExpect(jsonPath("$.data.profileImageUrl").value(savedUser.getProfileImageUrl()))
-                    .andExpect(jsonPath("$.data.userAdditionalProfile").value(savedUser.getUserAdditionalInfo()));
+                    .andExpect(jsonPath("$.data.userAdditionalProfile.studentStatus").value("재학"))
+                    .andExpect(jsonPath("$.data.userAdditionalProfile.department").value(savedUser.getUserAdditionalInfo().getDepartment()))
+                    .andExpect(jsonPath("$.data.userAdditionalProfile.grade").value(savedUser.getUserAdditionalInfo().getGrade()))
+                    .andExpect(jsonPath("$.data.userAdditionalProfile.studentId").value(savedUser.getUserAdditionalInfo().getStudentId()))
+                    .andExpect(status().isOk());
+
         }
 
         @Test

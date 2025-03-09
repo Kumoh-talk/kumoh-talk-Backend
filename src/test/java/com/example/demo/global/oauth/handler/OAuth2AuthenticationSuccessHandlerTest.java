@@ -1,7 +1,6 @@
 package com.example.demo.global.oauth.handler;
 
-
-import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.domain.token.entity.Token;
 import com.example.demo.fixture.user.UserFixtures;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
@@ -77,8 +76,8 @@ class OAuth2AuthenticationSuccessHandlerTest {
         when(userJpaRepository.save(any(User.class))).thenReturn(newUser);
 
         // jwtHandler.createTokens() 메서드 실행 시 지정한 토큰을 반환하도록 설정
-        TokenResponse tokenResponse = new TokenResponse(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
-//        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(tokenResponse);
+        Token token = new Token(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
+        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(token);
 
         // when
         successHandler.onAuthenticationSuccess(request, response, authentication);
@@ -105,8 +104,8 @@ class OAuth2AuthenticationSuccessHandlerTest {
         when(userJpaRepository.findByProviderAndProviderId(NAVER_OAUTH_PROVIDER, GENERAL_PROVIDER_ID)).thenReturn(Optional.ofNullable(existingUser));
 
         // jwtHandler.createTokens() 메서드 실행 시 지정한 토큰을 반환하도록 설정
-        TokenResponse tokenResponse = new TokenResponse(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
-//        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(tokenResponse);
+        Token token = new Token(DUMMY_ACCESS_TOKEN, DUMMY_REFRESH_TOKEN);
+        when(jwtHandler.createTokens(any(JwtUserClaim.class))).thenReturn(token);
 
         // when
         successHandler.onAuthenticationSuccess(request, response, authentication);

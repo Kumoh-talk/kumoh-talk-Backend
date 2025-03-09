@@ -95,8 +95,17 @@ public class UserController implements UserApi {
      */
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseBody<UserProfileResponse>> getUserProfile(@PathVariable Long userId) {
-        Optional<UserProfile> userProfile = userService.getUserProfile(userId);
+        System.out.println("응애");
 
-        return ResponseEntity.ok(createSuccessResponse(UserProfileResponse.toUserProfileResponse(userProfile.get())));
+        UserProfile userProfile = userService.getUserProfile(userId);
+
+        UserProfileResponse b = UserProfileResponse.toUserProfileResponse(userProfile);
+        System.out.println(b.name());
+        System.out.println(b.userAdditionalProfile().getDepartment());
+        System.out.println(b.userAdditionalProfile().getStudentId());
+        System.out.println(b.profileImageUrl());
+        System.out.println(b.nickname());
+
+        return ResponseEntity.ok(createSuccessResponse(UserProfileResponse.toUserProfileResponse(userProfile)));
     }
 }

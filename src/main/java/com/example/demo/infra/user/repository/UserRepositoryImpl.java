@@ -121,6 +121,7 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public Optional<UserProfile> getUserProfile(Long userId) {
 		Optional<User> user = userJpaRepository.findById(userId);
+
 		return user.map(profile -> UserProfile.builder()
 				.name(profile.getName())
 				.nickname(profile.getNickname())
