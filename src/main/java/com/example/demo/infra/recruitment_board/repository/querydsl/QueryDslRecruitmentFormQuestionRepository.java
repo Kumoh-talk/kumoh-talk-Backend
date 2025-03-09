@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface QueryDslRecruitmentFormQuestionRepository {
     List<RecruitmentFormQuestion> findByBoardIdWithAnswerList(Long recruitmentBoardId);
+
+    List<Long> findEssentialListByRecruitmentBoardId(Long boardId);
 }
