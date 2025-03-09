@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Component
 public class UserAdditionalInfoScheduler {
 
-    private final UserAdditionalInfoJpaRepository userAdditionalInfoJpaRepository;;
+    private final UserAdditionalInfoJpaRepository userAdditionalInfoJpaRepository;
 
     // 3월 첫 월요일에 실행
     @Scheduled(cron = "0 0 0 1-7 3 ?")
