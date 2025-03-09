@@ -13,5 +13,5 @@ public interface RecruitmentFormAnswerJpaRepository extends JpaRepository<Recrui
     @Query(value = "DELETE FROM recruitment_form_answers c WHERE c.id IN :ids", nativeQuery = true)
     void hardDeleteAnswersByIds(List<Long> ids);
 
-    Optional<RecruitmentFormAnswer> findByRecruitmentFormQuestion_IdAndNumber(Long recruitmentFormQuestionId, Integer number);
+    Optional<RecruitmentFormAnswer> findByRecruitmentFormQuestionIdAndNumber(Long recruitmentFormQuestionId, Integer number);
 }

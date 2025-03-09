@@ -18,6 +18,11 @@ public class RecruitmentFormQuestionRepositoryImpl implements RecruitmentFormQue
     @Override
     public List<RecruitmentFormQuestionInfo> getByBoardIdWithAnswerList(Long recruitmentBoardId) {
         return recruitmentFormQuestionJpaRepository.findByBoardIdWithAnswerList(recruitmentBoardId).stream()
-                .map(RecruitmentFormQuestion::toDomain).collect(Collectors.toList());
+                .map(RecruitmentFormQuestion::toFormDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> getEssentialListByRecruitmentBoardId(Long boardId) {
+        return recruitmentFormQuestionJpaRepository.findEssentialListByRecruitmentBoardId(boardId);
     }
 }
