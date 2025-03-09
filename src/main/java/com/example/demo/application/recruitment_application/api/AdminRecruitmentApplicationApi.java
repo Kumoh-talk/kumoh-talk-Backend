@@ -1,8 +1,9 @@
-package com.example.demo.domain.recruitment_application.controller.swagger;
+package com.example.demo.application.recruitment_application.api;
 
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicantInfoResponse;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
@@ -23,17 +24,18 @@ public interface AdminRecruitmentApplicationApi {
             summary = "관리자 전용 모집 게시물의 신청인 페이지 조회",
             description = "관리자가 recruitmentBoardId에 해당하는 모집 게시물의 신청인 페이지를 조회합니다."
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentApplicantPageResponse.class)))
+    @ApiResponse(content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = RecruitmentApplicantInfoResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = RecruitmentApplicantPageResponse.class,
+                    responseClass = GlobalPageResponse.class,
                     description = "관리자의 신청인 페이지 조회 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.BOARD_NOT_FOUND),
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.ACCESS_DENIED)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentApplicantPageResponse>> getApplicantListByAdmin(
+    ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentApplicantInfoResponse>>> getApplicantListByAdmin(
             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable Long recruitmentBoardId);
 

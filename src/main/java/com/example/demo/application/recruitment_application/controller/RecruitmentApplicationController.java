@@ -1,16 +1,20 @@
-package com.example.demo.domain.recruitment_application.controller;
+package com.example.demo.application.recruitment_application.controller;
 
-import com.example.demo.domain.recruitment_application.controller.swagger.RecruitmentApplicationApi;
-import com.example.demo.domain.recruitment_application.domain.dto.request.RecruitmentApplicationRequest;
-import com.example.demo.domain.recruitment_application.domain.dto.response.MyRecruitmentApplicationPageResponse;
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
+import com.example.demo.application.recruitment_application.api.RecruitmentApplicationApi;
+import com.example.demo.application.recruitment_application.dto.request.RecruitmentApplicationRequest;
+import com.example.demo.application.recruitment_application.dto.response.MyRecruitmentApplicationInfoResponse;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicantInfoResponse;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicationResponse;
+import com.example.demo.domain.recruitment_application.entity.MyRecruitmentApplicationInfo;
+import com.example.demo.domain.recruitment_application.entity.RecruitmentApplicationInfo;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -35,11 +39,12 @@ public class RecruitmentApplicationController implements RecruitmentApplicationA
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @PostMapping("/{recruitmentBoardId}")
-    public ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> createApplication(
+    public ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> postApplication(
             Long userId,
             @PathVariable Long recruitmentBoardId,
             @RequestBody @Valid RecruitmentApplicationRequest request) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.createApplication(userId, recruitmentBoardId, request)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentApplicationResponse.from(recruitmentApplicationService.postApplication(request.toDomain(null, userId, recruitmentBoardId)))));
     }
 
     /**
@@ -54,11 +59,15 @@ public class RecruitmentApplicationController implements RecruitmentApplicationA
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/{recruitmentBoardId}")
-    public ResponseEntity<ResponseBody<RecruitmentApplicantPageResponse>> getApplicantList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentApplicantInfoResponse>>> getApplicationList(
             Long userId,
             @PathVariable Long recruitmentBoardId,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicantList(userId, pageable, recruitmentBoardId, false)));
+        Page<RecruitmentApplicationInfo> recruitmentApplicationInfoPage = recruitmentApplicationService.getApplicationList(userId, pageable, recruitmentBoardId, false);
+
+        return ResponseEntity.ok(createSuccessResponse(
+                GlobalPageResponse.create(recruitmentApplicationInfoPage.map(RecruitmentApplicantInfoResponse::from))
+        ));
     }
 
     /**
@@ -75,7 +84,8 @@ public class RecruitmentApplicationController implements RecruitmentApplicationA
             Long userId,
             @PathVariable Long recruitmentBoardId,
             @PathVariable Long applicantId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicationInfo(userId, recruitmentBoardId, applicantId, false)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentApplicationResponse.from(recruitmentApplicationService.getApplicationInfo(userId, recruitmentBoardId, applicantId, false))));
     }
 
     /**
@@ -85,11 +95,12 @@ public class RecruitmentApplicationController implements RecruitmentApplicationA
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @PatchMapping("/{applicantId}")
-    public ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> updateApplication(
+    public ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> patchApplication(
             Long userId,
             @PathVariable Long applicantId,
             @RequestBody @Valid RecruitmentApplicationRequest request) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.updateApplication(userId, applicantId, request)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentApplicationResponse.from(recruitmentApplicationService.patchApplication(request.toDomain(applicantId, userId, null)))));
     }
 
     /**
@@ -118,10 +129,13 @@ public class RecruitmentApplicationController implements RecruitmentApplicationA
     @AssignUserId
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ACTIVE_USER')")
     @GetMapping("/my-applications")
-    public ResponseEntity<ResponseBody<MyRecruitmentApplicationPageResponse>> getUserApplicationList(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<MyRecruitmentApplicationInfoResponse>>> getUserApplicationList(
             Long userId,
             @RequestParam RecruitmentBoardType recruitmentBoardType,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getUserApplicationList(userId, pageable, recruitmentBoardType)));
+        Page<MyRecruitmentApplicationInfo> myRecruitmentApplicationInfoPage = recruitmentApplicationService.getUserApplicationList(userId, pageable, recruitmentBoardType);
+
+        return ResponseEntity.ok(createSuccessResponse(
+                GlobalPageResponse.create(myRecruitmentApplicationInfoPage.map(MyRecruitmentApplicationInfoResponse::from))));
     }
 }

@@ -1,11 +1,14 @@
-package com.example.demo.domain.recruitment_application.controller;
+package com.example.demo.application.recruitment_application.controller;
 
-import com.example.demo.domain.recruitment_application.controller.swagger.AdminRecruitmentApplicationApi;
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
+import com.example.demo.application.recruitment_application.api.AdminRecruitmentApplicationApi;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicantInfoResponse;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicationResponse;
+import com.example.demo.domain.recruitment_application.entity.RecruitmentApplicationInfo;
 import com.example.demo.domain.recruitment_application.service.RecruitmentApplicationService;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -35,10 +38,14 @@ public class AdminRecruitmentApplicationController implements AdminRecruitmentAp
      */
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/{recruitmentBoardId}")
-    public ResponseEntity<ResponseBody<RecruitmentApplicantPageResponse>> getApplicantListByAdmin(
+    public ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentApplicantInfoResponse>>> getApplicantListByAdmin(
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable Long recruitmentBoardId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicantList(null, pageable, recruitmentBoardId, true)));
+        Page<RecruitmentApplicationInfo> recruitmentApplicationInfoPage = recruitmentApplicationService.getApplicationList(null, pageable, recruitmentBoardId, true);
+
+        return ResponseEntity.ok(createSuccessResponse(
+                GlobalPageResponse.create(recruitmentApplicationInfoPage.map(RecruitmentApplicantInfoResponse::from))
+        ));
     }
 
     /**
@@ -53,6 +60,7 @@ public class AdminRecruitmentApplicationController implements AdminRecruitmentAp
     public ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> getApplicationInfoByApplicantIdByAdmin(
             @PathVariable Long recruitmentBoardId,
             @PathVariable Long applicantId) {
-        return ResponseEntity.ok(createSuccessResponse(recruitmentApplicationService.getApplicationInfo(null, recruitmentBoardId, applicantId, true)));
+        return ResponseEntity.ok(createSuccessResponse(
+                RecruitmentApplicationResponse.from(recruitmentApplicationService.getApplicationInfo(null, recruitmentBoardId, applicantId, true))));
     }
 }
