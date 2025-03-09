@@ -6,9 +6,6 @@ import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.comment.repository.CommentRepository;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.repository.UserJpaRepository;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.infra.base.EntityFinder;
 import com.example.demo.infra.comment.entity.Comment;
 import com.example.demo.infra.comment.repository.jpa.CommentJpaRepository;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;
@@ -31,7 +28,6 @@ public abstract class AbstractCommentRepositoryImpl<T> implements CommentReposit
     protected final Class<? extends CommentBoard> boardClass;
     protected final Class<? extends Comment> commentClass;
 
-    protected final EntityFinder entityFinder;
 
     @Override
     public Optional<CommentInfo> getById(Long id) {
@@ -74,12 +70,12 @@ public abstract class AbstractCommentRepositoryImpl<T> implements CommentReposit
 
     @Override
     public CommentInfo post(CommentInfo commentInfo) {
-        User commentUser = entityFinder.findUserById(commentInfo.getCommentUserInfo().getUserId());
-        CommentBoard commentBoard = findCommentBoardById(commentInfo.getBoardId());
+        User commentUser = userJpaRepository.findById(commentInfo.getCommentUserInfo().getUserId()).get();
+        CommentBoard commentBoard = commentBoardJpaRepository.doFindById(commentInfo.getBoardId()).get();
 
         Comment parentComment = null;
         if (commentInfo.getGroupId() != null) {
-            parentComment = findCommentById(commentInfo.getGroupId());
+            parentComment = commentJpaRepository.doFindById(commentInfo.getGroupId()).get();
         }
 
         return commentJpaRepository.doSave(commentInfo, commentUser, commentBoard, parentComment).toCommentInfoDomain();
@@ -87,26 +83,14 @@ public abstract class AbstractCommentRepositoryImpl<T> implements CommentReposit
 
     @Override
     public void delete(CommentInfo commentInfo) {
-        commentJpaRepository.doDelete(findCommentById(commentInfo.getCommentId()));
+        commentJpaRepository.doDelete(commentJpaRepository.doFindById(commentInfo.getCommentId()).get());
     }
 
     @Override
     public Optional<CommentInfo> patch(CommentInfo originComment, CommentInfo newComment) {
-        Comment origin = findCommentById(originComment.getCommentId());
+        Comment origin = commentJpaRepository.doFindById(originComment.getCommentId()).get();
         origin.changeContent(newComment.getContent());
 
         return Optional.of(origin.toCommentInfoDomain());
-    }
-
-    protected CommentBoard findCommentBoardById(Long boardId) {
-        CommentBoard board = entityFinder.findById(boardClass, boardId);
-        return board != null ? board : commentBoardJpaRepository.doFindById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-    }
-
-    protected Comment findCommentById(Long commentId) {
-        Comment comment = entityFinder.findById(commentClass, commentId);
-        return comment != null ? comment : commentJpaRepository.doFindById(commentId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
     }
 }
