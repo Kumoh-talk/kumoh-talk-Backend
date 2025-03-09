@@ -1,11 +1,12 @@
-package com.example.demo.domain.recruitment_application.controller.swagger;
+package com.example.demo.application.recruitment_application.api;
 
-import com.example.demo.domain.recruitment_application.domain.dto.request.RecruitmentApplicationRequest;
-import com.example.demo.domain.recruitment_application.domain.dto.response.MyRecruitmentApplicationPageResponse;
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicantPageResponse;
-import com.example.demo.domain.recruitment_application.domain.dto.response.RecruitmentApplicationResponse;
+import com.example.demo.application.recruitment_application.dto.request.RecruitmentApplicationRequest;
+import com.example.demo.application.recruitment_application.dto.response.MyRecruitmentApplicationInfoResponse;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicantInfoResponse;
+import com.example.demo.application.recruitment_application.dto.response.RecruitmentApplicationResponse;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.global.base.dto.ResponseBody;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
@@ -47,7 +48,7 @@ public interface RecruitmentApplicationApi {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> createApplication(
+    ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> postApplication(
             @Parameter(hidden = true) Long userId,
             @PathVariable Long recruitmentBoardId,
             @RequestBody @Valid RecruitmentApplicationRequest request);
@@ -56,17 +57,18 @@ public interface RecruitmentApplicationApi {
             summary = "모집 게시물의 신청인 페이지 조회",
             description = "recruitmentBoardId에 해당하는 모집 게시물의 신청인 페이지를 조회합니다."
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentApplicantPageResponse.class)))
+    @ApiResponse(content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = RecruitmentApplicantInfoResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = RecruitmentApplicantPageResponse.class,
+                    responseClass = GlobalPageResponse.class,
                     description = "신청인 페이지 조회 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.BOARD_NOT_FOUND),
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.ACCESS_DENIED)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentApplicantPageResponse>> getApplicantList(
+    ResponseEntity<ResponseBody<GlobalPageResponse<RecruitmentApplicantInfoResponse>>> getApplicationList(
             @Parameter(hidden = true) Long userId,
             @PathVariable Long recruitmentBoardId,
             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
@@ -113,7 +115,7 @@ public interface RecruitmentApplicationApi {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
             }
     )
-    ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> updateApplication(
+    ResponseEntity<ResponseBody<RecruitmentApplicationResponse>> patchApplication(
             @Parameter(hidden = true) Long userId,
             @PathVariable Long applicantId,
             @RequestBody @Valid RecruitmentApplicationRequest request);
@@ -139,16 +141,17 @@ public interface RecruitmentApplicationApi {
             summary = "페이지 번호 방식 사용자 신청서 페이지 조회",
             description = "페이지 번호를 통해 사용자의 신청서 페이지를 조회합니다."
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = MyRecruitmentApplicationPageResponse.class)))
+    @ApiResponse(content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = MyRecruitmentApplicationInfoResponse.class)))
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
-                    responseClass = MyRecruitmentApplicationPageResponse.class,
+                    responseClass = GlobalPageResponse.class,
                     description = "신청서 페이지 조회 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND)
             }
     )
-    ResponseEntity<ResponseBody<MyRecruitmentApplicationPageResponse>> getUserApplicationList(
+    ResponseEntity<ResponseBody<GlobalPageResponse<MyRecruitmentApplicationInfoResponse>>> getUserApplicationList(
             @Parameter(hidden = true) Long userId,
             @Parameter(description = "모집 게시물 타입(study, project, mentoring)", example = "study") @RequestParam RecruitmentBoardType recruitmentBoardType,
             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
