@@ -1,4 +1,4 @@
-package com.example.demo.infra.board.Repository;
+package com.example.demo.infra.board.repository;
 
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface BoardJpaRepository extends JpaRepository<Board, Long>, CommonBoardRepository, BoardDslRepository {

@@ -1,65 +1,44 @@
 package com.example.demo.domain.board.service.service;
 
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
-import com.example.demo.infra.board.Repository.LikeRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.infra.board.entity.Like;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserJpaRepository;
+import com.example.demo.domain.board.service.implement.BoardValidator;
+import com.example.demo.domain.board.service.implement.LikeHandler;
+import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-@Component
+import lombok.RequiredArgsConstructor;
+
+@Service
 @RequiredArgsConstructor
 public class LikeService {
-    private final LikeRepository likeRepository;
-    private final BoardJpaRepository boardJpaRepository;
-    private final UserJpaRepository userJpaRepository;
-    private final LikeNotificationService likeNotificationService;
+	private final LikeHandler likeHandler;
+	private final UserReader userReader;
+	private final BoardValidator boardValidator;
 
-    @Transactional
-    public void increaseLike(Long userId, Long boardId) {
-        Board board = (Board) boardJpaRepository.findByIdWithUser(boardId).orElseThrow
-                (() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        User user = validateUser(userId);
-        if (likeRepository.existsByBoardIdAndUserId(boardId, userId)) {
-            throw new ServiceException(ErrorCode.USER_ALREADY_LIKE_BOARD);
-        }
-        Like like = new Like(user, board);
-        likeRepository.save(like);
-        likeNotificationService.saveLikeNotification(like);
-    }
+	public void likeBoard(Long userId, Long boardId) {
+		boardValidator.validateExistBoard(boardId);
+		userReader.findUser(userId)
+			.orElseThrow(() -> new ServiceException(ErrorCode.LIKE_USER_NOT_FOUND));
+		likeHandler.validateExistLike(boardId, userId);
+		likeHandler.increaseLike(userId, boardId);
+		// likeNotificationHandler.saveLikeNotification(); TODO : LikeNotificationHandler 구현 필요
+	}
 
+	public GlobalPageResponse<BoardTitleInfo> getLikes(Long userId, Pageable pageable) {
+		return likeHandler.getLikes(userId, pageable);
+	}
 
-    @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfo> getLikes(Long userId, Pageable pageable) {
-        return GlobalPageResponse.create(likeRepository.findBoardsByUserId(userId, pageable));
-    }
+	public void unlikeBoard(Long userId, Long boardId) {
+		boardValidator.validateExistBoard(boardId);
+		userReader.findUser(userId)
+			.orElseThrow(() -> new ServiceException(ErrorCode.LIKE_USER_NOT_FOUND));
+		likeHandler.validateNonExistLike(boardId, userId);
 
-    private User validateUser(Long userId) {
-        return userJpaRepository.findById(userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.LIKE_USER_NOT_FOUND));
-    }
-
-    private Board validateBoard(Long boardId) {
-        return boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-    }
-
-    @Transactional
-    public void decreaseLike(Long userId, Long boardId) {
-        Board board = validateBoard(boardId);
-        User user = validateUser(userId);
-        Like like = likeRepository.findByBoardIdAndUserId(boardId, userId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_LIKE_BOARD));
-        board.getLikes().remove(like);
-        user.getLikes().remove(like);
-        likeRepository.delete(like);
-    }
+		likeHandler.decreaseLike(userId, boardId);
+	}
 }

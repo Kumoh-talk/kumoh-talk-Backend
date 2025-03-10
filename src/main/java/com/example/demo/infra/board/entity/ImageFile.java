@@ -35,7 +35,6 @@ public class ImageFile extends BaseEntity {
 
     public static ImageFile of(String url,Board board){
         ImageFile imageFile = new ImageFile(url);
-        board.getImageFiles().add(imageFile);
         imageFile.board = board;
         return imageFile;
     }

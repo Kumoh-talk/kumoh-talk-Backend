@@ -63,8 +63,6 @@ public class User extends BaseEntity {
 //    @JoinColumn(name = "news_letter_id")
 //    private Newsletter newsletter;
 
-    @OneToMany(mappedBy = "user")
-    private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<BoardComment> boardComments = new ArrayList<>();
@@ -72,8 +70,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<RecruitmentBoardComment> recruitmentBoardComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SeminarApplication> seminarApplications = new ArrayList<>();
@@ -154,5 +150,9 @@ public class User extends BaseEntity {
         if (obj == null || getClass() != obj.getClass()) return false;
         User user = (User) obj;
         return id != null && id.equals(user.id);
+    }
+
+    public User(Long id) {
+        this.id = id;
     }
 }

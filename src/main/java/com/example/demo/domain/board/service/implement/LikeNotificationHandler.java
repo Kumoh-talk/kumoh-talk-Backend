@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service.service;
+package com.example.demo.domain.board.service.implement;
 
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.domain.notification.domain.entity.Notification;
@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
-public class LikeNotificationService {
+public class LikeNotificationHandler {
     private final NotificationRepository notificationRepository;
 
     @Async
@@ -28,9 +28,12 @@ public class LikeNotificationService {
         return CompletableFuture.completedFuture(null);
     }
 
+
     @Async
     @Transactional
     public void deleteLikeNotification(Long id) {
         notificationRepository.deleteByInvokerIdAndInvokerType(id, NotificationType.BOARD_LIKE);
     }
+
+
 }

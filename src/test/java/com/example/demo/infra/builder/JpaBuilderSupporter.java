@@ -8,8 +8,8 @@ import com.example.demo.domain.comment.repository.RecruitmentBoardCommentReposit
 import com.example.demo.domain.notification.repository.NotificationRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.repository.UserJpaRepository;
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
-import com.example.demo.infra.board.Repository.LikeRepository;
+import com.example.demo.infra.board.repository.BoardJpaRepository;
+import com.example.demo.infra.board.repository.LikeJpaRepository;
 import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
 import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
 
@@ -22,7 +22,7 @@ public class JpaBuilderSupporter {
 	private UserJpaRepository userJpaRepository;
 
 	@Autowired
-	private LikeRepository likeRepository;
+	private LikeJpaRepository likeJpaRepository;
 
 	@Autowired
 	private RecruitmentBoardRepository recruitmentBoardRepository;
@@ -50,8 +50,8 @@ public class JpaBuilderSupporter {
 		return userJpaRepository;
 	}
 
-	public LikeRepository likeRepository() {
-		return likeRepository;
+	public LikeJpaRepository likeRepository() {
+		return likeJpaRepository;
 	}
 
 	public RecruitmentBoardRepository recruitmentBoardRepository() {
