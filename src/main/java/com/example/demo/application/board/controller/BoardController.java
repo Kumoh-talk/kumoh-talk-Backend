@@ -10,9 +10,8 @@ import com.example.demo.application.board.dto.response.BoardInfoResponse;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.usecase.BoardService;
+import com.example.demo.domain.board.service.service.BoardService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -83,8 +82,8 @@ public class BoardController implements BoardApi {
     public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> findBoardPageList(
         @RequestParam(defaultValue = "SEMINAR") BoardType boardType,
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
-            boardService.findPublishedBoardList(boardType, GlobalPageableDto.create(pageable)))));
+        return ResponseEntity.ok(createSuccessResponse(
+            boardService.findPublishedBoardList(boardType, pageable)));
     }
 
     @AssignUserId
@@ -93,8 +92,8 @@ public class BoardController implements BoardApi {
     public ResponseEntity<ResponseBody<GlobalPageResponse<DraftBoardTitle>>> findDraftBoardPageList(
         Long userId,
         @PageableDefault(page=0, size=10,sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
-            boardService.findDraftBoardList(userId,GlobalPageableDto.create(pageable)))));
+        return ResponseEntity.ok(createSuccessResponse(
+            boardService.findDraftBoardList(userId,pageable)));
     }
 
     @AssignUserId
@@ -104,8 +103,8 @@ public class BoardController implements BoardApi {
         Long userId,
         @RequestParam(defaultValue = "SEMINAR") BoardType boardType,
         @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
-            boardService.findMyBoardPageList(userId,boardType,GlobalPageableDto.create(pageable)))));
+        return ResponseEntity.ok(createSuccessResponse(
+            boardService.findMyBoardPageList(userId,boardType,pageable)));
     }
 
 }

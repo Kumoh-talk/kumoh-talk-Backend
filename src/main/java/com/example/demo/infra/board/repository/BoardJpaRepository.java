@@ -1,4 +1,4 @@
-package com.example.demo.infra.board.Repository;
+package com.example.demo.infra.board.repository;
 
 import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
 import com.example.demo.domain.recruitment_board.repository.CommentBoardJpaRepository;

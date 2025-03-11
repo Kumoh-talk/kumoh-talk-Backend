@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.application.board.api.AdminBoardApi;
-import com.example.demo.domain.board.service.usecase.BoardAdminUseCase;
+import com.example.demo.domain.board.service.service.BoardAdminService;
 import com.example.demo.global.base.dto.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 public class AdminBoardController implements AdminBoardApi {
-	private final BoardAdminUseCase boardAdminUseCase;
+	private final BoardAdminService boardAdminService;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') and isAuthenticated()")
 	@DeleteMapping("/{boardId}")
 	public ResponseEntity<ResponseBody<Void>> deleteBoard(@PathVariable Long boardId) {
-		return ResponseEntity.ok(createSuccessResponse(boardAdminUseCase.deleteBoard(boardId)));
+		return ResponseEntity.ok(createSuccessResponse(boardAdminService.deleteBoard(boardId)));
 	}
 }

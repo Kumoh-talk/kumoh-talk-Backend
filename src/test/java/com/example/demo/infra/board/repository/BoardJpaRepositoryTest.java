@@ -1,4 +1,4 @@
-package com.example.demo.infra.board.Repository;
+package com.example.demo.infra.board.repository;
 
 import static com.example.demo.fixture.user.UserFixtures.*;
 import static com.example.demo.infra.fixture.board.BoardFixtures.*;

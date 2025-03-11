@@ -77,12 +77,12 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 				board.user.nickname,
 				board.boardType,
 				board.viewCount,
-				like.countDistinct(),
+				like.id.countDistinct(),
 				board.headImageUrl,
 				board.createdAt
 			))
 			.from(board)
-			.leftJoin(board.likes, like)
+			.leftJoin(like).on(like.board.eq(board)) // Like에서 Board를 참조
 			.where(buildWhereCondition(boardType, board))
 			.groupBy(board.id, board.title, board.user.nickname, board.boardType, board.createdAt);
 	}
@@ -91,7 +91,7 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 		return queryFactory
 			.select(board.id.countDistinct())
 			.from(board)
-			.leftJoin(board.likes, like)
+			.leftJoin(like).on(like.board.eq(board)) // Like에서 Board를 참조
 			.where(buildWhereCondition(boardType, board))
 			.groupBy(board.id, board.title, board.user.nickname, board.boardType, board.createdAt);
 	}
@@ -106,6 +106,7 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 			.limit(pageable.getPageSize())
 			.fetch();
 	}
+
 
 	//TODO : 최적화 필요
 	public Page<DraftBoardTitle> findDraftBoardByPage(Long userId, Pageable pageable) {
@@ -139,21 +140,19 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 				user.nickname,
 				board.boardType,
 				board.viewCount,
-				like.countDistinct(),
+				like.id.countDistinct(),
 				board.headImageUrl,
 				board.createdAt
 			))
 			.from(board)
-			.leftJoin(board.likes, like)
+			.leftJoin(like).on(like.board.eq(board)) // Like에서 Board를 참조
 			.join(board.user, user)
 			.where(
 				board.status.eq(Status.PUBLISHED)
 					.and(board.user.id.eq(userId))
 					.and(board.boardType.eq(boardType))
 			)
-			.groupBy(
-				board.id, board.title, user.nickname, board.boardType, board.createdAt
-			);
+			.groupBy(board.id, board.title, user.nickname, board.boardType, board.createdAt);
 
 		// 페이징 적용
 		QueryResults<BoardTitleInfo> results = query
@@ -164,5 +163,14 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
 	}
 
+
+	@Override
+	public String getAttachFileUrl(Long boardId) {
+		return queryFactory
+			.select(board.headImageUrl)
+			.from(board)
+			.where(board.id.eq(boardId))
+			.fetchOne();
+	}
 
 }

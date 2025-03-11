@@ -2,27 +2,22 @@ package com.example.demo.domain.board.service.implement;
 
 import java.util.Optional;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
-import com.example.demo.application.board.dto.request.BoardUpdateRequest;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.domain.board.service.repository.BoardRepository;
+import com.example.demo.global.base.dto.page.GlobalPageResponse;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 public class BoardReader {
-    private final BoardJpaRepository boardJpaRepository;
     private final BoardRepository boardRepository;
 
     @Transactional(readOnly = true)
@@ -31,27 +26,22 @@ public class BoardReader {
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardPageList(BoardType boardType, GlobalPageableDto pageableDto) {
-        pageableDto.setPage(boardRepository.findBoardTitleInfoPage(boardType, pageableDto));
-        return pageableDto;
+    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardPageList(BoardType boardType, Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findBoardTitleInfoPage(boardType, pageable));
+    }
+
+    public GlobalPageResponse<DraftBoardTitle> findDraftBoardPageList(Long userId, Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findDraftBoardByPage(userId, pageable));
     }
 
     @Transactional(readOnly = true)
-    public Board validateBoard(Long boardId) {
-        return boardJpaRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-    }
-
-    public GlobalPageableDto<DraftBoardTitle> findDraftBoardPageList(Long userId, GlobalPageableDto pageableDto) {
-        pageableDto.setPage(boardRepository.findDraftBoardByPage(userId, pageableDto));
-        return pageableDto;
-    }
-
-    @Transactional(readOnly = true)
-    public GlobalPageableDto<BoardTitleInfo> findPublishedBoardListByUser(Long userId,
+    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardListByUser(Long userId,
         BoardType boardType,
-        GlobalPageableDto pageableDto) {
-        pageableDto.setPage(boardJpaRepository.findPublishedBoardListByUser(userId,boardType,pageableDto.getPageable()));
-        return pageableDto;
+        Pageable pageable) {
+        return GlobalPageResponse.create(boardRepository.findPublishedBoardListByUser(userId,boardType,pageable));
+    }
+
+    public String readBoardAttachFileUrl(Long boardId) {
+        return boardRepository.getBoardAttachFileUrl(boardId);
     }
 }

@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode
 public class BoardInfo {
 	private final Long boardId;
 	private final BoardContent boardContent;

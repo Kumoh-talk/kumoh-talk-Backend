@@ -1,9 +1,6 @@
 package com.example.demo.domain.comment.implement.board;
 
-import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,16 +11,12 @@ public class CommentRecruitmentBoardReaderImpl implements GenericCommentBoardRea
 
     // TODO : RecruitmentBoard 리팩토링 후 다시 손 봐야함
     @Override
-    public Long getById(Long id) {
-        CommentBoard recruitmentBoard = recruitmentBoardRepository.doFindById(id)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        return recruitmentBoard.getId();
+    public boolean existsById(Long id) {
+        return recruitmentBoardRepository.doFindById(id).isPresent();
     }
 
     @Override
-    public Long getByIdWithUser(Long id) {
-        CommentBoard recruitmentBoard = recruitmentBoardRepository.findByIdWithUser(id)
-                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        return recruitmentBoard.getId();
+    public boolean existsByIdWithUser(Long id) {
+        return recruitmentBoardRepository.findByIdWithUser(id).isPresent();
     }
 }

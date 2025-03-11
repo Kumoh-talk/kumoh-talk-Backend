@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.application.board.api.LikeApi;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.domain.board.service.usecase.LikeUseCase;
+import com.example.demo.domain.board.service.service.LikeService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -27,13 +27,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class LikeController implements LikeApi {
-	private final LikeUseCase likeUseCase;
+	private final LikeService likeService;
 
 	@AssignUserId
 	@PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
 	@PostMapping("/v1/boards/{boardId}/likes")
 	public ResponseEntity<ResponseBody<Void>> saveLike(Long userId,@PathVariable Long boardId) {
-		likeUseCase.likeBoard(userId,boardId);
+		likeService.likeBoard(userId,boardId);
 		return ResponseEntity.ok(createSuccessResponse());
 	}
 
@@ -41,7 +41,7 @@ public class LikeController implements LikeApi {
 	@PreAuthorize("hasRole('ROLE_USER') and isAuthenticated()")
 	@DeleteMapping("/v1/boards/{boardId}/likes")
 	public ResponseEntity<ResponseBody<Void>> deleteLike(Long userId,@PathVariable Long boardId) {
-		likeUseCase.unlikeBoard(userId,boardId);
+		likeService.unlikeBoard(userId,boardId);
 		return ResponseEntity.ok(createSuccessResponse());
 	}
 
@@ -52,6 +52,7 @@ public class LikeController implements LikeApi {
 	public ResponseEntity<ResponseBody<GlobalPageResponse<BoardTitleInfo>>> getLikes(
 		Long userId,
 		@PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-		return ResponseEntity.ok(createSuccessResponse(likeUseCase.getLikes(userId,pageable)));
+		return ResponseEntity.ok(createSuccessResponse(
+			likeService.getLikes(userId, pageable)));
 	}
 }

@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.controller;
+package com.example.demo.application.board.integration;
 
 import static com.example.demo.fixture.board.BoardDomainFixtures.*;
 import static com.example.demo.infra.fixture.board.BoardFixtures.*;
@@ -130,7 +130,6 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 				softly.assertThat(boardContent.getBoardType()).isEqualTo(publishedBOARD.getBoardType());
 				softly.assertThat(boardContent.getBoardStatus()).isEqualTo(publishedBOARD.getStatus());
 				softly.assertThat(boardInfo.getViewCount()).isEqualTo(publishedBOARD.getViewCount());
-				softly.assertThat(boardInfo.getLikeCount()).isEqualTo(publishedBOARD.getLikes().size());
 				softly.assertThat(boardInfo.getCreatedAt()).isEqualTo(publishedBOARD.getCreatedAt());
 				softly.assertThat(boardInfo.getUpdatedAt()).isEqualTo(publishedBOARD.getUpdatedAt());
 
@@ -169,7 +168,6 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 				softly.assertThat(boardContent.getBoardType()).isEqualTo(draftBoard.getBoardType());
 				softly.assertThat(boardContent.getBoardStatus()).isEqualTo(draftBoard.getStatus());
 				softly.assertThat(boardInfo.getViewCount()).isEqualTo(draftBoard.getViewCount());
-				softly.assertThat(boardInfo.getLikeCount()).isEqualTo(draftBoard.getLikes().size());
 				softly.assertThat(boardInfo.getCreatedAt()).isEqualTo(draftBoard.getCreatedAt());
 				softly.assertThat(boardInfo.getUpdatedAt()).isEqualTo(draftBoard.getUpdatedAt());
 				softly.assertThat(userTarget.getUserId()).isEqualTo(savedUser.getId());
