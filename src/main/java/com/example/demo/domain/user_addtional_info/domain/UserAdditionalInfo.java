@@ -4,7 +4,6 @@ import com.example.demo.domain.user_addtional_info.domain.dto.request.CreateUser
 import com.example.demo.domain.user_addtional_info.domain.vo.StudentStatus;
 import com.example.demo.global.base.domain.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -26,6 +25,7 @@ public class UserAdditionalInfo extends BaseEntity {
     private String department; // 정해져있음.
     private int studentId;
     private int grade;
+    @Enumerated(EnumType.STRING)
     private StudentStatus studentStatus;
     private String phoneNumber;
     private boolean isUpdated;
