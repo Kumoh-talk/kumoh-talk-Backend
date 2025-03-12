@@ -26,7 +26,7 @@ public abstract class AbstractCommentService {
 
     @Transactional(readOnly = true)
     public List<CommentInfo> getCommentsByBoardId(Long boardId) {
-        if (commentBoardReader.existsById(boardId)) {
+        if (!commentBoardReader.existsById(boardId)) {
             throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
         }
 
@@ -43,7 +43,7 @@ public abstract class AbstractCommentService {
 
     @Transactional
     public CommentInfo postComment(CommentInfo commentInfo, NotificationType notificationType) {
-        if (commentBoardReader.existsByIdWithUser(commentInfo.getBoardId())) {
+        if (!commentBoardReader.existsByIdWithUser(commentInfo.getBoardId())) {
             throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
         }
         userReader.findUser(commentInfo.getCommentUserInfo().getUserId())
