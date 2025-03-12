@@ -1,4 +1,4 @@
-package com.example.demo.infra.board.Repository;
+package com.example.demo.infra.board.repository;
 
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.querydsl.BoardDslRepository;

@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.example.demo.domain.base.page.GlobalPageableDto;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -40,15 +38,5 @@ public class GlobalPageResponse<T> {
                 pageDTO.getTotalPages(),
                 pageDTO.getSort().toString(),
                 pageDTO.getContent());
-	}
-
-	public static <T> GlobalPageResponse<T> create(GlobalPageableDto globalPageableDto) {
-		return (GlobalPageResponse<T>)new GlobalPageResponse<>(
-			globalPageableDto.getPage().getSize(),
-			globalPageableDto.getPage().getNumber() + 1,
-			globalPageableDto.getPage().getTotalPages(),
-			globalPageableDto.getPage().getSort().toString(),
-			globalPageableDto.getPage().getContent()
-		);
 	}
 }

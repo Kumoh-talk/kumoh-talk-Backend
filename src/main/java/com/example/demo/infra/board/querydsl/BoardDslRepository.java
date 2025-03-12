@@ -20,4 +20,6 @@ public interface BoardDslRepository {
 	Page<DraftBoardTitle> findDraftBoardByPage(Long userId, Pageable pageable);
 
 	Page<BoardTitleInfo> findPublishedBoardListByUser(Long userId, BoardType boardType, Pageable pageable);
+
+	String getAttachFileUrl(Long boardId);
 }

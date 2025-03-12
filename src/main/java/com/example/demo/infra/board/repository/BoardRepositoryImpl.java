@@ -1,12 +1,12 @@
-package com.example.demo.infra.board.Repository;
+package com.example.demo.infra.board.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
-import com.example.demo.domain.base.page.GlobalPageableDto;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
@@ -71,12 +71,35 @@ public class BoardRepositoryImpl implements BoardRepository {
 	}
 
 	@Override
-	public Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, GlobalPageableDto pageableDto) {
-		return boardJpaRepository.findBoardByPage(boardType,pageableDto.getPageable());
+	public Page<BoardTitleInfo> findBoardTitleInfoPage(BoardType boardType, Pageable pageable) {
+		return boardJpaRepository.findBoardByPage(boardType,pageable);
 	}
 
 	@Override
-	public Page<DraftBoardTitle> findDraftBoardByPage(Long userId, GlobalPageableDto pageableDto) {
-		return boardJpaRepository.findDraftBoardByPage(userId, pageableDto.getPageable());
+	public Page<DraftBoardTitle> findDraftBoardByPage(Long userId, Pageable pageable) {
+		return boardJpaRepository.findDraftBoardByPage(userId, pageable);
+	}
+
+	@Override
+	public Boolean isExistBoard(Long boardId) {
+		return boardJpaRepository.existsById(boardId); // TODO : exist 가 어떻게 동작하는지 확인해야함
+	}
+
+	@Override
+	public void changeAttachFileUrl(String attachFileUrl, BoardInfo boardInfo) {
+		boardJpaRepository.findById(boardInfo.getBoardId())
+			.ifPresent(board -> {
+				board.changeAttachFileUrl(attachFileUrl);
+			});
+	}
+
+	@Override
+	public String getBoardAttachFileUrl(Long boardId) {
+		return boardJpaRepository.getAttachFileUrl(boardId);
+	}
+
+	@Override
+	public Page findPublishedBoardListByUser(Long userId, BoardType boardType, Pageable pageable) {
+		return boardJpaRepository.findPublishedBoardListByUser(userId, boardType, pageable);
 	}
 }

@@ -23,10 +23,6 @@ public class BoardCategory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 50)
-    @NotBlank(message = "카테고리 이름은 빈 값일 수 없습니다.")
-    private String name;
-
     @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
@@ -38,7 +34,6 @@ public class BoardCategory extends BaseEntity {
     public BoardCategory(Board board, Category category) {
         this.board = board;
         this.category = category;
-        this.name = category.getName();
         board.getBoardCategories().add(this);
         category.getBoardCategories().add(this);
     }

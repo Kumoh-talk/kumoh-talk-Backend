@@ -11,6 +11,4 @@ import org.springframework.data.jpa.repository.Query;
 public interface BoardCategoryJpaRepository extends JpaRepository<BoardCategory,Long>, BoardCategoryDslRepository {
     @Query("SELECT COUNT(bc) FROM BoardCategory bc WHERE bc.category.id = :categoryId")
     Long countBoardCategoryByCategoryId(Long categoryId);
-
-    Optional<BoardCategory> findByNameAndBoardId(String categoryName, Long id);
 }

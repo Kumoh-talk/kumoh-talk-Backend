@@ -3,7 +3,7 @@ package com.example.demo.domain.board.service.view.implement;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.infra.board.Repository.BoardJpaRepository;
+import com.example.demo.infra.board.repository.BoardJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 

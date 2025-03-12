@@ -59,8 +59,7 @@ public class Board extends BaseEntity implements CommentBoard {
     @NotNull(message = "게시판 상태는 빈 값일 수 없습니다.")
     private Status status;
 
-    @Column(nullable = false, length = 500)
-    @NotBlank(message = "게시물 헤드 이미지는 빈 값일 수 없습니다.")
+    @Column(nullable = true, length = 500)
     private String headImageUrl;
 
     @Column(nullable = false)
@@ -74,11 +73,6 @@ public class Board extends BaseEntity implements CommentBoard {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ImageFile> imageFiles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardCategory> boardCategories = new ArrayList<>();
@@ -95,18 +89,11 @@ public class Board extends BaseEntity implements CommentBoard {
         this.viewCount = 0L;
     }
 
-    public static Board fromBoardRequest(User user, BoardCreateRequest boardCreateRequest) {
-        Board board = new Board(boardCreateRequest.title(),
-                boardCreateRequest.contents(),
-                user,
-                boardCreateRequest.boardType(),
-                Status.DRAFT,
-                boardCreateRequest.boardHeadImageUrl());
-        user.getBoards().add(board);
-        return board;
+    public Board(Long id) {
+        this.id = id;
     }
 
-    public void changeBoardInfo(BoardContent boardContent) {
+    public void changeBoardInfo(BoardContent boardContent){
         this.title = boardContent.getTitle();
         this.content = boardContent.getContents();
         this.status = boardContent.getBoardStatus();
@@ -114,20 +101,12 @@ public class Board extends BaseEntity implements CommentBoard {
 
     }
 
-    public void publishBoard() {
-        this.status = Status.PUBLISHED;
-    }
-
-    public void changeAttachFileUrl(String attachFileUrl) {
+    public void changeAttachFileUrl(String attachFileUrl){
         this.attachFileUrl = attachFileUrl;
     }
 
-    public void changeHeadImageUrl(String boardHeadImageUrl) {
-        this.headImageUrl = boardHeadImageUrl;
-    }
-
-    public static BoardInfo toBoardInfo(Board board, Long likeCount) {
-        BoardContent boardContent = new BoardContent(board.getTitle(), board.getContent(), board.getBoardType(), board.getHeadImageUrl(), board.status);
+    public static BoardInfo toBoardInfo(Board board,Long likeCount) {
+        BoardContent boardContent = new BoardContent(board.getTitle(), board.getContent(), board.getBoardType(), board.getHeadImageUrl(),board.status);
         UserTarget userTarget = UserTarget.builder()
                 .userId(board.getUser().getId())
                 .nickName(board.getUser().getNickname())

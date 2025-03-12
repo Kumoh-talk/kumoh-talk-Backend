@@ -56,4 +56,8 @@ public class BoardCategoryWriter {
 	public void removeBoardCategories(BoardInfo savedBoardInfo) {
 		boardCategoryRepository.deleteBoardCategories(savedBoardInfo.getBoardId());
 	}
+
+	public void removeBoardCategoriesByBoardId(Long boardId) {
+		boardCategoryRepository.deleteBoardCategories(boardId);
+	}
 }

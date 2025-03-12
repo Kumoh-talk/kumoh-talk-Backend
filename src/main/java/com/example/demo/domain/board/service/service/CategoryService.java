@@ -1,4 +1,4 @@
-package com.example.demo.domain.board.service.usecase;
+package com.example.demo.domain.board.service.service;
 
 import java.util.List;
 
@@ -6,21 +6,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
+import com.example.demo.domain.board.service.implement.CategoryReader;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
-import com.example.demo.domain.board.service.service.CategoryQueryService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryUseCase {
-	private final CategoryQueryService categoryQueryService;
+public class CategoryService {
+	private final CategoryReader categoryReader;
 
 	public List<String> getCategories() {
-		return categoryQueryService.getCategories();
+		return categoryReader.getCategories();
 	}
 
 	public GlobalPageResponse<BoardTitleInfo> getBoardsByCategoryName(String categoryName, Pageable pageable) {
-		return categoryQueryService.getBoardPageByCategoryName(categoryName,pageable);
+		return categoryReader.getBoardPageByCategoryName(categoryName,pageable);
 	}
 }
