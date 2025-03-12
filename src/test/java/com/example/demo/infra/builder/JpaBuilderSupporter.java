@@ -1,17 +1,12 @@
 package com.example.demo.infra.builder;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.example.demo.domain.comment.repository.BoardCommentRepository;
-import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
 import com.example.demo.domain.notification.repository.NotificationRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.repository.UserJpaRepository;
-import com.example.demo.infra.board.repository.BoardJpaRepository;
-import com.example.demo.infra.board.repository.LikeJpaRepository;
 import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
 import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
+import com.example.demo.infra.board.repository.BoardJpaRepository;
+import com.example.demo.infra.board.repository.LikeJpaRepository;
 import com.example.demo.infra.comment.repository.jpa.BoardCommentJpaRepository;
 import com.example.demo.infra.comment.repository.jpa.RecruitmentBoardCommentJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +20,8 @@ public class JpaBuilderSupporter {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-	@Autowired
-	private LikeJpaRepository likeJpaRepository;
+    @Autowired
+    private LikeJpaRepository likeJpaRepository;
 
     @Autowired
     private RecruitmentBoardRepository recruitmentBoardRepository;
@@ -54,9 +49,9 @@ public class JpaBuilderSupporter {
         return userJpaRepository;
     }
 
-	public LikeJpaRepository likeRepository() {
-		return likeJpaRepository;
-	}
+    public LikeJpaRepository likeRepository() {
+        return likeJpaRepository;
+    }
 
     public RecruitmentBoardRepository recruitmentBoardRepository() {
         return recruitmentBoardRepository;
