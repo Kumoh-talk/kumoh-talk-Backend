@@ -1,13 +1,13 @@
 package com.example.demo.builder;
 
 import com.example.demo.domain.notification.repository.NotificationRepository;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
 import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
 import com.example.demo.infra.board.repository.BoardJpaRepository;
 import com.example.demo.infra.board.repository.LikeJpaRepository;
 import com.example.demo.infra.comment.repository.jpa.BoardCommentJpaRepository;
 import com.example.demo.infra.comment.repository.jpa.RecruitmentBoardCommentJpaRepository;
+import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentBoardJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public class BuilderSupporter {
     private LikeJpaRepository likeJpaRepository;
 
     @Autowired
-    private RecruitmentBoardRepository recruitmentBoardRepository;
+    private RecruitmentBoardJpaRepository recruitmentBoardJpaRepository;
 
     @Autowired
     private BoardCommentJpaRepository boardCommentJpaRepository;
@@ -51,8 +51,8 @@ public class BuilderSupporter {
         return likeJpaRepository;
     }
 
-    public RecruitmentBoardRepository recruitmentBoardRepository() {
-        return recruitmentBoardRepository;
+    public RecruitmentBoardJpaRepository recruitmentBoardRepository() {
+        return recruitmentBoardJpaRepository;
     }
 
     public BoardCommentJpaRepository boardCommentRepository() {
