@@ -1,5 +1,6 @@
-package com.example.demo.domain.user.domain.dto.request;
+package com.example.demo.application.user.dto.request;
 
+import com.example.demo.domain.user.entity.CompleteRegistration;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -11,4 +12,10 @@ public record CompleteRegistrationRequest(
         @NotBlank(message = "이름은 빈값일 수 없습니다.")
         String name
 ) {
+        public CompleteRegistration toCompleteRegistrationRequest(CompleteRegistrationRequest request) {
+                return new CompleteRegistration(
+                        request.nickname,
+                        request.name()
+                );
+        }
 }

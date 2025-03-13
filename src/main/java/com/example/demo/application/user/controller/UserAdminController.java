@@ -1,8 +1,10 @@
-package com.example.demo.domain.user.controller;
+package com.example.demo.application.user.controller;
 
-import com.example.demo.domain.user.api.UserAdminApi;
-import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
-import com.example.demo.domain.user.domain.dto.response.UserInfo;
+import com.example.demo.application.user.api.UserAdminApi;
+import com.example.demo.application.user.dto.request.UpdateUserInfoRequest;
+import com.example.demo.application.user.dto.response.UserInfoResponse;
+import com.example.demo.domain.user.entity.UpdateUserInfo;
+import com.example.demo.domain.user.entity.UserInfo;
 import com.example.demo.domain.user.service.UserAdminService;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -27,15 +29,18 @@ public class UserAdminController implements UserAdminApi {
     private final UserAdminService userAdminService;
 
     @GetMapping
-    public ResponseEntity<ResponseBody<GlobalPageResponse<UserInfo>>> getAllUsers (
+    public ResponseEntity<ResponseBody<GlobalPageResponse<UserInfoResponse>>> getAllUsers (
             @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(createSuccessResponse(userAdminService.getAllUsers(pageable)));
+        Page<UserInfo> userInfos = userAdminService.getAllUsers(pageable);
+        Page<UserInfoResponse> userInfoResponses = userInfos.map(UserInfoResponse::toUserInfoResponse);
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(userInfoResponses)));
     }
 
     @PatchMapping("/{userId}")
     public ResponseEntity<ResponseBody<Void>> updateUserInfo (@PathVariable Long userId, @Valid @RequestBody UpdateUserInfoRequest request) {
-        userAdminService.updateUserInfo(userId, request);
+        UpdateUserInfo updateUserInfo = UpdateUserInfoRequest.toUpdateUserInfo(request);
+        userAdminService.updateUserInfo(userId, updateUserInfo);
         return ResponseEntity.ok(createSuccessResponse());
     }
 
