@@ -1,10 +1,10 @@
 package com.example.demo.fixture.recruitment_board;
 
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
 
 import java.time.LocalDateTime;
 
