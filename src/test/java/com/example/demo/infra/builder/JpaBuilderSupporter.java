@@ -1,81 +1,80 @@
 package com.example.demo.infra.builder;
 
-import com.example.demo.infra.user.repository.UserJpaRepository;
+import com.example.demo.domain.notification.repository.NotificationRepository;
+import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
+import com.example.demo.domain.user.repository.UserJpaRepository;
+import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
+import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
+import com.example.demo.infra.board.repository.BoardJpaRepository;
+import com.example.demo.infra.board.repository.LikeJpaRepository;
+import com.example.demo.infra.comment.repository.jpa.BoardCommentJpaRepository;
+import com.example.demo.infra.comment.repository.jpa.RecruitmentBoardCommentJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.domain.comment.repository.BoardCommentRepository;
-import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
-import com.example.demo.domain.notification.repository.NotificationRepository;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.infra.board.repository.BoardJpaRepository;
-import com.example.demo.infra.board.repository.LikeJpaRepository;
-import com.example.demo.infra.board.category.repository.BoardCategoryJpaRepository;
-import com.example.demo.infra.board.category.repository.CategoryJpaRepository;
-
 @Component
 public class JpaBuilderSupporter {
-	@Autowired
-	private BoardJpaRepository boardJpaRepository;
+    @Autowired
+    private BoardJpaRepository boardJpaRepository;
 
-	@Autowired
-	private UserJpaRepository userJpaRepository;
+    @Autowired
+    private UserJpaRepository userJpaRepository;
 
-	@Autowired
-	private LikeJpaRepository likeJpaRepository;
+    @Autowired
+    private LikeJpaRepository likeJpaRepository;
 
-	@Autowired
-	private RecruitmentBoardRepository recruitmentBoardRepository;
+    @Autowired
+    private RecruitmentBoardRepository recruitmentBoardRepository;
 
-	@Autowired
-	private BoardCommentRepository boardCommentRepository;
+    @Autowired
+    private BoardCommentJpaRepository boardCommentJpaRepository;
 
-	@Autowired
-	private RecruitmentBoardCommentRepository recruitmentBoardCommentRepository;
+    @Autowired
+    private RecruitmentBoardCommentJpaRepository recruitmentBoardCommentJpaRepository;
 
-	@Autowired
-	private NotificationRepository notificationRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
-	@Autowired
-	private CategoryJpaRepository categoryJpaRepository;
+    @Autowired
+    private CategoryJpaRepository categoryJpaRepository;
 
-	@Autowired
-	private BoardCategoryJpaRepository boardCategoryJpaRepository;
+    @Autowired
+    private BoardCategoryJpaRepository boardCategoryJpaRepository;
 
-	public BoardJpaRepository boardRepository() {
-		return boardJpaRepository;
-	}
+    public BoardJpaRepository boardRepository() {
+        return boardJpaRepository;
+    }
 
-	public UserJpaRepository userRepository() {
-		return userJpaRepository;
-	}
+    public UserJpaRepository userRepository() {
+        return userJpaRepository;
+    }
 
-	public LikeJpaRepository likeRepository() {
-		return likeJpaRepository;
-	}
+    public LikeJpaRepository likeRepository() {
+        return likeJpaRepository;
+    }
 
-	public RecruitmentBoardRepository recruitmentBoardRepository() {
-		return recruitmentBoardRepository;
-	}
+    public RecruitmentBoardRepository recruitmentBoardRepository() {
+        return recruitmentBoardRepository;
+    }
 
-	public BoardCommentRepository boardCommentRepository() {
-		return boardCommentRepository;
-	}
+    public BoardCommentJpaRepository boardCommentJpaRepository() {
+        return boardCommentJpaRepository;
+    }
 
-	public RecruitmentBoardCommentRepository recruitmentBoardCommentRepository() {
-		return recruitmentBoardCommentRepository;
-	}
+    public RecruitmentBoardCommentJpaRepository recruitmentBoardCommentJpaRepository() {
+        return recruitmentBoardCommentJpaRepository;
+    }
 
-	public NotificationRepository notificationRepository() {
-		return notificationRepository;
-	}
+    public NotificationRepository notificationRepository() {
+        return notificationRepository;
+    }
 
 
-	public CategoryJpaRepository categoryJpaRepository() {
-		return categoryJpaRepository;
-	}
+    public CategoryJpaRepository categoryJpaRepository() {
+        return categoryJpaRepository;
+    }
 
-	public BoardCategoryJpaRepository boardCategoryJpaRepository() {
-		return boardCategoryJpaRepository;
-	}
+    public BoardCategoryJpaRepository boardCategoryJpaRepository() {
+        return boardCategoryJpaRepository;
+    }
 }

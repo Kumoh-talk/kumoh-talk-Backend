@@ -1,7 +1,7 @@
 package com.example.demo.infra.user.entity;
 
-import com.example.demo.domain.comment.domain.entity.BoardComment;
-import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
+import com.example.demo.infra.comment.entity.BoardComment;
+import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.entity.UpdateUserInfo;

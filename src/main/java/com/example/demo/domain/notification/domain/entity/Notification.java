@@ -1,9 +1,9 @@
 package com.example.demo.domain.notification.domain.entity;
 
-import com.example.demo.infra.board.entity.Like;
-import com.example.demo.domain.comment.domain.entity.Comment;
 import com.example.demo.domain.notification.domain.vo.NotificationType;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.board.entity.Like;
+import com.example.demo.infra.comment.entity.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

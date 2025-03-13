@@ -1,9 +1,9 @@
 package com.example.demo.domain.report.domain;
 
-import com.example.demo.domain.comment.domain.entity.BoardComment;
-import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
-import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.user.entity.User;
+import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.comment.entity.BoardComment;
+import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

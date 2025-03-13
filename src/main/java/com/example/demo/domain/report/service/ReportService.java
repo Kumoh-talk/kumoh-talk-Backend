@@ -1,18 +1,18 @@
 package com.example.demo.domain.report.service;
 
-import com.example.demo.domain.comment.domain.entity.Comment;
-import com.example.demo.domain.comment.repository.BoardCommentRepository;
-import com.example.demo.domain.comment.repository.RecruitmentBoardCommentRepository;
 import com.example.demo.domain.report.client.DiscordMessage;
 import com.example.demo.domain.report.client.DiscordReportClient;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.report.domain.dto.ReportResponse;
 import com.example.demo.domain.report.repository.ReportRepository;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
-import com.example.demo.infra.user.entity.User;
-import com.example.demo.infra.user.repository.UserJpaRepository;
+import com.example.demo.infra.comment.entity.Comment;
+import com.example.demo.infra.comment.repository.jpa.BoardCommentJpaRepository;
+import com.example.demo.infra.comment.repository.jpa.RecruitmentBoardCommentJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +26,8 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final UserJpaRepository userJpaRepository;
-    private final BoardCommentRepository boardCommentRepository;
-    private final RecruitmentBoardCommentRepository recruitmentBoardCommentRepository;
+    private final BoardCommentJpaRepository boardCommentRepository;
+    private final RecruitmentBoardCommentJpaRepository recruitmentBoardCommentRepository;
     private final DiscordReportClient discordReportClient;
 
     @Transactional

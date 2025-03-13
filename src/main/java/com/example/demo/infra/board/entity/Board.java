@@ -2,18 +2,18 @@ package com.example.demo.infra.board.entity;
 
 
 import com.example.demo.application.board.dto.request.BoardCreateRequest;
-import com.example.demo.domain.board.service.entity.vo.BoardType;
-import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.entity.BoardCategoryNames;
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.comment.domain.entity.BoardComment;
-import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
+import com.example.demo.domain.board.service.entity.vo.BoardType;
+import com.example.demo.domain.board.service.entity.vo.Status;
+import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
+
 import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.global.base.domain.BaseEntity;
-import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.board.category.entity.BoardCategory;
-
+import com.example.demo.infra.comment.entity.BoardComment;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,7 +32,7 @@ import java.util.List;
 @Getter
 @SQLDelete(sql = "UPDATE boards SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-public class Board extends BaseEntity implements GenericBoard {
+public class Board extends BaseEntity implements CommentBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,7 +66,7 @@ public class Board extends BaseEntity implements GenericBoard {
     @Column(nullable = false)
     private Long viewCount;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -79,7 +79,7 @@ public class Board extends BaseEntity implements GenericBoard {
     private List<BoardCategory> boardCategories = new ArrayList<>();
 
     @Builder
-    private Board(String title, String content, User user, BoardType boardType,Status status,String headImageUrl) {
+    private Board(String title, String content, User user, BoardType boardType, Status status, String headImageUrl) {
         this.title = title;
         this.content = content;
         this.user = user;
@@ -109,24 +109,24 @@ public class Board extends BaseEntity implements GenericBoard {
     public static BoardInfo toBoardInfo(Board board,Long likeCount) {
         BoardContent boardContent = new BoardContent(board.getTitle(), board.getContent(), board.getBoardType(), board.getHeadImageUrl(),board.status);
         UserTarget userTarget = UserTarget.builder()
-            .userId(board.getUser().getId())
-            .nickName(board.getUser().getNickname())
-            .userRole(board.getUser().getRole())
-            .build();
+                .userId(board.getUser().getId())
+                .nickName(board.getUser().getNickname())
+                .userRole(board.getUser().getRole())
+                .build();
         List<String> categoryNames = new ArrayList<>();
         for (BoardCategory boardCategory : board.getBoardCategories()) {
             categoryNames.add(boardCategory.getCategory().getName());
         }
         BoardCategoryNames boardCategoryNames = new BoardCategoryNames(categoryNames);
         return BoardInfo.builder()
-            .boardId(board.getId())
-            .boardContent(boardContent)
-            .viewCount(board.getViewCount())
-            .likeCount(likeCount)
-            .createdAt(board.getCreatedAt())
-            .updatedAt(board.getUpdatedAt())
-            .userTarget(userTarget)
-            .boardCategoryNames(boardCategoryNames)
-            .build();
+                .boardId(board.getId())
+                .boardContent(boardContent)
+                .viewCount(board.getViewCount())
+                .likeCount(likeCount)
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
+                .userTarget(userTarget)
+                .boardCategoryNames(boardCategoryNames)
+                .build();
     }
 }

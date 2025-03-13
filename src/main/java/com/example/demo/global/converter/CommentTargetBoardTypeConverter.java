@@ -1,6 +1,6 @@
 package com.example.demo.global.converter;
 
-import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
+import com.example.demo.application.comment.dto.vo.CommentTargetBoardType;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import org.springframework.core.convert.converter.Converter;

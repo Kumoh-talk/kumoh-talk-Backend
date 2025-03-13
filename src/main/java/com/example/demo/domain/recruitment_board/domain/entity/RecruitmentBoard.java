@@ -1,7 +1,6 @@
 package com.example.demo.domain.recruitment_board.domain.entity;
 
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
 import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentFormQuestionRequest;
@@ -9,8 +8,9 @@ import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormAnswerRepository;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
-import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.user.entity.User;
+import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +29,7 @@ import java.util.List;
 @Getter
 @SQLDelete(sql = "UPDATE recruitment_boards SET deleted_at = NOW() where id=?")
 @SQLRestriction(value = "deleted_at is NULL")
-public class RecruitmentBoard extends BaseEntity implements GenericBoard {
+public class RecruitmentBoard extends BaseEntity implements CommentBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

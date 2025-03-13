@@ -1,6 +1,6 @@
 package com.example.demo.domain.report.domain.dto;
 
-import com.example.demo.domain.comment.domain.dto.response.CommentInfoResponse;
+import com.example.demo.application.comment.dto.response.CommentInfoResponse;
 import com.example.demo.domain.report.domain.Report;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,13 +18,13 @@ public record ReportResponse(
         if (report.getBoardComment() == null) {
             return new ReportResponse(
                     report.getUser().getNickname(),
-                    CommentInfoResponse.fromComment(report.getRecruitmentBoardComment()),
+                    CommentInfoResponse.from(report.getRecruitmentBoardComment().toCommentInfoDomain()),
                     report.getCreatedAt()
             );
         } else {
             return new ReportResponse(
                     report.getUser().getNickname(),
-                    CommentInfoResponse.fromComment(report.getBoardComment()),
+                    CommentInfoResponse.from(report.getBoardComment().toCommentInfoDomain()),
                     report.getCreatedAt()
             );
         }
