@@ -9,9 +9,9 @@ import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.recruitment_board.domain.entity.GenericBoard;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 
 import jakarta.persistence.*;

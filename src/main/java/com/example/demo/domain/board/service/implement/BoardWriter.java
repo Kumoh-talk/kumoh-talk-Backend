@@ -1,12 +1,12 @@
 package com.example.demo.domain.board.service.implement;
 
+import com.example.demo.domain.user.entity.UserTarget;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.domain.user.domain.UserTarget;
 
 import lombok.RequiredArgsConstructor;
 

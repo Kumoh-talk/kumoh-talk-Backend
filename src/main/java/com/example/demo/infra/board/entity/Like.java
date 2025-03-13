@@ -1,7 +1,7 @@
 package com.example.demo.infra.board.entity;
 
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

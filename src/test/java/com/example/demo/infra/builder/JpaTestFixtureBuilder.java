@@ -2,6 +2,7 @@ package com.example.demo.infra.builder;
 
 import java.util.List;
 
+import com.example.demo.infra.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,6 @@ import com.example.demo.domain.comment.domain.entity.BoardComment;
 import com.example.demo.domain.comment.domain.entity.RecruitmentBoardComment;
 import com.example.demo.domain.notification.domain.entity.Notification;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 import com.example.demo.infra.board.category.entity.Category;
 import com.example.demo.infra.board.entity.Board;

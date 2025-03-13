@@ -1,8 +1,9 @@
 package com.example.demo.fixture.user;
 
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
+
+import com.example.demo.domain.user.vo.Role;
 import com.example.demo.global.oauth.user.OAuth2Provider;
+import com.example.demo.infra.user.entity.User;
 
 public class UserFixtures {
 

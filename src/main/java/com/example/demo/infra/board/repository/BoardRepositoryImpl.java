@@ -2,6 +2,8 @@ package com.example.demo.infra.board.repository;
 
 import java.util.Optional;
 
+import com.example.demo.domain.user.entity.UserTarget;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -12,8 +14,6 @@ import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.DraftBoardTitle;
 import com.example.demo.domain.board.service.repository.BoardRepository;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.infra.board.entity.Board;
 
 import lombok.RequiredArgsConstructor;

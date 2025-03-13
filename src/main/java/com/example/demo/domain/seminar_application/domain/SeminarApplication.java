@@ -2,8 +2,8 @@ package com.example.demo.domain.seminar_application.domain;
 
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationRequest;
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationUpdateRequest;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
