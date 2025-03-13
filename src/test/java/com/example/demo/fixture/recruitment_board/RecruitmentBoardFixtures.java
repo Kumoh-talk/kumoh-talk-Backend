@@ -4,7 +4,7 @@ import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 
 import java.time.LocalDateTime;
 
