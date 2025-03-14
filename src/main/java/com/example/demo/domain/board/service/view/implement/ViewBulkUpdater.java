@@ -17,8 +17,8 @@ import com.example.demo.domain.board.service.view.BoardViewEvent;
 
 import lombok.RequiredArgsConstructor;
 
+@Deprecated
 @Service
-@Primary
 @RequiredArgsConstructor
 public class ViewBulkUpdater implements ViewCounter {
 	private final RedisTemplate<String,Object> redisTemplate;

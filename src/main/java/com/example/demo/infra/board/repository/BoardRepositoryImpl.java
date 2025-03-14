@@ -102,4 +102,9 @@ public class BoardRepositoryImpl implements BoardRepository {
 	public Page findPublishedBoardListByUser(Long userId, BoardType boardType, Pageable pageable) {
 		return boardJpaRepository.findPublishedBoardListByUser(userId, boardType, pageable);
 	}
+
+	@Override
+	public void increaseViewCount(Long boardId) {
+		boardJpaRepository.increaseViewCount(boardId);
+	}
 }
