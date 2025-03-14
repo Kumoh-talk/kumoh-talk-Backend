@@ -50,6 +50,12 @@ public class RecruitmentBoardRepositoryImpl implements RecruitmentBoardRepositor
     }
 
     @Override
+    public Optional<RecruitmentBoardInfo> getByIdWithLock(Long boardId) {
+        return recruitmentBoardJpaRepository.findByIdWithLock(boardId)
+                .map(RecruitmentBoard::toBoardInfoDomain);
+    }
+
+    @Override
     public List<RecruitmentBoardInfo> getPublishedPageByNoOffset(int size, RecruitmentBoardInfo lastBoardInfo, RecruitmentBoardType boardType) {
         return recruitmentBoardJpaRepository.findPublishedPageByNoOffset(size, lastBoardInfo, boardType);
     }
@@ -76,6 +82,16 @@ public class RecruitmentBoardRepositoryImpl implements RecruitmentBoardRepositor
     public void delete(RecruitmentBoardInfo recruitmentBoardInfo) {
         RecruitmentBoard recruitmentBoard = recruitmentBoardJpaRepository.findById(recruitmentBoardInfo.getBoardId()).get();
         recruitmentBoardJpaRepository.delete(recruitmentBoard);
+    }
+
+    @Override
+    public void increaseCurrentMemberNum(Long recruitmentBoardId) {
+        recruitmentBoardJpaRepository.increaseCurrentMemberNum(recruitmentBoardId);
+    }
+
+    @Override
+    public void decreaseCurrentMemberNum(Long recruitmentBoardId) {
+        recruitmentBoardJpaRepository.decreaseCurrentMemberNum(recruitmentBoardId);
     }
 
     @Override

@@ -47,11 +47,11 @@ public interface RecruitmentBoardJpaRepository extends JpaRepository<Recruitment
     @Transactional
     @Modifying
     @Query("UPDATE RecruitmentBoard rb SET rb.currentMemberNum = rb.currentMemberNum + 1 WHERE rb.id = :recruitmentBoardId")
-    void incrementCurrentMemberNum(Long recruitmentBoardId);
+    void increaseCurrentMemberNum(Long recruitmentBoardId);
 
     @Transactional
     @Modifying
     @Query("UPDATE RecruitmentBoard rb SET rb.currentMemberNum = rb.currentMemberNum - 1 WHERE rb.id = :recruitmentBoardId")
-    void decrementCurrentMemberNum(Long recruitmentBoardId);
+    void decreaseCurrentMemberNum(Long recruitmentBoardId);
 
 }
