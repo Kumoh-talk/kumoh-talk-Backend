@@ -9,6 +9,18 @@ import org.aspectj.lang.reflect.MethodSignature;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 
+import org.aspectj.lang.reflect.MethodSignature;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.aspectj.lang.reflect.MethodSignature;
+
+import org.aspectj.lang.reflect.MethodSignature;
+
+/*
+ * @deprecated
+ * 이 클래스는 더 이상 사용되지 않습니다.
+ */
+@Deprecated
 public class ExceptionLogProperty extends LogProperty {
 
 	private ExceptionLogProperty(String description, String className, String methodName,
