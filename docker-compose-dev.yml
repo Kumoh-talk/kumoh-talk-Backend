@@ -43,7 +43,7 @@ services:
     environment:
       MYSQL_DATABASE: kumoh_talk
       MYSQL_CHARSET: utf8mb4
-      MYSQL_ROOT_PASSWORD: kumohtalk1234@
+      MYSQL_ROOT_PASSWORD: ${MYSQL_DEV_PASSWORD}
       MYSQL_COLLATION: utf8mb4_unicode_ci
     restart: always
     volumes:

@@ -34,19 +34,13 @@ public class ApiMonitorAspect {
 	public Object monitorApiCall(ProceedingJoinPoint joinPoint) throws Throwable {
 		MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
 		Method method = methodSignature.getMethod();
-		Class<?> declaringClass = method.getDeclaringClass();
 
-		String basePath = extractClassLevelPath(declaringClass);
-		String methodPath = extractMethodPath(method).orElse("");
-		String restMethod = extractHttpMethod(method).orElse(null);
-
-		// 최종 Endpoint 생성
-		String endpoint = basePath + methodPath;
+		String className = joinPoint.getSignature().getDeclaringTypeName();
+		String methodName = method.getName();
 
 		// API 호출 시간 측정 시작
-		Timer.Sample sample = apiTimer.startMetricApi();
 		apiTimer.startTimer();
-		log.info("API 호출 url: {}, http_method : {}", endpoint, restMethod);
+		log.info("API 호출 class: {}, method : {}", className, methodName);
 
 		Object result;
 		try {
@@ -58,82 +52,9 @@ public class ApiMonitorAspect {
 		}
 
 		// API 호출 시간 측정 종료
-		apiTimer.endMetricApi(sample, endpoint, Optional.ofNullable(restMethod));
 		Long elapsedTime = apiTimer.endTimer();
 
-		log.info("API 호출 완료({}ms) url: {}, http_method : {}", elapsedTime, endpoint, restMethod);
+		log.info("API 호출 완료({}ms) class: {}, method : {}", elapsedTime, className, methodName);
 		return result;
-	}
-
-	/**
-	 * 클래스 레벨의 @RequestMapping(value)를 안전하게 추출.
-	 * 예: @RequestMapping("/api") -> "/api"
-	 */
-	private String extractClassLevelPath(Class<?> declaringClass) {
-		if (declaringClass.isAnnotationPresent(RequestMapping.class)) {
-			RequestMapping requestMapping = declaringClass.getAnnotation(RequestMapping.class);
-			String[] values = requestMapping.value();
-			if (values.length > 0) {
-				return values[0];
-			}
-		}
-		return "";
-	}
-
-	/**
-	 * 메서드 레벨의 경로(@GetMapping, @PostMapping 등)를 하나씩 확인하여 추출.
-	 * 예: @GetMapping("/hello") -> "/hello"
-	 */
-	private Optional<String> extractMethodPath(Method method) {
-		if (method.isAnnotationPresent(GetMapping.class)) {
-			return getValueSafely(method.getAnnotation(GetMapping.class).value());
-		} else if (method.isAnnotationPresent(PostMapping.class)) {
-			return getValueSafely(method.getAnnotation(PostMapping.class).value());
-		} else if (method.isAnnotationPresent(PutMapping.class)) {
-			return getValueSafely(method.getAnnotation(PutMapping.class).value());
-		} else if (method.isAnnotationPresent(DeleteMapping.class)) {
-			return getValueSafely(method.getAnnotation(DeleteMapping.class).value());
-		} else if (method.isAnnotationPresent(PatchMapping.class)) {
-			return getValueSafely(method.getAnnotation(PatchMapping.class).value());
-		} else if (method.isAnnotationPresent(RequestMapping.class)) {
-			// @RequestMapping(method=..., value=...) 형태
-			return getValueSafely(method.getAnnotation(RequestMapping.class).value());
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * 메서드 레벨의 HTTP 메서드를 추출.
-	 * 예: @GetMapping -> "GET", @RequestMapping(method = RequestMethod.GET) -> "GET"
-	 */
-	private Optional<String> extractHttpMethod(Method method) {
-		if (method.isAnnotationPresent(GetMapping.class)) {
-			return Optional.of("GET");
-		} else if (method.isAnnotationPresent(PostMapping.class)) {
-			return Optional.of("POST");
-		} else if (method.isAnnotationPresent(PutMapping.class)) {
-			return Optional.of("PUT");
-		} else if (method.isAnnotationPresent(DeleteMapping.class)) {
-			return Optional.of("DELETE");
-		} else if (method.isAnnotationPresent(PatchMapping.class)) {
-			return Optional.of("PATCH");
-		} else if (method.isAnnotationPresent(RequestMapping.class)) {
-			RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-			if (requestMapping.method().length > 0) {
-				// 첫 번째 RequestMethod로 설정
-				return Optional.of(requestMapping.method()[0].name());
-			}
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * 매핑 어노테이션의 value 배열에서 첫 번째 요소를 안전하게 추출.
-	 */
-	private Optional<String> getValueSafely(String[] values) {
-		if (values != null && values.length > 0) {
-			return Optional.of(values[0]);
-		}
-		return Optional.empty();
 	}
 }
