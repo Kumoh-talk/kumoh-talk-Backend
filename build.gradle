@@ -93,9 +93,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    // loki
-    implementation 'com.github.loki4j:loki-logback-appender:1.4.1'
-
     // test-containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
 

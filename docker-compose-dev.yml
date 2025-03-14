@@ -1,0 +1,57 @@
+version: "3.8"
+
+networks:
+  kumoh-talk-network:  # 모든 컨테이너가 사용할 공통 네트워크
+
+services:
+  spring-boot-app:
+    image: kumoh_talk:latest
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"  # 백엔드 API 포트
+      - "9292:9292"
+    environment:
+      - USE_PROFILE=dev
+    depends_on:
+      kumoh-talk-redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/logs
+    networks:
+      - kumoh-talk-network
+
+  kumoh-talk-redis:
+    image: redis
+    command: redis-server --port 6379
+    container_name: kumoh-talk-redis
+    ports:
+      - "6381:6379"
+    restart: always  # 컨테이너가 중지되면 자동 재시작
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kumoh-talk-network
+
+  mysql:
+    image: mysql:latest
+    container_name: kumoh-talk-mysql-dev
+    ports:
+      - "3310:3306"  # 호스트:컨테이너 포트
+    environment:
+      MYSQL_DATABASE: kumoh_talk
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_ROOT_PASSWORD: ${MYSQL_DEV_PASSWORD}
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    restart: always
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - admin_mysql_data_dev:/var/lib/mysql
+    networks:
+      - kumoh-talk-network
+
+volumes:
+  admin_mysql_data_dev:

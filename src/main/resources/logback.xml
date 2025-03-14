@@ -11,37 +11,12 @@
     <property name="PASSWORD_MASKING_PATTERN" value="(01\d|02|0[3-9]\d|05\d\d)(-?)(\d{3,4})(-?)(\d{4})"/>
     <property name="EMAIL_MASKING_PATTERN" value="(\w+@\w+\.\w+)"/>
 
-    <!-- Loki Appender -->
-    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
-        <http>
-            <url>http://localhost:3100/loki/api/v1/push</url>
-        </http>
-        <format>
-            <label>
-                <pattern>app=${name},host=${HOSTNAME},level=%level</pattern>
-                <readMarkers>true</readMarkers>
-            </label>
-            <message>
-                <pattern>
-                    {
-                    "level":"%level",
-                    "class":"%logger{36}",
-                    "thread":"%thread",
-                    "message": "%message",
-                    "requestId": "%X{X-Request-ID}"
-                    }
-                </pattern>
-            </message>
-        </format>
-    </appender>
-
     <!-- local -->
     <springProfile name="local">
         <include resource="log/log-local.xml"/>
 
         <root level="INFO">
             <appender-ref ref="console"/>
-            <appender-ref ref="LOKI"/>
         </root>
     </springProfile>
 
@@ -51,18 +26,15 @@
 
         <root level="INFO">
             <appender-ref ref="console"/>
-            <appender-ref ref="LOKI"/>
+            <appender-ref ref="file"/>
         </root>
     </springProfile>
 
     <!-- prod -->
     <springProfile name="prod">
         <include resource="log/log-prod.xml"/>
-
         <root level="INFO">
-            <appender-ref ref="console"/>
             <appender-ref ref="file"/>
-            <appender-ref ref="LOKI"/>
         </root>
     </springProfile>
 </configuration>

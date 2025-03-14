@@ -5,8 +5,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
 
+/*
+ * @deprecated
+ * 이 클래스는 더 이상 사용되지 않습니다.
+ */
+@Deprecated
 public class InfoLogProperty extends LogProperty {
 
 	private InfoLogProperty(String description, String className, String methodName, Object[] args) {

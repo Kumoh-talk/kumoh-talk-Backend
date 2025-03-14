@@ -33,4 +33,6 @@ public interface BoardRepository {
 	String getBoardAttachFileUrl(Long boardId);
 
 	Page findPublishedBoardListByUser(Long userId, BoardType boardType, Pageable pageable);
+
+	void increaseViewCount(Long boardId);
 }

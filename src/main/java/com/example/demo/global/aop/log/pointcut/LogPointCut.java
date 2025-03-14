@@ -2,6 +2,13 @@ package com.example.demo.global.aop.log.pointcut;
 
 import org.aspectj.lang.annotation.Pointcut;
 
+/**
+ * 해당 클래스는 곧 없어질 예정입니다.
+ * @deprecated
+ * 일시: 2025-03-14
+ * 이슈번호: #90
+ */
+@Deprecated
 public class LogPointCut {
 	@Pointcut("execution(* com.example.demo.domain..*.*(..))")
 	public void domainLoggingPointcut() {
