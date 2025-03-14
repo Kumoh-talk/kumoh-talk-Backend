@@ -8,7 +8,13 @@ import java.lang.annotation.Target;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.log.properties.LogLevel;
 
-
+/**
+ * 해당 클래스는 곧 없어질 예정입니다.
+ * @deprecated
+ * 일시: 2025-03-14
+ * 이슈번호: #90
+ */
+@Deprecated
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExceptionLogExplanation {
