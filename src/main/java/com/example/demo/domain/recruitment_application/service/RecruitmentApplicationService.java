@@ -69,6 +69,8 @@ public class RecruitmentApplicationService {
         List<RecruitmentApplicantOptionalAnswer> saveApplicantOptinalAnswerList =
                 recruitmentApplicantOptionalAnswerRepository.saveAll(applicantOptionalAnswerList);
 
+        recruitmentBoardRepository.incrementCurrentMemberNum(recruitmentBoardId);
+
         return RecruitmentApplicationResponse.from(saveApplicant, recruitmentBoard, saveApplicantDescriptiveAnswerList, saveApplicantOptinalAnswerList);
     }
 
@@ -279,6 +281,11 @@ public class RecruitmentApplicationService {
         recruitmentBoardService.validateDeadLine(userId, applicant.getRecruitmentBoard().toBoardInfoDomain());
 
         recruitmentApplicantRepository.deleteById(applicantId);
+
+        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository
+                .findByIdWithLock(applicant.getRecruitmentBoard().getId())
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        recruitmentBoardRepository.decrementCurrentMemberNum(recruitmentBoard.getId());
     }
 
     @Transactional(readOnly = true)
