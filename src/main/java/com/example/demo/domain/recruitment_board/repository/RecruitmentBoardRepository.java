@@ -16,6 +16,8 @@ public interface RecruitmentBoardRepository {
 
     Optional<RecruitmentBoardInfo> getByIdWithUser(Long boardId);
 
+    Optional<RecruitmentBoardInfo> getByIdWithLock(Long boardId);
+
     List<RecruitmentBoardInfo> getPublishedPageByNoOffset(int size, RecruitmentBoardInfo lastBoardInfo, RecruitmentBoardType boardType);
 
     Page<RecruitmentBoardInfo> getPublishedPageByPageNum(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType);
@@ -25,6 +27,11 @@ public interface RecruitmentBoardRepository {
     RecruitmentBoardAndFormInfo patch(RecruitmentBoardAndFormInfo recruitmentBoardAndFormInfo);
 
     void delete(RecruitmentBoardInfo recruitmentBoardInfo);
+
+    void increaseCurrentMemberNum(Long recruitmentBoardId);
+
+    void decreaseCurrentMemberNum(Long recruitmentBoardId);
+
 
     List<RecruitmentBoardInfo> getDraftPageByUserIdByNoOffset(Long userId, int size, Long lastBoardId);
 }

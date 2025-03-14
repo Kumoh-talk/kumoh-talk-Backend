@@ -9,6 +9,7 @@ import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardReader;
 import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardValidator;
+import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardWriter;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RecruitmentApplicationService {
     private final UserReader userReader;
     private final RecruitmentBoardReader recruitmentBoardReader;
+    private final RecruitmentBoardWriter recruitmentBoardWriter;
     private final RecruitmentBoardValidator recruitmentBoardValidator;
 
     private final RecruitmentApplicationReader recruitmentApplicationReader;
@@ -42,7 +44,9 @@ public class RecruitmentApplicationService {
         recruitmentApplicationValidator.validateExist(recruitmentApplicationInfo.getUserId(), recruitmentApplicationInfo.getRecruitmentBoardId());
 
         try {
-            return recruitmentApplicationWriter.post(recruitmentApplicationInfo, recruitmentApplicationInfo.getRecruitmentBoardId());
+            RecruitmentApplicationInfo applicationInfo = recruitmentApplicationWriter.post(recruitmentApplicationInfo, recruitmentApplicationInfo.getRecruitmentBoardId());
+            recruitmentBoardWriter.increaseCurrentMemberNum(recruitmentApplicationInfo.getRecruitmentBoardId());
+            return applicationInfo;
         } catch (InvalidDataAccessApiUsageException e) {
             if (e.getMessage().equals("question")) {
                 throw new ServiceException(ErrorCode.QUESTION_NOT_FOUND);
@@ -114,13 +118,14 @@ public class RecruitmentApplicationService {
     public void deleteApplication(Long userId, Long applicationId) {
         RecruitmentApplicationInfo applicationInfo = recruitmentApplicationReader.getByIdWithBoard(applicationId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
-        RecruitmentBoardInfo boardInfo = recruitmentBoardReader.getById(applicationInfo.getRecruitmentBoardId())
+        RecruitmentBoardInfo boardInfo = recruitmentBoardReader.getByIdWithLock(applicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         recruitmentApplicationValidator.validateWriter(userId, applicationInfo);
         recruitmentBoardValidator.validateDeadLine(userId, boardInfo);
 
         recruitmentApplicationWriter.delete(applicationInfo);
+        recruitmentBoardWriter.decreaseCurrentMemberNum(applicationInfo.getRecruitmentBoardId());
     }
 
     @Transactional(readOnly = true)
