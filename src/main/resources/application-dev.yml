@@ -25,7 +25,7 @@ spring:
       hibernate:
         format_sql: false
         highlight_sql: false
-        hbm2ddl.auto: update
+        hbm2ddl.auto: validate
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: true
@@ -53,20 +53,13 @@ management:
     web:
       exposure:
         include: "*"
-  #
-  #  endpoint:
-  #    health:
-  #      show-details: always
-
   endpoint:
     health:
       show-components: always
-
   info:
     java:
       enabled: true
     os:
       enabled: true
-
   server:
     port: 9292

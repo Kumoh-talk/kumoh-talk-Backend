@@ -1,8 +1,8 @@
 package com.example.demo.global.base.exception;
 
+import com.example.demo.application.comment.dto.vo.CommentTargetBoardType;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.comment.domain.vo.CommentTargetBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
 import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
