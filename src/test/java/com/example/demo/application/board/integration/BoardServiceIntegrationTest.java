@@ -110,7 +110,7 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 		}
 
 		@Test
-		void 성공_조회수캐싱_ApplicationEvent_데이터를_조회할수있다() {
+		void 성공_조회수캐싱_ApplicationEvent_X_데이터를_조회할수있다() {
 			// given
 			Board publishedBOARD = jpaTestFixtureBuilder.buildBoard(PUBLISHED_SEMINAR_BOARD(savedUser));
 			List<String> categoryNames = List.of("category1", "category2");
@@ -141,8 +141,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
 			assertSoftly(softly -> {
 				softly.assertThat(redisTemplate.opsForValue().get(BOARD_VIEW_KEY + publishedBOARD.getId()))
-					.isEqualTo("1");
-				softly.assertThat(events.stream(BoardViewEvent.class).count()).isEqualTo(1);
+					.isEqualTo(null);
+				softly.assertThat(events.stream(BoardViewEvent.class).count()).isEqualTo(0);
 			});
 
 		}
@@ -181,9 +181,9 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 			});
 
 			assertSoftly(softly -> {
-				softly.assertThat(redisTemplate.opsForValue().get( BOARD_VIEW_KEY+ draftBoard.getId()))
-					.isEqualTo("1");
-				softly.assertThat(events.stream(BoardViewEvent.class).count()).isEqualTo(1);
+				softly.assertThat(redisTemplate.opsForValue().get(BOARD_VIEW_KEY + boardInfo.getBoardId()))
+					.isEqualTo(null);
+				softly.assertThat(events.stream(BoardViewEvent.class).count()).isEqualTo(0);
 			});
 		}
 

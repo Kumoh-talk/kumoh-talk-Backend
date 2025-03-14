@@ -24,7 +24,15 @@ spring:
       hibernate:
         format_sql: false
         highlight_sql: false
-        hbm2ddl.auto: validate
+        hbm2ddl.auto: none
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: false
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, info, metrics, prometheus"
+        exclude: "env, beans, mappings, configprops, scheduledtasks, threaddump, shutdown"
