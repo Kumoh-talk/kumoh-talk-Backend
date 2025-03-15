@@ -6,6 +6,7 @@ import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.report.domain.Report;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.comment.entity_listener.CommentEntityListener;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
 import jakarta.persistence.*;
@@ -24,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @SQLDelete(sql = "UPDATE recruitment_board_comments SET deleted_at = NOW() where id = ?")
-//@EntityListeners(CommentEntityListener.class)
+@EntityListeners(CommentEntityListener.class)
 public class RecruitmentBoardComment extends BaseEntity implements Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
