@@ -4,4 +4,6 @@ public interface GenericCommentBoardReader {
     boolean existsById(Long id);
 
     boolean existsByIdWithUser(Long id);
+
+    Long getUserIdById(Long id);
 }
