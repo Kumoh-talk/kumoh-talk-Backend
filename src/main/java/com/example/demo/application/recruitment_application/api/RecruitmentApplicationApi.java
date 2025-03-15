@@ -31,7 +31,8 @@ public interface RecruitmentApplicationApi {
     @Operation(
             summary = "모집 신청 저장",
             description = "recruitmentBoardId에 해당하는 모집 게시물에 신청을 저장합니다. \n" +
-                    "마감 기한 이전에 신청이 가능합니다."
+                    "마감 기한 이전에 신청이 가능합니다." +
+                    "질문에 답변하지 않더라도, request 내에 모든 질문이 존재해야합니다."
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = RecruitmentApplicationResponse.class)))
     @ApiResponseExplanations(
