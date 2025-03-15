@@ -5,7 +5,7 @@ import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.comment.implement.board.GenericCommentBoardReader;
 import com.example.demo.domain.comment.implement.comment.AbstractCommentHandler;
 import com.example.demo.domain.notification.domain.vo.NotificationType;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;

@@ -4,7 +4,7 @@ import com.example.demo.application.comment.dto.request.CommentRequest;
 import com.example.demo.application.comment.dto.response.CommentInfoResponse;
 import com.example.demo.application.comment.dto.response.CommentResponse;
 import com.example.demo.application.comment.dto.response.MyCommentResponse;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;

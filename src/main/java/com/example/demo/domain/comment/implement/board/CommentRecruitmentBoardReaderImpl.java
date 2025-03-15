@@ -9,14 +9,13 @@ import org.springframework.stereotype.Component;
 public class CommentRecruitmentBoardReaderImpl implements GenericCommentBoardReader {
     private final RecruitmentBoardRepository recruitmentBoardRepository;
 
-    // TODO : RecruitmentBoard 리팩토링 후 다시 손 봐야함
     @Override
     public boolean existsById(Long id) {
-        return recruitmentBoardRepository.doFindById(id).isPresent();
+        return recruitmentBoardRepository.getById(id).isPresent();
     }
 
     @Override
     public boolean existsByIdWithUser(Long id) {
-        return recruitmentBoardRepository.findByIdWithUser(id).isPresent();
+        return recruitmentBoardRepository.getByIdWithUser(id).isPresent();
     }
 }

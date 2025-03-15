@@ -10,19 +10,19 @@ import com.example.demo.domain.recruitment_application.domain.entity.Recruitment
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantDescriptiveAnswerRepository;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantOptionalAnswerRepository;
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormAnswer;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
-import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentFormAnswerRepository;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
+import com.example.demo.domain.recruitment_board.entity.vo.QuestionType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.service.RecruitmentBoardService;
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
+import com.example.demo.infra.recruitment_board.entity.RecruitmentFormAnswer;
+import com.example.demo.infra.recruitment_board.entity.RecruitmentFormQuestion;
+import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentBoardJpaRepository;
+import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentFormAnswerJpaRepository;
+import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentFormQuestionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,9 +39,9 @@ public class RecruitmentApplicationService {
     private final UserService userService;
     private final RecruitmentBoardService recruitmentBoardService;
 
-    private final RecruitmentBoardRepository recruitmentBoardRepository;
-    private final RecruitmentFormAnswerRepository recruitmentFormAnswerRepository;
-    private final RecruitmentFormQuestionRepository recruitmentFormQuestionRepository;
+    private final RecruitmentBoardJpaRepository recruitmentBoardRepository;
+    private final RecruitmentFormAnswerJpaRepository recruitmentFormAnswerRepository;
+    private final RecruitmentFormQuestionJpaRepository recruitmentFormQuestionRepository;
     private final RecruitmentApplicantRepository recruitmentApplicantRepository;
     private final RecruitmentApplicantDescriptiveAnswerRepository recruitmentApplicantDescriptiveAnswerRepository;
     private final RecruitmentApplicantOptionalAnswerRepository recruitmentApplicantOptionalAnswerRepository;
@@ -51,7 +51,7 @@ public class RecruitmentApplicationService {
     public RecruitmentApplicationResponse createApplication(Long userId, Long recruitmentBoardId, RecruitmentApplicationRequest request) {
         User user = userService.validateUser(userId);
         RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingQuestionList(recruitmentBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        recruitmentBoardService.validateDeadLine(userId, recruitmentBoard);
+        recruitmentBoardService.validateDeadLine(userId, recruitmentBoard.toBoardInfoDomain());
         validateEssential(recruitmentBoard, request);
         if (recruitmentApplicantRepository.existsByUser_IdAndRecruitmentBoard_Id(userId, recruitmentBoardId)) {
             throw new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_EXIST);
@@ -69,6 +69,8 @@ public class RecruitmentApplicationService {
         List<RecruitmentApplicantOptionalAnswer> saveApplicantOptinalAnswerList =
                 recruitmentApplicantOptionalAnswerRepository.saveAll(applicantOptionalAnswerList);
 
+        recruitmentBoardRepository.incrementCurrentMemberNum(recruitmentBoardId);
+
         return RecruitmentApplicationResponse.from(saveApplicant, recruitmentBoard, saveApplicantDescriptiveAnswerList, saveApplicantOptinalAnswerList);
     }
 
@@ -78,7 +80,9 @@ public class RecruitmentApplicationService {
             Pageable pageable,
             Long recruitmentBoardId,
             boolean isAuthorized) {
-        RecruitmentBoard recruitmentBoard = recruitmentBoardService.validateRecruitmentBoard(recruitmentBoardId);
+        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findById(recruitmentBoardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+
         if (!isAuthorized) {
             if (!recruitmentBoard.getUser().getId().equals(userId)) {
                 throw new ServiceException(ErrorCode.ACCESS_DENIED);
@@ -116,7 +120,7 @@ public class RecruitmentApplicationService {
         }
         RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingQuestionList(applicant.getRecruitmentBoard().getId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        recruitmentBoardService.validateDeadLine(userId, recruitmentBoard);
+        recruitmentBoardService.validateDeadLine(userId, recruitmentBoard.toBoardInfoDomain());
         validateEssential(recruitmentBoard, request);
 
         List<RecruitmentApplicantDescriptiveAnswer> recruitmentApplicantDescriptiveAnswerList = recruitmentApplicantDescriptiveAnswerRepository.findByRecruitmentApplicant_IdFetchQuestion(applicant.getId());
@@ -274,9 +278,14 @@ public class RecruitmentApplicationService {
         if (!userId.equals(applicant.getUser().getId())) {
             throw new ServiceException(ErrorCode.ACCESS_DENIED);
         }
-        recruitmentBoardService.validateDeadLine(userId, applicant.getRecruitmentBoard());
+        recruitmentBoardService.validateDeadLine(userId, applicant.getRecruitmentBoard().toBoardInfoDomain());
 
         recruitmentApplicantRepository.deleteById(applicantId);
+
+        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository
+                .findByIdWithLock(applicant.getRecruitmentBoard().getId())
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        recruitmentBoardRepository.decrementCurrentMemberNum(recruitmentBoard.getId());
     }
 
     @Transactional(readOnly = true)

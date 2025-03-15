@@ -4,7 +4,7 @@ import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.comment.entity.CommentUserInfo;
 import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;

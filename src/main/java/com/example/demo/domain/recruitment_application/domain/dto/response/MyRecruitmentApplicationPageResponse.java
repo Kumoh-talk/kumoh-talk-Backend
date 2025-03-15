@@ -1,7 +1,7 @@
 package com.example.demo.domain.recruitment_application.domain.dto.response;
 
 import com.example.demo.domain.recruitment_application.domain.entity.RecruitmentApplicant;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
