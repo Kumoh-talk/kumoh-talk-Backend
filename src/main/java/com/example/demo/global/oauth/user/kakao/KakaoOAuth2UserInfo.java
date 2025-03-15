@@ -20,12 +20,8 @@ public class KakaoOAuth2UserInfo extends AbstractOAuth2UserInfo {
 		this.attributes = kakaoProfile;
 
 		this.id = ((Long) attributes.get("id")).toString();
-		this.email = (String) kakaoAccount.get("email");
-		this.nickName = (String) attributes.get("nickname");
-		this.profileImageUrl = (String) attributes.get("profile_image_url");
 
 		this.attributes.put("id", id);
-		this.attributes.put("email", this.email);
 	}
 
 	@Override
