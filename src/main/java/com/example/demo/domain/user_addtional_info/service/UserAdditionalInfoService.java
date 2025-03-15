@@ -31,29 +31,17 @@ public class UserAdditionalInfoService {
     private final UserAdditionalInfoWriter userAdditionalInfoWriter;
 
     public UserAdditionalInfoData getUserAdditionalInfoData(Long userId) {
-        if(!userReader.validateUser(userId)){
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
+        userReader.validateUser(userId);
         UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoReader.getUserAdditionalInfoData(userId);
-        this.validateUserAdditionalInfo(userAdditionalInfoData); // userAdditionalInfo가 존재하는지 확인
+        userAdditionalInfoReader.checkValidateUserAdditionalInfo(userAdditionalInfoData);  // userAdditionalInfo가 존재하는지 확인
         return userAdditionalInfoData;
-    }
-
-    public void validateUserAdditionalInfo(UserAdditionalInfoData userAdditionalInfoData) {
-        if (userAdditionalInfoData == null) {
-            throw new ServiceException(USER_ADDITIONAL_INFO_NOT_FOUND);
-        }
     }
 
     @Transactional
     public Token createUserAdditionalInfo(Long userId, UserAdditionalInfoData request) {
-        if(!userReader.validateUser(userId)){
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
+        userReader.validateUser(userId);
         UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoReader.getUserAdditionalInfoData(userId);
-        if (userAdditionalInfoData != null) { // 정보가 존재하지 않을 때만 수행
-            throw new ServiceException(USER_ADDITIONAL_INFO_CONFLICT);
-        }
+        userAdditionalInfoReader.checkValidateUserAdditionalInfo(userAdditionalInfoData); // 정보가 존재하지 않을 때만 수행
         userAdditionalInfoWriter.createUserAdditionalInfo(userId, request);
         JwtUserClaim claim = new JwtUserClaim(userId, Role.ROLE_ACTIVE_USER); // 성공적으로 추가 정보를 입력했다면 role은 ACTIVE_USER로 승격
         return jwtHandler.createTokens(claim); // 업데이트된 새 토큰 발급
@@ -61,11 +49,9 @@ public class UserAdditionalInfoService {
 
     @Transactional
     public void updateUserAcademicInfo(Long userId, UpdateUserAcademicInfo request) {
-        if(!userReader.validateUser(userId)){
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
+        userReader.validateUser(userId);
         UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoReader.getUserAdditionalInfoData(userId);
-        this.validateUserAdditionalInfo(userAdditionalInfoData); // userAdditionalInfo가 존재하는지 확인
+        userAdditionalInfoReader.checkValidateUserAdditionalInfo(userAdditionalInfoData);  // userAdditionalInfo가 존재하는지 확인
         userAdditionalInfoWriter.updateAcademicInfo(userId, request.getGrade(), request.getStudentStatus()); // UserAcademicInfo 업데이트
     }
 }

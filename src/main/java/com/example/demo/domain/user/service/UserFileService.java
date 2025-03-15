@@ -24,9 +24,7 @@ public class UserFileService {
     private final S3PresignedUrlUtil s3PresignedUrlUtil;
 
     public String getPresignedUrl(Long userId, ProfilePresignedUrl request) {
-        if(!userReader.validateUser(userId)){
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
+        userReader.validateUser(userId);
         String s3Path = s3UrlUtil.generateProfileS3Path(userId, request.getFileName(), request.getFileType().toString());
         return s3PresignedUrlUtil.generatePresignedUrl(s3Path);
 
@@ -34,17 +32,13 @@ public class UserFileService {
 
     @Transactional
     public void changeProfileUrl(Long userId, String profileUrl) {
-        if(!userReader.validateUser(userId)){
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
+        userReader.validateUser(userId);
         userWriter.changeProfileUrl(userId, profileUrl);
     }
 
     @Transactional
     public void deleteProfileImage(Long userId) {
-        if(!userReader.validateUser(userId)){
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
+        userReader.validateUser(userId);
         userWriter.setDefaultProfileUrl(userId, s3UrlUtil.getDefaultImageUrl());
     }
 }

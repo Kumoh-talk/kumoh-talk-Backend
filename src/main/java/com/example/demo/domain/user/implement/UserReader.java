@@ -5,6 +5,8 @@ import com.example.demo.domain.user.entity.UserProfile;
 import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.domain.user.repository.UserRepository;
 import com.example.demo.domain.user_addtional_info.entity.UserAdditionalInfoData;
+import com.example.demo.global.base.exception.ErrorCode;
+import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +34,12 @@ public class UserReader {
 	public UserInfo getUserInfo(Long userId) {
 		return userRepository.getUserInfo(userId);
 	}
-	public boolean validateUser(Long userId) {
+	public void validateUser(Long userId) {
+		if(!userRepository.existsUserTarget(userId)){
+			throw new ServiceException(ErrorCode.USER_NOT_FOUND);
+		}
+	}
+	public boolean isUserExist(Long userId) {
 		return userRepository.existsUserTarget(userId);
 	}
 	public Optional<UserProfile> getUserProfile(Long userId) {

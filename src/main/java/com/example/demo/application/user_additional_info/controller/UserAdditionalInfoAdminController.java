@@ -28,14 +28,14 @@ public class UserAdditionalInfoAdminController implements UserAdditionalInfoAdmi
 
     private final UserAdditionalInfoAdminService userAdditionalInfoAdminService;
 
-    @GetMapping
-    public ResponseEntity<ResponseBody<GlobalPageResponse<UserAdditionalInfoResponse>>> getAllUserAdditionalInfos (
-            @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        Page<UserAdditionalInfoData> userAdditionalInfoDataPage = userAdditionalInfoAdminService.getAllUserAdditionalInfos(pageable);
-        Page<UserAdditionalInfoResponse> userAdditionalInfoResponses = userAdditionalInfoDataPage.map(UserAdditionalInfoResponse::toUserAdditionalInfoResponse);
-        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(userAdditionalInfoResponses)));
-    }
+//    @GetMapping
+//    public ResponseEntity<ResponseBody<GlobalPageResponse<UserAdditionalInfoResponse>>> getAllUserAdditionalInfos (
+//            @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+//    ) {
+//        Page<UserAdditionalInfoData> userAdditionalInfoDataPage = userAdditionalInfoAdminService.getAllUserAdditionalInfos(pageable);
+//        Page<UserAdditionalInfoResponse> userAdditionalInfoResponses = userAdditionalInfoDataPage.map(UserAdditionalInfoResponse::toUserAdditionalInfoResponse);
+//        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(userAdditionalInfoResponses)));
+//    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseBody<UserAdditionalInfoResponse>> getUserAdditionalInfo (@PathVariable Long userId) {

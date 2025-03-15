@@ -23,7 +23,7 @@ public class UserAdminService {
     private final UserWriter userWriter;
 
     public Boolean isAdmin(Long userId) {
-        if(userReader.validateUser(userId)){
+        if(userReader.isUserExist(userId)){
             return userWriter.isAdmin(userId);
         }
         return false;
@@ -36,9 +36,7 @@ public class UserAdminService {
     @Transactional
     public void updateUserInfo(Long userId, UpdateUserInfo request) {
 
-        if(!userReader.validateUser(userId)) {
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
+        userReader.validateUser(userId);
         userReader.checkNickNameDuplicate(request.getNickname());
         userWriter.updateUserInfo(userId, request);
     }

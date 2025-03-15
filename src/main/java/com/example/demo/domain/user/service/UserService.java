@@ -39,7 +39,7 @@ public class UserService {
 
     @Transactional
     public Token completeRegistration(Long userId, CompleteRegistration request) {
-        this.validateUserExists(userId);
+        userReader.validateUser(userId);
         this.checkNicknameDuplicate(request.getNickname());
         UserTarget userTarget = userWriter.setInitialInfo(userId, request);
         JwtUserClaim jwtUserClaim = JwtUserClaim.create(userTarget.getUserId(), userTarget.getUserRole());
@@ -49,12 +49,6 @@ public class UserService {
     public void logout(Long userId) {
         // TODO. blacklist access token?
         tokenWriter.deleteUserRefreshToken(userId);
-    }
-
-    public void validateUserExists(Long userId) {
-        if(!userReader.validateUser(userId)) {
-            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
-        }
     }
 
     /**
@@ -68,19 +62,19 @@ public class UserService {
 
     @Transactional
     public void updateNickname(Long userId, String nickname) {
-        this.validateUserExists(userId);
+        userReader.validateUser(userId);
         this.checkNicknameDuplicate(nickname);
         userWriter.updateNickName(userId, nickname);
     }
 
     public UserInfo getUserInfo(Long userId) {
-        this.validateUserExists(userId);
+        userReader.validateUser(userId);
         return userReader.getUserInfo(userId);
     }
 
     public UserProfile getUserProfile(Long userId) {
         // 프로필 정보를 만들어서 리턴
-        this.validateUserExists(userId);
+        userReader.validateUser(userId);
         return userReader.getUserProfile(userId).get();
     }
 }
