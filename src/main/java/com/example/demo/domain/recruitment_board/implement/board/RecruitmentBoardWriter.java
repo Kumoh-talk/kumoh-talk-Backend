@@ -22,4 +22,12 @@ public class RecruitmentBoardWriter {
     public void delete(RecruitmentBoardInfo recruitmentBoardInfo) {
         recruitmentBoardRepository.delete(recruitmentBoardInfo);
     }
+
+    public void increaseCurrentMemberNum(Long recruitmentBoardId) {
+        recruitmentBoardRepository.increaseCurrentMemberNum(recruitmentBoardId);
+    }
+
+    public void decreaseCurrentMemberNum(Long recruitmentBoardId) {
+        recruitmentBoardRepository.decreaseCurrentMemberNum(recruitmentBoardId);
+    }
 }

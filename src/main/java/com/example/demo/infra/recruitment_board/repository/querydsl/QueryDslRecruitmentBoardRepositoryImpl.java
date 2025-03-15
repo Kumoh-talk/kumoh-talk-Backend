@@ -122,12 +122,12 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
 
 
     @Override
-    public Optional<RecruitmentBoard> findByIdByFetchingQuestionList(Long recruitmentBoardId) {
+    public Optional<RecruitmentBoard> findByIdByWithQuestionList(Long recruitmentBoardId) {
         RecruitmentBoard result = jpaQueryFactory
                 .selectFrom(recruitmentBoard)
                 .leftJoin(recruitmentBoard.recruitmentFormQuestionList, recruitmentFormQuestion).fetchJoin()
                 .where(recruitmentBoard.id.eq(recruitmentBoardId))
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .setLockMode(LockModeType.PESSIMISTIC_READ)
                 .fetchOne();
 
         if (result == null) {

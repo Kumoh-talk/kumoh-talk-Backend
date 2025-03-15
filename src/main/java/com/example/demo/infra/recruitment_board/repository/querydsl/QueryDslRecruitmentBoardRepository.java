@@ -16,6 +16,6 @@ public interface QueryDslRecruitmentBoardRepository {
 
     Page<RecruitmentBoardInfo> findPublishedPageByPageNum(Long userId, Pageable pageable, RecruitmentBoardType boardType);
 
-    Optional<RecruitmentBoard> findByIdByFetchingQuestionList(Long recruitmentBoardId);
+    Optional<RecruitmentBoard> findByIdByWithQuestionList(Long recruitmentBoardId);
 
 }

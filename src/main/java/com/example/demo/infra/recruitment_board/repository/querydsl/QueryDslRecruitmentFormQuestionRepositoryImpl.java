@@ -20,4 +20,14 @@ public class QueryDslRecruitmentFormQuestionRepositoryImpl implements QueryDslRe
                 .where(recruitmentFormQuestion.recruitmentBoard.id.eq(recruitmentBoardId))
                 .fetch();
     }
+
+    @Override
+    public List<Long> findEssentialListByRecruitmentBoardId(Long boardId) {
+        return jpaQueryFactory
+                .select(recruitmentFormQuestion.id)
+                .from(recruitmentFormQuestion)
+                .where(recruitmentFormQuestion.recruitmentBoard.id.eq(boardId)
+                        .and(recruitmentFormQuestion.isEssential.isTrue()))
+                .fetch();
+    }
 }
