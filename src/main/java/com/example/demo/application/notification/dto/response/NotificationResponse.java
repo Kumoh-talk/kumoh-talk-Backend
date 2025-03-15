@@ -1,6 +1,7 @@
-package com.example.demo.domain.notification.domain.dto.response;
+package com.example.demo.application.notification.dto.response;
 
-import com.example.demo.domain.notification.domain.vo.NotificationType;
+import com.example.demo.domain.notification.entity.NotificationInfo;
+import com.example.demo.domain.notification.entity.vo.NotificationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,15 @@ public class NotificationResponse {
     private String senderNickname;
     @Schema(description = "알림 조회 정보", example = "true")
     private boolean isRead;
+
+    public static NotificationResponse from(NotificationInfo notificationInfo) {
+        return NotificationResponse.builder()
+                .id(notificationInfo.getNotificationId())
+                .invokerType(notificationInfo.getInvokerType())
+                .invokerId(notificationInfo.getInvokerId())
+                .boardId(notificationInfo.getBoardId())
+                .senderNickname(notificationInfo.getSenderNickname())
+                .isRead(notificationInfo.isRead())
+                .build();
+    }
 }
