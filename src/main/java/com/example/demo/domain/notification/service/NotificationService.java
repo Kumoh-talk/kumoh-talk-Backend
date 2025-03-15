@@ -1,9 +1,12 @@
 package com.example.demo.domain.notification.service;
 
-import com.example.demo.domain.notification.domain.dto.response.NotificationNoOffsetResponse;
-import com.example.demo.domain.notification.domain.dto.response.NotificationResponse;
-import com.example.demo.domain.notification.repository.NotificationUserRepository;
-import com.example.demo.domain.user.service.UserService;
+import com.example.demo.domain.notification.entity.NotificationInfo;
+import com.example.demo.domain.notification.entity.NotificationSliceInfo;
+import com.example.demo.domain.notification.implement.NotificationUserReader;
+import com.example.demo.domain.notification.implement.NotificationUserWriter;
+import com.example.demo.domain.user.implement.UserReader;
+import com.example.demo.global.base.exception.ErrorCode;
+import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -13,30 +16,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    private final UserService userService;
+    private final UserReader userReader;
 
-    private final NotificationUserRepository notificationUserRepository;
+    private final NotificationUserReader notificationUserReader;
+    private final NotificationUserWriter notificationUserWriter;
 
     @Transactional(readOnly = true)
-    public NotificationNoOffsetResponse findNotificationListByNoOffset(Long userId, Pageable pageable, Long lastNotificationId) {
-        userService.validateUser(userId);
-        Slice<NotificationResponse> notificationSlice = notificationUserRepository.findSliceByNoOffset(userId, lastNotificationId, pageable);
-        Long count = notificationUserRepository.countUnreadNotifications(userId);
+    public NotificationSliceInfo findNotificationListByNoOffset(Long userId, Pageable pageable, Long lastNotificationId) {
+        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        Slice<NotificationInfo> notificationSlice = notificationUserReader.getSlice(userId, lastNotificationId, pageable);
+        Long count = notificationUserReader.countUnreadNotifications(userId);
 
-        return NotificationNoOffsetResponse.from(notificationSlice.hasNext(), notificationSlice.getSize(), count, notificationSlice.getContent());
+        return NotificationSliceInfo.of(count, notificationSlice);
     }
 
     @Transactional
     public void readNotification(Long userId, Long notificationId) {
-        userService.validateUser(userId);
+        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        notificationUserRepository.readNotification(userId, notificationId);
+        notificationUserWriter.readNotification(userId, notificationId);
     }
 
     @Transactional
     public void deleteNotification(Long userId, Long notificationId) {
-        userService.validateUser(userId);
+        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
-        notificationUserRepository.deleteByUser_IdAndNotification_Id(userId, notificationId);
+        notificationUserWriter.deleteByUserIdAndNotificationId(userId, notificationId);
     }
 }
