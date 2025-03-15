@@ -49,8 +49,9 @@ public class UserAdditionalInfoRepositoryImpl implements UserAdditionalInfoRepos
     }
 
     @Override
-    public UserAdditionalInfoData getUserAdditionalInfoData(Long userId) {
-        User user = userJpaRepository.findById(userId).get();
-        return UserAdditionalInfo.toUserAdditionalInfoData(user.getUserAdditionalInfo());
+    public Optional<UserAdditionalInfoData> getUserAdditionalInfoData(Long userId) {
+        return userJpaRepository.findById(userId)
+                .map(user -> Optional.ofNullable(user.getUserAdditionalInfo()))
+                .flatMap(userInfo -> userInfo.map(UserAdditionalInfo::toUserAdditionalInfoData));
     }
 }

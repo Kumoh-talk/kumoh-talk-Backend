@@ -26,8 +26,7 @@ public class UserAdditionalInfoAdminService {
 
     public UserAdditionalInfoData getUserAdditionalInfo(Long userId) {
         userReader.validateUser(userId);
-        UserAdditionalInfoData userAdditionalInfoData = userReader.getUserAdditionalInfoData(userId); // UserAdditionalInfoData로 UserAdditionalInfo 받아옴
-        userAdditionalInfoReader.checkValidateUserAdditionalInfo(userAdditionalInfoData); // userAdditionalInfo가 존재하는지 확인
-        return userAdditionalInfoData;
+        return userAdditionalInfoReader.getUserAdditionalInfoData(userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_ADDITIONAL_INFO_NOT_FOUND));
     }
 }

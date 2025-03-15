@@ -21,7 +21,6 @@ public interface UserRepository {
 	UserTarget setInitialInfo(Long userId, CompleteRegistration request);
 	boolean isAdmin(Long userId);
 	void updateUserInfo(Long userId, UpdateUserInfo request);
-	UserAdditionalInfoData getUserAdditionalInfoData(Long userId);
 	UserInfo getUserInfo(Long userId);
 	Optional<UserProfile> getUserProfile(Long userId);
 }

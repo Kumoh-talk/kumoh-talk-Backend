@@ -28,9 +28,6 @@ public class UserReader {
 	public Page<UserInfo> findAllUsers(Pageable pageable) {
 		return userRepository.findAllUsers(pageable);
 	}
-	public UserAdditionalInfoData getUserAdditionalInfoData(Long userId) {
-		return userRepository.getUserAdditionalInfoData(userId);
-	}
 	public UserInfo getUserInfo(Long userId) {
 		return userRepository.getUserInfo(userId);
 	}

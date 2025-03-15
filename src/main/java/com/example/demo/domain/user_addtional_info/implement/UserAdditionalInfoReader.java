@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 import static com.example.demo.global.base.exception.ErrorCode.USER_ADDITIONAL_INFO_CONFLICT;
 import static com.example.demo.global.base.exception.ErrorCode.USER_ADDITIONAL_INFO_NOT_FOUND;
 
@@ -19,16 +21,7 @@ public class UserAdditionalInfoReader {
     public Page<UserAdditionalInfoData> findAllUserAdditionalInfos(Pageable pageable) {
         return userAdditionalInfoRepository.findAll(pageable);
     }
-
-    public void checkValidateUserAdditionalInfo(UserAdditionalInfoData userAdditionalInfoData) {
-        if (userAdditionalInfoData == null) {
-            throw new ServiceException(USER_ADDITIONAL_INFO_NOT_FOUND);
-        }
-        else {
-            throw new ServiceException(USER_ADDITIONAL_INFO_CONFLICT);
-        }
-    }
-    public UserAdditionalInfoData getUserAdditionalInfoData(Long userId) {
+    public Optional<UserAdditionalInfoData> getUserAdditionalInfoData(Long userId) {
         return userAdditionalInfoRepository.getUserAdditionalInfoData(userId);
     }
 }

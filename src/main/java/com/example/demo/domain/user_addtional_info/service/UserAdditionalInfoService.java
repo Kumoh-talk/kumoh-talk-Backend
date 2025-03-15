@@ -32,26 +32,27 @@ public class UserAdditionalInfoService {
 
     public UserAdditionalInfoData getUserAdditionalInfoData(Long userId) {
         userReader.validateUser(userId);
-        UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoReader.getUserAdditionalInfoData(userId);
-        userAdditionalInfoReader.checkValidateUserAdditionalInfo(userAdditionalInfoData);  // userAdditionalInfo가 존재하는지 확인
-        return userAdditionalInfoData;
+        return userAdditionalInfoReader.getUserAdditionalInfoData(userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_ADDITIONAL_INFO_NOT_FOUND));
     }
 
     @Transactional
     public Token createUserAdditionalInfo(Long userId, UserAdditionalInfoData request) {
         userReader.validateUser(userId);
-        UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoReader.getUserAdditionalInfoData(userId);
-        userAdditionalInfoReader.checkValidateUserAdditionalInfo(userAdditionalInfoData); // 정보가 존재하지 않을 때만 수행
+        userAdditionalInfoReader.getUserAdditionalInfoData(userId) // 정보가 존재하면 예외 던짐
+                .ifPresent(existingInfo -> {
+                    throw new ServiceException(ErrorCode.USER_ADDITIONAL_INFO_CONFLICT);
+                });
         userAdditionalInfoWriter.createUserAdditionalInfo(userId, request);
-        JwtUserClaim claim = new JwtUserClaim(userId, Role.ROLE_ACTIVE_USER); // 성공적으로 추가 정보를 입력했다면 role은 ACTIVE_USER로 승격
-        return jwtHandler.createTokens(claim); // 업데이트된 새 토큰 발급
+        JwtUserClaim claim = new JwtUserClaim(userId, Role.ROLE_ACTIVE_USER); // ROLE_ACTIVE_USER로 변경
+        return jwtHandler.createTokens(claim); // 새로운 토큰 발급
     }
 
     @Transactional
     public void updateUserAcademicInfo(Long userId, UpdateUserAcademicInfo request) {
         userReader.validateUser(userId);
-        UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoReader.getUserAdditionalInfoData(userId);
-        userAdditionalInfoReader.checkValidateUserAdditionalInfo(userAdditionalInfoData);  // userAdditionalInfo가 존재하는지 확인
-        userAdditionalInfoWriter.updateAcademicInfo(userId, request.getGrade(), request.getStudentStatus()); // UserAcademicInfo 업데이트
+        UserAdditionalInfoData userAdditionalInfoData = userAdditionalInfoReader.getUserAdditionalInfoData(userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_ADDITIONAL_INFO_NOT_FOUND));
+        userAdditionalInfoWriter.updateAcademicInfo(userId, request.getGrade(), request.getStudentStatus());
     }
 }

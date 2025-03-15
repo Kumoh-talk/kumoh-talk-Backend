@@ -101,13 +101,6 @@ public class UserRepositoryImpl implements UserRepository {
 				request.getRole()
 		);
 	}
-
-	@Override
-	public UserAdditionalInfoData getUserAdditionalInfoData(Long userId) {
-		Optional<User> user = userJpaRepository.findById(userId);
-		return UserAdditionalInfo.toUserAdditionalInfoData(user.get().getUserAdditionalInfo());
-	}
-
 	@Override
 	public UserInfo getUserInfo(Long userId) {
 		Optional<User> user = userJpaRepository.findById(userId);
