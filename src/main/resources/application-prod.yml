@@ -19,6 +19,7 @@ spring:
     redis:
       host: ${prod-db.redis.host}
       port: ${prod-db.redis.port}
+      password: ${prod-db.redis.password}
   jpa:
     properties:
       hibernate:
@@ -36,3 +37,5 @@ management:
       exposure:
         include: "health, info, metrics, prometheus"
         exclude: "env, beans, mappings, configprops, scheduledtasks, threaddump, shutdown"
+  server:
+    port: ${actuator.port}
