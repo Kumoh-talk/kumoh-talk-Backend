@@ -62,4 +62,4 @@ management:
     os:
       enabled: true
   server:
-    port: 9292
+    port: ${actuator.port}
