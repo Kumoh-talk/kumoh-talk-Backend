@@ -40,7 +40,7 @@ public interface RecruitmentBoardJpaRepository extends JpaRepository<Recruitment
             "WHERE rb.id = :id")
     Optional<CommentBoard> findByIdWithUser(Long id);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("SELECT rb FROM RecruitmentBoard rb WHERE rb.id = :recruitmentBoardId")
     Optional<RecruitmentBoard> findByIdWithLock(Long recruitmentBoardId);
 

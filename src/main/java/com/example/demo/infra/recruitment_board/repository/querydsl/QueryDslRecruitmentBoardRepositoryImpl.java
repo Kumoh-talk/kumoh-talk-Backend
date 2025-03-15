@@ -127,7 +127,7 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
                 .selectFrom(recruitmentBoard)
                 .leftJoin(recruitmentBoard.recruitmentFormQuestionList, recruitmentFormQuestion).fetchJoin()
                 .where(recruitmentBoard.id.eq(recruitmentBoardId))
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .setLockMode(LockModeType.PESSIMISTIC_READ)
                 .fetchOne();
 
         if (result == null) {
