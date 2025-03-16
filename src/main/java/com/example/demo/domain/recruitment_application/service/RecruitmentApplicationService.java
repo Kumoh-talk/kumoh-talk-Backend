@@ -118,7 +118,7 @@ public class RecruitmentApplicationService {
     public void deleteApplication(Long userId, Long applicationId) {
         RecruitmentApplicationInfo applicationInfo = recruitmentApplicationReader.getByIdWithBoard(applicationId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
-        RecruitmentBoardInfo boardInfo = recruitmentBoardReader.getByIdWithLock(applicationInfo.getRecruitmentBoardId())
+        RecruitmentBoardInfo boardInfo = recruitmentBoardReader.getById(applicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         recruitmentApplicationValidator.validateWriter(userId, applicationInfo);

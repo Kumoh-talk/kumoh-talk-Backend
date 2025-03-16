@@ -50,12 +50,6 @@ public class RecruitmentBoardRepositoryImpl implements RecruitmentBoardRepositor
     }
 
     @Override
-    public Optional<RecruitmentBoardInfo> getByIdWithLock(Long boardId) {
-        return recruitmentBoardJpaRepository.findByIdWithLock(boardId)
-                .map(RecruitmentBoard::toBoardInfoDomain);
-    }
-
-    @Override
     public List<RecruitmentBoardInfo> getPublishedPageByNoOffset(int size, RecruitmentBoardInfo lastBoardInfo, RecruitmentBoardType boardType) {
         return recruitmentBoardJpaRepository.findPublishedPageByNoOffset(size, lastBoardInfo, boardType);
     }

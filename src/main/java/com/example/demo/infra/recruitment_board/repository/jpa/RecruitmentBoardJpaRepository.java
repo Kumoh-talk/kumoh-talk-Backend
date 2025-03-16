@@ -4,9 +4,7 @@ import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
 import com.example.demo.infra.recruitment_board.repository.querydsl.QueryDslRecruitmentBoardRepository;
-import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,10 +37,6 @@ public interface RecruitmentBoardJpaRepository extends JpaRepository<Recruitment
             "JOIN FETCH rb.user " +
             "WHERE rb.id = :id")
     Optional<CommentBoard> findByIdWithUser(Long id);
-
-    @Lock(LockModeType.PESSIMISTIC_READ)
-    @Query("SELECT rb FROM RecruitmentBoard rb WHERE rb.id = :recruitmentBoardId")
-    Optional<RecruitmentBoard> findByIdWithLock(Long recruitmentBoardId);
 
     @Transactional
     @Modifying
