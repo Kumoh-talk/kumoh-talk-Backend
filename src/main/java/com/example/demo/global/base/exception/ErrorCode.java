@@ -79,7 +79,9 @@ public enum ErrorCode {
     SEMINAR_APPLICATION_CANNOT_EDIT_OR_DELETE(HttpStatus.FORBIDDEN, "SEMINAR_0003", "해당 세미나 신청폼을 수정/삭제할 수 있는 기간이 아닙니다."),
 
     // RecruitmentBoard
-    RECRUITMENT_APPLICATION_EXIST(HttpStatus.BAD_REQUEST, "STUDYPROEJCT_0001", "게시물에 신청한 사람이 존재합니다."),
+    RECRUITMENT_APPLICATION_EXIST(HttpStatus.BAD_REQUEST, "RECRUITMENT_0001", "게시물에 신청한 사람이 존재합니다."),
+    INVALID_DEADLINE(HttpStatus.BAD_REQUEST, "RECRUITMENT_0002", "모집 마감일이 현재 날짜 이전입니다."),
+    INVALID_START_DATE(HttpStatus.BAD_REQUEST, "RECRUITMENT_0003", "활동 시작일이 활동 종료일 이후입니다."),
 
     // RecruitmentFormQuestion
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION_0001", "질문 정보가 존재하지 않습니다."),

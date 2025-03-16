@@ -39,7 +39,7 @@ public class RecruitmentApplicationService {
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getByIdByWithQuestionList(recruitmentApplicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        recruitmentBoardValidator.validateDeadLine(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
+        recruitmentBoardValidator.validateExpired(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
         recruitmentApplicationValidator.validateEssential(recruitmentApplicationInfo.getRecruitmentBoardId(), recruitmentApplicationInfo);
         recruitmentApplicationValidator.validateExist(recruitmentApplicationInfo.getUserId(), recruitmentApplicationInfo.getRecruitmentBoardId());
 
@@ -100,7 +100,7 @@ public class RecruitmentApplicationService {
 
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getByIdByWithQuestionList(originApplicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        recruitmentBoardValidator.validateDeadLine(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
+        recruitmentBoardValidator.validateExpired(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
         recruitmentApplicationValidator.validateEssential(originApplicationInfo.getRecruitmentBoardId(), recruitmentApplicationInfo);
 
         try {
@@ -122,7 +122,7 @@ public class RecruitmentApplicationService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         recruitmentApplicationValidator.validateWriter(userId, applicationInfo);
-        recruitmentBoardValidator.validateDeadLine(userId, boardInfo);
+        recruitmentBoardValidator.validateExpired(userId, boardInfo);
 
         recruitmentApplicationWriter.delete(applicationInfo);
         recruitmentBoardWriter.decreaseCurrentMemberNum(applicationInfo.getRecruitmentBoardId());
