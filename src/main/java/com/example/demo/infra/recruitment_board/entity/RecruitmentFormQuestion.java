@@ -1,5 +1,6 @@
 package com.example.demo.infra.recruitment_board.entity;
 
+import com.example.demo.domain.recruitment_application.entity.RecruitmentApplicationAnswerInfo;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentFormAnswerInfo;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentFormQuestionInfo;
 import com.example.demo.domain.recruitment_board.entity.vo.QuestionType;
@@ -58,7 +59,7 @@ public class RecruitmentFormQuestion extends BaseEntity {
         this.recruitmentBoard = recruitmentBoard;
     }
 
-    public RecruitmentFormQuestionInfo toDomain() {
+    public RecruitmentFormQuestionInfo toFormDomain() {
         return RecruitmentFormQuestionInfo.builder()
                 .questionId(id)
                 .number(number)
@@ -68,6 +69,15 @@ public class RecruitmentFormQuestion extends BaseEntity {
                 .answerList(recruitmentFormAnswerList.stream()
                         .map(RecruitmentFormAnswer::toDomain)
                         .collect(Collectors.toList()))
+                .build();
+    }
+
+    public RecruitmentApplicationAnswerInfo toApplicationDomain() {
+        return RecruitmentApplicationAnswerInfo.builder()
+                .questionId(id)
+                .questionNumber(number)
+                .question(question)
+                .answerInfoList(new ArrayList<>())
                 .build();
     }
 

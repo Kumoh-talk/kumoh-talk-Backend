@@ -12,7 +12,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -122,12 +121,11 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
 
 
     @Override
-    public Optional<RecruitmentBoard> findByIdByFetchingQuestionList(Long recruitmentBoardId) {
+    public Optional<RecruitmentBoard> findByIdByWithQuestionList(Long recruitmentBoardId) {
         RecruitmentBoard result = jpaQueryFactory
                 .selectFrom(recruitmentBoard)
                 .leftJoin(recruitmentBoard.recruitmentFormQuestionList, recruitmentFormQuestion).fetchJoin()
                 .where(recruitmentBoard.id.eq(recruitmentBoardId))
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetchOne();
 
         if (result == null) {

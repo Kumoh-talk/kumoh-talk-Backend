@@ -5,13 +5,13 @@ import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.MentoringNoticeEmailDeliveryStrategy;
 import com.example.demo.domain.newsletter.strategy.ProjectNoticeEmailDeliveryStrategy;
 import com.example.demo.domain.newsletter.strategy.StudyNoticeEmailDeliveryStrategy;
-import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardAndFormInfo;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentFormQuestionInfo;
 import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardReader;
+import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardValidator;
 import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardWriter;
 import com.example.demo.domain.recruitment_board.implement.form.RecruitmentFormQuestionReader;
 import com.example.demo.domain.user.implement.UserReader;
@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,10 +32,10 @@ public class RecruitmentBoardService {
     private final UserReader userReader;
     private final RecruitmentBoardReader recruitmentBoardReader;
     private final RecruitmentBoardWriter recruitmentBoardWriter;
+    private final RecruitmentBoardValidator recruitmentBoardValidator;
+
     private final RecruitmentFormQuestionReader recruitmentFormQuestionReader;
     private final ApplicationEventPublisher eventPublisher;
-
-    private final RecruitmentApplicantRepository recruitmentApplicantRepository;
 
 
     @Transactional
@@ -74,7 +73,7 @@ public class RecruitmentBoardService {
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getById(recruitmentBoardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        validateAccessToBoard(userId, recruitmentBoardInfo);
+        recruitmentBoardValidator.validateAccessToBoard(userId, recruitmentBoardInfo);
 
         return recruitmentBoardInfo;
     }
@@ -84,8 +83,8 @@ public class RecruitmentBoardService {
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getById(recruitmentBoardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        validateAccessToBoard(userId, recruitmentBoardInfo);
-        validateDeadLine(userId, recruitmentBoardInfo);
+        recruitmentBoardValidator.validateAccessToBoard(userId, recruitmentBoardInfo);
+        recruitmentBoardValidator.validateDeadLine(userId, recruitmentBoardInfo);
 
         return recruitmentFormQuestionReader.getByBoarIdWithAnswerList(recruitmentBoardId);
     }
@@ -96,12 +95,12 @@ public class RecruitmentBoardService {
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getByIdByWithQuestionList(recruitmentBoardAndFormInfo.getBoard().getBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        validateWriter(recruitmentBoardAndFormInfo.getBoard().getUserId(), recruitmentBoardInfo);
-        validatePatchable(recruitmentBoardInfo);
+        recruitmentBoardValidator.validateWriter(recruitmentBoardAndFormInfo.getBoard().getUserId(), recruitmentBoardInfo);
+        recruitmentBoardValidator.validatePatchable(recruitmentBoardInfo);
 
         // 게시물 업데이트
         RecruitmentBoardAndFormInfo savedBoard = recruitmentBoardWriter.patch(recruitmentBoardAndFormInfo);
-        if (isStatusChangedToPublished(recruitmentBoardInfo, savedBoard.getBoard())) {
+        if (recruitmentBoardValidator.isStatusChangedToPublished(recruitmentBoardInfo, savedBoard.getBoard())) {
             publishEventFactory(savedBoard.getBoard());
         }
         return savedBoard;
@@ -116,7 +115,7 @@ public class RecruitmentBoardService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         if (!isAuthorized) {
-            validateWriter(userId, recruitmentBoardInfo);
+            recruitmentBoardValidator.validateWriter(userId, recruitmentBoardInfo);
         }
 
         recruitmentBoardWriter.delete(recruitmentBoardInfo);
@@ -151,48 +150,6 @@ public class RecruitmentBoardService {
         userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         return recruitmentBoardReader.getPublishedPageByPageNum(userId, pageable, recruitmentBoardType);
-    }
-
-
-    public boolean isPublished(RecruitmentBoardInfo recruitmentBoardInfo) {
-        return recruitmentBoardInfo.getStatus() == Status.PUBLISHED;
-    }
-
-    public boolean isStatusChangedToPublished(RecruitmentBoardInfo originBoardInfo, RecruitmentBoardInfo newBoardInfo) {
-        return originBoardInfo.getStatus() == Status.DRAFT && newBoardInfo.getStatus() == Status.PUBLISHED;
-    }
-
-    public void validatePatchable(RecruitmentBoardInfo recruitmentBoardInfo) {
-        // 신청자가 존재하면 수정 불가
-        if (recruitmentApplicantRepository.existsByRecruitmentBoard_Id(recruitmentBoardInfo.getBoardId())) {
-            throw new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_EXIST);
-        }
-    }
-
-    public void validateWriter(Long userId, RecruitmentBoardInfo recruitmentBoardInfo) {
-        if (userId == null || !userId.equals(recruitmentBoardInfo.getUserId())) {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
-        }
-    }
-
-    public void validateAccessToBoard(Long userId, RecruitmentBoardInfo recruitmentBoardInfo) {
-        if (!isPublished(recruitmentBoardInfo)) {
-            try {
-                validateWriter(userId, recruitmentBoardInfo);
-            } catch (ServiceException e) {
-                throw new ServiceException(ErrorCode.DRAFT_NOT_ACCESS_USER);
-            }
-        }
-    }
-
-    public void validateDeadLine(Long userId, RecruitmentBoardInfo recruitmentBoardInfo) {
-        if (recruitmentBoardInfo.getRecruitmentDeadline().isBefore(LocalDateTime.now())) {
-            try {
-                validateWriter(userId, recruitmentBoardInfo);
-            } catch (ServiceException e) {
-                throw new ServiceException(ErrorCode.DEADLINE_EXPIRED);
-            }
-        }
     }
 
     public void publishEventFactory(RecruitmentBoardInfo recruitmentBoardInfo) {

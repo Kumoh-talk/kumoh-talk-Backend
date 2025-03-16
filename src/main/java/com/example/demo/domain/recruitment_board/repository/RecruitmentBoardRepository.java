@@ -26,5 +26,10 @@ public interface RecruitmentBoardRepository {
 
     void delete(RecruitmentBoardInfo recruitmentBoardInfo);
 
+    void increaseCurrentMemberNum(Long recruitmentBoardId);
+
+    void decreaseCurrentMemberNum(Long recruitmentBoardId);
+
+
     List<RecruitmentBoardInfo> getDraftPageByUserIdByNoOffset(Long userId, int size, Long lastBoardId);
 }
