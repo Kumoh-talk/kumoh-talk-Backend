@@ -1,4 +1,4 @@
-package com.example.demo.domain.notification.domain.entity;
+package com.example.demo.infra.notification.entity;
 
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
@@ -36,11 +36,9 @@ public class NotificationUser extends BaseEntity {
         this.isRead = isRead;
     }
 
-    public static NotificationUser from(Notification notification, User user) {
-        return NotificationUser.builder()
-                .notification(notification)
-                .user(user)
-                .isRead(false)
-                .build();
+    public NotificationUser(Notification notification, Long userId) {
+        this.notification = notification;
+        this.user = new User(userId);
+        this.isRead = false;
     }
 }

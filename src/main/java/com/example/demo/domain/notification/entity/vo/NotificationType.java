@@ -1,4 +1,4 @@
-package com.example.demo.domain.notification.domain.vo;
+package com.example.demo.domain.notification.entity.vo;
 
 public enum NotificationType {
     BOARD_LIKE,

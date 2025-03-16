@@ -1,4 +1,4 @@
-package com.example.demo.fixture.comment;
+package com.example.demo.infra.fixture.comment;
 
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.entity.Board;

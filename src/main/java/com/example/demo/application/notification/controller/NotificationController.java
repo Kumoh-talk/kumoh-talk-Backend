@@ -1,6 +1,6 @@
-package com.example.demo.domain.notification.controller;
+package com.example.demo.application.notification.controller;
 
-import com.example.demo.domain.notification.domain.dto.response.NotificationNoOffsetResponse;
+import com.example.demo.application.notification.dto.response.NotificationNoOffsetResponse;
 import com.example.demo.domain.notification.service.NotificationService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -34,7 +34,8 @@ public class NotificationController {
             Long userId,
             @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(required = false) Long lastNotificationId) {
-        return ResponseEntity.ok(createSuccessResponse(notificationService.findNotificationListByNoOffset(userId, pageable, lastNotificationId)));
+        return ResponseEntity.ok(createSuccessResponse(
+                NotificationNoOffsetResponse.from(notificationService.findNotificationListByNoOffset(userId, pageable, lastNotificationId))));
     }
 
     /**

@@ -1,6 +1,6 @@
-package com.example.demo.domain.notification.controller.swagger;
+package com.example.demo.application.notification.api;
 
-import com.example.demo.domain.notification.domain.dto.response.NotificationNoOffsetResponse;
+import com.example.demo.application.notification.dto.response.NotificationNoOffsetResponse;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;

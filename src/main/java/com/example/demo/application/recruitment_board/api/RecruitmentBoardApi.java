@@ -45,7 +45,9 @@ public interface RecruitmentBoardApi {
                     description = "모집 게시물 및 신청폼 저장 성공"),
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND),
-                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE),
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_DEADLINE),
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_START_DATE),
             }
     )
     ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> postRecruitmentBoardAndForm(
@@ -139,8 +141,10 @@ public interface RecruitmentBoardApi {
             errors = {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.BOARD_NOT_FOUND),
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.ACCESS_DENIED),
-                    @ApiErrorResponseExplanation(errorCode = ErrorCode.RECRUITMENT_APPLICANT_EXIST),
-                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE)
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.RECRUITMENT_APPLICATION_EXIST),
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_INPUT_VALUE),
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_DEADLINE),
+                    @ApiErrorResponseExplanation(errorCode = ErrorCode.INVALID_START_DATE),
             }
     )
     ResponseEntity<ResponseBody<RecruitmentBoardInfoAndFormResponse>> patchRecruitmentBoardAndForm(

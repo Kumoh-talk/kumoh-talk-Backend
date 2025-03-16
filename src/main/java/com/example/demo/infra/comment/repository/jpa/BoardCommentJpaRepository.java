@@ -65,7 +65,8 @@ public interface BoardCommentJpaRepository extends JpaRepository<BoardComment, L
 
     @Query("SELECT DISTINCT bc.user FROM BoardComment bc " +
             "WHERE bc.board.id = :boardId " +
-            "AND (:parentCommentId IS NULL AND bc.parentComment IS NULL OR (bc.parentComment.id = :parentCommentId OR bc.id = :parentCommentId)) " +
+            "AND (:parentCommentId IS NULL AND bc.parentComment IS NULL) " +
+            "OR (bc.parentComment.id = :parentCommentId OR bc.id = :parentCommentId) " +
             "AND bc.deletedAt IS NULL")
     List<User> findUsersByBoardIdByParentCommentId(Long boardId, Long parentCommentId);
 }

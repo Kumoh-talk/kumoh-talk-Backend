@@ -1,16 +1,14 @@
 package com.example.demo.domain.user.domain;
 
-import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.domain.dto.request.UpdateUserInfoRequest;
 import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user_addtional_info.domain.UserAdditionalInfo;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.global.oauth.user.OAuth2Provider;
-import com.example.demo.infra.board.entity.Board;
-import com.example.demo.infra.board.entity.Like;
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
+import com.example.demo.infra.notification.entity.NotificationUser;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
