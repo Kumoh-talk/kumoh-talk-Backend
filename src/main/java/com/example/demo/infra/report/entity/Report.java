@@ -1,4 +1,4 @@
-package com.example.demo.domain.report.domain;
+package com.example.demo.infra.report.entity;
 
 import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
@@ -24,11 +24,11 @@ public class Report extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY) // 단방향
-    @JoinColumn(name = "board_comment_id", nullable = false)
+    @JoinColumn(name = "board_comment_id")
     private BoardComment boardComment;
 
     @ManyToOne(fetch = FetchType.LAZY) // 단방향
-    @JoinColumn(name = "recruitment_board_comment_id", nullable = false)
+    @JoinColumn(name = "recruitment_board_comment_id")
     private RecruitmentBoardComment recruitmentBoardComment;
 
     @Builder
@@ -37,6 +37,7 @@ public class Report extends BaseEntity {
         this.boardComment = comment;
     }
 
+    @Builder
     public Report(User user, RecruitmentBoardComment comment) {
         this.user = user;
         this.recruitmentBoardComment = comment;

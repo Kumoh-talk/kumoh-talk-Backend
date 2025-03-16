@@ -1,6 +1,6 @@
-package com.example.demo.domain.report.controller;
+package com.example.demo.application.report.controller;
 
-import com.example.demo.domain.report.api.ReportApi;
+import com.example.demo.application.report.api.ReportApi;
 import com.example.demo.domain.report.service.ReportService;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;
@@ -44,14 +44,4 @@ public class ReportController implements ReportApi {
         reportService.reportRecruitmentBoardComment(commentId, userId);
         return ResponseEntity.ok(createSuccessResponse());
     }
-
-//    /**
-//     * 관리자 기능 - 모든 신고목록 보기
-//     */
-//    @GetMapping
-//    public ResponseEntity<ResponseBody<Page<ReportResponse>>> findAll(@RequestParam(defaultValue = "0") int page,
-//                                                                      @RequestParam(defaultValue = "10") int size) {
-//
-//        return ResponseEntity.ok(createSuccessResponse(reportService.findAll(page,size)));
-//    }
 }
