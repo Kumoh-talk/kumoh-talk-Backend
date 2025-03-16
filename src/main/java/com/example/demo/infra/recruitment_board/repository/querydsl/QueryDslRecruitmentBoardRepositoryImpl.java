@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
                                 (recruitmentBoard.recruitmentDeadline.eq(lastBoardInfo.getRecruitmentDeadline())
                                         .and(recruitmentBoard.id.gt(lastBoardInfo.getBoardId())))
                                         .or(recruitmentBoard.recruitmentDeadline.gt(lastBoardInfo.getRecruitmentDeadline()))
-                        ), isActive(null)
+                        )
                 )
 //                .where(recruitment.user.id.ne(userId))
                 .groupBy(recruitmentBoard.id)
@@ -76,7 +75,7 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
                 .join(recruitmentBoard.user, user)
                 .where(recruitmentBoard.status.eq(Status.DRAFT)
                                 .and(lastBoardId == null ? Expressions.TRUE : recruitmentBoard.id.lt(lastBoardId)),
-                        userEq(userId), isActive(userId))
+                        userEq(userId))
                 .orderBy(recruitmentBoard.createdAt.desc())
                 // nextPage 여부를 판단하기 위해 + 1
                 .limit(size + 1)
@@ -105,7 +104,7 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
                 .from(recruitmentBoard)
                 .join(recruitmentBoard.user, user)
                 .leftJoin(recruitmentBoard.commentList, recruitmentBoardComment)
-                .where(whereCondition, userEq(userId), isActive(userId))
+                .where(whereCondition, userEq(userId))
                 .groupBy(recruitmentBoard.id)
                 .orderBy(ORDERS.toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
@@ -114,7 +113,7 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
         Long totalCount = jpaQueryFactory
                 .select(recruitmentBoard.count())
                 .from(recruitmentBoard)
-                .where(whereCondition, userEq(userId), isActive(userId))
+                .where(whereCondition, userEq(userId))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, totalCount);
@@ -146,10 +145,6 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
 
     private BooleanExpression userEq(Long userId) {
         return userId != null ? recruitmentBoard.user.id.eq(userId) : null;
-    }
-
-    private BooleanExpression isActive(Long userId) {
-        return userId == null ? recruitmentBoard.recruitmentDeadline.goe(LocalDateTime.now()) : null;
     }
 
     public BooleanBuilder getBasicWhereCondition(RecruitmentBoardType boardType, Status status) {
