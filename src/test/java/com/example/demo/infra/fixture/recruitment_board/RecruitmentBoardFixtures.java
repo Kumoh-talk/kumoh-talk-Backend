@@ -1,4 +1,4 @@
-package com.example.demo.fixture.recruitment_board;
+package com.example.demo.infra.fixture.recruitment_board;
 
 import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardTag;
