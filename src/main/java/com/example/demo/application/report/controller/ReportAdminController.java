@@ -1,12 +1,11 @@
-package com.example.demo.domain.report.controller;
+package com.example.demo.application.report.controller;
 
-import com.example.demo.domain.report.api.ReportAdminApi;
-import com.example.demo.domain.report.domain.dto.ReportResponse;
+import com.example.demo.application.report.api.ReportAdminApi;
+import com.example.demo.application.report.dto.response.ReportResponse;
 import com.example.demo.domain.report.service.ReportService;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +28,8 @@ public class ReportAdminController implements ReportAdminApi {
     public ResponseEntity<ResponseBody<GlobalPageResponse<ReportResponse>>> getAllReport(
             @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(createSuccessResponse(reportService.getAllReport(pageable)));
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(
+                reportService.getAllReport(pageable).map(ReportResponse::from)
+        )));
     }
 }

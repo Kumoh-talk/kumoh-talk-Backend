@@ -1,4 +1,4 @@
-package com.example.demo.domain.report.api;
+package com.example.demo.application.report.api;
 
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.exception.ErrorCode;
