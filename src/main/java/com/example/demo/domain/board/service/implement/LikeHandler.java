@@ -45,4 +45,8 @@ public class LikeHandler {
             throw new ServiceException(ErrorCode.USER_NOT_LIKE_BOARD);
         }
     }
+
+    public void removeAllByBoardId(Long boardId) {
+        likeRepository.deleteLikesByBoardId(boardId);
+    }
 }
