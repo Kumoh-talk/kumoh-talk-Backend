@@ -1,8 +1,8 @@
 package com.example.demo.domain.report.client;
 
+import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.newsletter.strategy.EmailDeliveryStrategy;
-import com.example.demo.infra.user.entity.User;
-import com.example.demo.infra.comment.entity.Comment;
+import com.example.demo.domain.user.entity.UserTarget;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class DiscordMessage {
         private String description;
     }
 
-    public static DiscordMessage createCommentReportMessage(User user, Comment comment) {
+    public static DiscordMessage createCommentReportMessage(UserTarget userTarget, CommentInfo commentInfo) {
         return DiscordMessage.builder()
                 .content("# 🚨 댓글 신고가 접수되었습니다!!!")
                 .embeds(
@@ -38,14 +38,14 @@ public class DiscordMessage {
                                                         + LocalDateTime.now()
                                                         + "\n"
                                                         + "### 🔗 신고한 사람\n"
-                                                        + user.getNickname()
+                                                        + userTarget.getNickName()
                                                         + "\n"
                                                         + "### 📄 신고 댓글의 정보\n"
                                                         + "```json\n"
-                                                        + "댓글 아이디 : " + comment.getId() + ",\n"
-                                                        + "작성자 : " + comment.getUser().getNickname() + ",\n"
-                                                        + "댓글 정보 : " + comment.getContent() + ",\n"
-                                                        + "댓글 생성 시간 : " + comment.getCreatedAt()
+                                                        + "댓글 아이디 : " + commentInfo.getCommentId() + ",\n"
+                                                        + "작성자 : " + commentInfo.getCommentUserInfo().getNickName() + ",\n"
+                                                        + "댓글 정보 : " + commentInfo.getContent() + ",\n"
+                                                        + "댓글 생성 시간 : " + commentInfo.getCreatedAt()
                                                         + "\n```")
                                         .build()
                         )

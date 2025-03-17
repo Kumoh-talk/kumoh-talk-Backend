@@ -3,10 +3,10 @@ package com.example.demo.global.base.exception;
 import com.example.demo.application.comment.dto.vo.CommentTargetBoardType;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
-import com.example.demo.domain.recruitment_board.domain.vo.QuestionType;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardTag;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.QuestionType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardTag;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -67,6 +67,9 @@ public enum ErrorCode {
     // Comment
     PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0001", "부모 댓글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_0002", "해당 id의 댓글을 찾을 수 없습니다."),
+
+    // Report
+    USER_ALREADY_REPORT_COMMENT(HttpStatus.CONFLICT, "REPORT_0001", "이미 신고한 댓글입니다."),
 
     // Newsletter
     SUBSCRIBE_EMAIL_CONFLICT(HttpStatus.CONFLICT, "NEWSLETTER_0001", "이미 구독되어있는 이메일입니다."),

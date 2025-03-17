@@ -1,11 +1,19 @@
 package com.example.demo.domain.report.repository;
 
-import com.example.demo.domain.report.domain.Report;
+import com.example.demo.domain.report.domain.ReportInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ReportRepository extends JpaRepository<Report, Long> {
+public interface ReportRepository {
+
+    void saveBoardCommentReport(Long userId, Long commentId);
+
+    void saveRecruitmentBoardCommentReport(Long userId, Long commentId);
+
+    boolean existsBoardCommentReport(Long userId, Long commentId);
+
+    boolean existsRecruitmentBoardCommentReport(Long userId, Long commentId);
+
+    Page<ReportInfo> findAll(Pageable pageable);
+
 }

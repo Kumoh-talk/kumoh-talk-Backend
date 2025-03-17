@@ -1,9 +1,9 @@
 package com.example.demo.infra.comment.repository.jpa;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
-import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
 import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.comment.entity.Comment;
+import com.example.demo.infra.recruitment_board.entity.CommentBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

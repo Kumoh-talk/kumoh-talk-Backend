@@ -7,13 +7,12 @@ import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.recruitment_board.domain.entity.CommentBoard;
-
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 import com.example.demo.infra.comment.entity.BoardComment;
-import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.recruitment_board.entity.CommentBoard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
