@@ -13,4 +13,6 @@ public interface LikeRepository {
 	void deleteLike(Long userId, Long boardId);
 
 	Page<BoardTitleInfo> findLikedBoardPageByUserId(Long userId, Pageable pageable);
+
+	void deleteLikesByBoardId(Long boardId);
 }

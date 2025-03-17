@@ -80,6 +80,17 @@ public class LikeRepositoryImpl implements LikeRepository {
 	}
 
 	@Transactional
+	@Override
+	public void deleteLikesByBoardId(Long boardId) {
+		QLike like = QLike.like;
+		queryFactory
+			.update(like)
+			.set(like.deletedAt,LocalDateTime.now())
+			.where(like.board.id.eq(boardId))
+			.execute();
+	}
+
+	@Transactional
 	public void deleteByUserIdAndBoardId(Long userId, Long boardId) {
 		QLike like = QLike.like;
 		queryFactory
