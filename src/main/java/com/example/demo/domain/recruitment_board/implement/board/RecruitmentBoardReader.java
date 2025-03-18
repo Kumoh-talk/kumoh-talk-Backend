@@ -20,10 +20,6 @@ public class RecruitmentBoardReader {
         return recruitmentBoardRepository.getById(boardId);
     }
 
-    public Optional<RecruitmentBoardInfo> getByIdWithLock(Long boardId) {
-        return recruitmentBoardRepository.getByIdWithLock(boardId);
-    }
-
     public List<RecruitmentBoardInfo> getPublishedPageByNoOffset(int size, RecruitmentBoardInfo lastBoardInfo, RecruitmentBoardType boardType) {
         return recruitmentBoardRepository.getPublishedPageByNoOffset(size, lastBoardInfo, boardType);
     }

@@ -1,6 +1,5 @@
 package com.example.demo.infra.builder;
 
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 import com.example.demo.infra.board.category.entity.Category;
 import com.example.demo.infra.board.entity.Board;
@@ -9,6 +8,7 @@ import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import com.example.demo.infra.notification.entity.Notification;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
+import com.example.demo.infra.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

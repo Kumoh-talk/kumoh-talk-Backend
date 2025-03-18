@@ -2,7 +2,7 @@ package com.example.demo.infra.comment.repository.jpa;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.comment.entity.CommentInfo;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.Comment;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;

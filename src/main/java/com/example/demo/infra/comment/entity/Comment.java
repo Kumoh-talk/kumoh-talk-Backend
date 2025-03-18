@@ -2,8 +2,8 @@ package com.example.demo.infra.comment.entity;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.comment.entity.MyCommentInfo;
-import com.example.demo.domain.report.domain.Report;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.report.entity.Report;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;
 
 import java.time.LocalDateTime;

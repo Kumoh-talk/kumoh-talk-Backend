@@ -7,8 +7,8 @@ import com.example.demo.domain.board.service.entity.BoardContent;
 import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 import com.example.demo.infra.comment.entity.BoardComment;
@@ -42,7 +42,7 @@ public class Board extends BaseEntity implements CommentBoard {
     private String title;
 
     @Lob
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT",nullable = false)
     @NotBlank(message = "본문은 빈 값일 수 없습니다.")
     private String content;
 

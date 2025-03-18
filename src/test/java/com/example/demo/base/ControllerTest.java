@@ -1,7 +1,7 @@
 package com.example.demo.base;
 
+import com.example.demo.application.user.controller.UserController;
 import com.example.demo.domain.newsletter.client.DiscordNewsletterClient;
-import com.example.demo.domain.user.controller.UserController;
 import com.example.demo.domain.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

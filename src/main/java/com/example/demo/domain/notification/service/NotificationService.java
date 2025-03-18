@@ -23,7 +23,7 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public NotificationSliceInfo findNotificationListByNoOffset(Long userId, Pageable pageable, Long lastNotificationId) {
-        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         Slice<NotificationInfo> notificationSlice = notificationUserReader.getSlice(userId, lastNotificationId, pageable);
         Long count = notificationUserReader.countUnreadNotifications(userId);
 
@@ -32,14 +32,14 @@ public class NotificationService {
 
     @Transactional
     public void readNotification(Long userId, Long notificationId) {
-        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         notificationUserWriter.readNotification(userId, notificationId);
     }
 
     @Transactional
     public void deleteNotification(Long userId, Long notificationId) {
-        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         notificationUserWriter.deleteByUserIdAndNotificationId(userId, notificationId);
     }

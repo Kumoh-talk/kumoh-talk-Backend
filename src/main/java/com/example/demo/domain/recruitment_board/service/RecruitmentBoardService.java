@@ -41,8 +41,11 @@ public class RecruitmentBoardService {
     @Transactional
     public RecruitmentBoardAndFormInfo postBoardAndForm(
             RecruitmentBoardAndFormInfo recruitmentBoardAndFormInfo) {
-        userReader.findUser(recruitmentBoardAndFormInfo.getBoard().getUserId())
+        userReader.findUserTarget(recruitmentBoardAndFormInfo.getBoard().getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        recruitmentBoardValidator.validateDeadLine(recruitmentBoardAndFormInfo.getBoard().getRecruitmentDeadline());
+        recruitmentBoardValidator.validateStartDate(recruitmentBoardAndFormInfo.getBoard().getActivityStart(), recruitmentBoardAndFormInfo.getBoard().getActivityFinish());
 
         RecruitmentBoardAndFormInfo savedBoard = recruitmentBoardWriter.post(recruitmentBoardAndFormInfo);
 
@@ -84,7 +87,7 @@ public class RecruitmentBoardService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         recruitmentBoardValidator.validateAccessToBoard(userId, recruitmentBoardInfo);
-        recruitmentBoardValidator.validateDeadLine(userId, recruitmentBoardInfo);
+        recruitmentBoardValidator.validateExpired(userId, recruitmentBoardInfo);
 
         return recruitmentFormQuestionReader.getByBoarIdWithAnswerList(recruitmentBoardId);
     }
@@ -97,6 +100,9 @@ public class RecruitmentBoardService {
 
         recruitmentBoardValidator.validateWriter(recruitmentBoardAndFormInfo.getBoard().getUserId(), recruitmentBoardInfo);
         recruitmentBoardValidator.validatePatchable(recruitmentBoardInfo);
+
+        recruitmentBoardValidator.validateDeadLine(recruitmentBoardAndFormInfo.getBoard().getRecruitmentDeadline());
+        recruitmentBoardValidator.validateStartDate(recruitmentBoardAndFormInfo.getBoard().getActivityStart(), recruitmentBoardAndFormInfo.getBoard().getActivityFinish());
 
         // 게시물 업데이트
         RecruitmentBoardAndFormInfo savedBoard = recruitmentBoardWriter.patch(recruitmentBoardAndFormInfo);
@@ -123,7 +129,7 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public RecruitmentBoardAndFormInfo getLatestDraftBoardAndForm(Long userId) {
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getLatestDraftIdByUserId(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
@@ -135,7 +141,7 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public List<RecruitmentBoardInfo> getDraftBoardListByUserId(Long userId, int size, Long lastBoardId) {
-        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         if (lastBoardId != null) {
             recruitmentBoardReader.getById(lastBoardId)
@@ -147,7 +153,7 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public Page<RecruitmentBoardInfo> getPublishedBoardListByUserId(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
-        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         return recruitmentBoardReader.getPublishedPageByPageNum(userId, pageable, recruitmentBoardType);
     }

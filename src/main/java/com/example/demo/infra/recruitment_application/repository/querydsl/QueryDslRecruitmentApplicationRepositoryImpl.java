@@ -15,7 +15,7 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.demo.domain.user.domain.QUser.user;
+import static com.example.demo.infra.user.entity.QUser.user;
 import static com.example.demo.infra.recruitment_application.entity.QRecruitmentApplication.recruitmentApplication;
 import static com.example.demo.infra.recruitment_board.entity.QRecruitmentBoard.recruitmentBoard;
 import static org.springframework.util.ObjectUtils.isEmpty;

@@ -4,12 +4,12 @@ import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.LikeInfo;
 import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.repository.LikeRepository;
-import com.example.demo.domain.user.domain.QUser;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.infra.board.entity.QBoard;
 import com.example.demo.infra.board.entity.QLike;
+import com.example.demo.infra.user.entity.QUser;
+import com.example.demo.infra.user.entity.User;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,7 +32,7 @@ public class LikeRepositoryImpl implements LikeRepository {
     private final LikeJpaRepository likeJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
-    
+
     @Override
     public LikeInfo saveLike(Long userId, Long boardId) {
         Like like = new Like(new User(userId), new Board(boardId));
@@ -49,12 +50,7 @@ public class LikeRepositoryImpl implements LikeRepository {
     }
 
     @Override
-    public Optional<Long> findIdByBoardIdAndUserId(Long boardId, Long userId) {
-        return likeJpaRepository.findIdByBoardIdAndUserId(boardId, userId);
-    }
-
-    @Override
-    public void deleteLike(Long likeId, Long userId, Long boardId) {
+    public void deleteLike(Long userId, Long boardId) {
         deleteByUserIdAndBoardId(userId, boardId);
     }
 
@@ -90,6 +86,25 @@ public class LikeRepositoryImpl implements LikeRepository {
     }
 
     @Transactional
+    @Override
+    public List<Long> deleteLikesByBoardId(Long boardId) {
+        QLike like = QLike.like;
+
+        List<Long> likeIdList = queryFactory
+                .select(like.id)
+                .from(like)
+                .where(like.board.id.eq(boardId))
+                .fetch();
+
+        queryFactory
+                .update(like)
+                .set(like.deletedAt, LocalDateTime.now())
+                .where(like.board.id.eq(boardId))
+                .execute();
+        return likeIdList;
+    }
+
+    @Transactional
     public void deleteByUserIdAndBoardId(Long userId, Long boardId) {
         QLike like = QLike.like;
         queryFactory
@@ -101,5 +116,9 @@ public class LikeRepositoryImpl implements LikeRepository {
         entityManager.clear();
     }
 
+    @Override
+    public Optional<Long> findIdByBoardIdAndUserId(Long boardId, Long userId) {
+        return likeJpaRepository.findIdByBoardIdAndUserId(boardId, userId);
+    }
 
 }

@@ -34,12 +34,12 @@ public class RecruitmentApplicationService {
 
     @Transactional
     public RecruitmentApplicationInfo postApplication(RecruitmentApplicationInfo recruitmentApplicationInfo) {
-        userReader.findUser(recruitmentApplicationInfo.getUserId())
+        userReader.findUserTarget(recruitmentApplicationInfo.getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getByIdByWithQuestionList(recruitmentApplicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        recruitmentBoardValidator.validateDeadLine(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
+        recruitmentBoardValidator.validateExpired(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
         recruitmentApplicationValidator.validateEssential(recruitmentApplicationInfo.getRecruitmentBoardId(), recruitmentApplicationInfo);
         recruitmentApplicationValidator.validateExist(recruitmentApplicationInfo.getUserId(), recruitmentApplicationInfo.getRecruitmentBoardId());
 
@@ -91,7 +91,7 @@ public class RecruitmentApplicationService {
 
     @Transactional
     public RecruitmentApplicationInfo patchApplication(RecruitmentApplicationInfo recruitmentApplicationInfo) {
-        userReader.findUser(recruitmentApplicationInfo.getUserId())
+        userReader.findUserTarget(recruitmentApplicationInfo.getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         RecruitmentApplicationInfo originApplicationInfo = recruitmentApplicationReader.getByIdWithBoard(recruitmentApplicationInfo.getApplicationId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
@@ -100,7 +100,7 @@ public class RecruitmentApplicationService {
 
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getByIdByWithQuestionList(originApplicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        recruitmentBoardValidator.validateDeadLine(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
+        recruitmentBoardValidator.validateExpired(recruitmentApplicationInfo.getUserId(), recruitmentBoardInfo);
         recruitmentApplicationValidator.validateEssential(originApplicationInfo.getRecruitmentBoardId(), recruitmentApplicationInfo);
 
         try {
@@ -118,11 +118,11 @@ public class RecruitmentApplicationService {
     public void deleteApplication(Long userId, Long applicationId) {
         RecruitmentApplicationInfo applicationInfo = recruitmentApplicationReader.getByIdWithBoard(applicationId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
-        RecruitmentBoardInfo boardInfo = recruitmentBoardReader.getByIdWithLock(applicationInfo.getRecruitmentBoardId())
+        RecruitmentBoardInfo boardInfo = recruitmentBoardReader.getById(applicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         recruitmentApplicationValidator.validateWriter(userId, applicationInfo);
-        recruitmentBoardValidator.validateDeadLine(userId, boardInfo);
+        recruitmentBoardValidator.validateExpired(userId, boardInfo);
 
         recruitmentApplicationWriter.delete(applicationInfo);
         recruitmentBoardWriter.decreaseCurrentMemberNum(applicationInfo.getRecruitmentBoardId());
@@ -130,7 +130,7 @@ public class RecruitmentApplicationService {
 
     @Transactional(readOnly = true)
     public Page<MyRecruitmentApplicationInfo> getUserApplicationList(Long userId, Pageable pageable, RecruitmentBoardType boardType) {
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         return recruitmentApplicationReader.getPageByUserIdWithRecruitmentBoard(userId, pageable, boardType);

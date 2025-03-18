@@ -1,28 +1,22 @@
 package com.example.demo.domain.board.service.service;
 
 
+import com.example.demo.domain.user.entity.UserTarget;
+import com.example.demo.domain.user.vo.Role;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.domain.board.service.entity.*;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.board.service.entity.vo.Status;
-import com.example.demo.domain.board.service.entity.BoardCategoryNames;
-import com.example.demo.domain.board.service.entity.BoardContent;
-import com.example.demo.domain.board.service.entity.BoardInfo;
-import com.example.demo.domain.board.service.entity.BoardTitleInfo;
-import com.example.demo.domain.board.service.entity.DraftBoardTitle;
-import com.example.demo.domain.board.service.implement.BoardCategoryWriter;
-import com.example.demo.domain.board.service.implement.BoardReader;
-import com.example.demo.domain.board.service.implement.BoardValidator;
-import com.example.demo.domain.board.service.implement.BoardWriter;
+import com.example.demo.domain.board.service.implement.*;
 import com.example.demo.domain.board.service.view.implement.ViewCounter;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
+import com.example.demo.domain.notification.implement.LikeNotificationWriter;
 import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -30,8 +24,11 @@ import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -44,12 +41,12 @@ public class BoardService {
     private final UserReader userReader;
     private final BoardCategoryWriter boardCategoryWriter;
     private final BoardValidator boardValidator;
-
-
+    private final LikeHandler likeHandler;
+    private final LikeNotificationWriter likeNotificationWriter;
 
     @Transactional
     public BoardInfo saveDraftBoard(Long userId, BoardContent boardContent, BoardCategoryNames boardCategoryNames) {
-        UserTarget userTarget = userReader.findUser(userId)
+        UserTarget userTarget = userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         // 공지사항은 관리자만 작성 가능
@@ -107,22 +104,24 @@ public class BoardService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         boardValidator.validateUserEqualBoardUser(userId, savedBoardInfo);
 
+        List<Long> deletedLikeIdList = likeHandler.removeAllByBoardId(boardId);
+        likeNotificationWriter.deleteAllLikeNotification(deletedLikeIdList);
         boardCategoryWriter.removeBoardCategories(savedBoardInfo);
         boardWriter.removeBoardContent(savedBoardInfo);
     }
 
     @Transactional(readOnly = true)
-    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardList(BoardType boardType , Pageable pageable) {
-        return boardReader.findPublishedBoardPageList(boardType,pageable);
+    public GlobalPageResponse<BoardTitleInfo> findPublishedBoardList(BoardType boardType, Pageable pageable) {
+        return boardReader.findPublishedBoardPageList(boardType, pageable);
     }
 
     public GlobalPageResponse<DraftBoardTitle> findDraftBoardList(Long userId, Pageable pageable) {
-        return boardReader.findDraftBoardPageList(userId,pageable);
+        return boardReader.findDraftBoardPageList(userId, pageable);
     }
 
     @Transactional(readOnly = true)
     public GlobalPageResponse<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         return boardReader.findPublishedBoardListByUser(userId, boardType, pageable);
     }

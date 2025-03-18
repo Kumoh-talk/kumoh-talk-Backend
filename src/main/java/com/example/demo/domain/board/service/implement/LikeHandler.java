@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -31,8 +32,8 @@ public class LikeHandler {
 
 
     @Transactional
-    public void decreaseLike(Long likeId, Long userId, Long boardId) {
-        likeRepository.deleteLike(likeId, userId, boardId);
+    public void decreaseLike(Long userId, Long boardId) {
+        likeRepository.deleteLike(userId, boardId);
     }
 
     public void validateExistLike(Long boardId, Long userId) {
@@ -43,5 +44,9 @@ public class LikeHandler {
 
     public Optional<Long> findLikeId(Long boardId, Long userId) {
         return likeRepository.findIdByBoardIdAndUserId(boardId, userId);
+    }
+
+    public List<Long> removeAllByBoardId(Long boardId) {
+        return likeRepository.deleteLikesByBoardId(boardId);
     }
 }

@@ -16,8 +16,6 @@ public interface RecruitmentBoardRepository {
 
     Optional<RecruitmentBoardInfo> getByIdWithUser(Long boardId);
 
-    Optional<RecruitmentBoardInfo> getByIdWithLock(Long boardId);
-
     List<RecruitmentBoardInfo> getPublishedPageByNoOffset(int size, RecruitmentBoardInfo lastBoardInfo, RecruitmentBoardType boardType);
 
     Page<RecruitmentBoardInfo> getPublishedPageByPageNum(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType);

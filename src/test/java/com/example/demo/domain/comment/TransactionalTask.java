@@ -1,12 +1,12 @@
 package com.example.demo.domain.comment;
 
-import com.example.demo.builder.TestFixtureBuilder;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
+import com.example.demo.infra.builder.JpaTestFixtureBuilder;
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.metamodel.EntityType;
@@ -16,17 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-import static com.example.demo.fixture.comment.CommentFixtures.BOARD_COMMENT;
-import static com.example.demo.fixture.comment.CommentFixtures.RECRUITMENT_BOARD_COMMENT;
-import static com.example.demo.fixture.recruitment_board.RecruitmentBoardFixtures.PUBLISHED_STUDY_RECRUITMENT_BOARD;
 import static com.example.demo.infra.fixture.board.BoardFixtures.PUBLISHED_SEMINAR_BOARD;
 import static com.example.demo.infra.fixture.board.LikeFixtures.LIKE;
+import static com.example.demo.infra.fixture.comment.CommentFixtures.BOARD_COMMENT;
+import static com.example.demo.infra.fixture.comment.CommentFixtures.RECRUITMENT_BOARD_COMMENT;
+import static com.example.demo.infra.fixture.recruitment_board.RecruitmentBoardFixtures.PUBLISHED_STUDY_RECRUITMENT_BOARD;
 
 @Component
 @Transactional
 public class TransactionalTask {
     @Autowired
-    private TestFixtureBuilder testFixtureBuilder;
+    private JpaTestFixtureBuilder testFixtureBuilder;
 
     @PersistenceContext
     private EntityManager em;

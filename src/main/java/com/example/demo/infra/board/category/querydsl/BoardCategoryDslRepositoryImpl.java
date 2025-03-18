@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.domain.user.domain.QUser;
 import com.example.demo.infra.board.category.entity.BoardCategory;
 import com.example.demo.infra.board.category.entity.QBoardCategory;
 import com.example.demo.infra.board.category.entity.QCategory;
