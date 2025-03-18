@@ -7,12 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface NotificationJpaRepository extends JpaRepository<Notification, Long> {
 
     @Modifying
     void deleteByInvokerIdAndInvokerType(
             @Param("invokerId") Long invokerId,
             @Param("invokerType") NotificationType notificationType);
+
+    @Modifying
+    void deleteAllByInvokerIdInAndInvokerType(
+            @Param("invokerIds") List<Long> invokerIds,
+            @Param("invokerType") NotificationType notificationType);
+
 
     @Modifying
     @Query("DELETE FROM Notification n " +

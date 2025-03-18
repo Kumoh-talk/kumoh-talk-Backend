@@ -42,7 +42,7 @@ public class LikeService {
         Long likeId = likeHandler.findLikeId(boardId, userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_LIKE_BOARD));
 
-        likeHandler.decreaseLike(likeId, userId, boardId);
+        likeHandler.decreaseLike(userId, boardId);
         likeNotificationWriter.deleteLikeNotification(likeId);
     }
 }

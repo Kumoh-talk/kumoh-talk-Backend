@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -42,5 +43,10 @@ public class LikeNotificationWriter {
     @Transactional
     public void deleteLikeNotification(Long likeId) {
         notificationRepository.deleteByInvokerIdAndInvokerType(likeId, NotificationType.BOARD_LIKE);
+    }
+
+    @Transactional
+    public void deleteAllLikeNotification(List<Long> likeIdList) {
+        notificationRepository.deleteAllByInvokerIdAndInvokerType(likeIdList, NotificationType.BOARD_LIKE);
     }
 }

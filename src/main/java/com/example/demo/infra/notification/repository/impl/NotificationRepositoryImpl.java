@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -29,6 +30,13 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     @Transactional
     public void deleteByInvokerIdAndInvokerType(Long invokerId, NotificationType invokerType) {
         notificationJpaRepository.deleteByInvokerIdAndInvokerType(invokerId, invokerType);
+    }
+
+    @Override
+    @Async
+    @Transactional
+    public void deleteAllByInvokerIdAndInvokerType(List<Long> likeIdList, NotificationType invokerType) {
+        notificationJpaRepository.deleteAllByInvokerIdInAndInvokerType(likeIdList, invokerType);
     }
 
     @Override
