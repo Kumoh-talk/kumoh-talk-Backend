@@ -74,9 +74,11 @@ public abstract class AbstractCommentService {
     public void deleteComment(Long userId, Long commentId, boolean isAuthorized) {
         CommentInfo commentInfo = commentHandler.getById(commentId).orElseThrow(() ->
                 new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
+        Long boardWriterId = commentBoardReader.getUserIdById(commentInfo.getBoardId());
 
         if (!isAuthorized) {
-            if (!commentInfo.getCommentUserInfo().getUserId().equals(userId)) {
+            if (!commentInfo.getCommentUserInfo().getUserId().equals(userId)
+                    || !boardWriterId.equals(userId)) {
                 throw new ServiceException(ErrorCode.ACCESS_DENIED);
             }
         }
