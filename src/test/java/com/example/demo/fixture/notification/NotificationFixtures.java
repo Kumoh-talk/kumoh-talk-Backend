@@ -1,10 +1,10 @@
 package com.example.demo.fixture.notification;
 
-import com.example.demo.domain.notification.domain.entity.Notification;
-import com.example.demo.domain.notification.domain.vo.NotificationType;
+import com.example.demo.domain.notification.entity.vo.NotificationType;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
+import com.example.demo.infra.notification.entity.Notification;
 
 public class NotificationFixtures {
     public static Notification BOARD_COMMENT_NOTIFICATION(BoardComment boardComment) {

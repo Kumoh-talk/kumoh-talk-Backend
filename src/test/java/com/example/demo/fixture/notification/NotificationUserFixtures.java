@@ -1,8 +1,8 @@
 package com.example.demo.fixture.notification;
 
-import com.example.demo.domain.notification.domain.entity.Notification;
-import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.notification.entity.Notification;
+import com.example.demo.infra.notification.entity.NotificationUser;
 
 public class NotificationUserFixtures {
     public static NotificationUser NOTIFICATION_USER(Notification notification, User user) {
