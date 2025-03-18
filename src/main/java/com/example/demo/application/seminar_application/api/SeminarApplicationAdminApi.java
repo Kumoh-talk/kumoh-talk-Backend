@@ -1,10 +1,8 @@
-package com.example.demo.domain.seminar_application.api;
+package com.example.demo.application.seminar_application.api;
 
-import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
+import com.example.demo.application.seminar_application.dto.response.SeminarApplicationResponse;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
 import com.example.demo.global.config.swagger.ApiSuccessResponseExplanation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +22,7 @@ public interface SeminarApplicationAdminApi {
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class))
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeminarApplicationInfo.class))
+    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeminarApplicationResponse.class))
     )
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
@@ -32,7 +30,7 @@ public interface SeminarApplicationAdminApi {
                     description = "ADMIN 이상의 권한 사용자가 사용할 수 있습니다.\n"
                             + "모든 신청서를 반환합니다.")
     )
-    ResponseEntity<ResponseBody<GlobalPageResponse<SeminarApplicationInfo>>> getAllSeminarApplications (
+    ResponseEntity<ResponseBody<GlobalPageResponse<SeminarApplicationResponse>>> getAllSeminarApplications (
             @ParameterObject
             @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     );

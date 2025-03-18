@@ -1,7 +1,7 @@
-package com.example.demo.domain.seminar_application.controller;
+package com.example.demo.application.seminar_application.controller;
 
-import com.example.demo.domain.seminar_application.api.SeminarApplicationAdminApi;
-import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
+import com.example.demo.application.seminar_application.api.SeminarApplicationAdminApi;
+import com.example.demo.application.seminar_application.dto.response.SeminarApplicationResponse;
 import com.example.demo.domain.seminar_application.service.SeminarApplicationAdminService;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
@@ -26,10 +26,10 @@ public class SeminarApplicationAdminController implements SeminarApplicationAdmi
     private final SeminarApplicationAdminService seminarApplicationAdminService;
 
     @GetMapping
-    public ResponseEntity<ResponseBody<GlobalPageResponse<SeminarApplicationInfo>>> getAllSeminarApplications (
+    public ResponseEntity<ResponseBody<GlobalPageResponse<SeminarApplicationResponse>>> getAllSeminarApplications (
             @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(createSuccessResponse(seminarApplicationAdminService.getAllSeminarApplications(pageable)));
+        return ResponseEntity.ok(createSuccessResponse(GlobalPageResponse.create(seminarApplicationAdminService.getAllSeminarApplications(pageable).map(SeminarApplicationResponse::from))));
     }
 
 
