@@ -3,12 +3,12 @@ package com.example.demo.domain.board.event;
 import com.example.demo.domain.board.service.service.BoardService;
 import com.example.demo.domain.board.service.service.LikeService;
 import com.example.demo.domain.comment.TransactionalTask;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.infra.builder.JpaBuilderSupporter;
 import com.example.demo.infra.builder.JpaTestFixtureBuilder;
 import com.example.demo.infra.notification.entity.Notification;
 import com.example.demo.infra.notification.repository.jpa.NotificationJpaRepository;
+import com.example.demo.infra.user.entity.User;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,8 +79,6 @@ class LikeEntityListenerTest {
         }
 
         @Test
-        @Disabled
-            // 게시물 삭제 시 좋아요 삭제가 이루어지지 않으므로 테스트 비활성화
         void 성공_마크다운_게시물_삭제_시_연관_좋아요의_알림도_삭제된다() {
             // given
             assertTrue(notificationJpaRepository.existsById(savedNotification.getId()));
