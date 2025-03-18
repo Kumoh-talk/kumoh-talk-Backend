@@ -2,6 +2,7 @@ package com.example.demo.infra.board.querydsl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.example.demo.infra.user.entity.QUser;
 import org.springframework.data.domain.Page;
@@ -37,8 +38,6 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 	private final QUser user = QUser.user;
 	private final QLike like = QLike.like;
 
-	private final BoardPaggingCreator boardPaggingCreator;
-
 
 	public Optional<Board> findBoardAndUserAndCategory(Long boardId) {
 		Board result = queryFactory
@@ -68,7 +67,7 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 		JPQLQuery<Long> countQuery = createCountQuery(boardType, board, like);
 		long total = countQuery.fetch().size();
 
-		List<OrderSpecifier> orderSpecifiers = boardPaggingCreator.createOrderSpecifiers(board, pageable);
+		List<OrderSpecifier> orderSpecifiers = createOrderSpecifiers(board, pageable);
 
 		if(!orderSpecifiers.isEmpty()) {
 			contentQuery.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
@@ -133,7 +132,7 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 				.and(board.status.eq(Status.DRAFT)))
 			;
 
-		List<OrderSpecifier> orderSpecifiers = boardPaggingCreator.createOrderSpecifiers(board, pageable);
+		List<OrderSpecifier> orderSpecifiers = createOrderSpecifiers(board, pageable);
 
 		if(!orderSpecifiers.isEmpty()) {
 			query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
@@ -171,7 +170,7 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 			)
 			.groupBy(board.id, board.title, user.nickname, board.boardType, board.createdAt);
 
-		List<OrderSpecifier> orderSpecifiers = boardPaggingCreator.createOrderSpecifiers(board, pageable);
+		List<OrderSpecifier> orderSpecifiers = createOrderSpecifiers(board, pageable);
 
 		if(!orderSpecifiers.isEmpty()) {
 			query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
@@ -196,5 +195,22 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 			.where(board.id.eq(boardId))
 			.fetchOne();
 	}
-
+	public List<OrderSpecifier> createOrderSpecifiers(QBoard board, Pageable pageable) {
+		System.out.println("pageable = " + pageable.getSort());
+		return pageable.getSort().stream()
+			.map(order -> {
+				if (order.getProperty().equalsIgnoreCase("createdAt")) {
+					return order.isAscending()
+						? board.createdAt.asc()
+						: board.createdAt.desc();
+				} else if (order.getProperty().equalsIgnoreCase("updatedAt")) {
+					return order.isAscending()
+						? board.updatedAt.asc()
+						: board.updatedAt.desc();
+				}
+				return null; // 해당하는 정렬 기준이 없으면 null
+			})
+			.filter(orderSpecifier -> orderSpecifier != null)
+			.collect(Collectors.toList());
+	}
 }
