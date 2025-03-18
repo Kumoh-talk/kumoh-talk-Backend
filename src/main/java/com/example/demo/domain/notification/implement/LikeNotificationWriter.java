@@ -6,7 +6,7 @@ import com.example.demo.domain.board.service.implement.BoardReader;
 import com.example.demo.domain.notification.entity.NotificationInfo;
 import com.example.demo.domain.notification.entity.vo.NotificationType;
 import com.example.demo.domain.notification.repository.NotificationRepository;
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -30,7 +30,7 @@ public class LikeNotificationWriter {
     public CompletableFuture<NotificationInfo> saveLikeNotification(LikeInfo likeInfo) {
         BoardInfo boardInfo = boardReader.searchSingleBoard(likeInfo.getBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        UserTarget userTarget = userReader.findUser(likeInfo.getUserId())
+        UserTarget userTarget = userReader.findUserTarget(likeInfo.getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         likeInfo.setUserNickname(userTarget.getNickName());

@@ -1,4 +1,3 @@
-
 package com.example.demo.domain.comment.service;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
@@ -79,7 +78,7 @@ public abstract class AbstractCommentService {
 
         if (!isAuthorized) {
             if (!commentInfo.getCommentUserInfo().getUserId().equals(userId)
-                    || !boardWriterId.equals(userId)) {
+                    && !boardWriterId.equals(userId)) {
                 throw new ServiceException(ErrorCode.ACCESS_DENIED);
             }
         }
