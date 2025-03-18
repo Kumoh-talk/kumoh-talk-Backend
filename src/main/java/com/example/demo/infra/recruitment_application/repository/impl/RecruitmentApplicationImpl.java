@@ -6,8 +6,8 @@ import com.example.demo.domain.recruitment_application.entity.RecruitmentApplica
 import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicationRepository;
 import com.example.demo.domain.recruitment_board.entity.vo.QuestionType;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserJpaRepository;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import com.example.demo.infra.recruitment_application.entity.RecruitmentApplication;
 import com.example.demo.infra.recruitment_application.entity.RecruitmentApplicationDescriptiveAnswer;
 import com.example.demo.infra.recruitment_application.entity.RecruitmentApplicationOptionalAnswer;

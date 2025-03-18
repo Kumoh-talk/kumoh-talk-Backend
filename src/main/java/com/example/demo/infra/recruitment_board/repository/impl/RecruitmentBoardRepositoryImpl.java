@@ -4,12 +4,12 @@ import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardAndFormI
 import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.repository.UserJpaRepository;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
 import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentBoardJpaRepository;
 import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentFormAnswerJpaRepository;
 import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentFormQuestionJpaRepository;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

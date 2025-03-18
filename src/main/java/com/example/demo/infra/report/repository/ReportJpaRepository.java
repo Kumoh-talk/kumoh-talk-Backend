@@ -1,6 +1,6 @@
 package com.example.demo.infra.report.repository;
 
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import com.example.demo.infra.report.entity.Report;

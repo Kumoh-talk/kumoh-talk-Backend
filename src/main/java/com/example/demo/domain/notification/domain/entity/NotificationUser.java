@@ -1,7 +1,7 @@
 package com.example.demo.domain.notification.domain.entity;
 
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.domain.BaseEntity;
+import com.example.demo.infra.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

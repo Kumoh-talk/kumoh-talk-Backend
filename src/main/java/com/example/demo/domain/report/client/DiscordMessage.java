@@ -2,7 +2,7 @@ package com.example.demo.domain.report.client;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.newsletter.strategy.EmailDeliveryStrategy;
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.domain.user.entity.UserTarget;
 import lombok.*;
 
 import java.time.LocalDateTime;

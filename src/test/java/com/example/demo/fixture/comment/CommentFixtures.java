@@ -1,10 +1,10 @@
 package com.example.demo.fixture.comment;
 
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
+import com.example.demo.infra.user.entity.User;
 
 public class CommentFixtures {
     private static final String GENERAL_CONTENT = "content";

@@ -3,7 +3,7 @@ package com.example.demo.infra.recruitment_application.entity;
 import com.example.demo.domain.recruitment_application.entity.MyRecruitmentApplicationInfo;
 import com.example.demo.domain.recruitment_application.entity.RecruitmentApplicationAnswerInfo;
 import com.example.demo.domain.recruitment_application.entity.RecruitmentApplicationInfo;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentBoard;
 import com.example.demo.infra.recruitment_board.entity.RecruitmentFormQuestion;

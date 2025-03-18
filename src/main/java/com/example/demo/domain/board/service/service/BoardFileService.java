@@ -1,5 +1,6 @@
 package com.example.demo.domain.board.service.service;
 
+import com.example.demo.domain.user.entity.UserTarget;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,7 +9,6 @@ import com.example.demo.domain.board.service.entity.BoardInfo;
 import com.example.demo.domain.board.service.implement.BoardReader;
 import com.example.demo.domain.board.service.implement.BoardValidator;
 import com.example.demo.domain.board.service.implement.FileWriter;
-import com.example.demo.domain.user.domain.UserTarget;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -31,7 +31,7 @@ public class BoardFileService {
 	public String getPresignedUrl(Long userId, Long boardId, BoardFileInfo boardFileInfo) {
 		BoardInfo boardInfo = boardReader.searchSingleBoard(boardId)
 			.orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-		UserTarget userTarget = userReader.findUser(userId)
+		UserTarget userTarget = userReader.findUserTarget(userId)
 			.orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 		boardValidator.validateUserEqualBoardUser(userTarget.getUserId(), boardInfo);
 
@@ -61,7 +61,7 @@ public class BoardFileService {
 		s3UrlUtil.validateBoardS3Url(fileUrl);
 		BoardInfo boardInfo = boardReader.searchSingleBoard(boardId)
 			.orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-		UserTarget userTarget = userReader.findUser(userId)
+		UserTarget userTarget = userReader.findUserTarget(userId)
 			.orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 		boardValidator.validateUserEqualBoardUser(userTarget.getUserId(), boardInfo);
 		return boardInfo;

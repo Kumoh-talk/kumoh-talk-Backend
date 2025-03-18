@@ -9,11 +9,11 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.vo.Role;
-
-import com.example.demo.domain.token.domain.RefreshToken;
+import com.example.demo.domain.token.entity.RefreshTokenData;
+import com.example.demo.domain.token.entity.Token;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
+import com.example.demo.domain.user.vo.Role;
+import com.example.demo.infra.token.entity.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -37,7 +37,7 @@ public class JwtHandler {
         secretKey = new SecretKeySpec(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public TokenResponse createTokens(JwtUserClaim jwtUserClaim) {
+    public Token createTokens(JwtUserClaim jwtUserClaim) {
         Map<String, Object> tokenClaims = this.createClaims(jwtUserClaim);
         Date now = new Date(System.currentTimeMillis());
         long accessTokenExpireIn = jwtProperties.getAccessTokenExpireIn();
@@ -51,10 +51,13 @@ public class JwtHandler {
 
         String refreshToken = UUID.randomUUID().toString();
 
-        RefreshToken token = new RefreshToken(jwtUserClaim.userId(), refreshToken);
-        refreshTokenRepository.save(token);
+        RefreshTokenData refreshTokenData = new RefreshTokenData(jwtUserClaim.userId(), refreshToken);
+        refreshTokenRepository.saveRefreshToken(refreshTokenData);
 
-        return TokenResponse.create(accessToken, refreshToken);
+        return Token.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
 

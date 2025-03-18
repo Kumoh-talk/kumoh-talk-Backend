@@ -1,6 +1,6 @@
 package com.example.demo.domain.report.domain;
 
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.domain.user.entity.UserTarget;
 import lombok.Builder;
 import lombok.Getter;
 

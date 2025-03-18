@@ -3,6 +3,7 @@ package com.example.demo.infra.board.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.demo.infra.user.entity.QUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.repository.CategoryRepository;
-import com.example.demo.domain.user.domain.QUser;
-import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.infra.board.category.entity.QBoardCategory;
 import com.example.demo.infra.board.category.entity.QCategory;
 import com.example.demo.infra.board.category.repository.CategoryJpaRepository;

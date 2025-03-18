@@ -1,6 +1,8 @@
 package com.example.demo.domain.board.service.service;
 
 
+import com.example.demo.domain.user.entity.UserTarget;
+import com.example.demo.domain.user.vo.Role;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,6 @@ import com.example.demo.domain.board.service.view.implement.ViewCounter;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
 import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
-import com.example.demo.domain.user.domain.UserTarget;
-import com.example.demo.domain.user.domain.vo.Role;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -49,7 +49,7 @@ public class BoardService {
 
     @Transactional
     public BoardInfo saveDraftBoard(Long userId, BoardContent boardContent, BoardCategoryNames boardCategoryNames) {
-        UserTarget userTarget = userReader.findUser(userId)
+        UserTarget userTarget = userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         // 공지사항은 관리자만 작성 가능
@@ -123,7 +123,7 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public GlobalPageResponse<BoardTitleInfo> findMyBoardPageList(Long userId,BoardType boardType, Pageable pageable) {
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         return boardReader.findPublishedBoardListByUser(userId, boardType, pageable);
     }
