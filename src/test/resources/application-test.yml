@@ -1,10 +1,10 @@
 spring:
 
   flyway:
-    enabled: false
+    enabled: true
 
-#  config:
-#    import: classpath:../../main/resources/security/application-s3.yml
+  #  config:
+  #    import: classpath:../../main/resources/security/application-s3.yml
   mail:
     host: smtp.example.com
     port: 587

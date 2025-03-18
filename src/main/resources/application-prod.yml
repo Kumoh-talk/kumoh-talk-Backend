@@ -29,6 +29,8 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: false
+  flyway:
+    enabled: false
 
 
 management:
