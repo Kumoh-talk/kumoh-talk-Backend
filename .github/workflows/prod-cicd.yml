@@ -94,11 +94,22 @@ jobs:
           docker build -t kumoh_talk:latest .
           docker save kumoh_talk:latest | gzip > kumoh_talk.tar.gz
 
+      - name: Build Docker image for kumoh_talk_flyway and generate tar
+        run: |
+          docker build -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
+          docker save kumoh_talk_flyway:latest | gzip > kumoh_talk_flyway.tar.gz
+
       - name: Upload tar.gz as artifact
         uses: actions/upload-artifact@v4
         with:
           name: kumoh_talk-tar
           path: kumoh_talk.tar.gz
+
+      - name: Upload kumoh_talk_flyway tar.gz as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kumoh_talk_flyway-tar
+          path: kumoh_talk_flyway.tar.gz
 
       - name: Set up SSH key
         run: |
@@ -111,10 +122,33 @@ jobs:
         run: |
           scp -P 141 kumoh_talk.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
 
+      - name: Send kumoh_talk_flyway tar.gz file to Raspberry Pi via SCP
+        run: |
+          scp -P 141 kumoh_talk_flyway.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
+
       - name: Unzip and load Docker image on Raspberry Pi
         run: |
           ssh -p 141 admin@${{ secrets.SSH_HOST }} <<EOF
             gunzip -f /home/admin/kumoh_talk.tar.gz 
             docker load < /home/admin/kumoh_talk.tar
-            docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml up -d
+          
+            gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
+            docker load < /home/admin/kumoh_talk_flyway.tar
+          
+            # Flyway 마이그레이션 실행
+            docker run --rm \
+              -e FLYWAY_URL=${{ secrets.FLYWAY_PROD_RDB_URL }} \
+              -e FLYWAY_USER=${{ secrets.FLYWAY_PROD_RDB_USER }} \
+              -e FLYWAY_PASSWORD=${{ secrets.FLYWAY_PROD_RDB_PASSWORD }} \
+              -e FLYWAY_LOCATIONS=filesystem:/flyway/sql \
+              kumoh_talk_flyway:latest
+          
+            # Flyway 마이그레이션 성공 여부 확인
+            if [ $? -eq 0 ]; then
+              echo "Flyway migration succeeded. Starting Spring application..."
+              docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml up -d
+            else
+              echo "Flyway migration failed. Exiting."
+              exit 1
+            fi
           EOF
