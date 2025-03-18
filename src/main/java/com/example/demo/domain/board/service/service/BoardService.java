@@ -17,6 +17,7 @@ import com.example.demo.domain.board.service.implement.BoardCategoryWriter;
 import com.example.demo.domain.board.service.implement.BoardReader;
 import com.example.demo.domain.board.service.implement.BoardValidator;
 import com.example.demo.domain.board.service.implement.BoardWriter;
+import com.example.demo.domain.board.service.implement.LikeHandler;
 import com.example.demo.domain.board.service.view.implement.ViewCounter;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.SeminarSummaryEmailDeliveryStrategy;
@@ -44,8 +45,7 @@ public class BoardService {
     private final UserReader userReader;
     private final BoardCategoryWriter boardCategoryWriter;
     private final BoardValidator boardValidator;
-
-
+    private final LikeHandler likeHandler;
 
     @Transactional
     public BoardInfo saveDraftBoard(Long userId, BoardContent boardContent, BoardCategoryNames boardCategoryNames) {
@@ -107,6 +107,7 @@ public class BoardService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
         boardValidator.validateUserEqualBoardUser(userId, savedBoardInfo);
 
+        likeHandler.removeAllByBoardId(boardId);
         boardCategoryWriter.removeBoardCategories(savedBoardInfo);
         boardWriter.removeBoardContent(savedBoardInfo);
     }

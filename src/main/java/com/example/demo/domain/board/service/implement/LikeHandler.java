@@ -44,4 +44,8 @@ public class LikeHandler {
     public Optional<Long> findLikeId(Long boardId, Long userId) {
         return likeRepository.findIdByBoardIdAndUserId(boardId, userId);
     }
+
+    public void removeAllByBoardId(Long boardId) {
+        likeRepository.deleteLikesByBoardId(boardId);
+    }
 }

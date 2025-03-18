@@ -1,25 +1,19 @@
-package com.example.demo.domain.report.api;
+package com.example.demo.application.report.api;
 
-import com.example.demo.domain.report.domain.dto.ReportResponse;
-import com.example.demo.domain.user.domain.dto.response.UserInfo;
+import com.example.demo.application.report.dto.response.ReportResponse;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
-import com.example.demo.global.base.exception.ErrorCode;
-import com.example.demo.global.config.swagger.ApiErrorResponseExplanation;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
 import com.example.demo.global.config.swagger.ApiSuccessResponseExplanation;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 
 public interface ReportAdminApi {
     @Operation(
