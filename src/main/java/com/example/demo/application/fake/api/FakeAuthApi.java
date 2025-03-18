@@ -1,5 +1,6 @@
-package com.example.demo.domain.fake;
+package com.example.demo.application.fake.api;
 
+import com.example.demo.application.fake.controller.FakeAuthController;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.config.swagger.ApiResponseExplanations;
 import com.example.demo.global.config.swagger.ApiSuccessResponseExplanation;
