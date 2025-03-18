@@ -19,6 +19,7 @@ import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.QBoard;
 import com.example.demo.infra.board.entity.QLike;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
@@ -35,6 +36,8 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 	private final QCategory category = QCategory.category;
 	private final QUser user = QUser.user;
 	private final QLike like = QLike.like;
+
+	private final BoardPaggingCreator boardPaggingCreator;
 
 
 	public Optional<Board> findBoardAndUserAndCategory(Long boardId) {
@@ -64,6 +67,13 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 
 		JPQLQuery<Long> countQuery = createCountQuery(boardType, board, like);
 		long total = countQuery.fetch().size();
+
+		List<OrderSpecifier> orderSpecifiers = boardPaggingCreator.createOrderSpecifiers(board, pageable);
+
+		if(!orderSpecifiers.isEmpty()) {
+			contentQuery.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
+		}
+
 
 		return new PageImpl<>(content, pageable, total);
 	}
@@ -120,7 +130,14 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 			))
 			.from(board)
 			.where(board.user.id.eq(userId)
-				.and(board.status.eq(Status.DRAFT)));
+				.and(board.status.eq(Status.DRAFT)))
+			;
+
+		List<OrderSpecifier> orderSpecifiers = boardPaggingCreator.createOrderSpecifiers(board, pageable);
+
+		if(!orderSpecifiers.isEmpty()) {
+			query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
+		}
 
 		// Pageable 적용
 		QueryResults<DraftBoardTitle> results = query
@@ -153,6 +170,13 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 					.and(board.boardType.eq(boardType))
 			)
 			.groupBy(board.id, board.title, user.nickname, board.boardType, board.createdAt);
+
+		List<OrderSpecifier> orderSpecifiers = boardPaggingCreator.createOrderSpecifiers(board, pageable);
+
+		if(!orderSpecifiers.isEmpty()) {
+			query.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
+		}
+
 
 		// 페이징 적용
 		QueryResults<BoardTitleInfo> results = query
