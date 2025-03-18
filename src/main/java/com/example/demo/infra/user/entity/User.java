@@ -2,7 +2,6 @@ package com.example.demo.infra.user.entity;
 
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
-import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.user.entity.UpdateUserInfo;
 import com.example.demo.domain.user.entity.UserInfo;
@@ -12,6 +11,7 @@ import com.example.demo.global.oauth.user.OAuth2Provider;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.infra.user_additional_info.entity.UserAdditionalInfo;
+import com.example.demo.infra.notification.entity.NotificationUser;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -65,16 +65,10 @@ public class User extends BaseEntity {
 //    private Newsletter newsletter;
 
     @OneToMany(mappedBy = "user")
-    private List<Board> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
     private List<BoardComment> boardComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<RecruitmentBoardComment> recruitmentBoardComments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-    private List<Like> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SeminarApplication> seminarApplications = new ArrayList<>();

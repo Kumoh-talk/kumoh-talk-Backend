@@ -72,7 +72,7 @@ public class RecruitmentBoardInfoResponse {
                 .recruitmentTarget(recruitmentBoardInfo.getRecruitmentTarget())
                 .recruitmentNum(recruitmentBoardInfo.getRecruitmentNum())
                 .currentMemberNum(recruitmentBoardInfo.getCurrentMemberNum())
-                .recruitmentStart(recruitmentBoardInfo.getActivityStart())
+                .recruitmentStart(recruitmentBoardInfo.getCreatedAt())
                 .recruitmentDeadline(recruitmentBoardInfo.getRecruitmentDeadline())
                 .activityStart(recruitmentBoardInfo.getActivityStart())
                 .activityFinish(recruitmentBoardInfo.getActivityFinish())

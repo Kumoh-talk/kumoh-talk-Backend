@@ -1,21 +1,22 @@
 package com.example.demo.domain.notification.repository;
 
-import com.example.demo.domain.notification.domain.entity.Notification;
-import com.example.demo.domain.notification.domain.vo.NotificationType;
-import io.lettuce.core.dynamic.annotation.Param;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import com.example.demo.domain.board.service.entity.LikeInfo;
+import com.example.demo.domain.comment.entity.CommentInfo;
+import com.example.demo.domain.notification.entity.NotificationInfo;
+import com.example.demo.domain.notification.entity.vo.NotificationType;
 
 import java.util.List;
+import java.util.Set;
 
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
+public interface NotificationRepository {
+    int deleteAllZeroUsersNotifications();
 
-    @Modifying
-    void deleteByInvokerIdAndInvokerType(
-            @Param("invokerId") Long invokerId,
-            @Param("invokerType") NotificationType notificationType);
+    void deleteByInvokerIdAndInvokerType(Long invokerId, NotificationType invokerType);
 
-    @Query("SELECT n FROM Notification n LEFT JOIN FETCH n.notificationUserList")
-    List<Notification> findAllWithNotificationUsers();
+    void deleteAllByInvokerIdAndInvokerType(List<Long> likeIdList, NotificationType invokerType);
+
+    NotificationInfo postCommentNotification(CommentInfo comment, NotificationType notificationType, Set<Long> notificationUserIdSet);
+
+    NotificationInfo postLikeNotification(LikeInfo comment, NotificationType notificationType, Long notificationUserId);
+
 }
