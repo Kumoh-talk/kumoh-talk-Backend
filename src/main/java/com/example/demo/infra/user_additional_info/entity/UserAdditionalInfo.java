@@ -26,6 +26,7 @@ public class UserAdditionalInfo extends BaseEntity {
     private String department; // 정해져있음.
     private int studentId;
     private int grade;
+    @Enumerated(EnumType.STRING)
     private StudentStatus studentStatus;
     private String phoneNumber;
     private boolean isUpdated;
