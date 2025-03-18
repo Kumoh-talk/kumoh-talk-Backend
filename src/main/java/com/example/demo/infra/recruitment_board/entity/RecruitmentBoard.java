@@ -6,7 +6,7 @@ import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
 import com.example.demo.domain.recruitment_board.entity.RecruitmentFormQuestionInfo;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardTag;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import com.example.demo.infra.recruitment_application.entity.RecruitmentApplication;

@@ -34,7 +34,7 @@ public class RecruitmentApplicationService {
 
     @Transactional
     public RecruitmentApplicationInfo postApplication(RecruitmentApplicationInfo recruitmentApplicationInfo) {
-        userReader.findUser(recruitmentApplicationInfo.getUserId())
+        userReader.findUserTarget(recruitmentApplicationInfo.getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getByIdByWithQuestionList(recruitmentApplicationInfo.getRecruitmentBoardId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
@@ -91,7 +91,7 @@ public class RecruitmentApplicationService {
 
     @Transactional
     public RecruitmentApplicationInfo patchApplication(RecruitmentApplicationInfo recruitmentApplicationInfo) {
-        userReader.findUser(recruitmentApplicationInfo.getUserId())
+        userReader.findUserTarget(recruitmentApplicationInfo.getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         RecruitmentApplicationInfo originApplicationInfo = recruitmentApplicationReader.getByIdWithBoard(recruitmentApplicationInfo.getApplicationId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_NOT_FOUND));
@@ -130,7 +130,7 @@ public class RecruitmentApplicationService {
 
     @Transactional(readOnly = true)
     public Page<MyRecruitmentApplicationInfo> getUserApplicationList(Long userId, Pageable pageable, RecruitmentBoardType boardType) {
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         return recruitmentApplicationReader.getPageByUserIdWithRecruitmentBoard(userId, pageable, boardType);

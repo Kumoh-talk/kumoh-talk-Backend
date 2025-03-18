@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.demo.domain.user.domain.QUser.user;
 import static com.example.demo.infra.comment.entity.QRecruitmentBoardComment.recruitmentBoardComment;
 import static com.example.demo.infra.recruitment_board.entity.QRecruitmentBoard.recruitmentBoard;
 import static com.example.demo.infra.recruitment_board.entity.QRecruitmentFormAnswer.recruitmentFormAnswer;
 import static com.example.demo.infra.recruitment_board.entity.QRecruitmentFormQuestion.recruitmentFormQuestion;
+import static com.example.demo.infra.user.entity.QUser.user;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor

@@ -8,7 +8,7 @@ import com.example.demo.domain.report.client.DiscordReportClient;
 import com.example.demo.domain.report.domain.ReportInfo;
 import com.example.demo.domain.report.implement.ReportReader;
 import com.example.demo.domain.report.implement.ReportWriter;
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
@@ -33,7 +33,7 @@ public class ReportService {
 
     @Transactional
     public void reportBoardComment(Long commentId, Long userId) {
-        UserTarget userTarget = userReader.findUser(userId)
+        UserTarget userTarget = userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         CommentInfo commentInfo = boardCommentHandler.getById(commentId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));
@@ -46,7 +46,7 @@ public class ReportService {
 
     @Transactional
     public void reportRecruitmentBoardComment(Long commentId, Long userId) {
-        UserTarget userTarget = userReader.findUser(userId)
+        UserTarget userTarget = userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         CommentInfo commentInfo = recruitmentBoardCommentHandler.getById(commentId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.COMMENT_NOT_FOUND));

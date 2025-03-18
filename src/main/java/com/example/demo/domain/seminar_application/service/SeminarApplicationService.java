@@ -1,17 +1,18 @@
 package com.example.demo.domain.seminar_application.service;
 
+import com.example.demo.application.token.dto.TokenResponse;
 import com.example.demo.domain.seminar_application.domain.SeminarApplication;
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationRequest;
 import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationUpdateRequest;
 import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
 import com.example.demo.domain.seminar_application.repository.SeminarApplicationRepository;
-import com.example.demo.domain.token.domain.dto.TokenResponse;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.domain.token.entity.Token;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
+import com.example.demo.infra.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,7 +35,7 @@ public class SeminarApplicationService {
     private final JwtHandler jwtHandler;
 
     @Transactional
-    public Optional<TokenResponse> applyForSeminar(Long userId, @Valid SeminarApplicationRequest request) {
+    public Optional<Token> applyForSeminar(Long userId, @Valid SeminarApplicationRequest request) {
         User user = userService.validateUser(userId);
         boolean isFirstApplication = user.getSeminarApplications().isEmpty();
 

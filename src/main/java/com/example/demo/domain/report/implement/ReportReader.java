@@ -3,7 +3,7 @@ package com.example.demo.domain.report.implement;
 import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.report.domain.ReportInfo;
 import com.example.demo.domain.report.repository.ReportRepository;
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.domain.user.entity.UserTarget;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;

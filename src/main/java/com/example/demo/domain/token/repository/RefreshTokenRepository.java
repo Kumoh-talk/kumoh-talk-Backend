@@ -1,9 +1,11 @@
 package com.example.demo.domain.token.repository;
 
-import com.example.demo.domain.token.domain.RefreshToken;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import com.example.demo.domain.token.entity.RefreshTokenData;
 
-@Repository
-public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Long> {
+import java.util.Optional;
+
+public interface RefreshTokenRepository{
+    void deleteUserRefreshToken(Long userId);
+    void saveRefreshToken(RefreshTokenData refreshTokenData);
+    Optional<RefreshTokenData> findRefreshToken(Long userId);
 }

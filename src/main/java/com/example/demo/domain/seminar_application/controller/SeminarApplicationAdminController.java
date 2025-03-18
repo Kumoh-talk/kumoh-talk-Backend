@@ -3,7 +3,6 @@ package com.example.demo.domain.seminar_application.controller;
 import com.example.demo.domain.seminar_application.api.SeminarApplicationAdminApi;
 import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
 import com.example.demo.domain.seminar_application.service.SeminarApplicationAdminService;
-import com.example.demo.domain.user.domain.dto.response.UserInfo;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import lombok.RequiredArgsConstructor;

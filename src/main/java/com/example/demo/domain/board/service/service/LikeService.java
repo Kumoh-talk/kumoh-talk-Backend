@@ -24,7 +24,7 @@ public class LikeService {
 
     public void likeBoard(Long userId, Long boardId) {
         boardValidator.validateExistBoard(boardId);
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.LIKE_USER_NOT_FOUND));
         likeHandler.validateExistLike(boardId, userId);
         LikeInfo likeInfo = likeHandler.increaseLike(userId, boardId);
@@ -37,7 +37,7 @@ public class LikeService {
 
     public void unlikeBoard(Long userId, Long boardId) {
         boardValidator.validateExistBoard(boardId);
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.LIKE_USER_NOT_FOUND));
         Long likeId = likeHandler.findLikeId(boardId, userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_LIKE_BOARD));

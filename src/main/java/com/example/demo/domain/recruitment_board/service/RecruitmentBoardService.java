@@ -41,7 +41,7 @@ public class RecruitmentBoardService {
     @Transactional
     public RecruitmentBoardAndFormInfo postBoardAndForm(
             RecruitmentBoardAndFormInfo recruitmentBoardAndFormInfo) {
-        userReader.findUser(recruitmentBoardAndFormInfo.getBoard().getUserId())
+        userReader.findUserTarget(recruitmentBoardAndFormInfo.getBoard().getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         recruitmentBoardValidator.validateDeadLine(recruitmentBoardAndFormInfo.getBoard().getRecruitmentDeadline());
@@ -129,7 +129,7 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public RecruitmentBoardAndFormInfo getLatestDraftBoardAndForm(Long userId) {
-        userReader.findUser(userId)
+        userReader.findUserTarget(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
         RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getLatestDraftIdByUserId(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
@@ -141,7 +141,7 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public List<RecruitmentBoardInfo> getDraftBoardListByUserId(Long userId, int size, Long lastBoardId) {
-        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         if (lastBoardId != null) {
             recruitmentBoardReader.getById(lastBoardId)
@@ -153,7 +153,7 @@ public class RecruitmentBoardService {
 
     @Transactional(readOnly = true)
     public Page<RecruitmentBoardInfo> getPublishedBoardListByUserId(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
-        userReader.findUser(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         return recruitmentBoardReader.getPublishedPageByPageNum(userId, pageable, recruitmentBoardType);
     }

@@ -6,13 +6,13 @@ import static org.assertj.core.api.SoftAssertions.*;
 
 import java.util.List;
 
+import com.example.demo.infra.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import com.example.demo.base.IntegrationTest;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import com.example.demo.infra.board.category.entity.Category;

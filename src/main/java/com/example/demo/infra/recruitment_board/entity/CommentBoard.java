@@ -1,6 +1,6 @@
 package com.example.demo.infra.recruitment_board.entity;
 
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 
 import java.time.LocalDateTime;
 

@@ -1,11 +1,19 @@
 package com.example.demo.infra.board.repository;
 
+import java.time.LocalDateTime;
+
+import com.example.demo.infra.user.entity.QUser;
+import com.example.demo.infra.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.demo.domain.board.service.entity.BoardTitleInfo;
 import com.example.demo.domain.board.service.entity.LikeInfo;
 import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.board.service.repository.LikeRepository;
-import com.example.demo.domain.user.domain.QUser;
-import com.example.demo.domain.user.domain.User;
 import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.infra.board.entity.QBoard;

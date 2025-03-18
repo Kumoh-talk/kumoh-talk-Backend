@@ -4,7 +4,7 @@ import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.comment.entity.CommentUserInfo;
 import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.infra.report.entity.Report;
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.global.base.domain.BaseEntity;
 import com.example.demo.infra.comment.entity_listener.CommentEntityListener;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;

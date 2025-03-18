@@ -1,3 +1,4 @@
+
 package com.example.demo.domain.comment.service;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
@@ -36,7 +37,7 @@ public abstract class AbstractCommentService {
 
     @Transactional(readOnly = true)
     public Page<MyCommentInfo> getCommentsByUserId(Long userId, Pageable pageable, EntireBoardType entireBoardType) {
-        userReader.findUser(userId).orElseThrow(() ->
+        userReader.findUserTarget(userId).orElseThrow(() ->
                 new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         return commentHandler.getPageByBoardId(userId, pageable, entireBoardType);
@@ -47,7 +48,7 @@ public abstract class AbstractCommentService {
         if (!commentBoardReader.existsByIdWithUser(commentInfo.getBoardId())) {
             throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
         }
-        userReader.findUser(commentInfo.getCommentUserInfo().getUserId())
+        userReader.findUserTarget(commentInfo.getCommentUserInfo().getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
         if (commentInfo.getGroupId() != null) {

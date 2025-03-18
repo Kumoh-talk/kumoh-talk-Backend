@@ -2,7 +2,7 @@ package com.example.demo.domain.report.implement;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.report.repository.ReportRepository;
-import com.example.demo.domain.user.domain.UserTarget;
+import com.example.demo.domain.user.entity.UserTarget;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

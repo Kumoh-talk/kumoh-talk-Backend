@@ -1,6 +1,6 @@
 package com.example.demo.infra.fixture.notification;
 
-import com.example.demo.domain.user.domain.User;
+import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.notification.entity.Notification;
 import com.example.demo.infra.notification.entity.NotificationUser;
 
