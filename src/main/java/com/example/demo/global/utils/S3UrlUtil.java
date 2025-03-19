@@ -12,6 +12,7 @@ import com.example.demo.application.board.dto.request.PresignedUrlRequest;
 import com.example.demo.domain.board.service.entity.BoardFileInfo;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
+import com.example.demo.global.regex.S3UrlRegex;
 
 import jakarta.annotation.PostConstruct;
 
@@ -36,9 +37,9 @@ public class S3UrlUtil {
 
 	@PostConstruct
 	public void init() {
-		String boardUrlPattern = String.format(URL_PATTERN, bucket, BOARD_DOMAIN_NAME);
+		String boardUrlPattern = String.format(S3UrlRegex.S3_BOARD_FILE_URL, bucket, BOARD_DOMAIN_NAME);
 		boardS3UrlPattern = Pattern.compile(boardUrlPattern);
-		String profileUrlPattern = String.format(URL_PATTERN, bucket, PROFILE_DOMAIN_NAME);
+		String profileUrlPattern = String.format(S3UrlRegex.S3_PROFILE_FILE_URL, bucket, PROFILE_DOMAIN_NAME);
 		profileS3UrlPattern = Pattern.compile(profileUrlPattern);
 	}
 
