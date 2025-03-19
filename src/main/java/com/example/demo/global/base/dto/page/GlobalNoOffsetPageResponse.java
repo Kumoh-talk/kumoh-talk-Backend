@@ -10,11 +10,11 @@ import java.util.List;
 @Schema(name = "GlobalNoOffsetPageResponse", description = "no-offset 방식 페이지 응답")
 public class GlobalNoOffsetPageResponse<T> {
     @Schema(description = "다음 페이지 존재 여부", example = "true")
-    private boolean nextPage;
+    protected boolean nextPage;
     @Schema(description = "한 페이지에 게시물 갯수", example = "10")
-    private int pageSize;
+    protected int pageSize;
     @Schema(description = "페이징 내용")
-    private List<T> pageContents;
+    protected List<T> pageContents;
 
     @Builder
     public GlobalNoOffsetPageResponse(boolean nextPage, int pageSize, List<T> pageContents) {

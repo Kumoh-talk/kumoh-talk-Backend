@@ -7,6 +7,7 @@ import com.example.demo.infra.board.repository.BoardJpaRepository;
 import com.example.demo.infra.board.repository.LikeJpaRepository;
 import com.example.demo.infra.comment.repository.jpa.BoardCommentJpaRepository;
 import com.example.demo.infra.comment.repository.jpa.RecruitmentBoardCommentJpaRepository;
+import com.example.demo.infra.notification.repository.jpa.NotificationJpaRepository;
 import com.example.demo.infra.recruitment_board.repository.jpa.RecruitmentBoardJpaRepository;
 import com.example.demo.infra.user.repository.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class JpaBuilderSupporter {
     private RecruitmentBoardCommentJpaRepository recruitmentBoardCommentJpaRepository;
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private NotificationJpaRepository notificationJpaRepository;
 
     @Autowired
     private CategoryJpaRepository categoryJpaRepository;
@@ -65,8 +66,8 @@ public class JpaBuilderSupporter {
         return recruitmentBoardCommentJpaRepository;
     }
 
-    public NotificationRepository notificationRepository() {
-        return notificationRepository;
+    public NotificationJpaRepository notificationJpaRepository() {
+        return notificationJpaRepository;
     }
 
 

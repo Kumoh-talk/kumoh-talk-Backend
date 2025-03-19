@@ -9,7 +9,7 @@ import com.example.demo.application.comment.dto.response.MyCommentResponse;
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.comment.service.AbstractCommentService;
-import com.example.demo.domain.notification.domain.vo.NotificationType;
+import com.example.demo.domain.notification.entity.vo.NotificationType;
 import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
 import com.example.demo.global.aop.AssignUserId;
 import com.example.demo.global.base.dto.ResponseBody;

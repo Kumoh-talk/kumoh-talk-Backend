@@ -26,7 +26,7 @@ public class RecruitmentBoardValidator {
     public void validatePatchable(RecruitmentBoardInfo recruitmentBoardInfo) {
         // 신청자가 존재하면 수정 불가
         if (recruitmentApplicantRepository.existsByRecruitmentBoardId(recruitmentBoardInfo.getBoardId())) {
-            throw new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_EXIST);
+            throw new ServiceException(ErrorCode.RECRUITMENT_APPLICATION_EXIST);
         }
     }
 
@@ -46,13 +46,27 @@ public class RecruitmentBoardValidator {
         }
     }
 
-    public void validateDeadLine(Long userId, RecruitmentBoardInfo recruitmentBoardInfo) {
+    public void validateExpired(Long userId, RecruitmentBoardInfo recruitmentBoardInfo) {
         if (recruitmentBoardInfo.getRecruitmentDeadline().isBefore(LocalDateTime.now())) {
             try {
                 validateWriter(userId, recruitmentBoardInfo);
             } catch (ServiceException e) {
                 throw new ServiceException(ErrorCode.DEADLINE_EXPIRED);
             }
+        }
+    }
+
+    public void validateDeadLine(LocalDateTime recruitmentDeadline) {
+        if (recruitmentDeadline != null
+                && recruitmentDeadline.isBefore(LocalDateTime.now())) {
+            throw new ServiceException(ErrorCode.INVALID_DEADLINE);
+        }
+    }
+
+    public void validateStartDate(LocalDateTime activityStart, LocalDateTime activityFinish) {
+        if (activityStart != null && activityFinish != null
+                && activityStart.isAfter(activityFinish)) {
+            throw new ServiceException(ErrorCode.INVALID_START_DATE);
         }
     }
 }

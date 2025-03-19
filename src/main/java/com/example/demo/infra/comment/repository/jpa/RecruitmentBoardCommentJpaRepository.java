@@ -70,7 +70,8 @@ public interface RecruitmentBoardCommentJpaRepository extends JpaRepository<Recr
     @Override
     @Query("SELECT DISTINCT rbc.user FROM RecruitmentBoardComment rbc " +
             "WHERE rbc.board.id = :boardId " +
-            "AND (:parentCommentId IS NULL AND rbc.parentComment IS NULL OR rbc.parentComment.id = :parentCommentId OR rbc.id = :parentCommentId) " +
+            "AND (:parentCommentId IS NULL AND rbc.parentComment IS NULL) " +
+            "OR (rbc.parentComment.id = :parentCommentId OR rbc.id = :parentCommentId) " +
             "AND rbc.deletedAt IS NULL")
     List<User> findUsersByBoardIdByParentCommentId(Long boardId, Long parentCommentId);
 }

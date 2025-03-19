@@ -2,7 +2,6 @@ package com.example.demo.infra.user.entity;
 
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
-import com.example.demo.domain.notification.domain.entity.NotificationUser;
 import com.example.demo.domain.user.entity.UpdateUserInfo;
 import com.example.demo.domain.user.entity.UserInfo;
 import com.example.demo.domain.user.vo.Role;
@@ -12,6 +11,7 @@ import com.example.demo.infra.board.entity.Board;
 import com.example.demo.infra.board.entity.Like;
 import com.example.demo.infra.seminar_application.entity.SeminarApplication;
 import com.example.demo.infra.user_additional_info.entity.UserAdditionalInfo;
+import com.example.demo.infra.notification.entity.NotificationUser;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

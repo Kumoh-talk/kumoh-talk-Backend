@@ -2,6 +2,7 @@ package com.example.demo.domain.comment.service;
 
 import com.example.demo.domain.comment.implement.board.CommentRecruitmentBoardReaderImpl;
 import com.example.demo.domain.comment.implement.comment.RecruitmentBoardCommentHandler;
+import com.example.demo.domain.notification.implement.CommentNotificationWriter;
 import com.example.demo.domain.user.implement.UserReader;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,8 @@ public class RecruitmentBoardCommentService extends AbstractCommentService {
     protected RecruitmentBoardCommentService(
             UserReader userReader,
             RecruitmentBoardCommentHandler recruitmentBoardCommentHandler,
-            CommentRecruitmentBoardReaderImpl commentRecruitmentBoardReader) {
-        super(userReader, recruitmentBoardCommentHandler, commentRecruitmentBoardReader);
+            CommentRecruitmentBoardReaderImpl commentRecruitmentBoardReader,
+            CommentNotificationWriter commentNotificationWriter) {
+        super(userReader, recruitmentBoardCommentHandler, commentRecruitmentBoardReader, commentNotificationWriter);
     }
 }

@@ -44,6 +44,9 @@ public class RecruitmentBoardService {
         userReader.findUserTarget(recruitmentBoardAndFormInfo.getBoard().getUserId())
                 .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
 
+        recruitmentBoardValidator.validateDeadLine(recruitmentBoardAndFormInfo.getBoard().getRecruitmentDeadline());
+        recruitmentBoardValidator.validateStartDate(recruitmentBoardAndFormInfo.getBoard().getActivityStart(), recruitmentBoardAndFormInfo.getBoard().getActivityFinish());
+
         RecruitmentBoardAndFormInfo savedBoard = recruitmentBoardWriter.post(recruitmentBoardAndFormInfo);
 
         if (savedBoard.getBoard().getStatus() == Status.PUBLISHED) {
@@ -84,7 +87,7 @@ public class RecruitmentBoardService {
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         recruitmentBoardValidator.validateAccessToBoard(userId, recruitmentBoardInfo);
-        recruitmentBoardValidator.validateDeadLine(userId, recruitmentBoardInfo);
+        recruitmentBoardValidator.validateExpired(userId, recruitmentBoardInfo);
 
         return recruitmentFormQuestionReader.getByBoarIdWithAnswerList(recruitmentBoardId);
     }
@@ -97,6 +100,9 @@ public class RecruitmentBoardService {
 
         recruitmentBoardValidator.validateWriter(recruitmentBoardAndFormInfo.getBoard().getUserId(), recruitmentBoardInfo);
         recruitmentBoardValidator.validatePatchable(recruitmentBoardInfo);
+
+        recruitmentBoardValidator.validateDeadLine(recruitmentBoardAndFormInfo.getBoard().getRecruitmentDeadline());
+        recruitmentBoardValidator.validateStartDate(recruitmentBoardAndFormInfo.getBoard().getActivityStart(), recruitmentBoardAndFormInfo.getBoard().getActivityFinish());
 
         // 게시물 업데이트
         RecruitmentBoardAndFormInfo savedBoard = recruitmentBoardWriter.patch(recruitmentBoardAndFormInfo);
