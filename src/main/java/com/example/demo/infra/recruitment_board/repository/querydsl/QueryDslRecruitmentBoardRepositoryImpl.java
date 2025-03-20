@@ -11,6 +11,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,10 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
         // lastBoard보다 마감일이 늦는 게시물을 가져온다.
         return jpaQueryFactory
                 .select(Projections.constructor(RecruitmentBoardInfo.class,
-                        recruitmentBoardComment.count(),
+                        JPAExpressions.select(recruitmentBoardComment.count())
+                                .from(recruitmentBoardComment)
+                                .where(recruitmentBoardComment.board.eq(recruitmentBoard)
+                                        .and(recruitmentBoardComment.deletedAt.isNull())),
                         recruitmentBoard.id,
                         recruitmentBoard.user.id, recruitmentBoard.user.nickname,
                         recruitmentBoard.title, recruitmentBoard.summary, recruitmentBoard.host,
@@ -90,7 +94,10 @@ public class QueryDslRecruitmentBoardRepositoryImpl implements QueryDslRecruitme
 
         List<RecruitmentBoardInfo> content = jpaQueryFactory
                 .select(Projections.constructor(RecruitmentBoardInfo.class,
-                        recruitmentBoardComment.count(),
+                        JPAExpressions.select(recruitmentBoardComment.count())
+                                .from(recruitmentBoardComment)
+                                .where(recruitmentBoardComment.board.eq(recruitmentBoard)
+                                        .and(recruitmentBoardComment.deletedAt.isNull())),
                         recruitmentBoard.id,
                         recruitmentBoard.user.id, recruitmentBoard.user.nickname,
                         recruitmentBoard.title, recruitmentBoard.summary, recruitmentBoard.host,

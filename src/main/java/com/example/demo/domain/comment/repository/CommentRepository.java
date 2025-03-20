@@ -20,6 +20,8 @@ public interface CommentRepository<T> {
 
     List<CommentUserInfo> getUsersByBoardIdAndParentCommentId(Long boardId, Long parentCommentId);
 
+    Long getCommentCount(Long boardId);
+
     CommentInfo post(CommentInfo commentInfo);
 
     void delete(CommentInfo commentInfo);

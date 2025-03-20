@@ -4,12 +4,12 @@ import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.comment.entity.CommentUserInfo;
 import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.comment.repository.CommentRepository;
-import com.example.demo.infra.user.entity.User;
-import com.example.demo.infra.user.repository.UserJpaRepository;
 import com.example.demo.infra.comment.entity.Comment;
 import com.example.demo.infra.comment.repository.jpa.CommentJpaRepository;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;
 import com.example.demo.infra.recruitment_board.repository.jpa.CommentBoardJpaRepository;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,6 +66,11 @@ public abstract class AbstractCommentRepositoryImpl<T> implements CommentReposit
                 .stream()
                 .map(CommentUserInfo::from)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getCommentCount(Long boardId) {
+        return commentJpaRepository.countActiveComments(boardId);
     }
 
     @Override
