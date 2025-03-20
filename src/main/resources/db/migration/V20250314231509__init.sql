@@ -46,7 +46,7 @@ CREATE TABLE `boards`
     `attach_file_url` varchar(500) DEFAULT NULL,
     `head_image_url`  varchar(500) DEFAULT NULL,
     `board_type`      enum('SEMINAR','NOTICE') NOT NULL,
-    `content`         tinytext    NOT NULL,
+    `content`         text        NOT NULL,
     `status`          enum('DRAFT','PUBLISHED') NOT NULL,
     PRIMARY KEY (`id`),
     KEY               `FK7kt8hby5livgmjj15f79e9t6v` (`user_id`),
@@ -292,11 +292,11 @@ CREATE TABLE `recruitment_board_comments`
 
 CREATE TABLE `report`
 (
-    `board_comment_id`             bigint NOT NULL,
+    `board_comment_id`             bigint default NULL,
     `created_at`                   datetime(6) DEFAULT NULL,
     `deleted_at`                   datetime(6) DEFAULT NULL,
     `id`                           bigint NOT NULL AUTO_INCREMENT,
-    `recruitment_board_comment_id` bigint NOT NULL,
+    `recruitment_board_comment_id` bigint default NULL,
     `updated_at`                   datetime(6) DEFAULT NULL,
     `user_id`                      bigint NOT NULL,
     PRIMARY KEY (`id`),

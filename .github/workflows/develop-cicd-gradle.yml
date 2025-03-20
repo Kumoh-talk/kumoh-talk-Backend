@@ -135,10 +135,10 @@ jobs:
             gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
             docker load < /home/admin/kumoh_talk_flyway.tar
           
-            # Flyway 마이그레이션 실행
+            docker-compose -f /home/admin/docker-compose.yml stop spring-boot-app
+          
             docker-compose -f /home/admin/flyway-docker-compose.yml up --abort-on-container-exit
           
-            # Flyway 마이그레이션 성공 여부 확인
             if [ $? -eq 0 ]; then
               echo "Flyway migration succeeded. Starting Spring application..."
               docker-compose -f /home/admin/docker-compose.yml up -d

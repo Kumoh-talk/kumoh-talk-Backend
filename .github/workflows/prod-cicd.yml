@@ -135,7 +135,8 @@ jobs:
             gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
             docker load < /home/admin/kumoh_talk_flyway.tar
           
-            # Flyway 마이그레이션 실행
+            docker-compose -f /home/admin/docker-compose-prod-kumohtalk.yml stop kumoh-talk-application
+          
             docker run --rm \
               -e FLYWAY_URL=${{ secrets.FLYWAY_PROD_RDB_URL }} \
               -e FLYWAY_USER=${{ secrets.FLYWAY_PROD_RDB_USER }} \
@@ -143,7 +144,6 @@ jobs:
               -e FLYWAY_LOCATIONS=filesystem:/flyway/sql \
               kumoh_talk_flyway:latest
           
-            # Flyway 마이그레이션 성공 여부 확인
             if [ $? -eq 0 ]; then
               echo "Flyway migration succeeded. Starting Spring application..."
               docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml up -d
