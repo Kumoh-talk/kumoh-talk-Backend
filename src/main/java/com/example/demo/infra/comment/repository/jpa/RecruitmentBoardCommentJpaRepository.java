@@ -2,10 +2,10 @@ package com.example.demo.infra.comment.repository.jpa;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
 import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
-import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.comment.entity.Comment;
 import com.example.demo.infra.comment.entity.RecruitmentBoardComment;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;
+import com.example.demo.infra.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -60,12 +60,10 @@ public interface RecruitmentBoardCommentJpaRepository extends JpaRepository<Recr
     Page<Comment> findPageByUserId(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType);
 
     @Override
-    @Query("SELECT rbc FROM RecruitmentBoardComment rbc " +
-            "JOIN rbc.board b " +
-            "WHERE rbc.id = :commentId " +
-            "AND b.id = :boardId " +
+    @Query("SELECT COUNT(rbc) FROM RecruitmentBoardComment rbc " +
+            "WHERE rbc.board.id = :boardId " +
             "AND rbc.deletedAt IS NULL")
-    Optional<Comment> findNotDeleteCommentById(Long boardId, Long commentId);
+    Long countActiveComments(Long boardId);
 
     @Override
     @Query("SELECT DISTINCT rbc.user FROM RecruitmentBoardComment rbc " +

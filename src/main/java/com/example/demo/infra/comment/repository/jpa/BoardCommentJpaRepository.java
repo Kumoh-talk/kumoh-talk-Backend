@@ -2,10 +2,10 @@ package com.example.demo.infra.comment.repository.jpa;
 
 import com.example.demo.domain.board.service.entity.vo.BoardType;
 import com.example.demo.domain.comment.entity.CommentInfo;
-import com.example.demo.infra.user.entity.User;
 import com.example.demo.infra.comment.entity.BoardComment;
 import com.example.demo.infra.comment.entity.Comment;
 import com.example.demo.infra.recruitment_board.entity.CommentBoard;
+import com.example.demo.infra.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,11 +35,13 @@ public interface BoardCommentJpaRepository extends JpaRepository<BoardComment, L
         delete((BoardComment) comment);
     }
 
+    @Override
     @Query("SELECT bc FROM BoardComment bc " +
             "WHERE bc.id = :id " +
             "AND bc.board.id = :boardId")
     List<Comment> findByIdAndBoardId(Long id, Long boardId);
 
+    @Override
     @Query("SELECT bc FROM BoardComment bc " +
             "JOIN FETCH bc.user u " +
             "LEFT JOIN FETCH bc.replyComments rc " +
@@ -47,6 +49,7 @@ public interface BoardCommentJpaRepository extends JpaRepository<BoardComment, L
             "ORDER BY bc.createdAt ASC")
     List<Comment> findListByBoardId(Long boardId);
 
+    @Override
     @Query("SELECT bc FROM BoardComment bc " +
             "JOIN FETCH bc.board b " +
             "WHERE bc.board IS NOT NULL " +
@@ -56,13 +59,13 @@ public interface BoardCommentJpaRepository extends JpaRepository<BoardComment, L
             "ORDER BY bc.createdAt DESC")
     Page<Comment> findPageByUserId(Long userId, Pageable pageable, BoardType boardType);
 
-    @Query("SELECT bc FROM BoardComment bc " +
-            "JOIN bc.board b " +
-            "WHERE bc.id = :commentId " +
-            "AND b.id = :boardId " +
+    @Override
+    @Query("SELECT COUNT(bc) FROM BoardComment bc " +
+            "WHERE bc.board.id = :boardId " +
             "AND bc.deletedAt IS NULL")
-    Optional<Comment> findNotDeleteCommentById(Long boardId, Long commentId);
+    Long countActiveComments(Long boardId);
 
+    @Override
     @Query("SELECT DISTINCT bc.user FROM BoardComment bc " +
             "WHERE bc.board.id = :boardId " +
             "AND (:parentCommentId IS NULL AND bc.parentComment IS NULL) " +

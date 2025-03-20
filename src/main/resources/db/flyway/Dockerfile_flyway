@@ -1,0 +1,12 @@
+# Flyway 전용 이미지
+FROM flyway/flyway:latest
+
+# Flyway 마이그레이션 파일 복사
+COPY src/main/resources/db/migration /flyway/sql
+
+# 초기화 스크립트 복사
+COPY src/main/resources/db/flyway/flyway.sh /flyway/flyway.sh
+RUN chmod +x /flyway/flyway.sh
+
+# 컨테이너 시작 시 init.sh 실행
+ENTRYPOINT ["/flyway/flyway.sh"]

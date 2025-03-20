@@ -1,6 +1,7 @@
 package com.example.demo.domain.comment.service;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
+import com.example.demo.domain.comment.entity.CommentListInfo;
 import com.example.demo.domain.comment.entity.MyCommentInfo;
 import com.example.demo.domain.comment.implement.board.GenericCommentBoardReader;
 import com.example.demo.domain.comment.implement.comment.AbstractCommentHandler;
@@ -15,8 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 public abstract class AbstractCommentService {
 
@@ -26,12 +25,15 @@ public abstract class AbstractCommentService {
     protected final CommentNotificationWriter commentNotificationWriter;
 
     @Transactional(readOnly = true)
-    public List<CommentInfo> getCommentsByBoardId(Long boardId) {
+    public CommentListInfo getCommentsByBoardId(Long boardId) {
         if (!commentBoardReader.existsById(boardId)) {
             throw new ServiceException(ErrorCode.BOARD_NOT_FOUND);
         }
 
-        return commentHandler.getListByBoardId(boardId);
+        return CommentListInfo.builder()
+                .commentCount(commentHandler.getCommentCount(boardId))
+                .commentInfo(commentHandler.getListByBoardId(boardId))
+                .build();
     }
 
     @Transactional(readOnly = true)

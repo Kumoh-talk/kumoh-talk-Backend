@@ -95,6 +95,11 @@ dependencies {
 
     // test-containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
+    testImplementation 'org.testcontainers:mysql'
+
+    // flyway
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
 
     // JSQLParser
     implementation 'com.github.jsqlparser:jsqlparser:5.1'

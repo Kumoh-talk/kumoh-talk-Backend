@@ -36,6 +36,10 @@ public abstract class AbstractCommentHandler<T> {
         return commentRepository.getUsersByBoardIdAndParentCommentId(boardId, parentCommentId);
     }
 
+    public Long getCommentCount(Long boardId) {
+        return commentRepository.getCommentCount(boardId);
+    }
+
     public CommentInfo post(CommentInfo commentInfo) {
         return commentRepository.post(commentInfo);
     }
