@@ -100,7 +100,7 @@ jobs:
       - name: Upload kumoh_talk_flyway tar.gz as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: kumoh_talk_flyway-tar
+          name: kumoh_talk_flyway.tar
           path: kumoh_talk_flyway.tar.gz
 
       - name: Set up SSH key
