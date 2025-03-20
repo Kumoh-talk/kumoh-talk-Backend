@@ -9,4 +9,4 @@ COPY src/main/resources/db/flyway/flyway.sh /flyway/flyway.sh
 RUN chmod +x /flyway/flyway.sh
 
 # 컨테이너 시작 시 init.sh 실행
-ENTRYPOINT ["/flyway/flyway.sh"]
+ENTRYPOINT ["sh", "/flyway/flyway.sh"]
