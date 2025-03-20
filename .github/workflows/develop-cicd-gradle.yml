@@ -94,7 +94,7 @@ jobs:
 
       - name: Build Docker image for kumoh_talk_flyway and generate tar
         run: |
-          docker buildx build --platform linux/arm64 -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
+          docker buildx build --platform linux/arm64 --load -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
           docker save kumoh_talk_flyway:latest | gzip > kumoh_talk_flyway.tar.gz
 
       - name: Upload kumoh_talk_flyway tar.gz as artifact
@@ -119,7 +119,7 @@ jobs:
           ssh -p 101 admin@${{ secrets.SSH_HOST }} <<EOF
           
             gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
-            docker load < /home/admin/kumoh_talk_flyway.tar
+            docker import /home/admin/kumoh_talk_flyway.tar kumoh_talk_flyway:latest
           
             docker compose -f /home/admin/docker-compose.yml stop spring-boot-app
           
