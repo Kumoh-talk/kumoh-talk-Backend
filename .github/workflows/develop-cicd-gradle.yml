@@ -137,7 +137,7 @@ jobs:
           
             docker compose -f /home/admin/docker-compose.yml stop spring-boot-app
           
-            docker compose -f /home/admin/flyway-docker-compose.yml up --abort-on-container-exit
+            docker compose -f /home/admin/docker-compose.yml up flyway
           
             if [ $? -eq 0 ]; then
               echo "Flyway migration succeeded. Starting Spring application..."
