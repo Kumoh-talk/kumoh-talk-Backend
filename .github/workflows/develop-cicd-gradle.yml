@@ -89,21 +89,13 @@ jobs:
           name: build-libs
           path: build/libs
 
-      - name: Build Docker image and generate tar
-        run: |
-          docker build -t kumoh_talk:latest .
-          docker save kumoh_talk:latest | gzip > kumoh_talk.tar.gz
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
       - name: Build Docker image for kumoh_talk_flyway and generate tar
         run: |
-          docker build --platform linux/arm64 -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
+          docker buildx build --platform linux/arm64 -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
           docker save kumoh_talk_flyway:latest | gzip > kumoh_talk_flyway.tar.gz
-
-      - name: Upload tar.gz as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: kumoh_talk-tar
-          path: kumoh_talk.tar.gz
 
       - name: Upload kumoh_talk_flyway tar.gz as artifact
         uses: actions/upload-artifact@v4
@@ -118,32 +110,49 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 101 -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Send tar.gz file to Raspberry Pi via SCP
-        run: |
-          scp -P 101 kumoh_talk.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
-
       - name: Send kumoh_talk_flyway tar.gz file to Raspberry Pi via SCP
         run: |
           scp -P 101 kumoh_talk_flyway.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
 
-      - name: Unzip and load Docker image on Raspberry Pi
+      - name: Unzip and load flyway Docker image on Raspberry Pi
         run: |
           ssh -p 101 admin@${{ secrets.SSH_HOST }} <<EOF
-            gunzip -f /home/admin/kumoh_talk.tar.gz 
-            docker load < /home/admin/kumoh_talk.tar
           
             gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
             docker load < /home/admin/kumoh_talk_flyway.tar
           
             docker compose -f /home/admin/docker-compose.yml stop spring-boot-app
           
-            docker compose -f /home/admin/docker-compose.yml run --rm flyway
-          
-            if [ $? -eq 0 ]; then
+            if docker compose -f /home/admin/docker-compose.yml run --rm flyway; then
               echo "Flyway migration succeeded. Starting Spring application..."
-              docker compose -f /home/admin/docker-compose.yml up -d
+              exit 0
             else
               echo "Flyway migration failed. Exiting."
+              docker compose -f /home/admin/docker-compose.yml up -d spring-boot-app
               exit 1
             fi
+          EOF
+
+      - name: Build Spring Docker image and generate tar
+        run: |
+          docker build -t kumoh_talk:latest .
+          docker save kumoh_talk:latest | gzip > kumoh_talk.tar.gz
+
+      - name: Upload kumoh_talk.tar.gz as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kumoh_talk-tar
+          path: kumoh_talk.tar.gz
+
+      - name: Send kumoh_talk.tar.gz file to Raspberry Pi via SCP
+        run: |
+          scp -P 101 kumoh_talk.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
+
+      - name: Unzip and load Spring Docker image on Raspberry Pi
+        run: |
+          ssh -p 101 admin@${{ secrets.SSH_HOST }} <<EOF
+              gunzip -f /home/admin/kumoh_talk.tar.gz 
+              docker load < /home/admin/kumoh_talk.tar
+          
+              docker compose -f /home/admin/docker-compose.yml up -d
           EOF
