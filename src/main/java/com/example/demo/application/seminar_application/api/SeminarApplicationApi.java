@@ -1,9 +1,9 @@
-package com.example.demo.domain.seminar_application.api;
+package com.example.demo.application.seminar_application.api;
 
+import com.example.demo.application.seminar_application.dto.request.SeminarApplicationRequest;
+import com.example.demo.application.seminar_application.dto.request.SeminarApplicationUpdateRequest;
+import com.example.demo.application.seminar_application.dto.response.SeminarApplicationResponse;
 import com.example.demo.application.token.dto.TokenResponse;
-import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationRequest;
-import com.example.demo.domain.seminar_application.domain.dto.request.SeminarApplicationUpdateRequest;
-import com.example.demo.domain.seminar_application.domain.dto.response.SeminarApplicationInfo;
 import com.example.demo.global.base.dto.ResponseBody;
 import com.example.demo.global.base.dto.page.GlobalPageResponse;
 import com.example.demo.global.base.exception.ErrorCode;
@@ -23,8 +23,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import static com.example.demo.global.base.exception.ErrorCode.SEMINAR_APPLICATION_ACCESS_DENIED;
 
 public interface SeminarApplicationApi {
     @Operation(
@@ -50,7 +48,7 @@ public interface SeminarApplicationApi {
     )
     @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = GlobalPageResponse.class))
     )
-    @ApiResponse(content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeminarApplicationInfo.class))
+    @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SeminarApplicationResponse.class))
     )
     @ApiResponseExplanations(
             success = @ApiSuccessResponseExplanation(
@@ -61,7 +59,7 @@ public interface SeminarApplicationApi {
                     @ApiErrorResponseExplanation(errorCode = ErrorCode.USER_NOT_FOUND),
             }
     )
-    ResponseEntity<ResponseBody<GlobalPageResponse<SeminarApplicationInfo>>> getSeminarApplicationByUserId(
+    ResponseEntity<ResponseBody<GlobalPageResponse<SeminarApplicationResponse>>> getSeminarApplicationByUserId(
             @Parameter(hidden = true) Long userId,
             @ParameterObject
             @PageableDefault(page=0, size=10,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
