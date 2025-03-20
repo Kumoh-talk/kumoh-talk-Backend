@@ -135,13 +135,13 @@ jobs:
             gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
             docker load < /home/admin/kumoh_talk_flyway.tar
           
-            docker-compose -f /home/admin/docker-compose.yml stop spring-boot-app
+            docker compose -f /home/admin/docker-compose.yml stop spring-boot-app
           
-            docker-compose -f /home/admin/flyway-docker-compose.yml up --abort-on-container-exit
+            docker compose -f /home/admin/flyway-docker-compose.yml up --abort-on-container-exit
           
             if [ $? -eq 0 ]; then
               echo "Flyway migration succeeded. Starting Spring application..."
-              docker-compose -f /home/admin/docker-compose.yml up -d
+              docker compose -f /home/admin/docker-compose.yml up -d
             else
               echo "Flyway migration failed. Exiting."
               exit 1
