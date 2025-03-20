@@ -96,7 +96,7 @@ jobs:
 
       - name: Build Docker image for kumoh_talk_flyway and generate tar
         run: |
-          docker build -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
+          docker build --platform linux/arm64 -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
           docker save kumoh_talk_flyway:latest | gzip > kumoh_talk_flyway.tar.gz
 
       - name: Upload tar.gz as artifact
