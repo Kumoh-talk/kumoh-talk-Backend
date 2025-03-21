@@ -119,8 +119,8 @@ jobs:
           ssh -p 101 admin@${{ secrets.SSH_HOST }} <<EOF
           
             gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
-            docker import /home/admin/kumoh_talk_flyway.tar kumoh_talk_flyway:latest
-          
+            docker load -i /home/admin/kumoh_talk_flyway.tar
+
             docker compose -f /home/admin/docker-compose.yml stop spring-boot-app
           
             if docker compose -f /home/admin/docker-compose.yml run --rm flyway; then
