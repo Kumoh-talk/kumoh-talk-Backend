@@ -141,6 +141,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         userJpaRepository.findByProviderAndProviderId(provider, principal.getUserInfo().getId())
                 .ifPresent(user -> {
+                    user.updateNickname(user.getId() + "_deleted_" + user.getNickname());
                     userJpaRepository.delete(user);
                     refreshTokenCrudRepository.deleteById(user.getId());
                 });
