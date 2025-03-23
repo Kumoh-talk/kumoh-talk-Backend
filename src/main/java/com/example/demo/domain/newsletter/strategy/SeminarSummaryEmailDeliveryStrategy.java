@@ -43,10 +43,10 @@ public class SeminarSummaryEmailDeliveryStrategy extends BaseEmailDeliveryStrate
         if (!boardInfo.getBoardContent().getBoardType().equals(BoardType.SEMINAR)) {
             throw new IllegalArgumentException("세미나 내용 정리에 대한 이메일 알림만 허용합니다.");
         }
-        return new SeminarSummaryEmailDeliveryStrategy(// TODO. 프론트 배포 후 수정 필요
-            boardInfo.getBoardContent().getTitle(),
+        return new SeminarSummaryEmailDeliveryStrategy(
+                boardInfo.getBoardContent().getTitle(),
                 boardInfo.getUserTarget().getNickName(),
-                "https://프론트도메인/~"
+                "https://kumoh-talk.com/apply/" + boardInfo.getBoardId() // TODO. 프론트 배포 후 수정 필요
         );
     }
 }
