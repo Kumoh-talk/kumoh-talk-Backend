@@ -43,6 +43,7 @@ public class UserAdminService {
 
     @Transactional
     public void deleteUser(Long userId) {
+        userWriter.updateNickName(userId, userId + "_deleted_" + userReader.getUserInfo(userId).getNickname());
         userWriter.deleteUser(userId);
     }
 }
