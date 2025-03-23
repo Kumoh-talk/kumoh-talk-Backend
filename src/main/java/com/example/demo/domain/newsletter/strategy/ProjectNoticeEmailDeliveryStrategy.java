@@ -51,7 +51,7 @@ public class ProjectNoticeEmailDeliveryStrategy extends BaseEmailDeliveryStrateg
                 recruitmentBoardInfo.getTag().name(),
                 recruitmentBoardInfo.getTitle(),
                 recruitmentBoardInfo.getUserNickname(),
-                "https://프론트도메인/~" // TODO. 수정 필요
+                "https://kumoh-talk.com/recruitment-boards/detail?boardType=project&id=" + recruitmentBoardInfo.getBoardId()
         );
     }
 }
