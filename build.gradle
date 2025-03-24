@@ -89,6 +89,23 @@ dependencies {
     // Jsoup
     implementation 'org.jsoup:jsoup:1.18.1'
 
+    // spring boot actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // test-containers
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
+    testImplementation 'org.testcontainers:mysql'
+
+    // flyway
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+
+    // JSQLParser
+    implementation 'com.github.jsqlparser:jsqlparser:5.1'
+
+    // awaitility
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
 dependencyManagement {

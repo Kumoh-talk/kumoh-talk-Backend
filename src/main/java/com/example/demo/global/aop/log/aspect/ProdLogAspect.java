@@ -1,15 +1,19 @@
 package com.example.demo.global.aop.log.aspect;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.global.aop.log.ExceptionLogExplanation;
 import com.example.demo.global.aop.log.GeneralLogExplanation;
@@ -20,43 +24,26 @@ import com.example.demo.global.log.properties.InfoLogProperty;
 import com.example.demo.global.log.properties.LogLevel;
 import com.example.demo.global.log.properties.LogProperty;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * ProdLogAspect 클래스는 애플리케이션의 로깅을 AOP를 통해 처리하는 역할을 합니다.
- * <p>
- * 이 클래스는 Controller 계층에서 메서드 호출 전, 성공 후, 그리고 예외 발생 시점에 각각 로그를 남기며,
- * 특히 Controller 메서드의 경우에만 INFO 로그 레벨을 사용하여 호출 정보를 기록합니다.
- * </p>
- * <ul>
- *     <li>{@code @Before} - Controller 메서드 호출 전 로그 기록</li>
- *     <li>{@code @AfterReturning} - Controller 메서드 성공 후 로그 기록 및 수행 시간 측정</li>
- *     <li>{@code @AfterThrowing} - 예외 발생 시 로그 기록 및 예외 정보 처리</li>
- * </ul>
- * <p>
- * Controller 메서드에서의 로그는 INFO 레벨로 기록되며, 이는 시스템 호출 흐름을 추적하고,
- * 요청이 정상적으로 처리되었는지를 확인하기 위한 목적으로 사용됩니다. 이때 메서드 실행 시간이 함께 기록되어
- * 성능 모니터링에 도움을 줍니다. 예외가 발생할 경우에는 WARN 또는 ERROR 로그 레벨로 기록됩니다.
- * </p>
- * <p>
- * 이 Aspect는 메서드에 정의된 어노테이션을 통해 로그 레벨과 설명을 동적으로 결정하며, {@link MDC}를 사용하여
- * 예외가 상위 메서드로 전파되어 로그가 중첩으로 찍히는 것을 방지합니다.
- * </p>
- *
- * <h2>주요 특징</h2>
- * <ul>
- *     <li>INFO 로그는 Controller 계층에서만 출력</li>
- *     <li>성공적인 메서드 호출 후 실행 시간 기록</li>
- *     <li>예외 발생 시 적절한 로그 레벨로 예외 정보 기록</li>
- * </ul>
- *
- * @author YourName
- * @version 1.0
+ * 해당 클래스는 곧 없어질 예정입니다. ApiMonitorAspect를 사용해주세요.
+ * @deprecated
+ * @see com.example.demo.global.aop.log.aspect.ApiMonitorAspect
+ * 일시: 2025-03-14
+ * 이슈번호: #90
  */
+@Deprecated
 @Aspect
 @Component
+@Profile("disable")
 @Slf4j
+@RequiredArgsConstructor
 public class ProdLogAspect {
+	private final MeterRegistry meterRegistry;
 	private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
 	@Around("com.example.demo.global.aop.log.pointcut.LogPointCut.controllerInfoLoggingPointcut()")
@@ -67,17 +54,25 @@ public class ProdLogAspect {
 			joinPoint,
 			methodSignature.getName()
 		);
+		Method method = methodSignature.getMethod();
+
 
 		startTime.set(System.currentTimeMillis());
+		Timer.Sample sample = Timer.start(meterRegistry);
+
+		if (method.isAnnotationPresent(RequestMapping.class)) {
+			String endpoint = method.getAnnotation(RequestMapping.class).value()[0];
+			MDC.put("endpoint", endpoint);
+		}
 		log.info("호출 {}", logProperty);
 
 		Object result;
 		try {
 			result = joinPoint.proceed();
-		} catch (ServiceException serviceException) {
+		} catch (Exception e) {
 			MDC.clear();
 			startTime.remove();
-			throw serviceException;
+			throw e;
 		}
 
 		logProperty = InfoLogProperty.of(
@@ -85,6 +80,13 @@ public class ProdLogAspect {
 			joinPoint,
 			Optional.ofNullable(result)
 		);
+
+		// 지연시간 측정
+		sample.stop(Timer.builder("api.request.latency")
+			.description("API 요청 평균 지연 시간(ms)")
+			.tag("class", joinPoint.getTarget().getClass().getSimpleName())
+			.tag("method", joinPoint.getSignature().getName())
+			.register(meterRegistry));
 
 		long elapsedTime = System.currentTimeMillis() - startTime.get();
 		log.info("성공 (수행 시간: {} ms) {}", elapsedTime, logProperty);

@@ -1,22 +1,20 @@
 package com.example.demo.domain.recruitment_board.service;
 
-import com.example.demo.domain.board.domain.dto.vo.Status;
+import com.example.demo.domain.board.service.entity.vo.Status;
 import com.example.demo.domain.newsletter.event.EmailNotificationEvent;
 import com.example.demo.domain.newsletter.strategy.MentoringNoticeEmailDeliveryStrategy;
 import com.example.demo.domain.newsletter.strategy.ProjectNoticeEmailDeliveryStrategy;
 import com.example.demo.domain.newsletter.strategy.StudyNoticeEmailDeliveryStrategy;
-import com.example.demo.domain.recruitment_application.repository.RecruitmentApplicantRepository;
-import com.example.demo.domain.recruitment_board.domain.dto.request.RecruitmentBoardInfoAndFormRequest;
-import com.example.demo.domain.recruitment_board.domain.dto.response.*;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentFormQuestion;
-import com.example.demo.domain.recruitment_board.domain.vo.EntireBoardType;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentBoardRepository;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentFormAnswerRepository;
-import com.example.demo.domain.recruitment_board.repository.RecruitmentFormQuestionRepository;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.service.UserService;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardAndFormInfo;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentFormQuestionInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.EntireBoardType;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardReader;
+import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardValidator;
+import com.example.demo.domain.recruitment_board.implement.board.RecruitmentBoardWriter;
+import com.example.demo.domain.recruitment_board.implement.form.RecruitmentFormQuestionReader;
+import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.global.base.exception.ErrorCode;
 import com.example.demo.global.base.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -26,150 +24,92 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RecruitmentBoardService {
-    private final UserService userService;
+    private final UserReader userReader;
+    private final RecruitmentBoardReader recruitmentBoardReader;
+    private final RecruitmentBoardWriter recruitmentBoardWriter;
+    private final RecruitmentBoardValidator recruitmentBoardValidator;
 
-    private final RecruitmentBoardRepository recruitmentBoardRepository;
-    private final RecruitmentFormQuestionRepository recruitmentFormQuestionRepository;
-    private final RecruitmentFormAnswerRepository recruitmentFormAnswerRepository;
-    private final RecruitmentApplicantRepository recruitmentApplicantRepository;
-
+    private final RecruitmentFormQuestionReader recruitmentFormQuestionReader;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional
-    public RecruitmentBoardInfoAndFormResponse saveBoardAndForm(
-            Long userId,
-            Status status,
-            RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) {
-        User user = userService.validateUser(userId);
-
-        RecruitmentBoard recruitmentBoard = RecruitmentBoard.from(recruitmentBoardInfoAndFormRequest, user, status);
-        RecruitmentBoard savedBoard = recruitmentBoardRepository.save(recruitmentBoard);
-
-        if (status == Status.PUBLISHED)
-            publishEventFactory(savedBoard);
-
-        return RecruitmentBoardInfoAndFormResponse.from(savedBoard);
-    }
-
-    @Transactional(readOnly = true)
-    public RecruitmentBoardNoOffsetResponse getPublishedBoardListByNoOffset(int size, Long lastBoardId, RecruitmentBoardType recruitmentBoardType) {
-        List<RecruitmentBoard> recruitmentBoardList;
-
-        // 최근 게시물 Id를 알 수 없을 때(첫 페이지를 조회할 때) -> 쿼리를 통해 첫 게시물 id를 가져온다.
-        if (lastBoardId == null) {
-            List<Long> boardIdList;
-            Long firstId;
-            try {
-                boardIdList = recruitmentBoardRepository.findPublishedId(recruitmentBoardType);
-                if (boardIdList.isEmpty()) {
-                    throw new NullPointerException("can't find any Board");
-                }
-                firstId = boardIdList.get(0);
-            } catch (NullPointerException e) {
-                return RecruitmentBoardNoOffsetResponse.newEmptyListInstance(size);
-            }
-
-            RecruitmentBoard firstBoard = validateRecruitmentBoard(firstId);
-            // firstId 이하 게시물을 찾기
-            recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByNoOffset(size, firstBoard, recruitmentBoardType, true);
-        } else {
-            RecruitmentBoard lastBoard = validateRecruitmentBoard(lastBoardId);
-            // lastBoardId 미만 게시물을 찾기
-            recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByNoOffset(size, lastBoard, recruitmentBoardType, false);
-        }
-
-        return RecruitmentBoardNoOffsetResponse.from(size, recruitmentBoardList);
-    }
-
-    @Transactional(readOnly = true)
-    public RecruitmentBoardPageNumResponse getPublishedBoardListByPageNum(Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
-        Page<RecruitmentBoard> recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByPageNum(pageable, recruitmentBoardType);
-
-        return RecruitmentBoardPageNumResponse.from(recruitmentBoardList);
-    }
-
-    @Transactional(readOnly = true)
-    public RecruitmentBoardNoOffsetResponse getDraftBoardListByUserId(Long userId, int size, Long lastBoardId) {
-        userService.validateUser(userId);
-
-        List<RecruitmentBoard> recruitmentBoardList;
-        if (lastBoardId == null) {
-            Long firstId;
-            try {
-                firstId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
-                        .orElseThrow(() -> new NullPointerException("게시물이 존재하지 않습니다."));
-            } catch (NullPointerException e) {
-                return RecruitmentBoardNoOffsetResponse.newEmptyListInstance(size);
-            }
-            recruitmentBoardList = recruitmentBoardRepository.findDraftPageByUserIdByNoOffset(userId, size, firstId, true);
-        } else {
-            recruitmentBoardList = recruitmentBoardRepository.findDraftPageByUserIdByNoOffset(userId, size, lastBoardId, false);
-        }
-
-        return RecruitmentBoardNoOffsetResponse.from(size, recruitmentBoardList);
-    }
-
-    @Transactional(readOnly = true)
-    public RecruitmentBoardPageNumResponse getPublishedBoardListByUserId(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
-        userService.validateUser(userId);
-        Page<RecruitmentBoard> recruitmentBoardList = recruitmentBoardRepository.findPublishedPageByUserIdByPageNum(userId, pageable, recruitmentBoardType);
-
-        return RecruitmentBoardPageNumResponse.from(recruitmentBoardList);
-    }
-
-    @Transactional(readOnly = true)
-    public RecruitmentBoardInfoResponse getBoardInfo(Long recruitmentBoardId) {
-        RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
-
-        return RecruitmentBoardInfoResponse.from(recruitmentBoard);
-    }
-
-    @Transactional(readOnly = true)
-    public List<RecruitmentFormQuestionResponse> getFormInfoList(Long recruitmentBoardId) {
-        List<RecruitmentFormQuestion> recruitmentFormQuestionList = recruitmentFormQuestionRepository.findByBoard_IdByFetchingAnswerList(recruitmentBoardId);
-
-        if (recruitmentFormQuestionList.isEmpty())
-            return new ArrayList<>();
-        else {
-            return recruitmentFormQuestionList.stream()
-                    .map(RecruitmentFormQuestionResponse::from)
-                    .sorted(Comparator.comparing(RecruitmentFormQuestionResponse::getNumber))
-                    .collect(Collectors.toList());
-        }
-    }
 
     @Transactional
-    public RecruitmentBoardInfoAndFormResponse updateBoardAndForm(
-            Long userId,
-            Long recruitmentBoardId,
-            Status status,
-            RecruitmentBoardInfoAndFormRequest recruitmentBoardInfoAndFormRequest) {
-        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findByIdByFetchingQuestionList(recruitmentBoardId)
+    public RecruitmentBoardAndFormInfo postBoardAndForm(
+            RecruitmentBoardAndFormInfo recruitmentBoardAndFormInfo) {
+        userReader.findUserTarget(recruitmentBoardAndFormInfo.getBoard().getUserId())
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        recruitmentBoardValidator.validateDeadLine(recruitmentBoardAndFormInfo.getBoard().getRecruitmentDeadline());
+        recruitmentBoardValidator.validateStartDate(recruitmentBoardAndFormInfo.getBoard().getActivityStart(), recruitmentBoardAndFormInfo.getBoard().getActivityFinish());
+
+        RecruitmentBoardAndFormInfo savedBoard = recruitmentBoardWriter.post(recruitmentBoardAndFormInfo);
+
+        if (savedBoard.getBoard().getStatus() == Status.PUBLISHED) {
+            publishEventFactory(savedBoard.getBoard());
+        }
+
+        return savedBoard;
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecruitmentBoardInfo> getPublishedBoardListByNoOffset(int size, Long lastBoardId, RecruitmentBoardType recruitmentBoardType) {
+        RecruitmentBoardInfo lastBoardInfo = null;
+        if (lastBoardId != null) {
+            lastBoardInfo = recruitmentBoardReader.getById(lastBoardId)
+                    .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        }
+        return recruitmentBoardReader.getPublishedPageByNoOffset(size, lastBoardInfo, recruitmentBoardType);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RecruitmentBoardInfo> getPublishedBoardListByPageNum(Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
+        return recruitmentBoardReader.getPublishedPageByPageNum(null, pageable, recruitmentBoardType);
+    }
+
+    @Transactional(readOnly = true)
+    public RecruitmentBoardInfo getBoardInfo(Long userId, Long recruitmentBoardId) {
+        RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getById(recruitmentBoardId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
-        if (!userId.equals(recruitmentBoard.getUser().getId())) {
-            throw new ServiceException(ErrorCode.ACCESS_DENIED);
-        }
-        // 신청자가 존재하면 수정 불가
-        if (recruitmentApplicantRepository.existsByRecruitmentBoard_Id(recruitmentBoardId)) {
-            throw new ServiceException(ErrorCode.RECRUITMENT_APPLICANT_EXIST);
-        }
+
+        recruitmentBoardValidator.validateAccessToBoard(userId, recruitmentBoardInfo);
+
+        return recruitmentBoardInfo;
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecruitmentFormQuestionInfo> getFormInfoList(Long userId, Long recruitmentBoardId) {
+        RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getById(recruitmentBoardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+
+        recruitmentBoardValidator.validateAccessToBoard(userId, recruitmentBoardInfo);
+        recruitmentBoardValidator.validateExpired(userId, recruitmentBoardInfo);
+
+        return recruitmentFormQuestionReader.getByBoarIdWithAnswerList(recruitmentBoardId);
+    }
+
+    @Transactional
+    public RecruitmentBoardAndFormInfo patchBoardAndForm(
+            RecruitmentBoardAndFormInfo recruitmentBoardAndFormInfo) {
+        RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getByIdByWithQuestionList(recruitmentBoardAndFormInfo.getBoard().getBoardId())
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+
+        recruitmentBoardValidator.validateWriter(recruitmentBoardAndFormInfo.getBoard().getUserId(), recruitmentBoardInfo);
+        recruitmentBoardValidator.validatePatchable(recruitmentBoardInfo);
+
+        recruitmentBoardValidator.validateDeadLine(recruitmentBoardAndFormInfo.getBoard().getRecruitmentDeadline());
+        recruitmentBoardValidator.validateStartDate(recruitmentBoardAndFormInfo.getBoard().getActivityStart(), recruitmentBoardAndFormInfo.getBoard().getActivityFinish());
 
         // 게시물 업데이트
-        boolean isPublish = recruitmentBoard.updateFromRequest(recruitmentBoardInfoAndFormRequest, status,
-                recruitmentFormQuestionRepository, recruitmentFormAnswerRepository);
-
-        if (isPublish)
-            publishEventFactory(recruitmentBoard);
-
-        return RecruitmentBoardInfoAndFormResponse.from(recruitmentBoard);
+        RecruitmentBoardAndFormInfo savedBoard = recruitmentBoardWriter.patch(recruitmentBoardAndFormInfo);
+        if (recruitmentBoardValidator.isStatusChangedToPublished(recruitmentBoardInfo, savedBoard.getBoard())) {
+            publishEventFactory(savedBoard.getBoard());
+        }
+        return savedBoard;
     }
 
     @Transactional
@@ -177,52 +117,65 @@ public class RecruitmentBoardService {
             Long userId,
             Long recruitmentBoardId,
             boolean isAuthorized) {
-        RecruitmentBoard recruitmentBoard = validateRecruitmentBoard(recruitmentBoardId);
+        RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getById(recruitmentBoardId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
         if (!isAuthorized) {
-            if (!userId.equals(recruitmentBoard.getUser().getId())) {
-                throw new ServiceException(ErrorCode.ACCESS_DENIED);
-            }
+            recruitmentBoardValidator.validateWriter(userId, recruitmentBoardInfo);
         }
-        recruitmentBoardRepository.delete(recruitmentBoard);
+
+        recruitmentBoardWriter.delete(recruitmentBoardInfo);
     }
 
     @Transactional(readOnly = true)
-    public RecruitmentBoardInfoAndFormResponse getLatestDraftBoardAndForm(Long userId) {
-        userService.validateUser(userId);
-
-        Long recruitmentBoardId = recruitmentBoardRepository.findFirstDraftIdByUserId(userId)
+    public RecruitmentBoardAndFormInfo getLatestDraftBoardAndForm(Long userId) {
+        userReader.findUserTarget(userId)
+                .orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+        RecruitmentBoardInfo recruitmentBoardInfo = recruitmentBoardReader.getLatestDraftIdByUserId(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
 
-        return RecruitmentBoardInfoAndFormResponse
-                .builder()
-                .board(getBoardInfo(recruitmentBoardId))
-                .form(getFormInfoList(recruitmentBoardId))
-                .build();
+        List<RecruitmentFormQuestionInfo> recruitmentFormQuestionInfo = recruitmentFormQuestionReader.getByBoarIdWithAnswerList(recruitmentBoardInfo.getBoardId());
+
+        return RecruitmentBoardAndFormInfo.of(recruitmentBoardInfo, recruitmentFormQuestionInfo);
     }
 
-    public RecruitmentBoard validateRecruitmentBoard(Long recruitmentBoardId) {
-        return recruitmentBoardRepository.findById(recruitmentBoardId).orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+    @Transactional(readOnly = true)
+    public List<RecruitmentBoardInfo> getDraftBoardListByUserId(Long userId, int size, Long lastBoardId) {
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        if (lastBoardId != null) {
+            recruitmentBoardReader.getById(lastBoardId)
+                    .orElseThrow(() -> new ServiceException(ErrorCode.BOARD_NOT_FOUND));
+        }
+
+        return recruitmentBoardReader.getDraftPageByUserIdByNoOffset(userId, size, lastBoardId);
     }
 
-    public void publishEventFactory(RecruitmentBoard recruitmentBoard) {
-        if (recruitmentBoard.getType() == RecruitmentBoardType.STUDY) {
+    @Transactional(readOnly = true)
+    public Page<RecruitmentBoardInfo> getPublishedBoardListByUserId(Long userId, Pageable pageable, RecruitmentBoardType recruitmentBoardType) {
+        userReader.findUserTarget(userId).orElseThrow(() -> new ServiceException(ErrorCode.USER_NOT_FOUND));
+
+        return recruitmentBoardReader.getPublishedPageByPageNum(userId, pageable, recruitmentBoardType);
+    }
+
+    public void publishEventFactory(RecruitmentBoardInfo recruitmentBoardInfo) {
+        if (recruitmentBoardInfo.getType() == RecruitmentBoardType.STUDY) {
             eventPublisher.publishEvent(
                     EmailNotificationEvent.create(
-                            EntireBoardType.valueOf(recruitmentBoard.getType().name()),
-                            StudyNoticeEmailDeliveryStrategy.create(recruitmentBoard))
+                            EntireBoardType.fromRecruitmentBoardType(recruitmentBoardInfo.getType()),
+                            StudyNoticeEmailDeliveryStrategy.create(recruitmentBoardInfo))
             );
-        } else if (recruitmentBoard.getType() == RecruitmentBoardType.PROJECT) {
+        } else if (recruitmentBoardInfo.getType() == RecruitmentBoardType.PROJECT) {
             eventPublisher.publishEvent(
                     EmailNotificationEvent.create(
-                            EntireBoardType.valueOf(recruitmentBoard.getType().name()),
-                            ProjectNoticeEmailDeliveryStrategy.create(recruitmentBoard))
+                            EntireBoardType.fromRecruitmentBoardType(recruitmentBoardInfo.getType()),
+                            ProjectNoticeEmailDeliveryStrategy.create(recruitmentBoardInfo))
             );
-        } else if (recruitmentBoard.getType() == RecruitmentBoardType.MENTORING) {
+        } else if (recruitmentBoardInfo.getType() == RecruitmentBoardType.MENTORING) {
             eventPublisher.publishEvent(
                     EmailNotificationEvent.create(
-                            EntireBoardType.valueOf(recruitmentBoard.getType().name()),
-                            MentoringNoticeEmailDeliveryStrategy.create(recruitmentBoard)
+                            EntireBoardType.fromRecruitmentBoardType(recruitmentBoardInfo.getType()),
+                            MentoringNoticeEmailDeliveryStrategy.create(recruitmentBoardInfo)
                     )
             );
         }

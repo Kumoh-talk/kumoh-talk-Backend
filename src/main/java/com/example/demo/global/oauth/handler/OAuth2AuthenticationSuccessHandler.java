@@ -3,13 +3,15 @@ package com.example.demo.global.oauth.handler;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.example.demo.domain.token.domain.dto.TokenResponse;
+import com.example.demo.application.token.dto.TokenResponse;
+import com.example.demo.domain.token.entity.Token;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
-import com.example.demo.domain.user.domain.User;
-import com.example.demo.domain.user.domain.vo.Role;
-import com.example.demo.domain.user.repository.UserRepository;
+import com.example.demo.domain.user.vo.Role;
 import com.example.demo.global.jwt.JwtHandler;
 import com.example.demo.global.jwt.JwtUserClaim;
+import com.example.demo.infra.token.repository.RefreshTokenCrudRepository;
+import com.example.demo.infra.user.entity.User;
+import com.example.demo.infra.user.repository.UserJpaRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -40,9 +42,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtHandler jwtHandler;
+    private final RefreshTokenCrudRepository refreshTokenCrudRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -101,7 +104,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String providerId = principal.getUserInfo().getId();
         OAuth2Provider provider = principal.getUserInfo().getProvider();
 
-        User user = userRepository.findByProviderAndProviderId(provider, providerId)
+        User user = userJpaRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseGet(() -> {
                     isNewUser.set(true);
                     return createAndSaveNewUser(providerId, provider);
@@ -111,12 +114,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             isNewUser.set(true);
         }
 
-        TokenResponse tokens = jwtHandler.createTokens(JwtUserClaim.create(user));
+        Token tokens = jwtHandler.createTokens(JwtUserClaim.create(user));
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("is-new-user", isNewUser.get())
-                .queryParam("access-token", tokens.accessToken())
-                .queryParam("refresh-token", tokens.refreshToken())
+                .queryParam("access-token", tokens.getAccessToken())
+                .queryParam("refresh-token", tokens.getRefreshToken())
                 .build().toUriString();
     }
 
@@ -128,7 +131,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .role(Role.ROLE_GUEST)
                 .build();
 
-        return userRepository.save(user);
+        return userJpaRepository.save(user);
     }
 
     private String handleUnlink(OAuth2UserPrincipal principal, String targetUrl) {
@@ -136,10 +139,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         oAuth2UserUnlinkManager.unlink(provider, principal.getUserInfo().getAccessToken());
 
-        userRepository.findByProviderAndProviderId(provider, principal.getUserInfo().getId())
+        userJpaRepository.findByProviderAndProviderId(provider, principal.getUserInfo().getId())
                 .ifPresent(user -> {
-                    userRepository.delete(user);
-                    refreshTokenRepository.deleteById(user.getId());
+                    user.updateNickname(user.getId() + "_deleted_" + user.getNickname());
+                    userJpaRepository.delete(user);
+                    refreshTokenCrudRepository.deleteById(user.getId());
                 });
 
         return UriComponentsBuilder.fromUriString(targetUrl)

@@ -1,7 +1,7 @@
 package com.example.demo.domain.newsletter.strategy;
 
-import com.example.demo.domain.recruitment_board.domain.entity.RecruitmentBoard;
-import com.example.demo.domain.recruitment_board.domain.vo.RecruitmentBoardType;
+import com.example.demo.domain.recruitment_board.entity.RecruitmentBoardInfo;
+import com.example.demo.domain.recruitment_board.entity.vo.RecruitmentBoardType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -42,16 +42,16 @@ public class StudyNoticeEmailDeliveryStrategy extends BaseEmailDeliveryStrategy 
         return "[야밤의금오톡] '스터디 팀원 공고' 새 글 알림";
     }
 
-    public static StudyNoticeEmailDeliveryStrategy create(RecruitmentBoard recruitmentBoard) {
-        if (!recruitmentBoard.getType().equals(RecruitmentBoardType.STUDY)) {
+    public static StudyNoticeEmailDeliveryStrategy create(RecruitmentBoardInfo recruitmentBoardInfo) {
+        if (!recruitmentBoardInfo.getType().equals(RecruitmentBoardType.STUDY)) {
             throw new IllegalArgumentException("스터디에 대한 이메일 알림만 허용합니다.");
         }
         return new StudyNoticeEmailDeliveryStrategy(
-                recruitmentBoard.getType().name(),
-                recruitmentBoard.getTag().name(),
-                recruitmentBoard.getTitle(),
-                recruitmentBoard.getUser().getNickname(),
-                "https://프론트도메인/~" // TODO. 수정 필요
+                recruitmentBoardInfo.getType().name(),
+                recruitmentBoardInfo.getTag().name(),
+                recruitmentBoardInfo.getTitle(),
+                recruitmentBoardInfo.getUserNickname(),
+                "https://kumoh-talk.com/recruitment-boards/detail?boardType=study&id=" + recruitmentBoardInfo.getBoardId()
         );
     }
 }

@@ -1,0 +1,163 @@
+name: Java CI with Gradle and Deploy to Raspberry Pi
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+env:
+  IMAGE_TAG: ${{ github.sha }}
+  SSH_HOST: ${{ secrets.SSH_HOST }}  # GitHub Secrets에서 SSH 호스트 (IP)
+  SSH_PRIVATE_KEY: ${{ secrets.DEV_SSH_PRIVATE_KEY }}  # GitHub Secrets에서 SSH 개인 키
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACTION_TOKEN }}
+          submodules: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4.0.0
+
+      - name: Add +x permission to gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-libs
+          path: build/libs/*.jar
+
+      - name: Test Coverage Report
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          title: 📝 Jacoco Test Coverage
+          paths: ${{ github.workspace }}/**/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.ACTION_TOKEN }}
+          min-coverage-overall: 30
+          min-coverage-changed-files: 50
+          update-comment: true
+
+      - name: Write Test Report
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          comment_title: 🧪 Test Results
+          files: "**/build/test-results/test/TEST-*.xml"
+
+      - name: Comment(Annotation) for Failed Test
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: "**/build/test-results/test/TEST-*.xml"
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-libs
+          path: build/libs
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image for kumoh_talk_flyway and generate tar
+        run: |
+          docker buildx build --platform linux/arm64 --load -t kumoh_talk_flyway:latest -f src/main/resources/db/flyway/Dockerfile_flyway .
+          docker save kumoh_talk_flyway:latest | gzip > kumoh_talk_flyway.tar.gz
+
+      - name: Upload kumoh_talk_flyway tar.gz as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kumoh_talk_flyway.tar
+          path: kumoh_talk_flyway.tar.gz
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEV_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 141 -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Send kumoh_talk_flyway tar.gz file to Raspberry Pi via SCP
+        run: |
+          scp -P 141 kumoh_talk_flyway.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
+
+      - name: Unzip and load Docker image on Raspberry Pi
+        run: |
+          ssh -p 141 admin@${{ secrets.SSH_HOST }} <<EOF
+          
+            gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
+            docker load -i /home/admin/kumoh_talk_flyway.tar
+          
+            docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml stop kumoh-talk-application
+          
+            if docker run --rm \
+              -e FLYWAY_URL=${{ secrets.FLYWAY_PROD_RDB_URL }} \
+              -e FLYWAY_USER=${{ secrets.FLYWAY_PROD_RDB_USER }} \
+              -e FLYWAY_PASSWORD=${{ secrets.FLYWAY_PROD_RDB_PASSWORD }} \
+              -e FLYWAY_LOCATIONS=filesystem:/flyway/sql \
+              kumoh_talk_flyway:latest; then
+              echo "Flyway migration succeeded. Starting Spring application..."
+              exit 0
+            else
+              echo "Flyway migration failed. Exiting."
+              docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml up -d kumoh-talk-application
+              exit 1
+            fi
+          EOF
+
+      - name: Build Docker image and generate tar
+        run: |
+          docker build -t kumoh_talk:latest .
+          docker save kumoh_talk:latest | gzip > kumoh_talk.tar.gz
+
+      - name: Upload tar.gz as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kumoh_talk-tar
+          path: kumoh_talk.tar.gz
+
+      - name: Send tar.gz file to Raspberry Pi via SCP
+        run: |
+          scp -P 141 kumoh_talk.tar.gz admin@${{ secrets.SSH_HOST }}:/home/admin
+
+      - name: Unzip and load Docker image on Raspberry Pi
+        run: |
+          ssh -p 141 admin@${{ secrets.SSH_HOST }} <<EOF
+            gunzip -f /home/admin/kumoh_talk.tar.gz 
+            docker load < /home/admin/kumoh_talk.tar
+          
+            docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml up -d
+          EOF

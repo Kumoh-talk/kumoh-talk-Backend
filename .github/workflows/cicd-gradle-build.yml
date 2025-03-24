@@ -5,19 +5,19 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
     steps:
       - name: checkout action with submodule
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACTION_TOKEN }}
-          submodules: true
+          submodules: 'recursive'
 
       - name: Set up JDK 17 action
         uses: actions/setup-java@v4
@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-libs
           path: build/libs/*.jar
@@ -63,7 +63,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-libs
           path: build/libs

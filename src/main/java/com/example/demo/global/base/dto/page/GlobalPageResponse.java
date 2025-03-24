@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.example.demo.domain.board.domain.dto.response.BoardTitleInfoResponse;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -32,21 +30,11 @@ public class GlobalPageResponse<T> {
 		this.pageContents = pageContents;
 	}
 
-	public static GlobalPageResponse<BoardTitleInfoResponse> fromBoardTitleInfoResponse(
-		Page<BoardTitleInfoResponse> pageDTO) {
-		return new GlobalPageResponse<BoardTitleInfoResponse>(
-			pageDTO.getNumber() + 1,
-			pageDTO.getSize(),
-			pageDTO.getTotalPages(),
-			pageDTO.getSort().toString(),
-			pageDTO.getContent());
-	}
-
 	public static <T> GlobalPageResponse<T> create(
 			Page<T> pageDTO) {
 		return new GlobalPageResponse<>(
-                pageDTO.getNumber() + 1,
-                pageDTO.getSize(),
+				pageDTO.getSize(),
+			pageDTO.getNumber() + 1,
                 pageDTO.getTotalPages(),
                 pageDTO.getSort().toString(),
                 pageDTO.getContent());

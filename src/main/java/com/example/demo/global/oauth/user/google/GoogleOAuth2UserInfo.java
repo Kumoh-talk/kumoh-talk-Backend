@@ -14,9 +14,6 @@ public class GoogleOAuth2UserInfo extends AbstractOAuth2UserInfo {
 		this.accessToken = accessToken;
 		this.attributes = attributes;
 		this.id = (String) attributes.get("sub");
-		this.email = (String) attributes.get("email");
-		this.nickName = null;
-		this.profileImageUrl = (String) attributes.get("picture");
 	}
 
 	@Override

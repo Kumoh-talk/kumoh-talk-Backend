@@ -15,9 +15,6 @@ public class GithubOAuth2UserInfo extends AbstractOAuth2UserInfo {
 	protected void AbstractOAuth2UserInfo(String accessToken, Map<String, Object> attributes) {
 		this.accessToken = accessToken;
 		this.id = String.valueOf(attributes.get("id"));
-		this.email = (String) attributes.get("email");
-		this.nickName = (String) attributes.get("login");
-		this.profileImageUrl = (String) attributes.get("avatar_url");
 	}
 
 	@Override

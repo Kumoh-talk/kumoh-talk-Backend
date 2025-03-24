@@ -27,7 +27,8 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: true
-
+  flyway:
+    enabled: false
 
 swagger:
   server-url: http://localhost:8080
@@ -46,3 +47,23 @@ springdoc:
   api-docs:
     groups:
       enabled: false
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always # 외부 인프라에 대한 상세 정보도 노출
+      show-components: always
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+  server:
+    port: 8080
+

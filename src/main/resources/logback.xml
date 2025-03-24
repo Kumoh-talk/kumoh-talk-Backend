@@ -11,17 +11,8 @@
     <property name="PASSWORD_MASKING_PATTERN" value="(01\d|02|0[3-9]\d|05\d\d)(-?)(\d{3,4})(-?)(\d{4})"/>
     <property name="EMAIL_MASKING_PATTERN" value="(\w+@\w+\.\w+)"/>
 
-    <!--local-->
+    <!-- local -->
     <springProfile name="local">
-        <include resource="log/log-local.xml"/>
-
-        <root level="INFO">
-            <appender-ref ref="console"/><!-- appender 참조 -->
-        </root>
-    </springProfile>
-
-    <!--dev-->
-    <springProfile name="dev">
         <include resource="log/log-local.xml"/>
 
         <root level="INFO">
@@ -29,9 +20,9 @@
         </root>
     </springProfile>
 
-    <!--prod-->
-    <springProfile name="prod">
-        <include resource="log/log-prod.xml"/>
+    <!-- dev -->
+    <springProfile name="dev">
+        <include resource="log/log-local.xml"/>
 
         <root level="INFO">
             <appender-ref ref="console"/>
@@ -39,4 +30,11 @@
         </root>
     </springProfile>
 
+    <!-- prod -->
+    <springProfile name="prod">
+        <include resource="log/log-prod.xml"/>
+        <root level="INFO">
+            <appender-ref ref="file"/>
+        </root>
+    </springProfile>
 </configuration>

@@ -5,6 +5,7 @@ spring:
       - security/application-security.yml
       - security/application-mail.yml
       - security/application-s3.yml
+      - security/application-server.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${dev-db.rdb.url}
@@ -24,7 +25,43 @@ spring:
       hibernate:
         format_sql: false
         highlight_sql: false
-        hbm2ddl.auto: update
+        hbm2ddl.auto: validate
         default_batch_fetch_size: 100
     open-in-view: false
     show-sql: true
+  flyway:
+    enabled: false
+
+swagger:
+  server-url: http://localhost:8080
+  description: "develop 백엔드 서버"
+
+
+springdoc:
+  packagesToScan: com.example.demo
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /docs
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+  api-docs:
+    groups:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-components: always
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+  server:
+    port: ${actuator.port}
