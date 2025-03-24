@@ -46,7 +46,7 @@ public class BoardController implements BoardApi {
             boardCreateRequest.toBoardCategoryNames()))));
     }
 
-    @AssignUserId
+    @AssignUserId(required = false)
     @GetMapping("/v1/boards/{boardId}")
     public ResponseEntity<ResponseBody<BoardInfoResponse>> search(Long userId, @PathVariable Long boardId) {
         BoardInfo boardInfo = boardService.searchSingleBoard(userId, boardId);
