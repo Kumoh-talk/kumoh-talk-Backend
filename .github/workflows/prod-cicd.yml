@@ -130,6 +130,7 @@ jobs:
               -e FLYWAY_LOCATIONS=filesystem:/flyway/sql \
               kumoh_talk_flyway:latest; then
               echo "Flyway migration succeeded. Starting Spring application..."
+          
               exit 0
             else
               echo "Flyway migration failed. Exiting."
