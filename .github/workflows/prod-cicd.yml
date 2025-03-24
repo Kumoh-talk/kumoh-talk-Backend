@@ -121,7 +121,7 @@ jobs:
             gunzip -f /home/admin/kumoh_talk_flyway.tar.gz 
             docker load -i /home/admin/kumoh_talk_flyway.tar
           
-            docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml stop kumoh-talk-application
+            docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml stop spring-boot-app
           
             if docker run --rm \
               -e FLYWAY_URL=${{ secrets.FLYWAY_PROD_RDB_URL }} \
@@ -133,7 +133,7 @@ jobs:
               exit 0
             else
               echo "Flyway migration failed. Exiting."
-              docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml up -d kumoh-talk-application
+              docker compose -f /home/admin/docker-compose-prod-kumohtalk.yml up -d spring-boot-app
               exit 1
             fi
           EOF
