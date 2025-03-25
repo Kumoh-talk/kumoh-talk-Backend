@@ -62,16 +62,17 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 
 	public Page<BoardTitleInfo> findBoardByPage(BoardType boardType, Pageable pageable) {
 		JPQLQuery<BoardTitleInfo> contentQuery = createContentQuery(boardType, board, like);
-		List<BoardTitleInfo> content = fetchPagedContent(contentQuery, pageable);
-
-		JPQLQuery<Long> countQuery = createCountQuery(boardType, board, like);
-		long total = countQuery.fetch().size();
-
 		List<OrderSpecifier> orderSpecifiers = createOrderSpecifiers(board, pageable);
 
 		if(!orderSpecifiers.isEmpty()) {
 			contentQuery.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]));
 		}
+
+
+		List<BoardTitleInfo> content = fetchPagedContent(contentQuery, pageable, orderSpecifiers);
+		JPQLQuery<Long> countQuery = createCountQuery(boardType, board, like);
+		long total = countQuery.fetch().size();
+
 
 
 		return new PageImpl<>(content, pageable, total);
@@ -110,9 +111,10 @@ public class BoardDslRepositoryImpl implements BoardDslRepository {
 			.and(board.boardType.eq(boardType));
 	}
 
-	private List<BoardTitleInfo> fetchPagedContent(JPQLQuery<BoardTitleInfo> query, Pageable pageable) {
+	private List<BoardTitleInfo> fetchPagedContent(JPQLQuery<BoardTitleInfo> query, Pageable pageable,List<OrderSpecifier> orderSpecifiers) {
 		return query.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
+			.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
 			.fetch();
 	}
 
