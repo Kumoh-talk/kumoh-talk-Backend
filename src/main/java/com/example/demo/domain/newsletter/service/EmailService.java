@@ -31,21 +31,27 @@ public class EmailService {
 
     @Async
     public void sendEmailNotice(List<String> subscriberEmails, EmailDeliveryStrategy emailStrategy) {
-        log.info("이메일 전송을 시작합니다. 구독자 이메일 목록: {}", subscriberEmails);
+        log.info("이메일 전송을 시작합니다. 이메일 제목: {}, 구독자 이메일 목록({}명): {}", emailStrategy.getSubject(), subscriberEmails.size(), subscriberEmails);
 
+        int failed = 0;
         for (String email : subscriberEmails) {
             try {
                 MimeMessage mimeMessage = createMimeMessage(email, emailStrategy);
                 javaMailSender.send(mimeMessage);
-                log.info("이메일 전송에 성공했습니다. 이메일: {}", email);
+                log.debug("이메일 전송에 성공했습니다. 이메일: {}, 이메일 제목: {}", email, emailStrategy.getSubject());
             } catch (AddressException e) {
-                log.error("유효하지 않은 이메일 주소입니다. 이메일: {}, 오류 메시지: {}", email, e.getMessage());
+                log.warn("유효하지 않은 이메일 주소입니다. 이메일: {}, 오류 메시지: {}, 이메일 제목: {}", email, e.getMessage(), emailStrategy.getSubject());
+                ++failed;
             } catch (MessagingException e) {
-                log.error("이메일 전송 중 오류 발생. 이메일: {}, 오류 메시지: {}", email, e.getMessage());
+                log.warn("이메일 전송 중 오류가 발생했습니다. 이메일: {}, 오류 메시지: {}, 이메일 제목: {}", email, e.getMessage(), emailStrategy.getSubject());
+                ++failed;
             } catch (Exception e) {
-                log.error("예상치 못한 오류 발생. 이메일: {}, 오류 메시지: {}", email, e.getMessage());
+                log.error("이메일 전송 중 예상치 못한 오류가 발생했습니다. 이메일: {}, 오류 메시지: {}, 이메일 제목: {}", email, e.getMessage(), emailStrategy.getSubject());
+                ++failed;
             } // 오류가 나는 이메일에 대해 로그만 찍고, 다른 모든 메일에 대해 전송 시도
         }
+
+        log.info("이메일 전송을 완료했습니다. 이메일 제목: {}, 총 {}명 중 {}명 성공, {}명 실패", emailStrategy.getSubject(), subscriberEmails.size(), subscriberEmails.size() - failed, failed);
         sendDiscordNotification(emailStrategy); // 모든 이메일 전송이 끝나면 디스코드로 알림
     }
 
