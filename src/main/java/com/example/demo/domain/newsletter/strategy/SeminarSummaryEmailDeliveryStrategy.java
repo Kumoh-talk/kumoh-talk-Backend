@@ -46,7 +46,7 @@ public class SeminarSummaryEmailDeliveryStrategy extends BaseEmailDeliveryStrate
         return new SeminarSummaryEmailDeliveryStrategy(
                 boardInfo.getBoardContent().getTitle(),
                 boardInfo.getUserTarget().getNickName(),
-                "https://kumoh-talk.com/apply/" + boardInfo.getBoardId() // TODO. 프론트 배포 후 수정 필요
+                "https://kumoh-talk.com/seminar/" + boardInfo.getBoardId()
         );
     }
 }
