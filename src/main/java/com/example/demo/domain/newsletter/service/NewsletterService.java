@@ -29,14 +29,14 @@ public class NewsletterService {
     public void updateNewsletterNotify(NewsletterSubscription newsletterSubscription) {
         validateNewsletterSubscriptionExists(newsletterSubscription.getEmail());
         newsletterHandler.updateNewsletterSubscription(newsletterSubscription);
-        log.info("뉴스레더 구독 정보가 갱신되었습니다. 구독자 이메일: {}", newsletterSubscription.getEmail());
+        log.info("뉴스레터 구독 정보가 갱신되었습니다. 구독자 이메일: {}", newsletterSubscription.getEmail());
     }
 
     @Transactional
     public void deleteNewsletterInfo(String email) {
         validateNewsletterSubscriptionExists(email);
         newsletterHandler.deleteNewsletterSubscription(email);
-        log.info("뉴스레더 구독이 취소되었습니다. 구독자 이메일: {}", email);
+        log.info("뉴스레터 구독이 취소되었습니다. 구독자 이메일: {}", email);
     }
 
     private void validateNewsletterSubscriptionNotExists(String email) {
