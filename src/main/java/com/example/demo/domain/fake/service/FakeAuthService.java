@@ -56,7 +56,7 @@ public class FakeAuthService {
                 fakeUserId = fakeUserHandler.save(fakeUserInfo, fakeUserAdditionalInfo);
             }
         }
-        JwtUserClaim claim = new JwtUserClaim(fakeUserId, fakeUserRole);
+        JwtUserClaim claim = new JwtUserClaim(fakeUserId, fakeUserNickname, fakeUserRole);
         return jwtHandler.createTokens(claim);
     }
 }

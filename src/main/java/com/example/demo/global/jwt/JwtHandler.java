@@ -13,7 +13,6 @@ import com.example.demo.domain.token.entity.RefreshTokenData;
 import com.example.demo.domain.token.entity.Token;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.vo.Role;
-import com.example.demo.infra.token.entity.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -23,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtHandler {
 
     public static final String USER_ID = "USER_ID";
+    public static final String USER_NICKNAME = "USER_NICKNAME";
     public static final String USER_ROLE = "USER_ROLE";
     private static final long MILLI_SECOND = 1000L;
 
@@ -64,6 +64,7 @@ public class JwtHandler {
     public Map<String, Object> createClaims(JwtUserClaim jwtUserClaim) {
         return Map.of(
                 USER_ID, jwtUserClaim.userId(),
+                USER_NICKNAME, jwtUserClaim.nickname(),
                 USER_ROLE, jwtUserClaim.role()
         );
     }
@@ -99,6 +100,7 @@ public class JwtHandler {
     public JwtUserClaim convert(Claims claims) {
         return new JwtUserClaim(
                 claims.get(USER_ID, Long.class),
+                claims.get(USER_NICKNAME, String.class),
                 Role.valueOf(claims.get(USER_ROLE, String.class))
         );
     }

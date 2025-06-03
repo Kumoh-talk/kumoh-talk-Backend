@@ -1,7 +1,5 @@
 package com.example.demo.domain.user_addtional_info.service;
 
-
-
 import com.example.demo.domain.token.entity.Token;
 import com.example.demo.domain.user.implement.UserReader;
 import com.example.demo.domain.user.vo.Role;
@@ -16,9 +14,6 @@ import com.example.demo.global.jwt.JwtUserClaim;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.example.demo.global.base.exception.ErrorCode.USER_ADDITIONAL_INFO_CONFLICT;
-import static com.example.demo.global.base.exception.ErrorCode.USER_ADDITIONAL_INFO_NOT_FOUND;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -44,7 +39,8 @@ public class UserAdditionalInfoService {
                     throw new ServiceException(ErrorCode.USER_ADDITIONAL_INFO_CONFLICT);
                 });
         userAdditionalInfoWriter.createUserAdditionalInfo(userId, request);
-        JwtUserClaim claim = new JwtUserClaim(userId, Role.ROLE_ACTIVE_USER); // ROLE_ACTIVE_USER로 변경
+        String nickname = userReader.getUserInfo(userId).getNickname();
+        JwtUserClaim claim = new JwtUserClaim(userId, nickname, Role.ROLE_ACTIVE_USER); // ROLE_ACTIVE_USER로 변경
         return jwtHandler.createTokens(claim); // 새로운 토큰 발급
     }
 

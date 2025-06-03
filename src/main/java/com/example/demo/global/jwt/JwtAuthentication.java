@@ -11,12 +11,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public record JwtAuthentication(
         Long userId,
+        String nickname,
         Role role
 ) implements Authentication {
 
     public JwtAuthentication(JwtUserClaim claims) {
         this(
                 claims.userId(),
+                claims.nickname(),
                 claims.role()
         );
     }
