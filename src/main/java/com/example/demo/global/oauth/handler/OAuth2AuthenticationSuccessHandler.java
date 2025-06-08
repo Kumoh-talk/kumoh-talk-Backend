@@ -113,7 +113,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             isNewUser.set(true);
         }
 
-        Token tokens = jwtHandler.createTokens(JwtUserClaim.create(user.getId(), "", user.getRole()));
+        String nickname = user.getRole().equals(Role.ROLE_GUEST) ? "" : user.getNickname();
+
+        Token tokens = jwtHandler.createTokens(JwtUserClaim.create(user.getId(), nickname, user.getRole()));
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("is-new-user", isNewUser.get())
