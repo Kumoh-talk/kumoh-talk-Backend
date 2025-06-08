@@ -39,6 +39,7 @@ public class SeminarApplicationService {
     public Optional<Token> applyForSeminar(Long userId, SeminarApplicationInfo request) {
         userReader.validateUser(userId);
         UserInfo userInfo = userReader.getUserInfo(userId);
+        String nickname = userInfo.getNickname();
         Role userRole = userInfo.getRole();
 
         // 세미나 처음 지원할 때 세미나 게시물 작성 권한 부여
@@ -57,7 +58,7 @@ public class SeminarApplicationService {
         seminarApplicationWriter.addSeminarApplication(userId, request);
 
         return isFirstApplication
-                ? Optional.of(jwtHandler.createTokens(JwtUserClaim.create(userId, userRole))) // 첫 생성 시 토큰 반환
+                ? Optional.of(jwtHandler.createTokens(JwtUserClaim.create(userId, nickname, userRole))) // 첫 생성 시 토큰 반환
                 : Optional.empty(); // 첫 생성이 아닐 경우 빈 Optional 반환
     }
 
