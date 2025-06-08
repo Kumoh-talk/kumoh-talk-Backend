@@ -42,7 +42,7 @@ public class UserService {
         userReader.validateUser(userId);
         this.checkNicknameDuplicate(request.getNickname());
         UserTarget userTarget = userWriter.setInitialInfo(userId, request);
-        JwtUserClaim jwtUserClaim = JwtUserClaim.create(userTarget.getUserId(), userTarget.getUserRole());
+        JwtUserClaim jwtUserClaim = JwtUserClaim.create(userTarget.getUserId(), userTarget.getNickName(), userTarget.getUserRole());
         return jwtHandler.createTokens(jwtUserClaim);
     }
 

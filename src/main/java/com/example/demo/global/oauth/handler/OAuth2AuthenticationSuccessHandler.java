@@ -3,7 +3,6 @@ package com.example.demo.global.oauth.handler;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.example.demo.application.token.dto.TokenResponse;
 import com.example.demo.domain.token.entity.Token;
 import com.example.demo.domain.token.repository.RefreshTokenRepository;
 import com.example.demo.domain.user.vo.Role;
@@ -114,7 +113,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             isNewUser.set(true);
         }
 
-        Token tokens = jwtHandler.createTokens(JwtUserClaim.create(user));
+        Token tokens = jwtHandler.createTokens(JwtUserClaim.create(user.getId(), "", user.getRole()));
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("is-new-user", isNewUser.get())
