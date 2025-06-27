@@ -1,6 +1,7 @@
 package com.example.demo.domain.report.client;
 
 import com.example.demo.domain.comment.entity.CommentInfo;
+import com.example.demo.domain.newsletter.strategy.ByPassEmailDeliveryStrategy;
 import com.example.demo.domain.newsletter.strategy.EmailDeliveryStrategy;
 import com.example.demo.domain.user.entity.UserTarget;
 import lombok.*;
@@ -66,7 +67,13 @@ public class DiscordMessage {
                                                         + "\n"
                                                         + "### 🎈 알림 주제\n"
                                                         + emailDeliveryStrategy.getSubject()
-                                                        + "\n")
+                                                        + (!(emailDeliveryStrategy instanceof ByPassEmailDeliveryStrategy)
+                                                        ? "\n### 📄 알림 내용\n"
+                                                        + "```json\n"
+                                                        + "게시물 제목 : " + emailDeliveryStrategy.getVariables().get("title") + ",\n"
+                                                        + "게시물 작성자 : " + emailDeliveryStrategy.getVariables().get("author") + ",\n"
+                                                        + "게시물 URL : " + emailDeliveryStrategy.getVariables().get("postUrl")
+                                                        + "\n```" : "\n"))
                                         .build()
                         )
                 )
